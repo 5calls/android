@@ -10,6 +10,9 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -95,6 +98,11 @@ public class MainActivity extends AppCompatActivity {
                     public void onIssuesReceived(List<Issue> issues) {
                         mIssuesAdapter.setIssues(issues);
                     }
+
+                    @Override
+                    public void onCallCount(int count) {
+                        // unused
+                    }
                 });
     }
 
@@ -102,6 +110,23 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         mJsonController.onDestroy();
         super.onDestroy();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_about) {
+            Intent intent = new Intent(this, AboutActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void submitZip() {
