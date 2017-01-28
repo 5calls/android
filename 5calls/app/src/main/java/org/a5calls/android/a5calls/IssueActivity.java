@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.util.Linkify;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,13 +18,15 @@ public class IssueActivity extends AppCompatActivity {
 
     public static final String KEY_ISSUE = "key_issue";
 
+    private Issue mIssue;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Issue issue = getIntent().getParcelableExtra(KEY_ISSUE);
-        if (issue == null) {
-            // TODO handle this state better
+        mIssue = getIntent().getParcelableExtra(KEY_ISSUE);
+        if (mIssue == null) {
+            // TODO handle this better?
             finish();
             return;
         }
@@ -31,25 +34,31 @@ public class IssueActivity extends AppCompatActivity {
         setContentView(R.layout.activity_issue);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(issue.name);
+        getSupportActionBar().setTitle(mIssue.name);
 
-        ((TextView) findViewById(R.id.issue_name)).setText(issue.name);
-        ((TextView) findViewById(R.id.issue_description)).setText(issue.reason);
+        ((TextView) findViewById(R.id.issue_name)).setText(mIssue.name);
+        ((TextView) findViewById(R.id.issue_description)).setText(mIssue.reason);
 
-        if (issue.contacts != null && issue.contacts.length > 0) {
+        if (mIssue.contacts == null || mIssue.contacts.length == 0) {
+            findViewById(R.id.buttons_holder).setVisibility(View.GONE);
+            findViewById(R.id.buttons_prompt).setVisibility(View.GONE);
+            findViewById(R.id.skip_btn).setVisibility(View.GONE);
+            findViewById(R.id.call_this_office).setVisibility(View.GONE);
+            findViewById(R.id.no_calls_left).setVisibility(View.VISIBLE);
+        } else {
             // TODO: Switch between multiple contacts. Remember contact state, show the one
             // not yet called by this user on this issue.
-            ((TextView) findViewById(R.id.contact_name)).setText(issue.contacts[0].name);
+
+            ((TextView) findViewById(R.id.contact_name)).setText(mIssue.contacts[0].name);
             Glide.with(getApplicationContext())
-                    .load(issue.contacts[0].photoURL)
+                    .load(mIssue.contacts[0].photoURL)
                     .into((ImageView) findViewById(R.id.rep_image));
-
             TextView phoneText = (TextView) findViewById(R.id.phone_number);
-            phoneText.setText(issue.contacts[0].phone);
+            phoneText.setText(mIssue.contacts[0].phone);
             Linkify.addLinks(phoneText, Linkify.PHONE_NUMBERS);
-        }
 
-        // TODO: Add all the reset of the info, including a call button.
+            // TODO: Handlers for the buttons!
+        }
     }
 
     @Override

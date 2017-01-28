@@ -53,11 +53,19 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-        final Button zipButton = (Button) findViewById(R.id.zip_code_submit);
+        Button zipButton = (Button) findViewById(R.id.zip_code_submit);
         zipButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 submitZip();
+            }
+        });
+
+        Button editZipButton = (Button) findViewById(R.id.zip_code_edit);
+        editZipButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateZipUi(true, 0);
             }
         });
 
@@ -104,9 +112,10 @@ public class MainActivity extends AppCompatActivity {
             zipEdit.setError(getResources().getString(R.string.zip_error));
             return;
         }
+        int zip = 0;
         try {
             // Make sure it is a number, too, by trying to parse it.
-            int unused = Integer.parseInt(code);
+            zip = Integer.parseInt(code);
         } catch (NumberFormatException e) {
             zipEdit.setError(getResources().getString(R.string.zip_error));
             return;
@@ -116,6 +125,19 @@ public class MainActivity extends AppCompatActivity {
 
         // TODO: Update the UI to show the zip code we've requested for with less vertical space
         // usage. And have a button to edit the zip.
+        updateZipUi(false, zip);
+    }
+
+    private void updateZipUi(boolean showEditZip, int zip) {
+        findViewById(R.id.zip_code_submit).setVisibility(showEditZip ? View.VISIBLE : View.GONE);
+        findViewById(R.id.zip_code_edit).setVisibility(showEditZip ? View.GONE : View.VISIBLE);
+        findViewById(R.id.zip_code_prompt).setVisibility(showEditZip ? View.VISIBLE : View.GONE);
+        findViewById(R.id.zip_code).setVisibility(showEditZip ? View.VISIBLE : View.GONE);
+        TextView repsFor = (TextView) findViewById(R.id.included_reps_for);
+        repsFor.setVisibility(showEditZip ? View.GONE : View.VISIBLE);
+        if (!showEditZip) {
+            repsFor.setText(String.format(getResources().getString(R.string.reps_for_zip), zip));
+        }
     }
 
     @Override

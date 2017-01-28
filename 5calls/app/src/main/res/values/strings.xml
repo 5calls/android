@@ -9,4 +9,12 @@
     <string name="call_count">%1$d calls to make</string>
     <string name="call_count_one">1 call to make</string>
     <string name="call_this_office">Call this office:</string>
+    <string name="unavailable_btn">unavailable</string>
+    <string name="voicemail_btn">left voicemail</string>
+    <string name="made_contact_btn">made contact</string>
+    <string name="skip_btn">skip</string>
+    <string name="buttons_prompt">Enter your result to get to the next call:</string>
+    <string name="no_calls_left">No calls left for this issue!</string>
+    <string name="edit">edit</string>
+    <string name="reps_for_zip">Current issues, including reps for %1$d</string>
 </resources>
