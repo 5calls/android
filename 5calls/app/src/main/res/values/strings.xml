@@ -4,4 +4,7 @@
     <string name="zip_code_hint">5 digit zip</string>
     <string name="submit">submit</string>
     <string name="zip_error">Please enter a valid 5 digit zip code</string>
+    <string name="request_error">Error: Problem communicating with the server.</string>
+    <string name="json_error">Error: Invalid or no data for this zip code</string>
+    <string name="call_count">%1$d calls to make</string>
 </resources>
