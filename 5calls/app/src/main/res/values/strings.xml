@@ -8,4 +8,5 @@
     <string name="json_error">Error: Invalid or no data for this zip code</string>
     <string name="call_count">%1$d calls to make</string>
     <string name="call_count_one">1 call to make</string>
+    <string name="call_this_office">Call this office:</string>
 </resources>
