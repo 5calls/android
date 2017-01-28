@@ -9,10 +9,16 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class to handle server gets and posts.
@@ -26,6 +32,7 @@ public class JsonController {
     public interface RequestStatusListener {
         void onRequestError();
         void onJsonError();
+        void onIssuesReceived(List<Issue> issues);
     }
 
     private RequestQueue mRequestQueue;
@@ -42,7 +49,7 @@ public class JsonController {
         mRequestQueue = null;
     }
 
-    public void getZip(String code) {
+    public void getIssuesForZip(String code) {
         String url = GET_REQUEST + code;
         // Request a JSON Object response from the provided URL.
         JsonObjectRequest statusRequest = new JsonObjectRequest(
@@ -50,16 +57,24 @@ public class JsonController {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        try {
-                            // TODO - populate some UI programmatically with this data.
-                            JSONArray issues = response.getJSONArray("issues");
-                            JSONObject issue = issues.getJSONObject(0);
-                            String name = issue.getString("name");
-                            Log.d(TAG, "Got issue named " + name);
-                        } catch (JSONException e) {
+                        //try {
+                            if (response != null) {
+                                // TODO - populate some UI programmatically with this data.
+                                /*
+                                Gson gson = new Gson();
+                                JSONArray jsonArray = response.optJSONArray("issues");
+                                Issue[] issues = gson.fromJson(jsonArray, Issue[].class);*/
+
+                                JSONArray jsonArray = response.optJSONArray("issues");
+                                Type listType = new TypeToken<ArrayList<Issue>>(){}.getType();
+                                List<Issue> issues = new Gson().fromJson(jsonArray.toString(),
+                                        listType);
+                                mStatusListener.onIssuesReceived(issues);
+                            }
+                        /*} catch (JSONException e) {
                             mStatusListener.onJsonError();
                             e.printStackTrace();
-                        }
+                        }*/
                     }
                 }, new Response.ErrorListener() {
             @Override
