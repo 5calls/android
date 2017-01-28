@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">5calls</string>
+    <string name="zip_code_prompt">Enter your zip code:</string>
+    <string name="zip_code_hint">5 digit zip</string>
+    <string name="submit">submit</string>
+    <string name="zip_error">Please enter a valid 5 digit zip code</string>
 </resources>
