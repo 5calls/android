@@ -1,5 +1,6 @@
 package org.a5calls.android.a5calls;
 
+import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,8 +21,16 @@ import android.widget.TextView;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * The activity which handles zip code lookup and showing the issues list.
+ *
+ * TODO: Add a TutorialActivity which shows the "about" information to first-time users.
+ * TODO: Add a counter for calls this user has made, stored in prefs or something. Personal stats!
+ * TODO: Add an email address sign-up field.
+ */
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
+    private static final int ISSUE_DETAIL_REQUEST = 1;
 
     private JsonController mJsonController;
     private IssuesAdapter mIssuesAdapter;
@@ -109,6 +118,16 @@ public class MainActivity extends AppCompatActivity {
         // usage. And have a button to edit the zip.
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == ISSUE_DETAIL_REQUEST) {
+            // TODO: Send back the issue as data in the intent, but with updates about calls made.
+            // TODO: Update the server if anything changed.
+            // TODO: Update the adapter if anything changed.
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
     private class IssuesAdapter extends RecyclerView.Adapter<IssueViewHolder> {
         private List<Issue> mIssues = Collections.emptyList();
 
@@ -130,12 +149,30 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(IssueViewHolder holder, int position) {
-            Issue issue = mIssues.get(position);
+        public void onBindViewHolder(final IssueViewHolder holder, int position) {
+            final Issue issue = mIssues.get(position);
             holder.name.setText(issue.name);
-            holder.numCalls.setText(String.format(getResources().getString(R.string.call_count),
-                    issue.contacts.length));
-            // TODO: Set click listeners and more params.
+            if (issue.contacts.length == 1) {
+                holder.numCalls.setText(getResources().getString(R.string.call_count_one));
+            } else {
+                holder.numCalls.setText(String.format(getResources().getString(R.string.call_count),
+                        issue.contacts.length));
+            }
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent issueIntent = new Intent(holder.itemView.getContext(),
+                            IssueActivity.class);
+                    issueIntent.putExtra(IssueActivity.KEY_ISSUE, issue);
+                    startActivityForResult(issueIntent, ISSUE_DETAIL_REQUEST);
+                }
+            });
+        }
+
+        @Override
+        public void onViewRecycled(IssueViewHolder holder) {
+            holder.itemView.setOnClickListener(null);
+            super.onViewRecycled(holder);
         }
 
         @Override
