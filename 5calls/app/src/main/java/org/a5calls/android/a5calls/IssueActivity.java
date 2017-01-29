@@ -98,12 +98,17 @@ public class IssueActivity extends AppCompatActivity {
             findViewById(R.id.call_this_office).setVisibility(View.GONE);
             findViewById(R.id.no_calls_left).setVisibility(View.VISIBLE);
         } else {
-            // TODO: Switch between multiple contacts. Remember contact state, show the one
-            // not yet called by this user on this issue.
             if (savedInstanceState != null) {
                 mActiveContactIndex = savedInstanceState.getInt(KEY_ACTIVE_CONTACT_INDEX, 0);
             } else {
                 mActiveContactIndex = 0;
+                // Try to start at the next uncontacted representative in the list.
+                for (int i = 0; i < mIssue.contacts.length; i++) {
+                    if (mIssue.contacts[i].contacted == Contact.NOT_CONTACTED) {
+                        mActiveContactIndex = i;
+                        break;
+                    }
+                }
             }
             setupContactUi(mActiveContactIndex);
 
@@ -168,6 +173,11 @@ public class IssueActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed() {
+        returnToMain();
+    }
+
     private void setupContactUi(int index) {
         ((TextView) findViewById(R.id.contact_name)).setText(mIssue.contacts[index].name);
         if (!TextUtils.isEmpty(mIssue.contacts[index].photoURL)) {
@@ -185,17 +195,21 @@ public class IssueActivity extends AppCompatActivity {
     private void tryLoadingNextContact() {
         if (mActiveContactIndex == mIssue.contacts.length - 1) {
             // Done!
-            Intent intent = new Intent();
-            intent.putExtra(KEY_ISSUE, mIssue);
-            if (getParent() == null) {
-                setResult(Activity.RESULT_OK, intent);
-            } else {
-                getParent().setResult(Activity.RESULT_OK, intent);
-            }
-            finish();
+            returnToMain();
         } else {
             mActiveContactIndex++;
             setupContactUi(mActiveContactIndex);
         }
+    }
+
+    private void returnToMain() {
+        Intent intent = new Intent();
+        intent.putExtra(KEY_ISSUE, mIssue);
+        if (getParent() == null) {
+            setResult(Activity.RESULT_OK, intent);
+        } else {
+            getParent().setResult(Activity.RESULT_OK, intent);
+        }
+        finish();
     }
 }

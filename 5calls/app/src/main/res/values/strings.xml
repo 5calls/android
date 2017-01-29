@@ -29,4 +29,5 @@
     <string name="about_us_btn">about us</string>
     <string name="calls_to_date">%1$d calls to date</string>
     <string name="call_reported">Call reported succcessfully!</string>
+    <string name="issue_done_content_description">issue complete</string>
 </resources>

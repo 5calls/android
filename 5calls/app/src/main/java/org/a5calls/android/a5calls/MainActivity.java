@@ -1,6 +1,7 @@
 package org.a5calls.android.a5calls;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -26,14 +28,14 @@ import java.util.List;
 
 /**
  * The activity which handles zip code lookup and showing the issues list.
- *
+ * <p>
  * TODO: Add a TutorialActivity which shows the "about" information to first-time users, or similar?
  * TODO: Add a counter for calls this user has made, stored in prefs or something. Personal stats!
- *       This includes keeping track of which reps a user has called for which issues, so that we
- *       don't need to have them call those reps again.
- *       Maybe. What's the best user flow here?
- *       Then add a "personal stats" activity that shows this information.
- *       A database might be easier than SharedPrefs here.
+ * This includes keeping track of which reps a user has called for which issues, so that we
+ * don't need to have them call those reps again.
+ * Maybe. What's the best user flow here?
+ * Then add a "personal stats" activity that shows this information.
+ * A database might be easier than SharedPrefs here.
  * TODO: Add an email address sign-up field.
  */
 public class MainActivity extends AppCompatActivity {
@@ -179,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == ISSUE_DETAIL_REQUEST) {
+        if (requestCode == ISSUE_DETAIL_REQUEST && resultCode == RESULT_OK) {
             // TODO: Send back the issue as data in the intent, but with updates about calls made.
             // TODO: Update the server if anything changed.
             // TODO: Update the adapter if anything changed.
@@ -223,6 +225,8 @@ public class MainActivity extends AppCompatActivity {
         public void onBindViewHolder(final IssueViewHolder holder, int position) {
             final Issue issue = mIssues.get(position);
             holder.name.setText(issue.name);
+            // TODO: Count uncalled contacts and write something like "2/3 calls to make"
+            // in case the user skipped any of the calls.
             if (issue.contacts.length == 1) {
                 holder.numCalls.setText(getResources().getString(R.string.call_count_one));
             } else {
@@ -239,7 +243,14 @@ public class MainActivity extends AppCompatActivity {
                     startActivityForResult(issueIntent, ISSUE_DETAIL_REQUEST);
                 }
             });
-            // TODO: If all contacts are done, update the UI for this issue.
+            boolean done = true;
+            for (int i = 0; i < issue.contacts.length; i++) {
+                if (issue.contacts[i].contacted == Contact.NOT_CONTACTED) {
+                    done = false;
+                    break;
+                }
+            }
+            holder.doneIcon.setVisibility(done ? View.VISIBLE : View.GONE);
         }
 
         @Override
@@ -257,10 +268,13 @@ public class MainActivity extends AppCompatActivity {
     private class IssueViewHolder extends RecyclerView.ViewHolder {
         public TextView name;
         public TextView numCalls;
+        public ImageView doneIcon;
+
         public IssueViewHolder(View itemView) {
             super(itemView);
             name = (TextView) itemView.findViewById(R.id.issue_name);
             numCalls = (TextView) itemView.findViewById(R.id.issue_call_count);
+            doneIcon = (ImageView) itemView.findViewById(R.id.issue_done_img);
         }
     }
 }

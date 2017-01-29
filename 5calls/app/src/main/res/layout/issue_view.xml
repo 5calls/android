@@ -28,6 +28,19 @@
         android:layout_below="@id/issue_name"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
+        android:textSize="14sp"
+        />
+
+    <ImageView
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:src="@drawable/ic_check_black_36dp"
+        android:tint="@color/check_color"
+        android:layout_toStartOf="@id/issue_call_count"
+        android:layout_below="@id/issue_name"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/issue_done_img"
+        android:contentDescription="@string/issue_done_content_description"
         />
 
 </RelativeLayout>
