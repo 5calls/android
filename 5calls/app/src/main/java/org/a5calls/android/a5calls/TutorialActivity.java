@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class TutorialActivity extends AppCompatActivity {
 
-    private JsonController mJsonController;
+    private JsonController.RequestStatusListener mStatusListener;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,49 +35,50 @@ public class TutorialActivity extends AppCompatActivity {
             }
         });
 
-        // TODO: Re-use this code between AboutActivity and here, since it's really the same.
-        mJsonController = new JsonController(getApplicationContext(),
-                new JsonController.RequestStatusListener() {
-                    @Override
-                    public void onRequestError() {
-                        Snackbar.make(findViewById(R.id.calls_to_date),
-                                getResources().getString(R.string.request_error),
-                                Snackbar.LENGTH_LONG).show();
-                    }
+        // TODO: Re-use this listener between AboutActivity and here, since it's really the same.
+        mStatusListener = new JsonController.RequestStatusListener() {
+            @Override
+            public void onRequestError() {
+                Snackbar.make(findViewById(R.id.calls_to_date),
+                        getResources().getString(R.string.request_error),
+                        Snackbar.LENGTH_LONG).show();
+            }
 
-                    @Override
-                    public void onJsonError() {
-                        Snackbar.make(findViewById(R.id.calls_to_date),
-                                getResources().getString(R.string.json_error),
-                                Snackbar.LENGTH_LONG).show();
-                    }
+            @Override
+            public void onJsonError() {
+                Snackbar.make(findViewById(R.id.calls_to_date),
+                        getResources().getString(R.string.json_error),
+                        Snackbar.LENGTH_LONG).show();
+            }
 
-                    @Override
-                    public void onIssuesReceived(List<Issue> issues) {
-                        // unused
-                    }
+            @Override
+            public void onIssuesReceived(List<Issue> issues) {
+                // unused
+            }
 
-                    @Override
-                    public void onCallCount(int count) {
-                        TextView callsToDate = (TextView) findViewById(R.id.calls_to_date);
-                        // TODO: Format with commas
-                        callsToDate.setText(String.format(
-                                getResources().getString(R.string.calls_to_date), count));
-                    }
+            @Override
+            public void onCallCount(int count) {
+                TextView callsToDate = (TextView) findViewById(R.id.calls_to_date);
+                // TODO: Format with commas
+                callsToDate.setText(String.format(
+                        getResources().getString(R.string.calls_to_date), count));
+            }
 
-                    @Override
-                    public void onCallReported() {
-                        // unused
-                    }
-                });
-        mJsonController.getCallCount();
+            @Override
+            public void onCallReported() {
+                // unused
+            }
+        };
+        JsonController controller = AppSingleton.getInstance(getApplicationContext())
+                .getJsonController();
+        controller.registerStatusListener(mStatusListener);
+        controller.getCallCount();
     }
 
     @Override
     protected void onDestroy() {
-        if (mJsonController != null) {
-            mJsonController.onDestroy();
-        }
+        AppSingleton.getInstance(getApplicationContext()).getJsonController()
+                .unregisterStatusListener(mStatusListener);
         super.onDestroy();
     }
 }

@@ -46,8 +46,8 @@ public class MainActivity extends AppCompatActivity {
     public static final String KEY_INITIALIZED = "prefsKeyInitialized";
     private static final int ISSUE_DETAIL_REQUEST = 1;
 
-    private JsonController mJsonController;
     private IssuesAdapter mIssuesAdapter;
+    private JsonController.RequestStatusListener mStatusListener;
     private String mZip;
 
     @Override
@@ -66,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_main);
+
+        // TODO: If the database already has a zip code, start at submitZip.
 
         // TODO: Option to get user's location from GPS instead of just entering a zip code.
         EditText zipEdit = (EditText) findViewById(R.id.zip_code);
@@ -101,44 +103,44 @@ public class MainActivity extends AppCompatActivity {
         mIssuesAdapter = new IssuesAdapter();
         issuesRecyclerView.setAdapter(mIssuesAdapter);
 
-        mJsonController = new JsonController(getApplicationContext(),
-                new JsonController.RequestStatusListener() {
-                    @Override
-                    public void onRequestError() {
-                        Snackbar.make(findViewById(R.id.activity_main),
-                                getResources().getString(R.string.request_error),
-                                Snackbar.LENGTH_LONG).show();
-                    }
+        mStatusListener = new JsonController.RequestStatusListener() {
+            @Override
+            public void onRequestError() {
+                Snackbar.make(findViewById(R.id.activity_main),
+                        getResources().getString(R.string.request_error),
+                        Snackbar.LENGTH_LONG).show();
+            }
 
-                    @Override
-                    public void onJsonError() {
-                        Snackbar.make(findViewById(R.id.activity_main),
-                                getResources().getString(R.string.json_error),
-                                Snackbar.LENGTH_LONG).show();
-                    }
+            @Override
+            public void onJsonError() {
+                Snackbar.make(findViewById(R.id.activity_main),
+                        getResources().getString(R.string.json_error),
+                        Snackbar.LENGTH_LONG).show();
+            }
 
-                    @Override
-                    public void onIssuesReceived(List<Issue> issues) {
-                        mIssuesAdapter.setIssues(issues);
-                    }
+            @Override
+            public void onIssuesReceived(List<Issue> issues) {
+                mIssuesAdapter.setIssues(issues);
+            }
 
-                    @Override
-                    public void onCallCount(int count) {
-                        // unused
-                    }
+            @Override
+            public void onCallCount(int count) {
+                // unused
+            }
 
-                    @Override
-                    public void onCallReported() {
-                        // unused
-                    }
-                });
+            @Override
+            public void onCallReported() {
+                // unused
+            }
+        };
+        AppSingleton.getInstance(getApplicationContext()).getJsonController()
+                .registerStatusListener(mStatusListener);
     }
 
     @Override
     protected void onDestroy() {
-        if (mJsonController != null) {
-            mJsonController.onDestroy();
-        }
+        AppSingleton.getInstance(getApplicationContext()).getJsonController()
+                .unregisterStatusListener(mStatusListener);
         super.onDestroy();
     }
 
@@ -176,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         // If we made it here, the zip is valid! Update the UI and send the request.
-        mJsonController.getIssuesForZip(code);
+        AppSingleton.getInstance(getApplicationContext()).getJsonController().getIssuesForZip(code);
         mZip = code;
 
         // Update the UI to show the zip code we've requested for with less vertical space

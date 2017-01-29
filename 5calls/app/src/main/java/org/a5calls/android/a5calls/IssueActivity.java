@@ -27,7 +27,7 @@ public class IssueActivity extends AppCompatActivity {
     public static final String KEY_ZIP = "key_zip";
     private static final String KEY_ACTIVE_CONTACT_INDEX = "active_contact_index";
 
-    private JsonController mJsonController;
+    private JsonController.RequestStatusListener mStatusListener;
     private Issue mIssue;
     private int mActiveContactIndex;
 
@@ -49,41 +49,43 @@ public class IssueActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_issue);
 
-        mJsonController = new JsonController(getApplicationContext(),
-                new JsonController.RequestStatusListener() {
-                    @Override
-                    public void onRequestError() {
-                        Snackbar.make(findViewById(R.id.issue_name),
-                                getResources().getString(R.string.request_error),
-                                Snackbar.LENGTH_LONG).show();
-                    }
+        mStatusListener = new JsonController.RequestStatusListener() {
+            @Override
+            public void onRequestError() {
+                Snackbar.make(findViewById(R.id.issue_name),
+                        getResources().getString(R.string.request_error),
+                        Snackbar.LENGTH_LONG).show();
+            }
 
-                    @Override
-                    public void onJsonError() {
-                        Snackbar.make(findViewById(R.id.issue_name),
-                                getResources().getString(R.string.json_error),
-                                Snackbar.LENGTH_LONG).show();
-                    }
+            @Override
+            public void onJsonError() {
+                Snackbar.make(findViewById(R.id.issue_name),
+                        getResources().getString(R.string.json_error),
+                        Snackbar.LENGTH_LONG).show();
+            }
 
-                    @Override
-                    public void onIssuesReceived(List<Issue> issues) {
-                        // unused
-                    }
+            @Override
+            public void onIssuesReceived(List<Issue> issues) {
+                // unused
+            }
 
-                    @Override
-                    public void onCallCount(int count) {
-                        // unused
-                    }
+            @Override
+            public void onCallCount(int count) {
+                // unused
+            }
 
-                    @Override
-                    public void onCallReported() {
-                        Log.d(TAG, "call reported successfully!");
-                        Snackbar.make(findViewById(R.id.issue_name),
-                                getResources().getString(R.string.call_reported),
-                                Snackbar.LENGTH_SHORT).show();
-                        tryLoadingNextContact();
-                    }
-        });
+            @Override
+            public void onCallReported() {
+                Log.d(TAG, "call reported successfully!");
+                Snackbar.make(findViewById(R.id.issue_name),
+                        getResources().getString(R.string.call_reported),
+                        Snackbar.LENGTH_SHORT).show();
+                tryLoadingNextContact();
+            }
+        };
+        final JsonController controller = AppSingleton.getInstance(getApplicationContext())
+                .getJsonController();
+        controller.registerStatusListener(mStatusListener);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(mIssue.name);
@@ -123,7 +125,7 @@ public class IssueActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     mIssue.contacts[mActiveContactIndex].contacted = Contact.CONTACTED;
-                    mJsonController.reportCall(mIssue.id, mIssue.contacts[mActiveContactIndex].id,
+                    controller.reportCall(mIssue.id, mIssue.contacts[mActiveContactIndex].id,
                             "contacted", zip);
                 }
             });
@@ -132,7 +134,7 @@ public class IssueActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     mIssue.contacts[mActiveContactIndex].contacted = Contact.CONTACTED;
-                    mJsonController.reportCall(mIssue.id, mIssue.contacts[mActiveContactIndex].id,
+                    controller.reportCall(mIssue.id, mIssue.contacts[mActiveContactIndex].id,
                             "unavailable", zip);
                 }
             });
@@ -141,7 +143,7 @@ public class IssueActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     mIssue.contacts[mActiveContactIndex].contacted = Contact.CONTACTED;
-                    mJsonController.reportCall(mIssue.id, mIssue.contacts[mActiveContactIndex].id,
+                    controller.reportCall(mIssue.id, mIssue.contacts[mActiveContactIndex].id,
                             "vm", zip);
                 }
             });
@@ -150,9 +152,8 @@ public class IssueActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if (mJsonController != null) {
-            mJsonController.onDestroy();
-        }
+        AppSingleton.getInstance(getApplicationContext()).getJsonController()
+                .unregisterStatusListener(mStatusListener);
         super.onDestroy();
     }
 

@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class AboutActivity extends AppCompatActivity {
 
-    private JsonController mJsonController;
+    private JsonController.RequestStatusListener mStatusListener;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,46 +55,49 @@ public class AboutActivity extends AppCompatActivity {
             }
         });*/
 
-        mJsonController = new JsonController(getApplicationContext(),
-                new JsonController.RequestStatusListener() {
-                    @Override
-                    public void onRequestError() {
-                        Snackbar.make(findViewById(R.id.about_us_btn),
-                                getResources().getString(R.string.request_error),
-                                Snackbar.LENGTH_LONG).show();
-                    }
+        mStatusListener = new JsonController.RequestStatusListener() {
+            @Override
+            public void onRequestError() {
+                Snackbar.make(findViewById(R.id.about_us_btn),
+                        getResources().getString(R.string.request_error),
+                        Snackbar.LENGTH_LONG).show();
+            }
 
-                    @Override
-                    public void onJsonError() {
-                        Snackbar.make(findViewById(R.id.about_us_btn),
-                                getResources().getString(R.string.json_error),
-                                Snackbar.LENGTH_LONG).show();
-                    }
+            @Override
+            public void onJsonError() {
+                Snackbar.make(findViewById(R.id.about_us_btn),
+                        getResources().getString(R.string.json_error),
+                        Snackbar.LENGTH_LONG).show();
+            }
 
-                    @Override
-                    public void onIssuesReceived(List<Issue> issues) {
-                        // unused
-                    }
+            @Override
+            public void onIssuesReceived(List<Issue> issues) {
+                // unused
+            }
 
-                    @Override
-                    public void onCallCount(int count) {
-                        TextView callsToDate = (TextView) findViewById(R.id.calls_to_date);
-                        // TODO: Format with commas
-                        callsToDate.setText(String.format(
-                                getResources().getString(R.string.calls_to_date), count));
-                    }
+            @Override
+            public void onCallCount(int count) {
+                TextView callsToDate = (TextView) findViewById(R.id.calls_to_date);
+                // TODO: Format with commas
+                callsToDate.setText(String.format(
+                        getResources().getString(R.string.calls_to_date), count));
+            }
 
-                    @Override
-                    public void onCallReported() {
-                        // unused
-                    }
-                });
-        mJsonController.getCallCount();
+            @Override
+            public void onCallReported() {
+                // unused
+            }
+        };
+        JsonController controller = AppSingleton.getInstance(getApplicationContext())
+                .getJsonController();
+        controller.registerStatusListener(mStatusListener);
+        controller.getCallCount();
     }
 
     @Override
     protected void onDestroy() {
-        mJsonController.onDestroy();
+        AppSingleton.getInstance(getApplicationContext()).getJsonController()
+                .unregisterStatusListener(mStatusListener);
         super.onDestroy();
     }
 

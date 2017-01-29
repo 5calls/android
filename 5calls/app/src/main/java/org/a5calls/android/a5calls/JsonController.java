@@ -53,11 +53,20 @@ public class JsonController {
     }
 
     private RequestQueue mRequestQueue;
-    private RequestStatusListener mStatusListener;
+    private List<RequestStatusListener> mStatusListeners = new ArrayList<>();
 
-    public JsonController(Context context, RequestStatusListener statusListener) {
+    public JsonController(Context context) {
         mRequestQueue = Volley.newRequestQueue(context);
-        mStatusListener = statusListener;
+    }
+
+    public void registerStatusListener(RequestStatusListener statusListener) {
+        mStatusListeners.add(statusListener);
+    }
+
+    public void unregisterStatusListener(RequestStatusListener statusListener) {
+        if (mStatusListeners.contains(statusListener)) {
+            mStatusListeners.remove(statusListener);
+        }
     }
 
     public void onDestroy() {
@@ -73,30 +82,20 @@ public class JsonController {
                 Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                //try {
                 if (response != null) {
-                    // TODO - populate some UI programmatically with this data.
-                                /*
-                                Gson gson = new Gson();
-                                JSONArray jsonArray = response.optJSONArray("issues");
-                                Issue[] issues = gson.fromJson(jsonArray, Issue[].class);*/
-
                     JSONArray jsonArray = response.optJSONArray("issues");
                     Type listType = new TypeToken<ArrayList<Issue>>(){}.getType();
                     List<Issue> issues = new Gson().fromJson(jsonArray.toString(),
                             listType);
-                    mStatusListener.onIssuesReceived(issues);
+                    for (RequestStatusListener listener : mStatusListeners) {
+                        listener.onIssuesReceived(issues);
+                    }
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                mStatusListener.onRequestError();
-                if (error.getMessage() == null) {
-                    Log.d("Error", "no message");
-                } else {
-                    Log.d("Error", error.getMessage());
-                }
+                onRequestError(error);
             }
         });
         statusRequest.setTag(TAG);
@@ -112,21 +111,21 @@ public class JsonController {
             public void onResponse(JSONObject response) {
                 try {
                     int count = response.getInt("count");
-                    mStatusListener.onCallCount(count);
+                    for (RequestStatusListener listener : mStatusListeners) {
+                        listener.onCallCount(count);
+                    }
                 } catch (JSONException e) {
-                    mStatusListener.onJsonError();
+                    for (RequestStatusListener listener : mStatusListeners) {
+                        listener.onJsonError();
+                    }
                     e.printStackTrace();
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                mStatusListener.onRequestError();
-                if (error.getMessage() == null) {
-                    Log.d("Error", "no message");
-                } else {
-                    Log.d("Error", error.getMessage());
-                }            }
+                onRequestError(error);
+            }
         });
         reportRequest.setTag(TAG); // TODO: same tag OK?
         // Add the request to the RequestQueue.
@@ -141,17 +140,14 @@ public class JsonController {
                 DEBUG ? GET_REPORT_DEBUG : GET_REPORT, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                mStatusListener.onCallReported();
+                for (RequestStatusListener listener : mStatusListeners) {
+                    listener.onCallReported();
+                }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                mStatusListener.onRequestError();
-                if (error.getMessage() == null) {
-                    Log.d("Error", "no message");
-                } else {
-                    Log.d("Error", error.getMessage());
-                }
+                onRequestError(error);
             }
         }){
             @Override
@@ -174,6 +170,16 @@ public class JsonController {
         request.setTag(TAG); // TODO: same tag OK?
         // Add the request to the RequestQueue.
         mRequestQueue.add(request);
+    }
 
+    private void onRequestError(VolleyError error) {
+        for (RequestStatusListener listener : mStatusListeners) {
+            listener.onRequestError();
+        }
+        if (error.getMessage() == null) {
+            Log.d("Error", "no message");
+        } else {
+            Log.d("Error", error.getMessage());
+        }
     }
 }
