@@ -17,12 +17,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.util.Collections;
 import java.util.List;
@@ -44,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     public static final String PREFS_FILE = "fiveCallsPrefs";
     public static final String KEY_INITIALIZED = "prefsKeyInitialized";
+    private static final String KEY_USER_ZIP = "prefsKeyUserZip";
     private static final int ISSUE_DETAIL_REQUEST = 1;
 
     private IssuesAdapter mIssuesAdapter;
@@ -67,7 +71,11 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        // TODO: If the database already has a zip code, start at submitZip.
+        // Load the zip code the user last used, if any.
+        String code = pref.getString(KEY_USER_ZIP, "");
+        if (!TextUtils.isEmpty(code)) {
+            onZipUpdated(code);
+        }
 
         // TODO: Option to get user's location from GPS instead of just entering a zip code.
         EditText zipEdit = (EditText) findViewById(R.id.zip_code);
@@ -169,34 +177,40 @@ public class MainActivity extends AppCompatActivity {
             zipEdit.setError(getResources().getString(R.string.zip_error));
             return;
         }
-        int zip = 0;
         try {
             // Make sure it is a number, too, by trying to parse it.
-            zip = Integer.parseInt(code);
+            Integer.parseInt(code);
         } catch (NumberFormatException e) {
             zipEdit.setError(getResources().getString(R.string.zip_error));
             return;
         }
         // If we made it here, the zip is valid! Update the UI and send the request.
+        onZipUpdated(code);
+    }
+
+    private void onZipUpdated(String code) {
         AppSingleton.getInstance(getApplicationContext()).getJsonController().getIssuesForZip(code);
         mZip = code;
 
+        SharedPreferences pref = getSharedPreferences(PREFS_FILE, 0);
+        pref.edit().putString(KEY_USER_ZIP, code).apply();
+
         // Update the UI to show the zip code we've requested for with less vertical space
         // usage. And have a button to edit the zip.
-        updateZipUi(false, zip);
+        updateZipUi(false, Integer.parseInt(code));
     }
 
     private void updateZipUi(boolean showEditZip, int zip) {
-        findViewById(R.id.zip_code_submit).setVisibility(showEditZip ? View.VISIBLE : View.GONE);
         findViewById(R.id.zip_code_edit).setVisibility(showEditZip ? View.GONE : View.VISIBLE);
-        findViewById(R.id.zip_code_prompt).setVisibility(showEditZip ? View.VISIBLE : View.GONE);
-        findViewById(R.id.zip_code).setVisibility(showEditZip ? View.VISIBLE : View.GONE);
         TextView repsFor = (TextView) findViewById(R.id.included_reps_for);
         repsFor.setVisibility(showEditZip ? View.GONE : View.VISIBLE);
         if (!showEditZip) {
             repsFor.setText(String.format(getResources().getString(R.string.reps_for_zip), zip));
             // TODO: Hide the keyboard if it is visible.
         }
+        findViewById(R.id.zip_code_submit).setVisibility(showEditZip ? View.VISIBLE : View.GONE);
+        findViewById(R.id.zip_code_prompt).setVisibility(showEditZip ? View.VISIBLE : View.GONE);
+        findViewById(R.id.zip_code).setVisibility(showEditZip ? View.VISIBLE : View.GONE);
     }
 
     @Override
