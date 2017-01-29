@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.telecom.Call;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +58,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @param location
      * @param result
      */
-    public void addCall(String issueId, String contactId, String location, String result) {
+    public void addCall(String issueId, String contactId, String result, String location) {
         ContentValues values = new ContentValues();
         values.put(CallsColumns.TIMESTAMP, System.currentTimeMillis());
         values.put(CallsColumns.CONTACT_ID, contactId);
@@ -80,6 +81,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         while (c.moveToNext()) {
             result.add(c.getString(0));
         }
+        c.close();
+        return result;
+    }
+
+    /**
+     * Gets the calls in the database for a particular issue.
+     * @param issueId
+     * @param zip
+     * @return A list of the contact IDs contacted for this issue.
+     */
+    public List<String> getCallsForIssueAndZip(String issueId, String zip) {
+        String query = "SELECT " + CallsColumns.CONTACT_ID + " FROM " +
+                CALLS_TABLE_NAME + " WHERE " + CallsColumns.ISSUE_ID + " = ? AND " +
+                CallsColumns.LOCATION + " = ? GROUP BY " + CallsColumns.CONTACT_ID;
+        Log.d(TAG, query);
+        Cursor c = getReadableDatabase().rawQuery(query, new String[] {issueId, zip});
+        List<String> result = new ArrayList<>();
+        while (c.moveToNext()) {
+            result.add(c.getString(0));
+        }
+        c.close();
         return result;
     }
 

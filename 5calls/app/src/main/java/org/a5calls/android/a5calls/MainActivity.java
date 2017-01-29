@@ -1,17 +1,13 @@
 package org.a5calls.android.a5calls;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,7 +15,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,20 +22,13 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.util.Collections;
 import java.util.List;
 
 /**
  * The activity which handles zip code lookup and showing the issues list.
- * <p>
- * TODO: Add a counter for calls this user has made, stored in prefs or something. Personal stats!
- *       This includes keeping track of which reps a user has called for which issues, so that we
- *       don't need to have them call those reps again.
- *       Maybe. What's the best user flow here?
- *       Then add a "personal stats" activity that shows this information.
- *       A database might be easier than SharedPrefs here.
+ *
+ * TODO: Add full "personal stats" DialogFragment that shows lots of information.
  * TODO: Add an email address sign-up field.
  * TODO: Add loading spinners when making Volley requests.
  * TODO: Add error message if the device is offline?
@@ -282,7 +270,7 @@ public class MainActivity extends AppCompatActivity {
             });
             int totalCalls = issue.contacts.length;
             List<String> contacted = AppSingleton.getInstance(getApplicationContext())
-                    .getDatabaseHelper().getCallsForIssue(issue.id);
+                    .getDatabaseHelper().getCallsForIssueAndZip(issue.id, mZip);
             int callsLeft = totalCalls - contacted.size();
             if (callsLeft == totalCalls) {
                 if (totalCalls == 1) {
