@@ -88,11 +88,57 @@
 
         </RelativeLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/script_section"
+            android:layout_below="@id/rep_info"
+            >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_paragraph"
+                android:textStyle="bold"
+                android:text="@string/contact_reason_prompt"
+                android:layout_marginTop="16dp"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_paragraph"
+                android:id="@+id/contact_reason"
+                android:layout_marginTop="4dp"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_paragraph"
+                android:textStyle="bold"
+                android:text="@string/call_script_prompt"
+                android:layout_marginTop="8dp"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/call_script"
+                android:textSize="@dimen/text_size_paragraph"
+                android:padding="16dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/script_background_color"
+                />
+
+        </LinearLayout>
+
         <TextView
             android:layout_marginTop="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/rep_info"
+            android:layout_below="@id/script_section"
             android:id="@+id/no_calls_left"
             android:textSize="16dp"
             android:textStyle="bold"
@@ -104,7 +150,7 @@
             android:layout_marginTop="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/rep_info"
+            android:layout_below="@id/script_section"
             android:id="@+id/buttons_prompt"
             android:text="@string/buttons_prompt"
             android:textSize="16dp"

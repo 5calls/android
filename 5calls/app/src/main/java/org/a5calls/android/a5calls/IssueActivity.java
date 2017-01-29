@@ -92,6 +92,7 @@ public class IssueActivity extends AppCompatActivity {
 
         ((TextView) findViewById(R.id.issue_name)).setText(mIssue.name);
         ((TextView) findViewById(R.id.issue_description)).setText(mIssue.reason);
+        ((TextView) findViewById(R.id.call_script)).setText(mIssue.script);
 
         if (mIssue.contacts == null || mIssue.contacts.length == 0) {
             findViewById(R.id.buttons_holder).setVisibility(View.GONE);
@@ -183,6 +184,7 @@ public class IssueActivity extends AppCompatActivity {
 
     private void setupContactUi(int index) {
         ((TextView) findViewById(R.id.contact_name)).setText(mIssue.contacts[index].name);
+        ((TextView) findViewById(R.id.contact_reason)).setText(mIssue.contacts[index].reason);
         if (!TextUtils.isEmpty(mIssue.contacts[index].photoURL)) {
             Glide.with(getApplicationContext())
                     .load(mIssue.contacts[index].photoURL)
