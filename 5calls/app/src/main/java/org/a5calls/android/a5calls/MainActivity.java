@@ -33,6 +33,7 @@ import java.util.List;
  * TODO: Add full "personal stats" DialogFragment that shows lots of information.
  * TODO: Add an email address sign-up field.
  * TODO: Sort issues based on which are "done" and which are not done or hide ones which are "done".
+ * TODO: After making a call, jump the screen up to show the next contact!
  */
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";

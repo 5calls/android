@@ -11,6 +11,7 @@ import android.text.util.Linkify;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -56,6 +57,7 @@ public class IssueActivity extends AppCompatActivity {
                 Snackbar.make(findViewById(R.id.issue_name),
                         getResources().getString(R.string.request_error),
                         Snackbar.LENGTH_LONG).show();
+                setButtonsEnabled(true);
             }
 
             @Override
@@ -63,6 +65,7 @@ public class IssueActivity extends AppCompatActivity {
                 Snackbar.make(findViewById(R.id.issue_name),
                         getResources().getString(R.string.json_error),
                         Snackbar.LENGTH_LONG).show();
+                setButtonsEnabled(true);
             }
 
             @Override
@@ -81,6 +84,7 @@ public class IssueActivity extends AppCompatActivity {
                 Snackbar.make(findViewById(R.id.issue_name),
                         getResources().getString(R.string.call_reported),
                         Snackbar.LENGTH_SHORT).show();
+                setButtonsEnabled(true);
                 tryLoadingNextContact();
             }
         };
@@ -180,10 +184,18 @@ public class IssueActivity extends AppCompatActivity {
     }
 
     private void reportCall(String callType, String zip) {
+        setButtonsEnabled(false);
         AppSingleton.getInstance(getApplicationContext()).getDatabaseHelper().addCall(mIssue.id,
                 mIssue.contacts[mActiveContactIndex].id, callType, zip);
         AppSingleton.getInstance(getApplicationContext()).getJsonController().reportCall(
                 mIssue.id, mIssue.contacts[mActiveContactIndex].id, callType, zip);
+    }
+
+    private void setButtonsEnabled(boolean enabled) {
+        ((Button) findViewById(R.id.skip_btn)).setEnabled(enabled);
+        ((Button) findViewById(R.id.voicemail_btn)).setEnabled(enabled);
+        ((Button) findViewById(R.id.made_contact_btn)).setEnabled(enabled);
+        ((Button) findViewById(R.id.unavailable_btn)).setEnabled(enabled);
     }
 
     private void setupContactUi(int index) {
@@ -206,6 +218,8 @@ public class IssueActivity extends AppCompatActivity {
             // Done!
             returnToMain();
         } else {
+            // TODO: Instead of just increasing the index, check to find the next *un-contacted*
+            // representative. If there is none, increasing the index is OK.
             mActiveContactIndex++;
             setupContactUi(mActiveContactIndex);
         }

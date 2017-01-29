@@ -107,9 +107,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     /**
      * Gets the calls in the database for a particular contact.
      * @param contactId
+     * @return a list of the issues IDs that were called for a particular contact.
      */
-    public void getCallsForContact(String contactId) {
-
+    public List<String> getCallsForContact(String contactId) {
+        // TODO do we want to return issue IDs, or more detailed info about the call? What about
+        // whether contact was made?
+        // Probably need to make a "Call" class to store this in.
+        return null;
     }
 
     /**
