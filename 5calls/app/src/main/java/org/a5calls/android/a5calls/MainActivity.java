@@ -179,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
         mJsonController.getIssuesForZip(code);
         mZip = code;
 
-        // TODO: Update the UI to show the zip code we've requested for with less vertical space
+        // Update the UI to show the zip code we've requested for with less vertical space
         // usage. And have a button to edit the zip.
         updateZipUi(false, zip);
     }
@@ -193,6 +193,7 @@ public class MainActivity extends AppCompatActivity {
         repsFor.setVisibility(showEditZip ? View.GONE : View.VISIBLE);
         if (!showEditZip) {
             repsFor.setText(String.format(getResources().getString(R.string.reps_for_zip), zip));
+            // TODO: Hide the keyboard if it is visible.
         }
     }
 

@@ -7,8 +7,8 @@ android {
         applicationId "org.a5calls.android.a5calls"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 1
-        versionName "0.01"
+        versionCode 2
+        versionName "0.02"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

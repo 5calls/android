@@ -45,6 +45,7 @@
                 android:layout_toStartOf="@+id/zip_code_submit"
                 android:hint="@string/zip_code_hint"
                 android:imeOptions="actionDone"
+                android:inputType="number"
                 />
 
             <Button

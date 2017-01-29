@@ -92,7 +92,11 @@ public class JsonController {
             @Override
             public void onErrorResponse(VolleyError error) {
                 mStatusListener.onRequestError();
-                Log.d("Error", error.getMessage());
+                if (error.getMessage() == null) {
+                    Log.d("Error", "no message");
+                } else {
+                    Log.d("Error", error.getMessage());
+                }
             }
         });
         statusRequest.setTag(TAG);
@@ -118,8 +122,11 @@ public class JsonController {
             @Override
             public void onErrorResponse(VolleyError error) {
                 mStatusListener.onRequestError();
-                Log.d("Error", error.getMessage());
-            }
+                if (error.getMessage() == null) {
+                    Log.d("Error", "no message");
+                } else {
+                    Log.d("Error", error.getMessage());
+                }            }
         });
         reportRequest.setTag(TAG); // TODO: same tag OK?
         // Add the request to the RequestQueue.
@@ -140,7 +147,11 @@ public class JsonController {
             @Override
             public void onErrorResponse(VolleyError error) {
                 mStatusListener.onRequestError();
-                Log.d("Error", error.getMessage());
+                if (error.getMessage() == null) {
+                    Log.d("Error", "no message");
+                } else {
+                    Log.d("Error", error.getMessage());
+                }
             }
         }){
             @Override
