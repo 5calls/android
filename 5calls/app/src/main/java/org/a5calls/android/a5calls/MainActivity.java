@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
     private JsonController mJsonController;
     private IssuesAdapter mIssuesAdapter;
+    private String mZip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +104,11 @@ public class MainActivity extends AppCompatActivity {
                     public void onCallCount(int count) {
                         // unused
                     }
+
+                    @Override
+                    public void onCallReported() {
+                        // unused
+                    }
                 });
     }
 
@@ -147,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
         }
         // If we made it here, the zip is valid! Update the UI and send the request.
         mJsonController.getIssuesForZip(code);
+        mZip = code;
 
         // TODO: Update the UI to show the zip code we've requested for with less vertical space
         // usage. And have a button to edit the zip.
@@ -171,6 +178,8 @@ public class MainActivity extends AppCompatActivity {
             // TODO: Send back the issue as data in the intent, but with updates about calls made.
             // TODO: Update the server if anything changed.
             // TODO: Update the adapter if anything changed.
+            Issue issue = data.getExtras().getParcelable(IssueActivity.KEY_ISSUE);
+            mIssuesAdapter.updateIssue(issue);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -185,6 +194,16 @@ public class MainActivity extends AppCompatActivity {
         public void setIssues(List<Issue> issues) {
             mIssues = issues;
             notifyDataSetChanged();
+        }
+
+        public void updateIssue(Issue issue) {
+            for (int i = 0; i < mIssues.size(); i++) {
+                if (TextUtils.equals(issue.id, mIssues.get(i).id)) {
+                    mIssues.set(i, issue);
+                    notifyItemChanged(i);
+                    return;
+                }
+            }
         }
 
         @Override
@@ -211,9 +230,11 @@ public class MainActivity extends AppCompatActivity {
                     Intent issueIntent = new Intent(holder.itemView.getContext(),
                             IssueActivity.class);
                     issueIntent.putExtra(IssueActivity.KEY_ISSUE, issue);
+                    issueIntent.putExtra(IssueActivity.KEY_ZIP, mZip);
                     startActivityForResult(issueIntent, ISSUE_DETAIL_REQUEST);
                 }
             });
+            // TODO: If all contacts are done, update the UI for this issue.
         }
 
         @Override

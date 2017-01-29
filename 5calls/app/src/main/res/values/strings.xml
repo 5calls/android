@@ -28,4 +28,5 @@
     <string name="why_calling_btn">why calling works</string>
     <string name="about_us_btn">about us</string>
     <string name="calls_to_date">%1$d calls to date</string>
+    <string name="call_reported">Call reported succcessfully!</string>
 </resources>

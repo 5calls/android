@@ -1,5 +1,7 @@
 package org.a5calls.android.a5calls;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -29,16 +31,24 @@ public class AboutActivity extends AppCompatActivity {
         findViewById(R.id.about_us_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO
+                // TODO: Add this to the app instead of going to the browser
+                Uri uriUrl = Uri.parse("https://5calls.org/#about");
+                Intent intent = new Intent(Intent.ACTION_VIEW, uriUrl);
+                startActivity(intent);
             }
         });
 
-        findViewById(R.id.why_calling_btn).setOnClickListener(new View.OnClickListener() {
+        // TODO: Find the correct URL for Why Calling Works
+        /*findViewById(R.id.why_calling_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO
+                // TODO: Add this to the app instead of going to the browser
+                Uri uriUrl = Uri.parse("https://5calls.org/");
+                Intent intent = new Intent(Intent.ACTION_VIEW, uriUrl);
+                startActivity(intent);
+
             }
-        });
+        });*/
 
         mJsonController = new JsonController(getApplicationContext(),
                 new JsonController.RequestStatusListener() {
@@ -67,8 +77,19 @@ public class AboutActivity extends AppCompatActivity {
                         callsToDate.setText(String.format(
                                 getResources().getString(R.string.calls_to_date), count));
                     }
+
+                    @Override
+                    public void onCallReported() {
+                        // unused
+                    }
                 });
         mJsonController.getCallCount();
+    }
+
+    @Override
+    protected void onDestroy() {
+        mJsonController.onDestroy();
+        super.onDestroy();
     }
 
     @Override

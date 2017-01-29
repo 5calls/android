@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    >
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -34,54 +34,65 @@
             android:layout_marginBottom="16dp"
             />
 
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_below="@id/issue_description"
-            android:layout_alignParentStart="true"
-            android:id="@+id/rep_image"
-            android:contentDescription="@null"
-            />
-
-        <TextView
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/call_this_office"
-            android:textSize="18sp"
-            android:textAllCaps="true"
-            android:id="@+id/call_this_office"
+            android:id="@+id/rep_info"
             android:layout_below="@id/issue_description"
-            android:layout_toEndOf="@id/rep_image"
-            />
+            >
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/rep_image"
-            android:layout_below="@id/call_this_office"
-            android:layout_alignParentEnd="true"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:id="@+id/contact_name"
-            />
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_alignParentStart="true"
+                android:id="@+id/rep_image"
+                android:contentDescription="@null"
+                />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/phone_number"
-            android:textColor="@color/colorPrimary"
-            android:textSize="32sp"
-            android:textStyle="bold"
-            android:layout_below="@id/contact_name"
-            android:layout_toEndOf="@id/rep_image"
-            android:layout_marginBottom="16dp"
-            />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/call_this_office"
+                android:textSize="18sp"
+                android:textAllCaps="true"
+                android:id="@+id/call_this_office"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@id/rep_image"
+                android:layout_alignWithParentIfMissing="true"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/rep_image"
+                android:layout_below="@id/call_this_office"
+                android:layout_alignParentEnd="true"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:id="@+id/contact_name"
+                android:layout_alignWithParentIfMissing="true"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/phone_number"
+                android:textColor="@color/colorPrimary"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                android:layout_below="@id/contact_name"
+                android:layout_toEndOf="@id/rep_image"
+                android:layout_marginBottom="16dp"
+                android:layout_alignWithParentIfMissing="true"
+                />
+
+        </RelativeLayout>
 
         <TextView
             android:layout_marginTop="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/rep_image"
+            android:layout_below="@id/rep_info"
             android:id="@+id/no_calls_left"
             android:textSize="16dp"
             android:textStyle="bold"
@@ -93,7 +104,7 @@
             android:layout_marginTop="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/rep_image"
+            android:layout_below="@id/rep_info"
             android:id="@+id/buttons_prompt"
             android:text="@string/buttons_prompt"
             android:textSize="16dp"
@@ -106,6 +117,7 @@
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:layout_marginBottom="4dp"
+            android:layout_marginTop="8dp"
             android:id="@+id/buttons_holder"
             android:layout_below="@id/buttons_prompt"
             >
@@ -116,6 +128,9 @@
                 android:minHeight="@dimen/accessibility_min_size"
                 android:id="@+id/unavailable_btn"
                 android:text="@string/unavailable_btn"
+                android:background="@color/button_color"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
                 />
             <Button
                 android:layout_width="0dp"
@@ -126,6 +141,9 @@
                 android:text="@string/voicemail_btn"
                 android:layout_marginStart="4dp"
                 android:layout_marginEnd="4dp"
+                android:background="@color/button_color"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
                 />
             <Button
                 android:layout_width="0dp"
@@ -134,6 +152,9 @@
                 android:minHeight="@dimen/accessibility_min_size"
                 android:id="@+id/made_contact_btn"
                 android:text="@string/made_contact_btn"
+                android:background="@color/button_color"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
                 />
         </LinearLayout>
 
@@ -144,6 +165,9 @@
             android:id="@+id/skip_btn"
             android:text="@string/skip_btn"
             android:layout_below="@id/buttons_holder"
+            android:background="@color/button_color"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
             />
 
     </RelativeLayout>

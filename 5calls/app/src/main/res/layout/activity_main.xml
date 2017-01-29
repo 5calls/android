@@ -52,10 +52,13 @@
                 android:layout_height="wrap_content"
                 android:minHeight="@dimen/accessibility_min_size"
                 android:minWidth="@dimen/accessibility_min_size"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
                 android:id="@+id/zip_code_submit"
                 android:text="@string/submit"
                 android:layout_below="@+id/zip_code_prompt"
                 android:layout_alignParentEnd="true"
+                android:background="@color/button_color"
                 />
 
             <TextView
@@ -77,11 +80,14 @@
                 android:layout_height="wrap_content"
                 android:minHeight="@dimen/accessibility_min_size"
                 android:minWidth="@dimen/accessibility_min_size"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
                 android:id="@id/zip_code_edit"
                 android:text="@string/edit"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:visibility="gone"
+                android:background="@color/button_color"
                 />
 
         </RelativeLayout>

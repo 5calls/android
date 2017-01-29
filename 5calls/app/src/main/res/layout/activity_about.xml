@@ -54,8 +54,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:gravity="center_horizontal"
             >
-
+            <!--
             <Button
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -64,16 +65,22 @@
                 android:id="@+id/why_calling_btn"
                 android:text="@string/why_calling_btn"
                 android:layout_marginEnd="8dp"
+                android:background="@color/button_color"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
                 />
+                -->
 
             <Button
-                android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minHeight="@dimen/accessibility_min_size"
                 android:id="@+id/about_us_btn"
                 android:text="@string/about_us_btn"
                 android:layout_marginStart="8dp"
+                android:background="@color/button_color"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
                 />
 
         </LinearLayout>

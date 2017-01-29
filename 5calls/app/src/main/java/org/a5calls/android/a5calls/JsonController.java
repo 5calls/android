@@ -3,11 +3,13 @@ package org.a5calls.android.a5calls;
 import android.content.Context;
 import android.util.Log;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -18,7 +20,9 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Class to handle server gets and posts.
@@ -35,6 +39,7 @@ public class JsonController {
         void onJsonError();
         void onIssuesReceived(List<Issue> issues);
         void onCallCount(int count);
+        void onCallReported();
     }
 
     private RequestQueue mRequestQueue;
@@ -108,5 +113,45 @@ public class JsonController {
         reportRequest.setTag(TAG); // TODO: same tag OK?
         // Add the request to the RequestQueue.
         mRequestQueue.add(reportRequest);
+    }
+
+    // Result is "vm", "unavailable", or "contacted"
+    // https://github.com/5calls/5calls/blob/master/static/js/main.js#L221
+    public void reportCall(final String issueId, final String contactId, final String result,
+                           final String zip) {
+        StringRequest request = new StringRequest(Request.Method.POST, GET_REPORT,
+                new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                mStatusListener.onCallReported();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mStatusListener.onRequestError();
+                Log.d("Error", error.getMessage());
+            }
+        }){
+            @Override
+            protected Map<String,String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("issueid", issueId);
+                params.put("result", result);
+                params.put("contactid", contactId);
+                params.put("location", zip);
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+        request.setTag(TAG); // TODO: same tag OK?
+        // Add the request to the RequestQueue.
+        mRequestQueue.add(request);
+
     }
 }
