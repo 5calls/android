@@ -60,6 +60,7 @@ public class TutorialActivity extends AppCompatActivity {
                     @Override
                     public void onCallCount(int count) {
                         TextView callsToDate = (TextView) findViewById(R.id.calls_to_date);
+                        // TODO: Format with commas
                         callsToDate.setText(String.format(
                                 getResources().getString(R.string.calls_to_date), count));
                     }

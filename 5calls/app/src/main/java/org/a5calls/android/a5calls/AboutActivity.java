@@ -32,11 +32,16 @@ public class AboutActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // TODO: Add this to the app instead of going to the browser
+                // TODO: Meanwhile, get it to open such that the back button returns here.
                 Uri uriUrl = Uri.parse("https://5calls.org/#about");
                 Intent intent = new Intent(Intent.ACTION_VIEW, uriUrl);
                 startActivity(intent);
             }
         });
+
+        TextView version = (TextView) findViewById(R.id.version_info);
+        version.setText(String.format(getResources().getString(R.string.version_info),
+                BuildConfig.VERSION_NAME));
 
         // TODO: Find the correct URL for Why Calling Works
         /*findViewById(R.id.why_calling_btn).setOnClickListener(new View.OnClickListener() {
@@ -74,6 +79,7 @@ public class AboutActivity extends AppCompatActivity {
                     @Override
                     public void onCallCount(int count) {
                         TextView callsToDate = (TextView) findViewById(R.id.calls_to_date);
+                        // TODO: Format with commas
                         callsToDate.setText(String.format(
                                 getResources().getString(R.string.calls_to_date), count));
                     }
