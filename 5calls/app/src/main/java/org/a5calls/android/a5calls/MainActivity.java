@@ -30,7 +30,6 @@ import java.util.List;
 /**
  * The activity which handles zip code lookup and showing the issues list.
  * <p>
- * TODO: Add a TutorialActivity which shows the "about" information to first-time users, or similar?
  * TODO: Add a counter for calls this user has made, stored in prefs or something. Personal stats!
  *       This includes keeping track of which reps a user has called for which issues, so that we
  *       don't need to have them call those reps again.
