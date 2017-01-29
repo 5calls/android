@@ -28,7 +28,7 @@
     <string name="why_calling_btn">why calling works</string>
     <string name="about_us_btn">about us</string>
     <string name="calls_to_date">%1$d calls to date</string>
-    <string name="call_reported">Call reported succcessfully!</string>
+    <string name="call_reported">Call reported successfully!</string>
     <string name="issue_done_content_description">issue complete</string>
     <string name="about_splash">There\'s one simple and straightforward way to influence the Government that is supposed to represent you: Call them on the phone.
                                 \n\nCalling is the most effective way to influence your representative. 5 Calls gives you local contacts and scripts so calling is quick and easy.</string>
@@ -36,7 +36,7 @@
     <string name="open_source_info">The 5 Calls app is open-source and volunteer made. Find it at github.com/5calls/android.</string>
     <string name="version_info">Version %1$s</string>
     <string name="menu_stats">Stats</string>
-    <string name="stats_message">Your impact is %1$d calls. (Details stats coming soon!)</string>
+    <string name="stats_message">Your impact is %1$d calls. (Detailed stats coming soon!)</string>
     <string name="call_script_prompt">Your script:</string>
     <string name="contact_reason_prompt">Why you\'re calling this office:</string>
     <string name="call_count_remaining">%1$d calls to make (%2$d total)</string>

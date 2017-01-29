@@ -28,10 +28,10 @@ import java.util.List;
 /**
  * The activity which handles zip code lookup and showing the issues list.
  *
- * TODO: Add full "personal stats" DialogFragment that shows lots of information.
- * TODO: Add an email address sign-up field.
  * TODO: Add loading spinners when making Volley requests.
  * TODO: Add error message if the device is offline?
+ * TODO: Add full "personal stats" DialogFragment that shows lots of information.
+ * TODO: Add an email address sign-up field.
  * TODO: Sort issues based on which are "done" and which are not done or hide ones which are "done".
  */
 public class MainActivity extends AppCompatActivity {
