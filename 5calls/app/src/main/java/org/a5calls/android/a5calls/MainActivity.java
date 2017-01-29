@@ -27,8 +27,13 @@ import java.util.List;
 /**
  * The activity which handles zip code lookup and showing the issues list.
  *
- * TODO: Add a TutorialActivity which shows the "about" information to first-time users.
+ * TODO: Add a TutorialActivity which shows the "about" information to first-time users, or similar?
  * TODO: Add a counter for calls this user has made, stored in prefs or something. Personal stats!
+ *       This includes keeping track of which reps a user has called for which issues, so that we
+ *       don't need to have them call those reps again.
+ *       Maybe. What's the best user flow here?
+ *       Then add a "personal stats" activity that shows this information.
+ *       A database might be easier than SharedPrefs here.
  * TODO: Add an email address sign-up field.
  */
 public class MainActivity extends AppCompatActivity {

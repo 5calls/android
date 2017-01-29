@@ -19,7 +19,7 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 
 /**
- * More details about an isssue.
+ * More details about an issue.
  */
 public class IssueActivity extends AppCompatActivity {
     private static final String TAG = "IssueActivity";

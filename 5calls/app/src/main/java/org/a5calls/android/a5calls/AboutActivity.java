@@ -54,14 +54,14 @@ public class AboutActivity extends AppCompatActivity {
                 new JsonController.RequestStatusListener() {
                     @Override
                     public void onRequestError() {
-                        Snackbar.make(findViewById(R.id.activity_main),
+                        Snackbar.make(findViewById(R.id.about_us_btn),
                                 getResources().getString(R.string.request_error),
                                 Snackbar.LENGTH_LONG).show();
                     }
 
                     @Override
                     public void onJsonError() {
-                        Snackbar.make(findViewById(R.id.activity_main),
+                        Snackbar.make(findViewById(R.id.about_us_btn),
                                 getResources().getString(R.string.json_error),
                                 Snackbar.LENGTH_LONG).show();
                     }

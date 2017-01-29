@@ -31,8 +31,16 @@ import java.util.Map;
  */
 public class JsonController {
     private static final String TAG = "JsonController";
+
+    // DO NOT SUBMIT with DEBUG = true;
+    private static final boolean DEBUG = false;
+
     private static final String GET_ISSUES_REQUEST = "https://5calls.org/issues/?address=";
+
     private static final String GET_REPORT = "https://5calls.org/report";
+
+    // This is for local testing only and shouldn't be part of prod.
+    private static final String GET_REPORT_DEBUG = "http://10.0.2.2:8090/report";
 
     public interface RequestStatusListener {
         void onRequestError();
@@ -92,7 +100,8 @@ public class JsonController {
 
     public void getCallCount() {
         JsonObjectRequest reportRequest = new JsonObjectRequest(
-                Request.Method.GET, GET_REPORT, null, new Response.Listener<JSONObject>() {
+                Request.Method.GET, DEBUG ? GET_REPORT_DEBUG : GET_REPORT, null,
+                new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
@@ -119,8 +128,8 @@ public class JsonController {
     // https://github.com/5calls/5calls/blob/master/static/js/main.js#L221
     public void reportCall(final String issueId, final String contactId, final String result,
                            final String zip) {
-        StringRequest request = new StringRequest(Request.Method.POST, GET_REPORT,
-                new Response.Listener<String>() {
+        StringRequest request = new StringRequest(Request.Method.POST,
+                DEBUG ? GET_REPORT_DEBUG : GET_REPORT, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 mStatusListener.onCallReported();
