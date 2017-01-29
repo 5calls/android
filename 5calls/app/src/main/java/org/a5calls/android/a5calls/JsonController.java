@@ -32,9 +32,9 @@ import java.util.Map;
 public class JsonController {
     private static final String TAG = "JsonController";
 
-    // DO NOT SUBMIT with DEBUG = true. This only works on an emulator running on a machine that is
-    // running a local version of the 5calls go server. For more on the go server, check out
-    // github.com/5calls/5calls.
+    // DO NOT SUBMIT with DEBUG = true.
+    // This only works on an emulator running on a machine that is running a local version of the
+    // 5calls go server. For more on the go server, check out github.com/5calls/5calls.
     private static final boolean DEBUG = false;
 
     private static final String GET_ISSUES_REQUEST = "https://5calls.org/issues/?address=";

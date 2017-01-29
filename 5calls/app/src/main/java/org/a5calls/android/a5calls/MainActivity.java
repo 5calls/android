@@ -1,6 +1,7 @@
 package org.a5calls.android.a5calls;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -31,15 +32,19 @@ import java.util.List;
  * <p>
  * TODO: Add a TutorialActivity which shows the "about" information to first-time users, or similar?
  * TODO: Add a counter for calls this user has made, stored in prefs or something. Personal stats!
- * This includes keeping track of which reps a user has called for which issues, so that we
- * don't need to have them call those reps again.
- * Maybe. What's the best user flow here?
- * Then add a "personal stats" activity that shows this information.
- * A database might be easier than SharedPrefs here.
+ *       This includes keeping track of which reps a user has called for which issues, so that we
+ *       don't need to have them call those reps again.
+ *       Maybe. What's the best user flow here?
+ *       Then add a "personal stats" activity that shows this information.
+ *       A database might be easier than SharedPrefs here.
  * TODO: Add an email address sign-up field.
+ * TODO: Add loading spinners when making Volley requests.
+ * TODO: Add error message if the device is offline?
  */
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
+    public static final String PREFS_FILE = "fiveCallsPrefs";
+    public static final String KEY_INITIALIZED = "prefsKeyInitialized";
     private static final int ISSUE_DETAIL_REQUEST = 1;
 
     private JsonController mJsonController;
@@ -50,9 +55,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         // TODO: Consider using fragments
         super.onCreate(savedInstanceState);
+
+        // See if we've had this user before. If not, start them at tutorial type page.
+        SharedPreferences pref = getSharedPreferences(PREFS_FILE, 0);
+        boolean initialized = pref.getBoolean(KEY_INITIALIZED, false);
+        if (!initialized) {
+            Intent intent = new Intent(this, TutorialActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
         setContentView(R.layout.activity_main);
 
-        // TODO: Option to get user's location from GPS instead of just entering a zip code
+        // TODO: Option to get user's location from GPS instead of just entering a zip code.
         EditText zipEdit = (EditText) findViewById(R.id.zip_code);
         zipEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -121,7 +137,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        mJsonController.onDestroy();
+        if (mJsonController != null) {
+            mJsonController.onDestroy();
+        }
         super.onDestroy();
     }
 
