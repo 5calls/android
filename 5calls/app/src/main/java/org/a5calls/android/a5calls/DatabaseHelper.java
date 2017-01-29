@@ -5,6 +5,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.telecom.Call;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Local database helper. I believe this is already "thread-safe" and such because SQLiteOpenHelper
@@ -64,13 +68,39 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Gets the calls in the database for a particular issue and contact.
+     * Gets the calls in the database for a particular issue.
+     * @param issueId
+     * @return A list of the contact IDs contacted for this issue.
+     */
+    public List<String> getCallsForIssue(String issueId) {
+        Cursor c = getReadableDatabase().rawQuery("SELECT " + CallsColumns.CONTACT_ID + " FROM " +
+                CALLS_TABLE_NAME + " WHERE " + CallsColumns.ISSUE_ID + " = ? GROUP BY " +
+                CallsColumns.CONTACT_ID, new String[] {issueId});
+        List<String> result = new ArrayList<>();
+        while (c.moveToNext()) {
+            result.add(c.getString(0));
+        }
+        return result;
+    }
+
+    /**
+     * Gets the calls in the database for a particular contact.
+     * @param contactId
+     */
+    public void getCallsForContact(String contactId) {
+
+    }
+
+    /**
+     * Whether a contact has been called for a particular issue.
      * @param issueId
      * @param contactId
      */
-    public void getCalls(String issueId, String contactId) {
-        String[] columns = {CallsColumns.TIMESTAMP, CallsColumns.RESULT};
-
+    public boolean hasCalled(String issueId, String contactId) {
+        Cursor c = getReadableDatabase().rawQuery("SELECT " + CallsColumns.TIMESTAMP + " FROM " +
+                CALLS_TABLE_NAME + " WHERE " + CallsColumns.ISSUE_ID + " = ? AND " +
+                CallsColumns.CONTACT_ID + " = ?", new String[] {issueId, contactId});
+        return c.getCount() > 0;
     }
 
     /**

@@ -230,9 +230,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == ISSUE_DETAIL_REQUEST && resultCode == RESULT_OK) {
-            // TODO: Send back the issue as data in the intent, but with updates about calls made.
-            // TODO: Update the server if anything changed.
-            // TODO: Update the adapter if anything changed.
             Issue issue = data.getExtras().getParcelable(IssueActivity.KEY_ISSUE);
             mIssuesAdapter.updateIssue(issue);
         }
@@ -273,14 +270,6 @@ public class MainActivity extends AppCompatActivity {
         public void onBindViewHolder(final IssueViewHolder holder, int position) {
             final Issue issue = mIssues.get(position);
             holder.name.setText(issue.name);
-            // TODO: Count uncalled contacts and write something like "2/3 calls to make"
-            // in case the user skipped any of the calls.
-            if (issue.contacts.length == 1) {
-                holder.numCalls.setText(getResources().getString(R.string.call_count_one));
-            } else {
-                holder.numCalls.setText(String.format(getResources().getString(R.string.call_count),
-                        issue.contacts.length));
-            }
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -291,14 +280,23 @@ public class MainActivity extends AppCompatActivity {
                     startActivityForResult(issueIntent, ISSUE_DETAIL_REQUEST);
                 }
             });
-            boolean done = true;
-            for (int i = 0; i < issue.contacts.length; i++) {
-                if (issue.contacts[i].contacted == Contact.NOT_CONTACTED) {
-                    done = false;
-                    break;
+            int totalCalls = issue.contacts.length;
+            List<String> contacted = AppSingleton.getInstance(getApplicationContext())
+                    .getDatabaseHelper().getCallsForIssue(issue.id);
+            int callsLeft = totalCalls - contacted.size();
+            if (callsLeft == totalCalls) {
+                if (totalCalls == 1) {
+                    holder.numCalls.setText(getResources().getString(R.string.call_count_one));
+                } else {
+                    holder.numCalls.setText(String.format(
+                            getResources().getString(R.string.call_count), totalCalls));
                 }
+            } else {
+                holder.numCalls.setText(String.format(
+                        getResources().getString(R.string.call_count_remaining), callsLeft,
+                        totalCalls));
             }
-            holder.doneIcon.setVisibility(done ? View.VISIBLE : View.GONE);
+            holder.doneIcon.setVisibility(callsLeft == 0 ? View.VISIBLE : View.GONE);
         }
 
         @Override

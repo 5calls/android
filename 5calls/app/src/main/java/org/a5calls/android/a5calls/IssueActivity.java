@@ -19,7 +19,8 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 
 /**
- * More details about an issue.
+ * More details about an issue, including links to the phone app to call and buttons to record
+ * your calls.
  */
 public class IssueActivity extends AppCompatActivity {
     private static final String TAG = "IssueActivity";
@@ -42,7 +43,7 @@ public class IssueActivity extends AppCompatActivity {
             mIssue = savedInstanceState.getParcelable(KEY_ISSUE);
         }
         if (mIssue == null) {
-            // TODO handle this better?
+            // TODO handle this better? Is it even possible to get here?
             finish();
             return;
         }
@@ -104,10 +105,14 @@ public class IssueActivity extends AppCompatActivity {
             if (savedInstanceState != null) {
                 mActiveContactIndex = savedInstanceState.getInt(KEY_ACTIVE_CONTACT_INDEX, 0);
             } else {
+                DatabaseHelper databaseHelper =
+                        AppSingleton.getInstance(getApplicationContext()).getDatabaseHelper();
+
                 mActiveContactIndex = 0;
-                // Try to start at the next uncontacted representative in the list.
+                // Try to start at the next un-contacted representative in the list.
                 for (int i = 0; i < mIssue.contacts.length; i++) {
-                    if (mIssue.contacts[i].contacted == Contact.NOT_CONTACTED) {
+                    boolean contacted = databaseHelper.hasCalled(mIssue.id, mIssue.contacts[i].id);
+                    if (!contacted) {
                         mActiveContactIndex = i;
                         break;
                     }
@@ -175,7 +180,6 @@ public class IssueActivity extends AppCompatActivity {
     }
 
     private void reportCall(String callType, String zip) {
-        mIssue.contacts[mActiveContactIndex].contacted = Contact.CONTACTED;
         AppSingleton.getInstance(getApplicationContext()).getDatabaseHelper().addCall(mIssue.id,
                 mIssue.contacts[mActiveContactIndex].id, callType, zip);
         AppSingleton.getInstance(getApplicationContext()).getJsonController().reportCall(
