@@ -7,7 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 /**
- * Local database.
+ * Local database helper. I believe this is already "thread-safe" and such because SQLiteOpenHelper
+ * handles all of that for us. As long as we just use one SQLiteOpenHelper from AppSingleton
+ * we should be safe!
  */
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";

@@ -1,9 +1,11 @@
 package org.a5calls.android.a5calls;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -167,10 +169,18 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             return true;
         } else if (item.getItemId() == R.id.menu_stats) {
-            // TODO threading protection?
-            Log.d(TAG, "your calls " + AppSingleton.getInstance(getApplicationContext()).getDatabaseHelper().getCallsCount());
+            showStats();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showStats() {
+        // TODO: Show the stats in a DialogFragment or even an activity.
+        int callsCount = AppSingleton.getInstance(getApplicationContext()).getDatabaseHelper()
+                .getCallsCount();
+        String message = String.format(getResources().getString(R.string.stats_message),
+                callsCount);
+        Snackbar.make(findViewById(R.id.activity_main), message, Snackbar.LENGTH_LONG).show();
     }
 
     private void submitZip() {
