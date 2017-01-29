@@ -9,7 +9,7 @@ public class AppSingleton {
 
     private static AppSingleton sSingleton;
     private final Context mContext;
-    private DatabaseController mDatabaseController;
+    private DatabaseHelper mDatabaseHelper;
     private JsonController mJsonController;
 
     public static final AppSingleton getInstance(Context context) {
@@ -23,11 +23,11 @@ public class AppSingleton {
         mContext = context;
     }
 
-    public DatabaseController getDatabaseController() {
-        if (mDatabaseController == null) {
-            mDatabaseController = new DatabaseController();
+    public DatabaseHelper getDatabaseHelper() {
+        if (mDatabaseHelper == null) {
+            mDatabaseHelper = new DatabaseHelper(mContext);
         }
-        return mDatabaseController;
+        return mDatabaseHelper;
     }
 
     public JsonController getJsonController() {

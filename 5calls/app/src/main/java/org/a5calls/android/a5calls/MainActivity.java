@@ -42,6 +42,7 @@ import java.util.List;
  * TODO: Add an email address sign-up field.
  * TODO: Add loading spinners when making Volley requests.
  * TODO: Add error message if the device is offline?
+ * TODO: Sort issues based on which are "done" and which are not done or hide ones which are "done".
  */
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -165,6 +166,9 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, AboutActivity.class);
             startActivity(intent);
             return true;
+        } else if (item.getItemId() == R.id.menu_stats) {
+            // TODO threading protection?
+            Log.d(TAG, "your calls " + AppSingleton.getInstance(getApplicationContext()).getDatabaseHelper().getCallsCount());
         }
         return super.onOptionsItemSelected(item);
     }

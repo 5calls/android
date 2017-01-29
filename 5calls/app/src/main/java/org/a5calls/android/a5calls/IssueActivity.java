@@ -83,7 +83,7 @@ public class IssueActivity extends AppCompatActivity {
                 tryLoadingNextContact();
             }
         };
-        final JsonController controller = AppSingleton.getInstance(getApplicationContext())
+        JsonController controller = AppSingleton.getInstance(getApplicationContext())
                 .getJsonController();
         controller.registerStatusListener(mStatusListener);
 
@@ -124,27 +124,21 @@ public class IssueActivity extends AppCompatActivity {
             findViewById(R.id.made_contact_btn).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mIssue.contacts[mActiveContactIndex].contacted = Contact.CONTACTED;
-                    controller.reportCall(mIssue.id, mIssue.contacts[mActiveContactIndex].id,
-                            "contacted", zip);
+                    reportCall("contacted", zip);
                 }
             });
 
             findViewById(R.id.unavailable_btn).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mIssue.contacts[mActiveContactIndex].contacted = Contact.CONTACTED;
-                    controller.reportCall(mIssue.id, mIssue.contacts[mActiveContactIndex].id,
-                            "unavailable", zip);
+                    reportCall("unavailable", zip);
                 }
             });
 
             findViewById(R.id.voicemail_btn).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mIssue.contacts[mActiveContactIndex].contacted = Contact.CONTACTED;
-                    controller.reportCall(mIssue.id, mIssue.contacts[mActiveContactIndex].id,
-                            "vm", zip);
+                    reportCall("vm", zip);
                 }
             });
         }
@@ -177,6 +171,14 @@ public class IssueActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         returnToMain();
+    }
+
+    private void reportCall(String callType, String zip) {
+        mIssue.contacts[mActiveContactIndex].contacted = Contact.CONTACTED;
+        AppSingleton.getInstance(getApplicationContext()).getDatabaseHelper().addCall(mIssue.id,
+                mIssue.contacts[mActiveContactIndex].id, callType, zip);
+        AppSingleton.getInstance(getApplicationContext()).getJsonController().reportCall(
+                mIssue.id, mIssue.contacts[mActiveContactIndex].id, callType, zip);
     }
 
     private void setupContactUi(int index) {

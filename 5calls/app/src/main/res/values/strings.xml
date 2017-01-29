@@ -35,4 +35,5 @@
     <string name="get_started_btn">Get started</string>
     <string name="open_source_info">The 5 Calls app is open-source and volunteer made. Find it at github.com/5calls/android.</string>
     <string name="version_info">Version %1$s</string>
+    <string name="menu_stats">Stats</string>
 </resources>
