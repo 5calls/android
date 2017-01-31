@@ -63,44 +63,10 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        // Load the zip code the user last used, if any.
-        String code = pref.getString(KEY_USER_ZIP, "");
-        if (!TextUtils.isEmpty(code)) {
-            onZipUpdated(code);
-        }
-
-        // TODO: Option to get user's location from GPS instead of just entering a zip code.
-        EditText zipEdit = (EditText) findViewById(R.id.zip_code);
-        zipEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    submitZip();
-                    return true;
-                }
-                return false;
-            }
-        });
-        Button zipButton = (Button) findViewById(R.id.zip_code_submit);
-        zipButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                submitZip();
-            }
-        });
-
-        Button editZipButton = (Button) findViewById(R.id.zip_code_edit);
-        editZipButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateZipUi(true, 0);
-            }
-        });
-
         RecyclerView issuesRecyclerView = (RecyclerView) findViewById(R.id.issues_recycler_view);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         issuesRecyclerView.setLayoutManager(layoutManager);
-        mIssuesAdapter = new IssuesAdapter();
+        mIssuesAdapter = new IssuesAdapter(pref);
         issuesRecyclerView.setAdapter(mIssuesAdapter);
 
         mStatusListener = new JsonController.RequestStatusListener() {
@@ -172,9 +138,7 @@ public class MainActivity extends AppCompatActivity {
         Snackbar.make(findViewById(R.id.activity_main), message, Snackbar.LENGTH_LONG).show();
     }
 
-    private void submitZip() {
-        EditText zipEdit = (EditText) findViewById(R.id.zip_code);
-        String code = zipEdit.getText().toString();
+    private void submitZip(String code, EditText zipEdit) {
         // Is it a string that is exactly 5 characters long?
         if (TextUtils.isEmpty(code) || code.length() != 5) {
             zipEdit.setError(getResources().getString(R.string.zip_error));
@@ -197,23 +161,6 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences pref = getSharedPreferences(PREFS_FILE, 0);
         pref.edit().putString(KEY_USER_ZIP, code).apply();
-
-        // Update the UI to show the zip code we've requested for with less vertical space
-        // usage. And have a button to edit the zip.
-        updateZipUi(false, Integer.parseInt(code));
-    }
-
-    private void updateZipUi(boolean showEditZip, int zip) {
-        findViewById(R.id.zip_code_edit).setVisibility(showEditZip ? View.GONE : View.VISIBLE);
-        TextView repsFor = (TextView) findViewById(R.id.included_reps_for);
-        repsFor.setVisibility(showEditZip ? View.GONE : View.VISIBLE);
-        if (!showEditZip) {
-            repsFor.setText(String.format(getResources().getString(R.string.reps_for_zip), zip));
-            // TODO: Hide the keyboard if it is visible.
-        }
-        findViewById(R.id.zip_code_submit).setVisibility(showEditZip ? View.VISIBLE : View.GONE);
-        findViewById(R.id.zip_code_prompt).setVisibility(showEditZip ? View.VISIBLE : View.GONE);
-        findViewById(R.id.zip_code).setVisibility(showEditZip ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -225,11 +172,60 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private class IssuesAdapter extends RecyclerView.Adapter<IssueViewHolder> {
+    private class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         private List<Issue> mIssues = Collections.emptyList();
 
-        public IssuesAdapter() {
+        private static final int HEADER_TYPE = 0;
+        private static final int ISSUE_TYPE = 1;
 
+        private SharedPreferences pref;
+
+        public IssuesAdapter(SharedPreferences preferences) {
+            pref = preferences;
+        }
+
+        public class HeaderViewHolder extends RecyclerView.ViewHolder {
+
+            private TextView mZipCodePrompt;
+            private TextView mRepsForTextView;
+            private EditText mZipCodeEditText;
+            private Button mZipCodeSubmitButton;
+            private Button mZipCodeEditButton;
+
+            public HeaderViewHolder(View view) {
+                super(view);
+
+                mZipCodePrompt = (TextView) view.findViewById(R.id.zip_code_prompt);
+                mRepsForTextView = (TextView) view.findViewById(R.id.included_reps_for);
+                mZipCodeEditText = (EditText) view.findViewById(R.id.zip_code);
+                mZipCodeSubmitButton = (Button) view.findViewById(R.id.zip_code_submit);
+                mZipCodeEditButton = (Button) view.findViewById(R.id.zip_code_edit);
+            }
+
+            public void updateZipUi(boolean showEditZip, int zip) {
+                mZipCodeEditButton.setVisibility(showEditZip ? View.GONE : View.VISIBLE);
+                mRepsForTextView.setVisibility(showEditZip ? View.GONE : View.VISIBLE);
+                if (!showEditZip) {
+                    mRepsForTextView.setText(String.format(getResources().getString(R.string.reps_for_zip), zip));
+                    // TODO: Hide the keyboard if it is visible.
+                }
+                mZipCodeSubmitButton.setVisibility(showEditZip ? View.VISIBLE : View.GONE);
+                mZipCodePrompt.setVisibility(showEditZip ? View.VISIBLE : View.GONE);
+                mZipCodeEditText.setVisibility(showEditZip ? View.VISIBLE : View.GONE);
+            }
+        }
+
+        private class IssueViewHolder extends RecyclerView.ViewHolder {
+            public TextView name;
+            public TextView numCalls;
+            public ImageView doneIcon;
+
+            public IssueViewHolder(View itemView) {
+                super(itemView);
+                name = (TextView) itemView.findViewById(R.id.issue_name);
+                numCalls = (TextView) itemView.findViewById(R.id.issue_call_count);
+                doneIcon = (ImageView) itemView.findViewById(R.id.issue_done_img);
+            }
         }
 
         public void setIssues(List<Issue> issues) {
@@ -248,68 +244,105 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public IssueViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            RelativeLayout v = (RelativeLayout) LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.issue_view, parent, false);
-            IssueViewHolder vh = new IssueViewHolder(v);
-            return vh;
-        }
+        public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+            if (position == 0) {
+                final HeaderViewHolder holder = (HeaderViewHolder) viewHolder;
 
-        @Override
-        public void onBindViewHolder(final IssueViewHolder holder, int position) {
-            final Issue issue = mIssues.get(position);
-            holder.name.setText(issue.name);
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent issueIntent = new Intent(holder.itemView.getContext(),
-                            IssueActivity.class);
-                    issueIntent.putExtra(IssueActivity.KEY_ISSUE, issue);
-                    issueIntent.putExtra(IssueActivity.KEY_ZIP, mZip);
-                    startActivityForResult(issueIntent, ISSUE_DETAIL_REQUEST);
+                // Load the zip code the user last used, if any.
+                String code = pref.getString(KEY_USER_ZIP, "");
+                if (!TextUtils.isEmpty(code)) {
+                    onZipUpdated(code);
+                    holder.updateZipUi(false, Integer.parseInt(code));
                 }
-            });
-            int totalCalls = issue.contacts.length;
-            List<String> contacted = AppSingleton.getInstance(getApplicationContext())
-                    .getDatabaseHelper().getCallsForIssueAndZip(issue.id, mZip);
-            int callsLeft = totalCalls - contacted.size();
-            if (callsLeft == totalCalls) {
-                if (totalCalls == 1) {
-                    holder.numCalls.setText(getResources().getString(R.string.call_count_one));
+
+                // TODO: Option to get user's location from GPS instead of just entering a zip code.
+                holder.mZipCodeEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                        if (actionId == EditorInfo.IME_ACTION_DONE) {
+                            submitZip(holder.mZipCodeEditText.getText().toString(), holder.mZipCodeEditText);
+                            return true;
+                        }
+                        return false;
+                    }
+                });
+                holder.mZipCodeSubmitButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        submitZip(holder.mZipCodeEditText.getText().toString(), holder.mZipCodeEditText);
+                    }
+                });
+                holder.mZipCodeEditButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        holder.updateZipUi(true, 0);
+                    }
+                });
+            } else {
+                final Issue issue = mIssues.get(position - 1);
+
+                final IssueViewHolder holder = (IssueViewHolder) viewHolder;
+
+                holder.name.setText(issue.name);
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent issueIntent = new Intent(holder.itemView.getContext(),
+                                IssueActivity.class);
+                        issueIntent.putExtra(IssueActivity.KEY_ISSUE, issue);
+                        issueIntent.putExtra(IssueActivity.KEY_ZIP, mZip);
+                        startActivityForResult(issueIntent, ISSUE_DETAIL_REQUEST);
+                    }
+                });
+                int totalCalls = issue.contacts.length;
+                List<String> contacted = AppSingleton.getInstance(getApplicationContext())
+                        .getDatabaseHelper().getCallsForIssueAndZip(issue.id, mZip);
+                int callsLeft = totalCalls - contacted.size();
+                if (callsLeft == totalCalls) {
+                    if (totalCalls == 1) {
+                        holder.numCalls.setText(getResources().getString(R.string.call_count_one));
+                    } else {
+                        holder.numCalls.setText(String.format(
+                                getResources().getString(R.string.call_count), totalCalls));
+                    }
                 } else {
                     holder.numCalls.setText(String.format(
-                            getResources().getString(R.string.call_count), totalCalls));
+                            getResources().getString(R.string.call_count_remaining), callsLeft,
+                            totalCalls));
                 }
-            } else {
-                holder.numCalls.setText(String.format(
-                        getResources().getString(R.string.call_count_remaining), callsLeft,
-                        totalCalls));
+                holder.doneIcon.setVisibility(callsLeft == 0 ? View.VISIBLE : View.GONE);
             }
-            holder.doneIcon.setVisibility(callsLeft == 0 ? View.VISIBLE : View.GONE);
         }
 
         @Override
-        public void onViewRecycled(IssueViewHolder holder) {
+        public int getItemViewType(int position) {
+            if (position == 0) {
+                return HEADER_TYPE;
+            } else {
+                return ISSUE_TYPE;
+            }
+        }
+
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            switch (viewType) {
+                case HEADER_TYPE:
+                    return new HeaderViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.header_issues_list_row, parent, false));
+                default:
+                    return new IssueViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.issue_view, parent, false));
+            }
+        }
+
+        @Override
+        public void onViewRecycled(RecyclerView.ViewHolder holder) {
             holder.itemView.setOnClickListener(null);
             super.onViewRecycled(holder);
         }
 
         @Override
         public int getItemCount() {
-            return mIssues.size();
+            return mIssues.size() + 1;
         }
     }
 
-    private class IssueViewHolder extends RecyclerView.ViewHolder {
-        public TextView name;
-        public TextView numCalls;
-        public ImageView doneIcon;
-
-        public IssueViewHolder(View itemView) {
-            super(itemView);
-            name = (TextView) itemView.findViewById(R.id.issue_name);
-            numCalls = (TextView) itemView.findViewById(R.id.issue_call_count);
-            doneIcon = (ImageView) itemView.findViewById(R.id.issue_done_img);
-        }
-    }
 }
