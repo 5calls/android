@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
+        // TODO: Use SavedInstanceState first, in case they were editing the zip or something.
         // Load the zip code the user last used, if any.
         String code = pref.getString(KEY_USER_ZIP, "");
         if (!TextUtils.isEmpty(code)) {
@@ -93,11 +94,12 @@ public class MainActivity extends AppCompatActivity {
         editZipButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updateZipUi(true, 0);
+                updateZipUi(true, null);
             }
         });
 
         RecyclerView issuesRecyclerView = (RecyclerView) findViewById(R.id.issues_recycler_view);
+        issuesRecyclerView.setNestedScrollingEnabled(false);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         issuesRecyclerView.setLayoutManager(layoutManager);
         mIssuesAdapter = new IssuesAdapter();
@@ -109,6 +111,9 @@ public class MainActivity extends AppCompatActivity {
                 Snackbar.make(findViewById(R.id.activity_main),
                         getResources().getString(R.string.request_error),
                         Snackbar.LENGTH_LONG).show();
+                // Our only type of request in MainActivity is a GET. If it doesn't work, clear the
+                // active issues list to avoid showing a stale list.
+                mIssuesAdapter.setIssues(Collections.<Issue>emptyList());
             }
 
             @Override
@@ -116,6 +121,9 @@ public class MainActivity extends AppCompatActivity {
                 Snackbar.make(findViewById(R.id.activity_main),
                         getResources().getString(R.string.json_error),
                         Snackbar.LENGTH_LONG).show();
+                // Our only type of request in MainActivity is a GET. If it doesn't work, clear the
+                // active issues list to avoid showing a stale list.
+                mIssuesAdapter.setIssues(Collections.<Issue>emptyList());
             }
 
             @Override
@@ -159,6 +167,8 @@ public class MainActivity extends AppCompatActivity {
             return true;
         } else if (item.getItemId() == R.id.menu_stats) {
             showStats();
+        } else if (item.getItemId() == R.id.menu_refresh) {
+            onZipUpdated(mZip);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -200,10 +210,10 @@ public class MainActivity extends AppCompatActivity {
 
         // Update the UI to show the zip code we've requested for with less vertical space
         // usage. And have a button to edit the zip.
-        updateZipUi(false, Integer.parseInt(code));
+        updateZipUi(false, code);
     }
 
-    private void updateZipUi(boolean showEditZip, int zip) {
+    private void updateZipUi(boolean showEditZip, String zip) {
         findViewById(R.id.zip_code_edit).setVisibility(showEditZip ? View.GONE : View.VISIBLE);
         TextView repsFor = (TextView) findViewById(R.id.included_reps_for);
         repsFor.setVisibility(showEditZip ? View.GONE : View.VISIBLE);

@@ -16,7 +16,7 @@
     <string name="buttons_prompt">Enter your result to get to the next call:</string>
     <string name="no_calls_left">No calls left for this issue!</string>
     <string name="edit">edit</string>
-    <string name="reps_for_zip">Current issues, including reps for %1$d</string>
+    <string name="reps_for_zip">Current issues and reps for %1$s</string>
     <string name="menu_about">About</string>
     <string name="about_title">About</string>
     <string name="about_header">MAKE YOUR VOICE HEARD</string>
@@ -40,4 +40,5 @@
     <string name="call_script_prompt">Your script:</string>
     <string name="contact_reason_prompt">Why you\'re calling this office:</string>
     <string name="call_count_remaining">%1$d calls to make (%2$d total)</string>
+    <string name="refresh">refresh</string>
 </resources>
