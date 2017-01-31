@@ -296,7 +296,7 @@ public class MainActivity extends AppCompatActivity {
                         getResources().getString(R.string.call_count_remaining), callsLeft,
                         totalCalls));
             }
-            holder.doneIcon.setVisibility(callsLeft == 0 ? View.VISIBLE : View.GONE);
+            holder.doneIcon.setImageLevel(callsLeft == 0 ? 1 : 0);
         }
 
         @Override

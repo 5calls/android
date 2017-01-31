@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<level-list xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:maxLevel="0">
+        <shape
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:shape="oval"
+            >
+            <stroke
+                android:width="4dp"
+                android:color="@color/check_circle_outside_color"
+                />
+            <size
+                android:width="42dp"
+                android:height="42dp"
+                />
+        </shape>
+    </item>
+    <item android:maxLevel="1">
+        <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+            <item>
+                <shape
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:shape="oval"
+                    >
+                    <solid
+                        android:color="@color/check_color"
+                        />
+                    <size
+                        android:width="42dp"
+                        android:height="42dp"
+                        />
+                </shape>
+            </item>
+            <item android:drawable="@drawable/ic_check_white_36dp" />
+        </layer-list>
+    </item>
+</level-list>

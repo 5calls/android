@@ -20,39 +20,40 @@
         android:padding="16dp"
         >
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:id="@+id/issue_name"
-        android:textSize="@dimen/h1_text_size"
-        android:textStyle="bold"
-        android:textColor="@color/colorPrimaryDark"
-        />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/issue_done_img"
+            android:id="@+id/issue_name"
+            android:textSize="@dimen/h2_text_size"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimaryDark"
+            />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/issue_call_count"
-        android:layout_below="@id/issue_name"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:textSize="14sp"
-        android:textColor="@color/colorPrimaryDark"
-        />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/issue_call_count"
+            android:layout_below="@id/issue_name"
+            android:layout_alignParentBottom="true"
+            android:layout_toEndOf="@id/issue_done_img"
+            android:textSize="14sp"
+            android:textColor="@color/colorPrimaryDark"
+            />
 
-    <ImageView
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:src="@drawable/ic_check_black_36dp"
-        android:tint="@color/check_color"
-        android:layout_toStartOf="@id/issue_call_count"
-        android:layout_below="@id/issue_name"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/issue_done_img"
-        android:contentDescription="@string/issue_done_content_description"
-        />
+        <ImageView
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:scaleType="center"
+            android:src="@drawable/checked"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/issue_done_img"
+            android:contentDescription="@string/issue_done_content_description"
+            android:layout_marginEnd="16dp"
+            />
 
     </RelativeLayout>
 
