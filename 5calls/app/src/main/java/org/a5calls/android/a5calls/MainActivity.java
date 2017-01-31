@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         // Load the zip code the user last used, if any.
         String code = pref.getString(KEY_USER_ZIP, "");
         if (!TextUtils.isEmpty(code)) {
-            onZipUpdated(code);
+            mZip = code;
         }
 
         // TODO: Option to get user's location from GPS instead of just entering a zip code.
@@ -151,6 +151,14 @@ public class MainActivity extends AppCompatActivity {
         AppSingleton.getInstance(getApplicationContext()).getJsonController()
                 .unregisterStatusListener(mStatusListener);
         super.onDestroy();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!TextUtils.isEmpty(mZip)) {
+            onZipUpdated(mZip);
+        }
     }
 
     @Override

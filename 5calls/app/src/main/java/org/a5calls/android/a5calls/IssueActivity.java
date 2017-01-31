@@ -55,7 +55,7 @@ public class IssueActivity extends AppCompatActivity {
             @Override
             public void onRequestError() {
                 Snackbar.make(findViewById(R.id.issue_name),
-                        getResources().getString(R.string.request_error),
+                        getResources().getString(R.string.request_error_db_recorded_anyway),
                         Snackbar.LENGTH_LONG).show();
                 setButtonsEnabled(true);
             }
@@ -63,7 +63,7 @@ public class IssueActivity extends AppCompatActivity {
             @Override
             public void onJsonError() {
                 Snackbar.make(findViewById(R.id.issue_name),
-                        getResources().getString(R.string.json_error),
+                        getResources().getString(R.string.json_error_db_recorded_anyway),
                         Snackbar.LENGTH_LONG).show();
                 setButtonsEnabled(true);
             }
