@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -259,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public IssueViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            RelativeLayout v = (RelativeLayout) LayoutInflater.from(parent.getContext())
+            CardView v = (CardView) LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.issue_view, parent, false);
             IssueViewHolder vh = new IssueViewHolder(v);
             return vh;

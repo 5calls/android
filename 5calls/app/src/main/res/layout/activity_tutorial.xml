@@ -23,6 +23,7 @@
             android:textSize="@dimen/h1_text_size"
             android:text="@string/about_header"
             android:layout_marginBottom="16dp"
+            android:textColor="@color/colorPrimary"
             />
 
         <TextView
@@ -31,6 +32,8 @@
             android:text="@string/about_splash"
             android:textSize="@dimen/text_size_paragraph"
             android:layout_marginBottom="16dp"
+            android:textColor="@color/colorPrimary"
+
             />
 
         <TextView
@@ -40,6 +43,7 @@
             android:textSize="24sp"
             android:textStyle="bold"
             android:layout_marginBottom="16dp"
+            android:textColor="@color/colorAccent"
             />
 
         <TextView
@@ -50,7 +54,7 @@
             android:textSize="@dimen/h2_text_size"
             android:textAlignment="center"
             android:textStyle="bold"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@color/colorPrimary"
             />
 
         <Button
@@ -64,6 +68,7 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:layout_gravity="center_horizontal"
+            android:textColor="@color/colorPrimaryDark"
             />
 
     </LinearLayout>

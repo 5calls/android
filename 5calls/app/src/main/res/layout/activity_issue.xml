@@ -2,7 +2,8 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/background_color">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -23,6 +24,7 @@
             android:textStyle="bold"
             android:textAllCaps="true"
             android:layout_marginBottom="16dp"
+            android:textColor="@color/colorPrimary"
             />
 
         <TextView
@@ -32,6 +34,7 @@
             android:textSize="16sp"
             android:layout_below="@id/issue_name"
             android:layout_marginBottom="16dp"
+            android:textColor="@color/colorPrimary"
             />
 
         <RelativeLayout
@@ -54,11 +57,11 @@
                 android:layout_height="wrap_content"
                 android:text="@string/call_this_office"
                 android:textSize="18sp"
-                android:textAllCaps="true"
                 android:id="@+id/call_this_office"
                 android:layout_alignParentTop="true"
                 android:layout_toEndOf="@id/rep_image"
                 android:layout_alignWithParentIfMissing="true"
+                android:textColor="@color/colorPrimary"
                 />
 
             <TextView
@@ -71,19 +74,20 @@
                 android:textStyle="bold"
                 android:id="@+id/contact_name"
                 android:layout_alignWithParentIfMissing="true"
+                android:textColor="@color/colorPrimary"
                 />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/phone_number"
-                android:textColor="@color/colorPrimary"
                 android:textSize="32sp"
                 android:textStyle="bold"
                 android:layout_below="@id/contact_name"
                 android:layout_toEndOf="@id/rep_image"
                 android:layout_marginBottom="16dp"
                 android:layout_alignWithParentIfMissing="true"
+                android:textColor="@color/colorPrimary"
                 />
 
         </RelativeLayout>
@@ -103,6 +107,7 @@
                 android:textStyle="bold"
                 android:text="@string/contact_reason_prompt"
                 android:layout_marginTop="16dp"
+                android:textColor="@color/colorPrimary"
                 />
 
             <TextView
@@ -111,6 +116,7 @@
                 android:textSize="@dimen/text_size_paragraph"
                 android:id="@+id/contact_reason"
                 android:layout_marginTop="4dp"
+                android:textColor="@color/colorPrimary"
                 />
 
             <TextView
@@ -120,6 +126,7 @@
                 android:textStyle="bold"
                 android:text="@string/call_script_prompt"
                 android:layout_marginTop="8dp"
+                android:textColor="@color/colorPrimary"
                 />
 
             <TextView
@@ -130,6 +137,7 @@
                 android:padding="16dp"
                 android:layout_marginTop="8dp"
                 android:background="@color/script_background_color"
+                android:textColor="@color/textColorDarkGrey"
                 />
 
         </LinearLayout>
@@ -144,6 +152,7 @@
             android:textStyle="bold"
             android:visibility="gone"
             android:text="@string/no_calls_left"
+            android:textColor="@color/colorPrimary"
             />
 
         <TextView
@@ -155,6 +164,7 @@
             android:text="@string/buttons_prompt"
             android:textSize="16dp"
             android:textStyle="bold"
+            android:textColor="@color/colorPrimary"
             />
 
         <LinearLayout
@@ -177,6 +187,7 @@
                 android:background="@color/button_color"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
+                android:textColor="@color/colorPrimaryDark"
                 />
             <Button
                 android:layout_width="0dp"
@@ -190,6 +201,7 @@
                 android:background="@color/button_color"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
+                android:textColor="@color/colorPrimaryDark"
                 />
             <Button
                 android:layout_width="0dp"
@@ -201,6 +213,7 @@
                 android:background="@color/button_color"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
+                android:textColor="@color/colorPrimaryDark"
                 />
         </LinearLayout>
 
@@ -214,6 +227,7 @@
             android:background="@color/button_color"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
+            android:textColor="@color/colorPrimaryDark"
             />
 
     </RelativeLayout>
