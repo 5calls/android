@@ -10,7 +10,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * The "About" page.
@@ -78,9 +80,9 @@ public class AboutActivity extends AppCompatActivity {
             @Override
             public void onCallCount(int count) {
                 TextView callsToDate = (TextView) findViewById(R.id.calls_to_date);
-                // TODO: Format with commas
                 callsToDate.setText(String.format(
-                        getResources().getString(R.string.calls_to_date), count));
+                        getResources().getString(R.string.calls_to_date),
+                        NumberFormat.getNumberInstance(Locale.US).format(count)));
             }
 
             @Override

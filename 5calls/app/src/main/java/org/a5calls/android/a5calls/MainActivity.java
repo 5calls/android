@@ -300,9 +300,15 @@ public class MainActivity extends AppCompatActivity {
                             getResources().getString(R.string.call_count), totalCalls));
                 }
             } else {
-                holder.numCalls.setText(String.format(
-                        getResources().getString(R.string.call_count_remaining), callsLeft,
-                        totalCalls));
+                if (callsLeft == 1) {
+                    holder.numCalls.setText(String.format(
+                            getResources().getString(R.string.call_count_remaining_one),
+                            totalCalls));
+                } else {
+                    holder.numCalls.setText(String.format(
+                            getResources().getString(R.string.call_count_remaining), callsLeft,
+                            totalCalls));
+                }
             }
             holder.doneIcon.setImageLevel(callsLeft == 0 ? 1 : 0);
         }

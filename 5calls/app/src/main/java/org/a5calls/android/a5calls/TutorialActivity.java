@@ -9,7 +9,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Tutorial / splash screen activity
@@ -59,9 +61,9 @@ public class TutorialActivity extends AppCompatActivity {
             @Override
             public void onCallCount(int count) {
                 TextView callsToDate = (TextView) findViewById(R.id.calls_to_date);
-                // TODO: Format with commas
                 callsToDate.setText(String.format(
-                        getResources().getString(R.string.calls_to_date), count));
+                        getResources().getString(R.string.calls_to_date),
+                        NumberFormat.getNumberInstance(Locale.US).format(count)));
             }
 
             @Override

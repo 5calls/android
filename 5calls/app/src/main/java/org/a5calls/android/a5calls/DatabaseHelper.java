@@ -94,7 +94,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String query = "SELECT " + CallsColumns.CONTACT_ID + " FROM " +
                 CALLS_TABLE_NAME + " WHERE " + CallsColumns.ISSUE_ID + " = ? AND " +
                 CallsColumns.LOCATION + " = ? GROUP BY " + CallsColumns.CONTACT_ID;
-        Log.d(TAG, query);
         Cursor c = getReadableDatabase().rawQuery(query, new String[] {issueId, zip});
         List<String> result = new ArrayList<>();
         while (c.moveToNext()) {
