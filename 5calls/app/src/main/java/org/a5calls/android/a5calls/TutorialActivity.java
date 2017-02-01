@@ -9,6 +9,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
@@ -17,6 +20,7 @@ import java.util.Locale;
  * Tutorial / splash screen activity
  */
 public class TutorialActivity extends AppCompatActivity {
+    private static final String TAG = "TutorialActivity";
 
     private JsonController.RequestStatusListener mStatusListener;
 
@@ -82,5 +86,19 @@ public class TutorialActivity extends AppCompatActivity {
         AppSingleton.getInstance(getApplicationContext()).getJsonController()
                 .unregisterStatusListener(mStatusListener);
         super.onDestroy();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // We allow Analytics opt-out.
+        SharedPreferences pref = getSharedPreferences(MainActivity.PREFS_FILE, MODE_PRIVATE);
+        if (pref.getBoolean(MainActivity.KEY_ALLOW_ANALYTICS, true)) {
+            // Obtain the shared Tracker instance.
+            FiveCallsApplication application = (FiveCallsApplication) getApplication();
+            Tracker tracker = application.getDefaultTracker();
+            tracker.setScreenName(TAG);
+            tracker.send(new HitBuilders.ScreenViewBuilder().build());
+        }
     }
 }

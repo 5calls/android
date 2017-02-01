@@ -1,6 +1,7 @@
 package org.a5calls.android.a5calls;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,6 +11,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
@@ -18,6 +22,7 @@ import java.util.Locale;
  * The "About" page.
  */
 public class AboutActivity extends AppCompatActivity {
+    private static final String TAG = "AboutActivity";
 
     private JsonController.RequestStatusListener mStatusListener;
 
@@ -111,5 +116,19 @@ public class AboutActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // We allow Analytics opt-out.
+        SharedPreferences pref = getSharedPreferences(MainActivity.PREFS_FILE, MODE_PRIVATE);
+        if (pref.getBoolean(MainActivity.KEY_ALLOW_ANALYTICS, true)) {
+            // Obtain the shared Tracker instance.
+            FiveCallsApplication application = (FiveCallsApplication) getApplication();
+            Tracker tracker = application.getDefaultTracker();
+            tracker.setScreenName(TAG);
+            tracker.send(new HitBuilders.ScreenViewBuilder().build());
+        }
     }
 }

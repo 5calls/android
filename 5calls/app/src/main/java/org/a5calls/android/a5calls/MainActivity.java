@@ -20,8 +20,10 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
 import java.util.Collections;
 import java.util.List;
@@ -40,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     public static final String PREFS_FILE = "fiveCallsPrefs";
     public static final String KEY_INITIALIZED = "prefsKeyInitialized";
+    public static final String KEY_ALLOW_ANALYTICS = "prefsKeyAllowAnalytics";
     private static final String KEY_USER_ZIP = "prefsKeyUserZip";
     private static final int ISSUE_DETAIL_REQUEST = 1;
 
@@ -53,7 +56,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         // See if we've had this user before. If not, start them at tutorial type page.
-        SharedPreferences pref = getSharedPreferences(PREFS_FILE, 0);
+        // TODO: This may have been a mistake to do this in PREFS_FILE, should probably copy over
+        // to defaultSharedPreferences. Then SettingsFragment can be more simple.
+        SharedPreferences pref = getSharedPreferences(PREFS_FILE, MODE_PRIVATE);
         boolean initialized = pref.getBoolean(KEY_INITIALIZED, false);
         if (!initialized) {
             Intent intent = new Intent(this, TutorialActivity.class);
@@ -159,6 +164,16 @@ public class MainActivity extends AppCompatActivity {
         if (!TextUtils.isEmpty(mZip)) {
             onZipUpdated(mZip);
         }
+
+        // We allow Analytics opt-out.
+        SharedPreferences pref = getSharedPreferences(PREFS_FILE, 0);
+        if (pref.getBoolean(KEY_ALLOW_ANALYTICS, true)) {
+            // Obtain the shared Tracker instance.
+            FiveCallsApplication application = (FiveCallsApplication) getApplication();
+            Tracker tracker = application.getDefaultTracker();
+            tracker.setScreenName(TAG);
+            tracker.send(new HitBuilders.ScreenViewBuilder().build());
+        }
     }
 
     @Override
@@ -176,8 +191,14 @@ public class MainActivity extends AppCompatActivity {
             return true;
         } else if (item.getItemId() == R.id.menu_stats) {
             showStats();
+            return true;
         } else if (item.getItemId() == R.id.menu_refresh) {
             onZipUpdated(mZip);
+            return true;
+        } else if (item.getItemId() == R.id.menu_settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -214,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
         AppSingleton.getInstance(getApplicationContext()).getJsonController().getIssuesForZip(code);
         mZip = code;
 
-        SharedPreferences pref = getSharedPreferences(PREFS_FILE, 0);
+        SharedPreferences pref = getSharedPreferences(PREFS_FILE, MODE_PRIVATE);
         pref.edit().putString(KEY_USER_ZIP, code).apply();
 
         // Update the UI to show the zip code we've requested for with less vertical space

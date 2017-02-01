@@ -2,6 +2,7 @@ package org.a5calls.android.a5calls;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -17,6 +18,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
 import java.util.List;
 
@@ -33,6 +36,7 @@ public class IssueActivity extends AppCompatActivity {
     private JsonController.RequestStatusListener mStatusListener;
     private Issue mIssue;
     private int mActiveContactIndex;
+    private Tracker mTracker = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -128,6 +132,7 @@ public class IssueActivity extends AppCompatActivity {
             findViewById(R.id.skip_btn).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    reportEvent("skip");
                     tryLoadingNextContact();
                 }
             });
@@ -135,6 +140,7 @@ public class IssueActivity extends AppCompatActivity {
             findViewById(R.id.made_contact_btn).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    reportEvent("contacted");
                     reportCall("contacted", zip);
                 }
             });
@@ -142,6 +148,7 @@ public class IssueActivity extends AppCompatActivity {
             findViewById(R.id.unavailable_btn).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    reportEvent("unavailable");
                     reportCall("unavailable", zip);
                 }
             });
@@ -149,9 +156,18 @@ public class IssueActivity extends AppCompatActivity {
             findViewById(R.id.voicemail_btn).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    reportEvent("vm");
                     reportCall("vm", zip);
                 }
             });
+        }
+
+        // We allow Analytics opt-out.
+        SharedPreferences pref = getSharedPreferences(MainActivity.PREFS_FILE, MODE_PRIVATE);
+        if (pref.getBoolean(MainActivity.KEY_ALLOW_ANALYTICS, true)) {
+            // Obtain the shared Tracker instance.
+            FiveCallsApplication application = (FiveCallsApplication) getApplication();
+            mTracker = application.getDefaultTracker();
         }
     }
 
@@ -167,6 +183,15 @@ public class IssueActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_ACTIVE_CONTACT_INDEX, mActiveContactIndex);
         outState.putParcelable(KEY_ISSUE, mIssue);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mTracker != null) {
+            mTracker.setScreenName(TAG);
+            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        }
     }
 
     @Override
@@ -247,5 +272,15 @@ public class IssueActivity extends AppCompatActivity {
             getParent().setResult(Activity.RESULT_OK, intent);
         }
         finish();
+    }
+
+    private void reportEvent(String event) {
+        if (mTracker != null) {
+            mTracker.send(new HitBuilders.EventBuilder()
+                    .setCategory("CallAction")
+                    .setAction(event)
+                    .setLabel(mIssue.id + " " + mIssue.contacts[mActiveContactIndex].id)
+                    .build());
+        }
     }
 }
