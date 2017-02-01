@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -211,6 +212,18 @@ public class IssueActivity extends AppCompatActivity {
         TextView phoneText = (TextView) findViewById(R.id.phone_number);
         phoneText.setText(mIssue.contacts[index].phone);
         Linkify.addLinks(phoneText, Linkify.PHONE_NUMBERS);
+
+        // If the ScrollView is below the contact, scroll back up to show it.
+        final ScrollView scrollView = (ScrollView) findViewById(R.id.scroll_view);
+        if (scrollView.getScrollY() > findViewById(R.id.rep_info).getTop()) {
+            scrollView.post(new Runnable() {
+                @Override
+                public void run() {
+                    // TODO: A little more scroll padding might be nice too.
+                    scrollView.smoothScrollTo(0, findViewById(R.id.rep_info).getTop());
+                }
+            });
+        }
     }
 
     private void tryLoadingNextContact() {
