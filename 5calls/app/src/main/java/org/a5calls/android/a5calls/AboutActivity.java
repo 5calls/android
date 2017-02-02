@@ -78,7 +78,7 @@ public class AboutActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onIssuesReceived(List<Issue> issues) {
+            public void onIssuesReceived(String locationName, List<Issue> issues) {
                 // unused
             }
 

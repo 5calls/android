@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">5 Calls</string>
-    <string name="zip_code_prompt">Enter your zip code so we can find your local representatives:</string>
+    <string name="location_prompt">Set your location to find your local representatives.</string>
     <string name="zip_code_hint">5 digit zip</string>
     <string name="submit">submit</string>
     <string name="zip_error">Please enter a valid 5 digit zip code</string>
@@ -49,4 +49,6 @@
     <string name="settings_usage_summary">Data is anonymous and helps us understand how the 5 Calls app is used and make improvements.</string>
     <string name="menu_location">Update location</string>
     <string name="title_main">5 Calls for %1$s</string>
+    <string name="btn_gps">Use my location</string>
+    <string name="location_zip_prompt">Or enter your zip code:</string>
 </resources>

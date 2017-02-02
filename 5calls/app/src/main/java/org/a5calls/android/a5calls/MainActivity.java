@@ -9,16 +9,12 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -44,11 +40,15 @@ public class MainActivity extends AppCompatActivity {
     public static final String KEY_INITIALIZED = "prefsKeyInitialized";
     public static final String KEY_ALLOW_ANALYTICS = "prefsKeyAllowAnalytics";
     public static final String KEY_USER_ZIP = "prefsKeyUserZip";
+    public static final String KEY_LATITUDE = "prefsKeyLatitude";
+    public static final String KEY_LONGITUDE = "prefsKeyLongitude";
     private static final int ISSUE_DETAIL_REQUEST = 1;
 
     private IssuesAdapter mIssuesAdapter;
     private JsonController.RequestStatusListener mStatusListener;
     private String mZip;
+    private String mLatitude;
+    private String mLongitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,18 +67,16 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        // Load the zip code the user last used, if any.
+        // Load the location the user last used, if any.
         String code = pref.getString(KEY_USER_ZIP, "");
-        if (TextUtils.isEmpty(code)) {
+        String longitude = pref.getString(KEY_LONGITUDE, "");
+        if (TextUtils.isEmpty(code) && TextUtils.isEmpty(longitude)) {
             // No location set, go to LocationActivity!
             Intent intent = new Intent(this, LocationActivity.class);
             startActivity(intent);
             finish();
             return;
         }
-
-        getSupportActionBar().setTitle(String.format(getResources().getString(R.string.title_main),
-                code));
 
         setContentView(R.layout.activity_main);
 
@@ -93,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
             public void onRequestError() {
                 Snackbar.make(findViewById(R.id.activity_main),
                         getResources().getString(R.string.request_error),
-                        Snackbar.LENGTH_LONG).show();
+                        Snackbar.LENGTH_INDEFINITE).show();
                 // Our only type of request in MainActivity is a GET. If it doesn't work, clear the
                 // active issues list to avoid showing a stale list.
                 mIssuesAdapter.setIssues(Collections.<Issue>emptyList());
@@ -110,7 +108,9 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onIssuesReceived(List<Issue> issues) {
+            public void onIssuesReceived(String locationName, List<Issue> issues) {
+                getSupportActionBar().setTitle(String.format(getResources().getString(
+                        R.string.title_main), locationName));
                 mIssuesAdapter.setIssues(issues);
             }
 
@@ -140,8 +140,10 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
         SharedPreferences pref = getSharedPreferences(PREFS_FILE, MODE_PRIVATE);
-        String code = pref.getString(KEY_USER_ZIP, "");
-        onZipUpdated(code);
+        mZip = pref.getString(KEY_USER_ZIP, "");
+        mLongitude = pref.getString(KEY_LONGITUDE, "");
+        mLatitude = pref.getString(KEY_LATITUDE, "");
+        onLocationUpdated();
 
         // We allow Analytics opt-out.
         if (pref.getBoolean(KEY_ALLOW_ANALYTICS, true)) {
@@ -170,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
             showStats();
             return true;
         } else if (item.getItemId() == R.id.menu_refresh) {
-            onZipUpdated(mZip);
+            onLocationUpdated();
             return true;
         } else if (item.getItemId() == R.id.menu_settings) {
             Intent intent = new Intent(this, SettingsActivity.class);
@@ -193,12 +195,22 @@ public class MainActivity extends AppCompatActivity {
         Snackbar.make(findViewById(R.id.activity_main), message, Snackbar.LENGTH_LONG).show();
     }
 
-    private void onZipUpdated(String code) {
-        AppSingleton.getInstance(getApplicationContext()).getJsonController().getIssuesForZip(code);
-        mZip = code;
+    private void onLocationUpdated() {
+        if (TextUtils.isEmpty(mLongitude)) {
+            onZipUpdated(mZip);
+        } else {
+            onLatLongUpdated(mLatitude, mLongitude);
+        }
+    }
 
-        SharedPreferences pref = getSharedPreferences(PREFS_FILE, MODE_PRIVATE);
-        pref.edit().putString(KEY_USER_ZIP, code).apply();
+    private void onZipUpdated(String zip) {
+        AppSingleton.getInstance(getApplicationContext()).getJsonController()
+                .getIssuesForLocation(zip);
+    }
+
+    private void onLatLongUpdated(String latitude, String longitude) {
+        AppSingleton.getInstance(getApplicationContext()).getJsonController()
+                .getIssuesForLocation(latitude + "," + longitude);
     }
 
     @Override

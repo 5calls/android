@@ -47,7 +47,7 @@ public class JsonController {
     public interface RequestStatusListener {
         void onRequestError();
         void onJsonError();
-        void onIssuesReceived(List<Issue> issues);
+        void onIssuesReceived(String locationName, List<Issue> issues);
         void onCallCount(int count);
         void onCallReported();
     }
@@ -75,20 +75,27 @@ public class JsonController {
         mRequestQueue = null;
     }
 
-    public void getIssuesForZip(String code) {
-        String url = GET_ISSUES_REQUEST + code;
+    public void getIssuesForLocation(String address) {
+        String url = GET_ISSUES_REQUEST + address;
         // Request a JSON Object response from the provided URL.
         JsonObjectRequest statusRequest = new JsonObjectRequest(
                 Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 if (response != null) {
+                    // TODO put the "unknown" location in String resources
+                    String locationName = "unknown location";
+                    try {
+                        locationName = response.getString("normalizedLocation");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                     JSONArray jsonArray = response.optJSONArray("issues");
                     Type listType = new TypeToken<ArrayList<Issue>>(){}.getType();
                     List<Issue> issues = new Gson().fromJson(jsonArray.toString(),
                             listType);
                     for (RequestStatusListener listener : mStatusListeners) {
-                        listener.onIssuesReceived(issues);
+                        listener.onIssuesReceived(locationName, issues);
                     }
                 }
             }
