@@ -15,8 +15,8 @@ import com.google.android.gms.analytics.Tracker;
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
+import org.a5calls.android.a5calls.model.FiveCallsApi;
 import org.a5calls.android.a5calls.model.Issue;
-import org.a5calls.android.a5calls.model.JsonController;
 
 import java.text.NumberFormat;
 import java.util.List;
@@ -28,7 +28,7 @@ import java.util.Locale;
 public class TutorialActivity extends AppCompatActivity {
     private static final String TAG = "TutorialActivity";
 
-    private JsonController.RequestStatusListener mStatusListener;
+    private FiveCallsApi.RequestStatusListener mStatusListener;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,7 +48,7 @@ public class TutorialActivity extends AppCompatActivity {
         });
 
         // TODO: Re-use this listener between AboutActivity and here, since it's really the same.
-        mStatusListener = new JsonController.RequestStatusListener() {
+        mStatusListener = new FiveCallsApi.RequestStatusListener() {
             @Override
             public void onRequestError() {
                 Snackbar.make(findViewById(R.id.calls_to_date),
@@ -81,7 +81,7 @@ public class TutorialActivity extends AppCompatActivity {
                 // unused
             }
         };
-        JsonController controller = AppSingleton.getInstance(getApplicationContext())
+        FiveCallsApi controller = AppSingleton.getInstance(getApplicationContext())
                 .getJsonController();
         controller.registerStatusListener(mStatusListener);
         controller.getCallCount();

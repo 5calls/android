@@ -24,8 +24,8 @@ import com.google.android.gms.analytics.Tracker;
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
+import org.a5calls.android.a5calls.model.FiveCallsApi;
 import org.a5calls.android.a5calls.model.Issue;
-import org.a5calls.android.a5calls.model.JsonController;
 
 import java.util.Collections;
 import java.util.List;
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int ISSUE_DETAIL_REQUEST = 1;
 
     private IssuesAdapter mIssuesAdapter;
-    private JsonController.RequestStatusListener mStatusListener;
+    private FiveCallsApi.RequestStatusListener mStatusListener;
     private String mZip;
     private String mLatitude;
     private String mLongitude;
@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         mIssuesAdapter = new IssuesAdapter();
         issuesRecyclerView.setAdapter(mIssuesAdapter);
 
-        mStatusListener = new JsonController.RequestStatusListener() {
+        mStatusListener = new FiveCallsApi.RequestStatusListener() {
             @Override
             public void onRequestError() {
                 Snackbar.make(findViewById(R.id.activity_main),

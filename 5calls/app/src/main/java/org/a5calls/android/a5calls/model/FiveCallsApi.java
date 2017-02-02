@@ -27,11 +27,9 @@ import java.util.Map;
 
 /**
  * Class to handle server gets and posts.
- *
- * TODO: This class needs a better name!
  */
-public class JsonController {
-    private static final String TAG = "JsonController";
+public class FiveCallsApi {
+    private static final String TAG = "FiveCallsApi";
 
     // DO NOT SUBMIT with DEBUG = true.
     // This only works on an emulator running on a machine that is running a local version of the
@@ -56,7 +54,7 @@ public class JsonController {
     private RequestQueue mRequestQueue;
     private List<RequestStatusListener> mStatusListeners = new ArrayList<>();
 
-    public JsonController(Context context) {
+    public FiveCallsApi(Context context) {
         mRequestQueue = Volley.newRequestQueue(context);
     }
 

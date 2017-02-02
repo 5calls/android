@@ -3,17 +3,17 @@ package org.a5calls.android.a5calls;
 import android.content.Context;
 
 import org.a5calls.android.a5calls.model.DatabaseHelper;
-import org.a5calls.android.a5calls.model.JsonController;
+import org.a5calls.android.a5calls.model.FiveCallsApi;
 
 /**
- * A singleton for referencing the database and JsonController.
+ * A singleton for referencing the database and FiveCallsApi.
  */
 public class AppSingleton {
 
     private static AppSingleton sSingleton;
     private final Context mContext;
     private DatabaseHelper mDatabaseHelper;
-    private JsonController mJsonController;
+    private FiveCallsApi mFiveCallsApi;
 
     public static final AppSingleton getInstance(Context context) {
         if (sSingleton == null) {
@@ -33,10 +33,10 @@ public class AppSingleton {
         return mDatabaseHelper;
     }
 
-    public JsonController getJsonController() {
-        if (mJsonController == null) {
-            mJsonController = new JsonController(mContext);
+    public FiveCallsApi getJsonController() {
+        if (mFiveCallsApi == null) {
+            mFiveCallsApi = new FiveCallsApi(mContext);
         }
-        return mJsonController;
+        return mFiveCallsApi;
     }
 }
