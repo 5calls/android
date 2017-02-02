@@ -1,6 +1,13 @@
 # android
 The Android App version of 5calls.org.
 
-This is a work-in-progress, more info coming soon.
+##Basic structure:
+JsonController is used to request a list of issues from the server in MainActivity. When an issue is clicked, IssueActivity is launched for that issue, and JsonController is again used to record information back to the server. Location is set in LocationActivity and saved in SharedPreferences. A SQLite database (DatabaseHelper) is used to store user stats.
+
+##TODOs
+TODOs are listed in Issues as well as in MainActivity.java and scattered throughout the code. Please (create and) assign yourself to an issue if you are working on something to avoid conflicts!
+
+##Download
+The app is published on Google Play and has a Beta channnel for testing. If you are interested in getting Beta releases and helping with user testing, reach out to a contributor to be added!
 
 [![Get it on Google Play](https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png)](https://play.google.com/store/apps/details?id=org.a5calls.android.a5calls&rdid=org.a5calls.android.a5calls)
