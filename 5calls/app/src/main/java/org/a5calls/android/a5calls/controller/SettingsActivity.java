@@ -13,12 +13,15 @@ import com.google.android.gms.analytics.Tracker;
 
 import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
+import org.a5calls.android.a5calls.model.AccountManager;
 
 /**
  * Settings for the app
  */
 public class SettingsActivity extends AppCompatActivity {
     String TAG = "SettingsActivity";
+
+    private final AccountManager accountManager = AccountManager.Instance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +42,7 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         // We allow Analytics opt-out.
-        SharedPreferences pref = getSharedPreferences(MainActivity.PREFS_FILE, MODE_PRIVATE);
-        if (pref.getBoolean(MainActivity.KEY_ALLOW_ANALYTICS, true)) {
+        if (accountManager.allowAnalytics(this)) {
             // Obtain the shared Tracker instance.
             FiveCallsApplication application = (FiveCallsApplication) getApplication();
             Tracker tracker = application.getDefaultTracker();
@@ -58,25 +60,21 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public static class SettingsFragment extends PreferenceFragment {
+        private final AccountManager accountManager = AccountManager.Instance;
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.settings);
-            final SharedPreferences mPreferences = getActivity().getSharedPreferences(
-                    MainActivity.PREFS_FILE, MODE_PRIVATE);
             PreferenceManager.getDefaultSharedPreferences(getActivity())
-                    .registerOnSharedPreferenceChangeListener(
-                            new SharedPreferences.OnSharedPreferenceChangeListener() {
-                                @Override
-                                public void onSharedPreferenceChanged(
-                                        SharedPreferences sharedPreferences, String key) {
-                                    // TODO: If we add more preferences, this needs to change.
-                                    boolean result = sharedPreferences.getBoolean(key, true);
-                                    mPreferences.edit().putBoolean(MainActivity.KEY_ALLOW_ANALYTICS,
-                                            result).apply();
-
-                                }
-            });
+                    .registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
+                        @Override
+                        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                            // TODO: If we add more preferences, this needs to change.
+                            boolean result = sharedPreferences.getBoolean(key, true);
+                            accountManager.setAllowAnalytics(getActivity(), result);
+                        }
+                    });
         }
     }
 }

@@ -17,6 +17,7 @@ import com.google.android.gms.analytics.Tracker;
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.BuildConfig;
 import org.a5calls.android.a5calls.FiveCallsApplication;
+import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.FiveCallsApi;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.R;
@@ -31,6 +32,7 @@ import java.util.Locale;
 public class AboutActivity extends AppCompatActivity {
     private static final String TAG = "AboutActivity";
 
+    private final AccountManager accountManager = AccountManager.Instance;
     private FiveCallsApi.RequestStatusListener mStatusListener;
 
     @Override
@@ -128,8 +130,7 @@ public class AboutActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         // We allow Analytics opt-out.
-        SharedPreferences pref = getSharedPreferences(MainActivity.PREFS_FILE, MODE_PRIVATE);
-        if (pref.getBoolean(MainActivity.KEY_ALLOW_ANALYTICS, true)) {
+        if (accountManager.allowAnalytics(this)) {
             // Obtain the shared Tracker instance.
             FiveCallsApplication application = (FiveCallsApplication) getApplication();
             Tracker tracker = application.getDefaultTracker();

@@ -27,11 +27,14 @@ import com.google.android.gms.analytics.Tracker;
 
 import org.a5calls.android.a5calls.*;
 import org.a5calls.android.a5calls.R;
+import org.a5calls.android.a5calls.model.AccountManager;
 
 public class LocationActivity extends AppCompatActivity {
 
     private static final String TAG = "LocationActivity";
     private static final int LOCATION_PERMISSION_REQUEST = 1;
+
+    private final AccountManager accountManager = AccountManager.Instance;
 
     /**
      * 60647 is split district
@@ -47,17 +50,18 @@ public class LocationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(org.a5calls.android.a5calls.R.layout.activity_location);
 
-        // Load the zip code the user last used, if any.
-        SharedPreferences pref = getSharedPreferences(MainActivity.PREFS_FILE, MODE_PRIVATE);
-        String code = pref.getString(MainActivity.KEY_USER_ZIP, "");
-
-        EditText zipEdit = (EditText) findViewById(R.id.zip_code);
-        if (!TextUtils.isEmpty(code)) {
-            zipEdit.setText(code);
-            setFromMain();
-        } else if (!TextUtils.isEmpty(pref.getString(MainActivity.KEY_LONGITUDE, ""))) {
+        // If has location, not the first time in the app.
+        if (accountManager.hasLocation(this)) {
             setFromMain();
         }
+
+        // Load the zip code the user last used, if any.
+        String zip = accountManager.getZip(this);
+        EditText zipEdit = (EditText) findViewById(R.id.zip_code);
+        if (!TextUtils.isEmpty(zip)) {
+            zipEdit.setText(zip);
+        }
+
         zipEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -89,8 +93,7 @@ public class LocationActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        SharedPreferences pref = getSharedPreferences(MainActivity.PREFS_FILE, MODE_PRIVATE);
-        if (pref.getBoolean(MainActivity.KEY_ALLOW_ANALYTICS, true)) {
+        if (accountManager.allowAnalytics(this)) {
             // Obtain the shared Tracker instance.
             FiveCallsApplication application = (FiveCallsApplication) getApplication();
             Tracker tracker = application.getDefaultTracker();
@@ -110,27 +113,25 @@ public class LocationActivity extends AppCompatActivity {
 
     private void submitZip() {
         EditText zipEdit = (EditText) findViewById(R.id.zip_code);
-        String code = zipEdit.getText().toString();
+        String zip = zipEdit.getText().toString();
         // Is it a string that is exactly 5 characters long?
-        if (TextUtils.isEmpty(code) || code.length() != 5) {
+        if (TextUtils.isEmpty(zip) || zip.length() != 5) {
             zipEdit.setError(getResources().getString(R.string.zip_error));
             return;
         }
         try {
             // Make sure it is a number, too, by trying to parse it.
-            Integer.parseInt(code);
+            Integer.parseInt(zip);
         } catch (NumberFormatException e) {
             zipEdit.setError(getResources().getString(R.string.zip_error));
             return;
         }
         // If we made it here, the zip is valid! Update the UI and send the request.
-        SharedPreferences pref = getSharedPreferences(MainActivity.PREFS_FILE, MODE_PRIVATE);
-        pref.edit().putString(MainActivity.KEY_USER_ZIP, code).apply();
+        accountManager.setZip(this, zip);
 
-        // Take out the lat/long flags if we had them in, because the user specifically requested
-        // a zip and we default to lat/long.
-        pref.edit().putString(MainActivity.KEY_LATITUDE, "")
-                .putString(MainActivity.KEY_LONGITUDE, "").apply();
+        // Delete latlng, because the user specifically requested a zip and we default to lat/long.
+        accountManager.setLat(this, null);
+        accountManager.setLng(this, null);
 
         returnToMain();
     }
@@ -217,10 +218,8 @@ public class LocationActivity extends AppCompatActivity {
     }
 
     private void updateSharedPrefs(Location location) {
-        SharedPreferences pref = getSharedPreferences(MainActivity.PREFS_FILE, MODE_PRIVATE);
-        pref.edit().putString(MainActivity.KEY_LONGITUDE, String.valueOf(location.getLongitude()))
-                .putString(MainActivity.KEY_LATITUDE, String.valueOf(location.getLatitude()))
-                .apply();
+        accountManager.setLat(this, location.getLatitude());
+        accountManager.setLng(this, location.getLongitude());
         returnToMain();
     }
 

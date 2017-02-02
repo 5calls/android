@@ -15,6 +15,7 @@ import com.google.android.gms.analytics.Tracker;
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
+import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.FiveCallsApi;
 import org.a5calls.android.a5calls.model.Issue;
 
@@ -28,6 +29,7 @@ import java.util.Locale;
 public class TutorialActivity extends AppCompatActivity {
     private static final String TAG = "TutorialActivity";
 
+    private final AccountManager accountManager = AccountManager.Instance;
     private FiveCallsApi.RequestStatusListener mStatusListener;
 
     @Override
@@ -39,8 +41,7 @@ public class TutorialActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Return to the main activity
-                SharedPreferences prefs = getSharedPreferences(MainActivity.PREFS_FILE, 0);
-                prefs.edit().putBoolean(MainActivity.KEY_INITIALIZED, true).apply();
+                accountManager.setIsFirstTimeInApp(TutorialActivity.this, false);
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
                 finish();
@@ -98,8 +99,7 @@ public class TutorialActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         // We allow Analytics opt-out.
-        SharedPreferences pref = getSharedPreferences(MainActivity.PREFS_FILE, MODE_PRIVATE);
-        if (pref.getBoolean(MainActivity.KEY_ALLOW_ANALYTICS, true)) {
+        if (accountManager.allowAnalytics(this)) {
             // Obtain the shared Tracker instance.
             FiveCallsApplication application = (FiveCallsApplication) getApplication();
             Tracker tracker = application.getDefaultTracker();
