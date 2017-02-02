@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_main"
@@ -7,103 +7,11 @@
     android:layout_height="match_parent"
     android:background="@color/background_color"
     tools:context="org.a5calls.android.a5calls.MainActivity"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     >
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        >
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"
-            android:paddingBottom="16dp"
-            android:id="@+id/zip_code_section"
-            >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/zip_code_prompt"
-                android:id="@+id/zip_code_prompt"
-                android:labelFor="@+id/zip_code"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentStart="true"
-                android:textSize="@dimen/label_text_size"
-                />
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="@dimen/accessibility_min_size"
-                android:id="@+id/zip_code"
-                android:layout_below="@id/zip_code_prompt"
-                android:layout_alignParentStart="true"
-                android:layout_toStartOf="@+id/zip_code_submit"
-                android:hint="@string/zip_code_hint"
-                android:imeOptions="actionDone"
-                android:inputType="number"
-                />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minHeight="@dimen/accessibility_min_size"
-                android:minWidth="@dimen/accessibility_min_size"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:id="@+id/zip_code_submit"
-                android:text="@string/submit"
-                android:layout_below="@+id/zip_code_prompt"
-                android:layout_alignParentEnd="true"
-                android:background="@color/button_color"
-                android:textColor="@color/colorPrimaryDark"
-                />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="@dimen/accessibility_min_size"
-                android:id="@+id/included_reps_for"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentStart="true"
-                android:layout_toStartOf="@+id/zip_code_edit"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:gravity="center_vertical"
-                android:visibility="gone"
-                />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minHeight="@dimen/accessibility_min_size"
-                android:minWidth="@dimen/accessibility_min_size"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:id="@id/zip_code_edit"
-                android:text="@string/edit"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:visibility="gone"
-                android:background="@color/button_color"
-                android:textColor="@color/colorPrimaryDark"
-                />
-
-        </RelativeLayout>
-
         <android.support.v7.widget.RecyclerView
             android:id="@+id/issues_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_below="@id/zip_code_section"
             />
 
-    </RelativeLayout>
-
-</ScrollView>
+</FrameLayout>

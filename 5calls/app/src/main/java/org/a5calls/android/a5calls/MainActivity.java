@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String PREFS_FILE = "fiveCallsPrefs";
     public static final String KEY_INITIALIZED = "prefsKeyInitialized";
     public static final String KEY_ALLOW_ANALYTICS = "prefsKeyAllowAnalytics";
-    private static final String KEY_USER_ZIP = "prefsKeyUserZip";
+    public static final String KEY_USER_ZIP = "prefsKeyUserZip";
     private static final int ISSUE_DETAIL_REQUEST = 1;
 
     private IssuesAdapter mIssuesAdapter;
@@ -67,45 +67,22 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        setContentView(R.layout.activity_main);
-
-        // TODO: Use SavedInstanceState first, in case they were editing the zip or something.
         // Load the zip code the user last used, if any.
         String code = pref.getString(KEY_USER_ZIP, "");
-        if (!TextUtils.isEmpty(code)) {
-            mZip = code;
+        if (TextUtils.isEmpty(code)) {
+            // No location set, go to LocationActivity!
+            Intent intent = new Intent(this, LocationActivity.class);
+            startActivity(intent);
+            finish();
+            return;
         }
 
-        // TODO: Option to get user's location from GPS instead of just entering a zip code.
-        EditText zipEdit = (EditText) findViewById(R.id.zip_code);
-        zipEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    submitZip();
-                    return true;
-                }
-                return false;
-            }
-        });
-        Button zipButton = (Button) findViewById(R.id.zip_code_submit);
-        zipButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                submitZip();
-            }
-        });
+        getSupportActionBar().setTitle(String.format(getResources().getString(R.string.title_main),
+                code));
 
-        Button editZipButton = (Button) findViewById(R.id.zip_code_edit);
-        editZipButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateZipUi(true, null);
-            }
-        });
+        setContentView(R.layout.activity_main);
 
         RecyclerView issuesRecyclerView = (RecyclerView) findViewById(R.id.issues_recycler_view);
-        issuesRecyclerView.setNestedScrollingEnabled(false);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         issuesRecyclerView.setLayoutManager(layoutManager);
         mIssuesAdapter = new IssuesAdapter();
@@ -161,12 +138,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (!TextUtils.isEmpty(mZip)) {
-            onZipUpdated(mZip);
-        }
+
+        SharedPreferences pref = getSharedPreferences(PREFS_FILE, MODE_PRIVATE);
+        String code = pref.getString(KEY_USER_ZIP, "");
+        onZipUpdated(code);
 
         // We allow Analytics opt-out.
-        SharedPreferences pref = getSharedPreferences(PREFS_FILE, 0);
         if (pref.getBoolean(KEY_ALLOW_ANALYTICS, true)) {
             // Obtain the shared Tracker instance.
             FiveCallsApplication application = (FiveCallsApplication) getApplication();
@@ -199,6 +176,10 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
             return true;
+        } else if (item.getItemId() == R.id.menu_location) {
+            Intent intent = new Intent(this, LocationActivity.class);
+            startActivity(intent);
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -212,48 +193,12 @@ public class MainActivity extends AppCompatActivity {
         Snackbar.make(findViewById(R.id.activity_main), message, Snackbar.LENGTH_LONG).show();
     }
 
-    private void submitZip() {
-        EditText zipEdit = (EditText) findViewById(R.id.zip_code);
-        String code = zipEdit.getText().toString();
-        // Is it a string that is exactly 5 characters long?
-        if (TextUtils.isEmpty(code) || code.length() != 5) {
-            zipEdit.setError(getResources().getString(R.string.zip_error));
-            return;
-        }
-        try {
-            // Make sure it is a number, too, by trying to parse it.
-            Integer.parseInt(code);
-        } catch (NumberFormatException e) {
-            zipEdit.setError(getResources().getString(R.string.zip_error));
-            return;
-        }
-        // If we made it here, the zip is valid! Update the UI and send the request.
-        onZipUpdated(code);
-    }
-
     private void onZipUpdated(String code) {
         AppSingleton.getInstance(getApplicationContext()).getJsonController().getIssuesForZip(code);
         mZip = code;
 
         SharedPreferences pref = getSharedPreferences(PREFS_FILE, MODE_PRIVATE);
         pref.edit().putString(KEY_USER_ZIP, code).apply();
-
-        // Update the UI to show the zip code we've requested for with less vertical space
-        // usage. And have a button to edit the zip.
-        updateZipUi(false, code);
-    }
-
-    private void updateZipUi(boolean showEditZip, String zip) {
-        findViewById(R.id.zip_code_edit).setVisibility(showEditZip ? View.GONE : View.VISIBLE);
-        TextView repsFor = (TextView) findViewById(R.id.included_reps_for);
-        repsFor.setVisibility(showEditZip ? View.GONE : View.VISIBLE);
-        if (!showEditZip) {
-            repsFor.setText(String.format(getResources().getString(R.string.reps_for_zip), zip));
-            // TODO: Hide the keyboard if it is visible.
-        }
-        findViewById(R.id.zip_code_submit).setVisibility(showEditZip ? View.VISIBLE : View.GONE);
-        findViewById(R.id.zip_code_prompt).setVisibility(showEditZip ? View.VISIBLE : View.GONE);
-        findViewById(R.id.zip_code).setVisibility(showEditZip ? View.VISIBLE : View.GONE);
     }
 
     @Override

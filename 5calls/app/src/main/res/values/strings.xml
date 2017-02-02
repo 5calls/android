@@ -47,4 +47,6 @@
     <string name="settings">Settings</string>
     <string name="setting_usage_title">Send app usage data to 5calls</string>
     <string name="settings_usage_summary">Data is anonymous and helps us understand how the 5 Calls app is used and make improvements.</string>
+    <string name="menu_location">Update location</string>
+    <string name="title_main">5 Calls for %1$s</string>
 </resources>
