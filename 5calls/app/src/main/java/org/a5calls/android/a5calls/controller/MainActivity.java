@@ -48,8 +48,8 @@ public class MainActivity extends AppCompatActivity {
     private IssuesAdapter mIssuesAdapter;
     private FiveCallsApi.RequestStatusListener mStatusListener;
     private String mZip;
-    private Double mLatitude;
-    private Double mLongitude;
+    private String mLatitude;
+    private String mLongitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -191,8 +191,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onLocationUpdated() {
-        if (mLatitude != null && mLongitude != null) {
-            onLatLongUpdated(String.valueOf(mLatitude), String.valueOf(mLongitude));
+        if (!TextUtils.isEmpty(mLatitude) && !TextUtils.isEmpty(mLongitude)) {
+            onLatLongUpdated(mLatitude, mLongitude);
         } else if (! TextUtils.isEmpty(mZip)) {
             onZipUpdated(mZip);
         }

@@ -137,6 +137,11 @@ public class LocationActivity extends AppCompatActivity {
     }
 
     private void returnToMain() {
+        // Make sure we're still alive
+        if (isFinishing() || isDestroyed()) {
+            return;
+        }
+
         // If we came from MainActivity and return with another Intent, it will create a deep stack
         // of activities!
         if (mFromMain) {
@@ -218,8 +223,8 @@ public class LocationActivity extends AppCompatActivity {
     }
 
     private void updateSharedPrefs(Location location) {
-        accountManager.setLat(this, location.getLatitude());
-        accountManager.setLng(this, location.getLongitude());
+        accountManager.setLat(this, String.valueOf(location.getLatitude()));
+        accountManager.setLng(this, String.valueOf(location.getLongitude()));
         returnToMain();
     }
 
