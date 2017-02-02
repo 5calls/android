@@ -1,13 +1,15 @@
 package org.a5calls.android.a5calls.controller;
 
 import android.content.Intent;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,10 +32,12 @@ import org.a5calls.android.a5calls.model.Issue;
 import java.util.Collections;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * The activity which handles zip code lookup and showing the issues list.
- *
- * TODO: Add loading spinners when making Volley requests.
+ * 
  * TODO: Add error message if the device is offline?
  * TODO: Add full "personal stats" DialogFragment that shows lots of information.
  * TODO: Add an email address sign-up field.
@@ -51,6 +55,9 @@ public class MainActivity extends AppCompatActivity {
     private String mLatitude;
     private String mLongitude;
 
+    @BindView(R.id.swipeContainer) SwipeRefreshLayout swipeContainer;
+    @BindView(R.id.issues_recycler_view) RecyclerView issuesRecyclerView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // TODO: Consider using fragments
@@ -58,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
 
         // See if we've had this user before. If not, start them at tutorial type page.
         if (accountManager.isFirstTimeInApp(this)) {
-
             Intent intent = new Intent(this, TutorialActivity.class);
             startActivity(intent);
             finish();
@@ -75,53 +81,20 @@ public class MainActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
-        RecyclerView issuesRecyclerView = (RecyclerView) findViewById(R.id.issues_recycler_view);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         issuesRecyclerView.setLayoutManager(layoutManager);
         mIssuesAdapter = new IssuesAdapter();
         issuesRecyclerView.setAdapter(mIssuesAdapter);
 
-        mStatusListener = new FiveCallsApi.RequestStatusListener() {
-            @Override
-            public void onRequestError() {
-                Snackbar.make(findViewById(R.id.activity_main),
-                        getResources().getString(R.string.request_error),
-                        Snackbar.LENGTH_INDEFINITE).show();
-                // Our only type of request in MainActivity is a GET. If it doesn't work, clear the
-                // active issues list to avoid showing a stale list.
-                mIssuesAdapter.setIssues(Collections.<Issue>emptyList());
-            }
+        registerApiListener();
 
-            @Override
-            public void onJsonError() {
-                Snackbar.make(findViewById(R.id.activity_main),
-                        getResources().getString(R.string.json_error),
-                        Snackbar.LENGTH_LONG).show();
-                // Our only type of request in MainActivity is a GET. If it doesn't work, clear the
-                // active issues list to avoid showing a stale list.
-                mIssuesAdapter.setIssues(Collections.<Issue>emptyList());
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override public void onRefresh() {
+                refreshIssues();
             }
-
-            @Override
-            public void onIssuesReceived(String locationName, List<Issue> issues) {
-                getSupportActionBar().setTitle(String.format(getResources().getString(
-                        R.string.title_main), locationName));
-                mIssuesAdapter.setIssues(issues);
-            }
-
-            @Override
-            public void onCallCount(int count) {
-                // unused
-            }
-
-            @Override
-            public void onCallReported() {
-                // unused
-            }
-        };
-        AppSingleton.getInstance(getApplicationContext()).getJsonController()
-                .registerStatusListener(mStatusListener);
+        });
     }
 
     @Override
@@ -138,7 +111,14 @@ public class MainActivity extends AppCompatActivity {
         mZip = accountManager.getZip(this);
         mLatitude = accountManager.getLat(this);
         mLongitude = accountManager.getLng(this);
-        onLocationUpdated();
+
+        // Refresh on resume.  The post is necessary to start the spinner animation.
+        swipeContainer.post(new Runnable() {
+            @Override public void run() {
+                swipeContainer.setRefreshing(true);
+                refreshIssues();
+            }
+        });
 
         // We allow Analytics opt-out.
         if (accountManager.allowAnalytics(this)) {
@@ -166,9 +146,6 @@ public class MainActivity extends AppCompatActivity {
         } else if (item.getItemId() == R.id.menu_stats) {
             showStats();
             return true;
-        } else if (item.getItemId() == R.id.menu_refresh) {
-            onLocationUpdated();
-            return true;
         } else if (item.getItemId() == R.id.menu_settings) {
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
@@ -181,6 +158,53 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void registerApiListener() {
+        mStatusListener = new FiveCallsApi.RequestStatusListener() {
+            @Override
+            public void onRequestError() {
+                Snackbar.make(findViewById(R.id.activity_main),
+                        getResources().getString(R.string.request_error),
+                        Snackbar.LENGTH_INDEFINITE).show();
+                // Our only type of request in MainActivity is a GET. If it doesn't work, clear the
+                // active issues list to avoid showing a stale list.
+                mIssuesAdapter.setIssues(Collections.<Issue>emptyList());
+                swipeContainer.setRefreshing(false);
+            }
+
+            @Override
+            public void onJsonError() {
+                Snackbar.make(findViewById(R.id.activity_main),
+                        getResources().getString(R.string.json_error),
+                        Snackbar.LENGTH_LONG).show();
+                // Our only type of request in MainActivity is a GET. If it doesn't work, clear the
+                // active issues list to avoid showing a stale list.
+                mIssuesAdapter.setIssues(Collections.<Issue>emptyList());
+                swipeContainer.setRefreshing(false);
+            }
+
+            @Override
+            public void onIssuesReceived(String locationName, List<Issue> issues) {
+                getSupportActionBar().setTitle(String.format(getResources().getString(
+                        R.string.title_main), locationName));
+                mIssuesAdapter.setIssues(issues);
+                swipeContainer.setRefreshing(false);
+            }
+
+            @Override
+            public void onCallCount(int count) {
+                // unused
+            }
+
+            @Override
+            public void onCallReported() {
+                // unused
+            }
+        };
+
+        AppSingleton.getInstance(getApplicationContext()).getJsonController().registerStatusListener(mStatusListener);
+    }
+
+
     private void showStats() {
         // TODO: Show the stats in a DialogFragment or even an activity.
         int callsCount = AppSingleton.getInstance(getApplicationContext()).getDatabaseHelper()
@@ -190,22 +214,15 @@ public class MainActivity extends AppCompatActivity {
         Snackbar.make(findViewById(R.id.activity_main), message, Snackbar.LENGTH_LONG).show();
     }
 
-    private void onLocationUpdated() {
+    private void refreshIssues() {
         if (!TextUtils.isEmpty(mLatitude) && !TextUtils.isEmpty(mLongitude)) {
-            onLatLongUpdated(mLatitude, mLongitude);
-        } else if (! TextUtils.isEmpty(mZip)) {
-            onZipUpdated(mZip);
+            AppSingleton.getInstance(getApplicationContext()).getJsonController()
+                    .getIssuesForLocation(mLatitude + "," + mLongitude);
+
+        } else if (!TextUtils.isEmpty(mZip)) {
+            AppSingleton.getInstance(getApplicationContext()).getJsonController()
+                    .getIssuesForLocation(mZip);
         }
-    }
-
-    private void onZipUpdated(String zip) {
-        AppSingleton.getInstance(getApplicationContext()).getJsonController()
-                .getIssuesForLocation(zip);
-    }
-
-    private void onLatLongUpdated(String latitude, String longitude) {
-        AppSingleton.getInstance(getApplicationContext()).getJsonController()
-                .getIssuesForLocation(latitude + "," + longitude);
     }
 
     @Override
