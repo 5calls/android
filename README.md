@@ -5,7 +5,7 @@ The Android App version of 5calls.org.
 JsonController is used to request a list of issues from the server in MainActivity. When an issue is clicked, IssueActivity is launched for that issue, and JsonController is again used to record information back to the server. Location is set in LocationActivity and saved in SharedPreferences. A SQLite database (DatabaseHelper) is used to store user stats.
 
 ##Development
-To run the app locally, you'll need to generate your own `google-services.json` file from the [Google website](https://developers.google.com/mobile/add).  It doesn't matters what services you enable, because you won't be talking to the prod Google account.  
+To run the app locally, you'll need to generate your own `google-services.json` file from the [Google website](https://developers.google.com/mobile/add).  It doesn't matter what services you enable, because you won't be talking to the prod Google account.  
 
 ##TODOs
 TODOs are listed in Issues as well as in MainActivity.java and scattered throughout the code. Please (create and) assign yourself to an issue if you are working on something to avoid conflicts!
