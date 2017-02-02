@@ -1,7 +1,6 @@
-package org.a5calls.android.a5calls;
+package org.a5calls.android.a5calls.controller;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,6 +20,13 @@ import android.widget.TextView;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
+import org.a5calls.android.a5calls.AppSingleton;
+import org.a5calls.android.a5calls.FiveCallsApplication;
+import org.a5calls.android.a5calls.R;
+import org.a5calls.android.a5calls.model.AccountManager;
+import org.a5calls.android.a5calls.model.FiveCallsApi;
+import org.a5calls.android.a5calls.model.Issue;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -36,16 +42,11 @@ import java.util.List;
  */
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
-    public static final String PREFS_FILE = "fiveCallsPrefs";
-    public static final String KEY_INITIALIZED = "prefsKeyInitialized";
-    public static final String KEY_ALLOW_ANALYTICS = "prefsKeyAllowAnalytics";
-    public static final String KEY_USER_ZIP = "prefsKeyUserZip";
-    public static final String KEY_LATITUDE = "prefsKeyLatitude";
-    public static final String KEY_LONGITUDE = "prefsKeyLongitude";
     private static final int ISSUE_DETAIL_REQUEST = 1;
+    private final AccountManager accountManager = AccountManager.Instance;
 
     private IssuesAdapter mIssuesAdapter;
-    private JsonController.RequestStatusListener mStatusListener;
+    private FiveCallsApi.RequestStatusListener mStatusListener;
     private String mZip;
     private String mLatitude;
     private String mLongitude;
@@ -56,11 +57,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         // See if we've had this user before. If not, start them at tutorial type page.
-        // TODO: This may have been a mistake to do this in PREFS_FILE, should probably copy over
-        // to defaultSharedPreferences. Then SettingsFragment can be more simple.
-        SharedPreferences pref = getSharedPreferences(PREFS_FILE, MODE_PRIVATE);
-        boolean initialized = pref.getBoolean(KEY_INITIALIZED, false);
-        if (!initialized) {
+        if (accountManager.isFirstTimeInApp(this)) {
+
             Intent intent = new Intent(this, TutorialActivity.class);
             startActivity(intent);
             finish();
@@ -68,9 +66,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Load the location the user last used, if any.
-        String code = pref.getString(KEY_USER_ZIP, "");
-        String longitude = pref.getString(KEY_LONGITUDE, "");
-        if (TextUtils.isEmpty(code) && TextUtils.isEmpty(longitude)) {
+        if (!accountManager.hasLocation(this)) {
             // No location set, go to LocationActivity!
             Intent intent = new Intent(this, LocationActivity.class);
             startActivity(intent);
@@ -86,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         mIssuesAdapter = new IssuesAdapter();
         issuesRecyclerView.setAdapter(mIssuesAdapter);
 
-        mStatusListener = new JsonController.RequestStatusListener() {
+        mStatusListener = new FiveCallsApi.RequestStatusListener() {
             @Override
             public void onRequestError() {
                 Snackbar.make(findViewById(R.id.activity_main),
@@ -139,14 +135,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        SharedPreferences pref = getSharedPreferences(PREFS_FILE, MODE_PRIVATE);
-        mZip = pref.getString(KEY_USER_ZIP, "");
-        mLongitude = pref.getString(KEY_LONGITUDE, "");
-        mLatitude = pref.getString(KEY_LATITUDE, "");
+        mZip = accountManager.getZip(this);
+        mLatitude = accountManager.getLat(this);
+        mLongitude = accountManager.getLng(this);
         onLocationUpdated();
 
         // We allow Analytics opt-out.
-        if (pref.getBoolean(KEY_ALLOW_ANALYTICS, true)) {
+        if (accountManager.allowAnalytics(this)) {
             // Obtain the shared Tracker instance.
             FiveCallsApplication application = (FiveCallsApplication) getApplication();
             Tracker tracker = application.getDefaultTracker();
@@ -196,10 +191,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onLocationUpdated() {
-        if (TextUtils.isEmpty(mLongitude)) {
-            onZipUpdated(mZip);
-        } else {
+        if (!TextUtils.isEmpty(mLatitude) && !TextUtils.isEmpty(mLongitude)) {
             onLatLongUpdated(mLatitude, mLongitude);
+        } else if (! TextUtils.isEmpty(mZip)) {
+            onZipUpdated(mZip);
         }
     }
 

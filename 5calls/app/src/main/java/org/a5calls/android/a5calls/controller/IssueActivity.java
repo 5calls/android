@@ -1,4 +1,4 @@
-package org.a5calls.android.a5calls;
+package org.a5calls.android.a5calls.controller;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -21,6 +21,14 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
+import org.a5calls.android.a5calls.AppSingleton;
+import org.a5calls.android.a5calls.FiveCallsApplication;
+import org.a5calls.android.a5calls.R;
+import org.a5calls.android.a5calls.model.AccountManager;
+import org.a5calls.android.a5calls.model.DatabaseHelper;
+import org.a5calls.android.a5calls.model.FiveCallsApi;
+import org.a5calls.android.a5calls.model.Issue;
+
 import java.util.List;
 
 /**
@@ -33,7 +41,9 @@ public class IssueActivity extends AppCompatActivity {
     public static final String KEY_ZIP = "key_zip";
     private static final String KEY_ACTIVE_CONTACT_INDEX = "active_contact_index";
 
-    private JsonController.RequestStatusListener mStatusListener;
+    private final AccountManager accountManager = AccountManager.Instance;
+
+    private FiveCallsApi.RequestStatusListener mStatusListener;
     private Issue mIssue;
     private int mActiveContactIndex;
     private Tracker mTracker = null;
@@ -56,7 +66,7 @@ public class IssueActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_issue);
 
-        mStatusListener = new JsonController.RequestStatusListener() {
+        mStatusListener = new FiveCallsApi.RequestStatusListener() {
             @Override
             public void onRequestError() {
                 Snackbar.make(findViewById(R.id.issue_name),
@@ -93,7 +103,7 @@ public class IssueActivity extends AppCompatActivity {
                 tryLoadingNextContact();
             }
         };
-        JsonController controller = AppSingleton.getInstance(getApplicationContext())
+        FiveCallsApi controller = AppSingleton.getInstance(getApplicationContext())
                 .getJsonController();
         controller.registerStatusListener(mStatusListener);
 
@@ -163,8 +173,7 @@ public class IssueActivity extends AppCompatActivity {
         }
 
         // We allow Analytics opt-out.
-        SharedPreferences pref = getSharedPreferences(MainActivity.PREFS_FILE, MODE_PRIVATE);
-        if (pref.getBoolean(MainActivity.KEY_ALLOW_ANALYTICS, true)) {
+        if (accountManager.allowAnalytics(this)) {
             // Obtain the shared Tracker instance.
             FiveCallsApplication application = (FiveCallsApplication) getApplication();
             mTracker = application.getDefaultTracker();

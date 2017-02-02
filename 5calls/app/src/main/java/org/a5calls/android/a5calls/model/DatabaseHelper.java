@@ -1,4 +1,4 @@
-package org.a5calls.android.a5calls;
+package org.a5calls.android.a5calls.model;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -36,7 +36,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     CallsColumns.RESULT + " STRING);";
 
 
-    DatabaseHelper(Context context) {
+    public DatabaseHelper(Context context) {
         super(context, CALLS_TABLE_NAME, null, DATABASE_VERSION);
     }
 

@@ -15,18 +15,18 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".controller.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".IssueActivity" />
-        <activity android:name=".AboutActivity" />
-        <activity android:name=".TutorialActivity" />
-        <activity android:name=".SettingsActivity" />
-        <activity android:name=".LocationActivity"/>
+        <activity android:name=".controller.IssueActivity" />
+        <activity android:name=".controller.AboutActivity" />
+        <activity android:name=".controller.TutorialActivity" />
+        <activity android:name=".controller.SettingsActivity" />
+        <activity android:name=".controller.LocationActivity"/>
     </application>
 
 </manifest>

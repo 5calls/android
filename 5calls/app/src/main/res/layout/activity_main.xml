@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_color"
-    tools:context="org.a5calls.android.a5calls.MainActivity"
+    tools:context="org.a5calls.android.a5calls.controller.MainActivity"
     >
         <android.support.v7.widget.RecyclerView
             android:id="@+id/issues_recycler_view"

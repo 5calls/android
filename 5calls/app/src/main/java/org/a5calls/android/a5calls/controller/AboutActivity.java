@@ -1,4 +1,4 @@
-package org.a5calls.android.a5calls;
+package org.a5calls.android.a5calls.controller;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,6 +14,14 @@ import android.widget.TextView;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
+import org.a5calls.android.a5calls.AppSingleton;
+import org.a5calls.android.a5calls.BuildConfig;
+import org.a5calls.android.a5calls.FiveCallsApplication;
+import org.a5calls.android.a5calls.model.AccountManager;
+import org.a5calls.android.a5calls.model.FiveCallsApi;
+import org.a5calls.android.a5calls.model.Issue;
+import org.a5calls.android.a5calls.R;
+
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
@@ -24,7 +32,8 @@ import java.util.Locale;
 public class AboutActivity extends AppCompatActivity {
     private static final String TAG = "AboutActivity";
 
-    private JsonController.RequestStatusListener mStatusListener;
+    private final AccountManager accountManager = AccountManager.Instance;
+    private FiveCallsApi.RequestStatusListener mStatusListener;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,11 +67,10 @@ public class AboutActivity extends AppCompatActivity {
                 Uri uriUrl = Uri.parse("https://5calls.org/");
                 Intent intent = new Intent(Intent.ACTION_VIEW, uriUrl);
                 startActivity(intent);
-
             }
         });*/
 
-        mStatusListener = new JsonController.RequestStatusListener() {
+        mStatusListener = new FiveCallsApi.RequestStatusListener() {
             @Override
             public void onRequestError() {
                 Snackbar.make(findViewById(R.id.about_us_btn),
@@ -95,7 +103,7 @@ public class AboutActivity extends AppCompatActivity {
                 // unused
             }
         };
-        JsonController controller = AppSingleton.getInstance(getApplicationContext())
+        FiveCallsApi controller = AppSingleton.getInstance(getApplicationContext())
                 .getJsonController();
         controller.registerStatusListener(mStatusListener);
         controller.getCallCount();
@@ -122,8 +130,7 @@ public class AboutActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         // We allow Analytics opt-out.
-        SharedPreferences pref = getSharedPreferences(MainActivity.PREFS_FILE, MODE_PRIVATE);
-        if (pref.getBoolean(MainActivity.KEY_ALLOW_ANALYTICS, true)) {
+        if (accountManager.allowAnalytics(this)) {
             // Obtain the shared Tracker instance.
             FiveCallsApplication application = (FiveCallsApplication) getApplication();
             Tracker tracker = application.getDefaultTracker();

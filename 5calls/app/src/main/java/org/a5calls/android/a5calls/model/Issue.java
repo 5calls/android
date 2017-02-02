@@ -1,4 +1,4 @@
-package org.a5calls.android.a5calls;
+package org.a5calls.android.a5calls.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
