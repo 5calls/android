@@ -1,6 +1,5 @@
-package org.a5calls.android.a5calls;
+package org.a5calls.android.a5calls.controller;
 
-import android.*;
 import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,12 +10,10 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,7 +25,8 @@ import android.widget.TextView;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
-import java.security.Provider;
+import org.a5calls.android.a5calls.*;
+import org.a5calls.android.a5calls.R;
 
 public class LocationActivity extends AppCompatActivity {
 
@@ -47,7 +45,7 @@ public class LocationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_location);
+        setContentView(org.a5calls.android.a5calls.R.layout.activity_location);
 
         // Load the zip code the user last used, if any.
         SharedPreferences pref = getSharedPreferences(MainActivity.PREFS_FILE, MODE_PRIVATE);

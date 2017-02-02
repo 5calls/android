@@ -1,4 +1,4 @@
-package org.a5calls.android.a5calls;
+package org.a5calls.android.a5calls.model;
 
 import android.content.ContentValues;
 import android.content.Context;

@@ -2,6 +2,9 @@ package org.a5calls.android.a5calls;
 
 import android.content.Context;
 
+import org.a5calls.android.a5calls.model.DatabaseHelper;
+import org.a5calls.android.a5calls.model.JsonController;
+
 /**
  * A singleton for referencing the database and JsonController.
  */

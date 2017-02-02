@@ -1,4 +1,4 @@
-package org.a5calls.android.a5calls;
+package org.a5calls.android.a5calls.controller;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,6 +11,12 @@ import android.widget.TextView;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+
+import org.a5calls.android.a5calls.AppSingleton;
+import org.a5calls.android.a5calls.FiveCallsApplication;
+import org.a5calls.android.a5calls.R;
+import org.a5calls.android.a5calls.model.Issue;
+import org.a5calls.android.a5calls.model.JsonController;
 
 import java.text.NumberFormat;
 import java.util.List;

@@ -1,4 +1,4 @@
-package org.a5calls.android.a5calls;
+package org.a5calls.android.a5calls.controller;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,6 +13,13 @@ import android.widget.TextView;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+
+import org.a5calls.android.a5calls.AppSingleton;
+import org.a5calls.android.a5calls.BuildConfig;
+import org.a5calls.android.a5calls.FiveCallsApplication;
+import org.a5calls.android.a5calls.model.Issue;
+import org.a5calls.android.a5calls.model.JsonController;
+import org.a5calls.android.a5calls.R;
 
 import java.text.NumberFormat;
 import java.util.List;
@@ -58,7 +65,6 @@ public class AboutActivity extends AppCompatActivity {
                 Uri uriUrl = Uri.parse("https://5calls.org/");
                 Intent intent = new Intent(Intent.ACTION_VIEW, uriUrl);
                 startActivity(intent);
-
             }
         });*/
 

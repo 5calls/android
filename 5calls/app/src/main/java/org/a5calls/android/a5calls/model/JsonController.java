@@ -1,4 +1,4 @@
-package org.a5calls.android.a5calls;
+package org.a5calls.android.a5calls.model;
 
 import android.content.Context;
 import android.util.Log;
@@ -14,6 +14,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.a5calls.android.a5calls.model.Issue;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
