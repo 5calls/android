@@ -36,7 +36,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     CallsColumns.RESULT + " STRING);";
 
 
-    DatabaseHelper(Context context) {
+    public DatabaseHelper(Context context) {
         super(context, CALLS_TABLE_NAME, null, DATABASE_VERSION);
     }
 
