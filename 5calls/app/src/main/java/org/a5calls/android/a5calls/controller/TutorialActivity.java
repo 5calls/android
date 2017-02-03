@@ -41,7 +41,7 @@ public class TutorialActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Return to the main activity
-                accountManager.setIsFirstTimeInApp(TutorialActivity.this, false);
+                accountManager.setTutorialSeen(TutorialActivity.this, true);
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
                 finish();

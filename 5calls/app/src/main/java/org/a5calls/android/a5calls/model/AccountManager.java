@@ -25,13 +25,13 @@ public enum AccountManager {
                 || !TextUtils.isEmpty(getZip(context));
     }
 
-    // Defaults to true
-    public boolean isFirstTimeInApp(Context context) {
+    // Defaults to true, we'eve already seen the tutorial.
+    public boolean isTutorialSeen(Context context) {
         return getSharedPrefs(context).getBoolean(KEY_INITIALIZED, true);
     }
 
-    public void setIsFirstTimeInApp(Context context, boolean isFirstTime) {
-        getSharedPrefs(context).edit().putBoolean(KEY_INITIALIZED, isFirstTime).apply();
+    public void setTutorialSeen(Context context, boolean tutorialSeen) {
+        getSharedPrefs(context).edit().putBoolean(KEY_INITIALIZED, tutorialSeen).apply();
     }
 
     public String getZip(Context context) {

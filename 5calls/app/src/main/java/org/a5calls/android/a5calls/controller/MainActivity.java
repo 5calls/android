@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         // See if we've had this user before. If not, start them at tutorial type page.
-        if (accountManager.isFirstTimeInApp(this)) {
+        if (!accountManager.isTutorialSeen(this)) {
             Intent intent = new Intent(this, TutorialActivity.class);
             startActivity(intent);
             finish();
