@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/background_color"
-    android:id="@+id/scroll_view"
+<ScrollView android:id="@+id/scroll_view"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/background_color"
     >
 
     <RelativeLayout
@@ -17,218 +16,221 @@
         >
 
         <TextView
+            android:id="@+id/issue_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:id="@+id/issue_name"
+            android:layout_marginBottom="16dp"
+            android:textAllCaps="true"
+            android:textColor="@color/colorPrimary"
             android:textSize="@dimen/h1_text_size"
             android:textStyle="bold"
-            android:textAllCaps="true"
-            android:layout_marginBottom="16dp"
-            android:textColor="@color/colorPrimary"
             />
 
         <TextView
+            android:id="@+id/issue_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/issue_description"
-            android:textSize="16sp"
             android:layout_below="@id/issue_name"
             android:layout_marginBottom="16dp"
             android:textColor="@color/colorPrimary"
+            android:textSize="16sp"
             />
 
         <RelativeLayout
+            android:id="@+id/rep_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/rep_info"
             android:layout_below="@id/issue_description"
             >
 
             <ImageView
+                android:id="@+id/rep_image"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_alignParentStart="true"
-                android:id="@+id/rep_image"
                 android:contentDescription="@null"
                 />
 
             <TextView
+                android:id="@+id/call_this_office"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/call_this_office"
-                android:textSize="18sp"
-                android:id="@+id/call_this_office"
                 android:layout_alignParentTop="true"
-                android:layout_toEndOf="@id/rep_image"
                 android:layout_alignWithParentIfMissing="true"
+                android:layout_toEndOf="@id/rep_image"
+                android:text="@string/call_this_office"
                 android:textColor="@color/colorPrimary"
+                android:textSize="18sp"
                 />
 
             <TextView
+                android:id="@+id/contact_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/rep_image"
-                android:layout_below="@id/call_this_office"
                 android:layout_alignParentEnd="true"
+                android:layout_alignWithParentIfMissing="true"
+                android:layout_below="@id/call_this_office"
+                android:layout_toEndOf="@id/rep_image"
+                android:textColor="@color/colorPrimary"
                 android:textSize="24sp"
                 android:textStyle="bold"
-                android:id="@+id/contact_name"
-                android:layout_alignWithParentIfMissing="true"
-                android:textColor="@color/colorPrimary"
                 />
 
             <TextView
+                android:id="@+id/phone_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/phone_number"
+                android:layout_alignWithParentIfMissing="true"
+                android:layout_below="@id/contact_name"
+                android:layout_marginBottom="16dp"
+                android:layout_toEndOf="@id/rep_image"
+                android:textColor="@color/colorPrimary"
                 android:textSize="32sp"
                 android:textStyle="bold"
-                android:layout_below="@id/contact_name"
-                android:layout_toEndOf="@id/rep_image"
-                android:layout_marginBottom="16dp"
-                android:layout_alignWithParentIfMissing="true"
-                android:textColor="@color/colorPrimary"
                 />
 
         </RelativeLayout>
 
         <LinearLayout
+            android:id="@+id/script_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:id="@+id/script_section"
             android:layout_below="@id/rep_info"
+            android:orientation="vertical"
             >
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/contact_reason_prompt"
+                android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/text_size_paragraph"
                 android:textStyle="bold"
-                android:text="@string/contact_reason_prompt"
-                android:layout_marginTop="16dp"
-                android:textColor="@color/colorPrimary"
                 />
 
             <TextView
+                android:id="@+id/contact_reason"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/text_size_paragraph"
-                android:id="@+id/contact_reason"
                 android:layout_marginTop="4dp"
                 android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/text_size_paragraph"
                 />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/call_script_prompt"
+                android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/text_size_paragraph"
                 android:textStyle="bold"
-                android:text="@string/call_script_prompt"
-                android:layout_marginTop="8dp"
-                android:textColor="@color/colorPrimary"
                 />
 
             <TextView
+                android:id="@+id/call_script"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/call_script"
-                android:textSize="@dimen/text_size_paragraph"
-                android:padding="16dp"
                 android:layout_marginTop="8dp"
                 android:background="@color/script_background_color"
+                android:padding="16dp"
                 android:textColor="@color/textColorDarkGrey"
+                android:textSize="@dimen/text_size_paragraph"
                 />
 
         </LinearLayout>
 
         <TextView
-            android:layout_marginTop="16dp"
+            android:id="@+id/no_calls_left"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/script_section"
-            android:id="@+id/no_calls_left"
+            android:layout_marginTop="16dp"
+            android:text="@string/no_calls_left"
+            android:textColor="@color/colorPrimary"
             android:textSize="16dp"
             android:textStyle="bold"
             android:visibility="gone"
-            android:text="@string/no_calls_left"
-            android:textColor="@color/colorPrimary"
             />
 
         <TextView
-            android:layout_marginTop="16dp"
+            android:id="@+id/buttons_prompt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/script_section"
-            android:id="@+id/buttons_prompt"
+            android:layout_marginTop="16dp"
             android:text="@string/buttons_prompt"
+            android:textColor="@color/colorPrimary"
             android:textSize="16dp"
             android:textStyle="bold"
-            android:textColor="@color/colorPrimary"
             />
 
         <LinearLayout
+            android:id="@+id/buttons_holder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
+            android:layout_below="@id/buttons_prompt"
             android:layout_marginBottom="4dp"
             android:layout_marginTop="8dp"
-            android:id="@+id/buttons_holder"
-            android:layout_below="@id/buttons_prompt"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
             >
+
             <Button
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:minHeight="@dimen/accessibility_min_size"
                 android:id="@+id/unavailable_btn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/button_color"
+                android:minHeight="@dimen/accessibility_min_size"
+                android:paddingEnd="8dp"
+                android:paddingStart="8dp"
                 android:text="@string/unavailable_btn"
-                android:background="@color/button_color"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
                 android:textColor="@color/colorPrimaryDark"
                 />
+
             <Button
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:minHeight="@dimen/accessibility_min_size"
                 android:id="@+id/voicemail_btn"
-                android:text="@string/voicemail_btn"
-                android:layout_marginStart="4dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
+                android:layout_marginStart="4dp"
+                android:layout_weight="1"
                 android:background="@color/button_color"
-                android:paddingStart="8dp"
+                android:minHeight="@dimen/accessibility_min_size"
                 android:paddingEnd="8dp"
+                android:paddingStart="8dp"
+                android:text="@string/voicemail_btn"
                 android:textColor="@color/colorPrimaryDark"
                 />
+
             <Button
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:minHeight="@dimen/accessibility_min_size"
                 android:id="@+id/made_contact_btn"
-                android:text="@string/made_contact_btn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:background="@color/button_color"
-                android:paddingStart="8dp"
+                android:minHeight="@dimen/accessibility_min_size"
                 android:paddingEnd="8dp"
+                android:paddingStart="8dp"
+                android:text="@string/made_contact_btn"
                 android:textColor="@color/colorPrimaryDark"
                 />
         </LinearLayout>
 
         <Button
+            android:id="@+id/skip_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="@dimen/accessibility_min_size"
-            android:id="@+id/skip_btn"
-            android:text="@string/skip_btn"
             android:layout_below="@id/buttons_holder"
             android:background="@color/button_color"
-            android:paddingStart="8dp"
+            android:minHeight="@dimen/accessibility_min_size"
             android:paddingEnd="8dp"
+            android:paddingStart="8dp"
+            android:text="@string/skip_btn"
             android:textColor="@color/colorPrimaryDark"
             />
 
