@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.analytics.HitBuilders;
@@ -23,6 +24,9 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Tutorial / splash screen activity
  */
@@ -32,12 +36,18 @@ public class TutorialActivity extends AppCompatActivity {
     private final AccountManager accountManager = AccountManager.Instance;
     private FiveCallsApi.RequestStatusListener mStatusListener;
 
+    @BindView(R.id.get_started_btn) Button getStartedButton;
+    @BindView(R.id.calls_to_date) TextView callsToDate;
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_tutorial);
-        findViewById(R.id.get_started_btn).setOnClickListener(new View.OnClickListener() {
+        ButterKnife.bind(this);
+
+        getStartedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Return to the main activity
@@ -52,14 +62,14 @@ public class TutorialActivity extends AppCompatActivity {
         mStatusListener = new FiveCallsApi.RequestStatusListener() {
             @Override
             public void onRequestError() {
-                Snackbar.make(findViewById(R.id.calls_to_date),
+                Snackbar.make(callsToDate,
                         getResources().getString(R.string.request_error),
                         Snackbar.LENGTH_LONG).show();
             }
 
             @Override
             public void onJsonError() {
-                Snackbar.make(findViewById(R.id.calls_to_date),
+                Snackbar.make(callsToDate,
                         getResources().getString(R.string.json_error),
                         Snackbar.LENGTH_LONG).show();
             }
@@ -71,7 +81,6 @@ public class TutorialActivity extends AppCompatActivity {
 
             @Override
             public void onCallCount(int count) {
-                TextView callsToDate = (TextView) findViewById(R.id.calls_to_date);
                 callsToDate.setText(String.format(
                         getResources().getString(R.string.calls_to_date),
                         NumberFormat.getNumberInstance(Locale.US).format(count)));

@@ -14,6 +14,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -30,6 +32,9 @@ import org.a5calls.android.a5calls.model.FiveCallsApi;
 import org.a5calls.android.a5calls.model.Issue;
 
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * More details about an issue, including links to the phone app to call and buttons to record
@@ -48,6 +53,30 @@ public class IssueActivity extends AppCompatActivity {
     private int mActiveContactIndex;
     private Tracker mTracker = null;
 
+    @BindView(R.id.scroll_view) ScrollView scrollView;
+
+    @BindView(R.id.issue_name) TextView issueName;
+    @BindView(R.id.issue_description) TextView issueDescription;
+    @BindView(R.id.rep_info) RelativeLayout repInfoLayout;
+    @BindView(R.id.rep_image) ImageView repImage;
+    @BindView(R.id.call_this_office) TextView callThisOffice;
+    @BindView(R.id.contact_name) TextView contactName;
+    @BindView(R.id.phone_number) TextView phoneNumber;
+
+    @BindView(R.id.script_section) LinearLayout scriptLayout;
+    @BindView(R.id.contact_reason) TextView contactReason;
+    @BindView(R.id.call_script) TextView callScript;
+
+    @BindView(R.id.no_calls_left) TextView noCallsLeft;
+    @BindView(R.id.buttons_prompt) TextView buttonsPrompt;
+
+    @BindView(R.id.buttons_holder) LinearLayout buttonsLayout;
+    @BindView(R.id.unavailable_btn) Button unavailableButton;
+    @BindView(R.id.voicemail_btn) Button voicemailButton;
+    @BindView(R.id.made_contact_btn) Button madeContactButton;
+
+    @BindView(R.id.skip_btn) Button skipButton;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,11 +94,12 @@ public class IssueActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_issue);
+        ButterKnife.bind(this);
 
         mStatusListener = new FiveCallsApi.RequestStatusListener() {
             @Override
             public void onRequestError() {
-                Snackbar.make(findViewById(R.id.issue_name),
+                Snackbar.make(issueName,
                         getResources().getString(R.string.request_error_db_recorded_anyway),
                         Snackbar.LENGTH_LONG).show();
                 setButtonsEnabled(true);
@@ -77,7 +107,7 @@ public class IssueActivity extends AppCompatActivity {
 
             @Override
             public void onJsonError() {
-                Snackbar.make(findViewById(R.id.issue_name),
+                Snackbar.make(issueName,
                         getResources().getString(R.string.json_error_db_recorded_anyway),
                         Snackbar.LENGTH_LONG).show();
                 setButtonsEnabled(true);
@@ -96,7 +126,7 @@ public class IssueActivity extends AppCompatActivity {
             @Override
             public void onCallReported() {
                 Log.d(TAG, "call reported successfully!");
-                Snackbar.make(findViewById(R.id.issue_name),
+                Snackbar.make(issueName,
                         getResources().getString(R.string.call_reported),
                         Snackbar.LENGTH_SHORT).show();
                 setButtonsEnabled(true);
@@ -110,16 +140,16 @@ public class IssueActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(mIssue.name);
 
-        ((TextView) findViewById(R.id.issue_name)).setText(mIssue.name);
-        ((TextView) findViewById(R.id.issue_description)).setText(mIssue.reason);
-        ((TextView) findViewById(R.id.call_script)).setText(mIssue.script);
+        issueName.setText(mIssue.name);
+        issueDescription.setText(mIssue.reason);
+        callScript.setText(mIssue.script);
 
         if (mIssue.contacts == null || mIssue.contacts.length == 0) {
-            findViewById(R.id.buttons_holder).setVisibility(View.GONE);
-            findViewById(R.id.buttons_prompt).setVisibility(View.GONE);
-            findViewById(R.id.skip_btn).setVisibility(View.GONE);
-            findViewById(R.id.call_this_office).setVisibility(View.GONE);
-            findViewById(R.id.no_calls_left).setVisibility(View.VISIBLE);
+            buttonsLayout.setVisibility(View.GONE);
+            buttonsPrompt.setVisibility(View.GONE);
+            skipButton.setVisibility(View.GONE);
+            callThisOffice.setVisibility(View.GONE);
+            noCallsLeft.setVisibility(View.VISIBLE);
         } else {
             if (savedInstanceState != null) {
                 mActiveContactIndex = savedInstanceState.getInt(KEY_ACTIVE_CONTACT_INDEX, 0);
@@ -139,7 +169,7 @@ public class IssueActivity extends AppCompatActivity {
             }
             setupContactUi(mActiveContactIndex);
 
-            findViewById(R.id.skip_btn).setOnClickListener(new View.OnClickListener() {
+            skipButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     reportEvent("skip");
@@ -147,7 +177,7 @@ public class IssueActivity extends AppCompatActivity {
                 }
             });
 
-            findViewById(R.id.made_contact_btn).setOnClickListener(new View.OnClickListener() {
+            madeContactButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     reportEvent("contacted");
@@ -155,7 +185,7 @@ public class IssueActivity extends AppCompatActivity {
                 }
             });
 
-            findViewById(R.id.unavailable_btn).setOnClickListener(new View.OnClickListener() {
+            unavailableButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     reportEvent("unavailable");
@@ -163,7 +193,7 @@ public class IssueActivity extends AppCompatActivity {
                 }
             });
 
-            findViewById(R.id.voicemail_btn).setOnClickListener(new View.OnClickListener() {
+            voicemailButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     reportEvent("vm");
@@ -227,34 +257,32 @@ public class IssueActivity extends AppCompatActivity {
     }
 
     private void setButtonsEnabled(boolean enabled) {
-        ((Button) findViewById(R.id.skip_btn)).setEnabled(enabled);
-        ((Button) findViewById(R.id.voicemail_btn)).setEnabled(enabled);
-        ((Button) findViewById(R.id.made_contact_btn)).setEnabled(enabled);
-        ((Button) findViewById(R.id.unavailable_btn)).setEnabled(enabled);
+        skipButton.setEnabled(enabled);
+        voicemailButton.setEnabled(enabled);
+        madeContactButton.setEnabled(enabled);
+        unavailableButton.setEnabled(enabled);
     }
 
     private void setupContactUi(int index) {
-        ((TextView) findViewById(R.id.contact_name)).setText(mIssue.contacts[index].name);
-        ((TextView) findViewById(R.id.contact_reason)).setText(mIssue.contacts[index].reason);
+        contactName.setText(mIssue.contacts[index].name);
+        contactReason.setText(mIssue.contacts[index].reason);
         if (!TextUtils.isEmpty(mIssue.contacts[index].photoURL)) {
             Glide.with(getApplicationContext())
                     .load(mIssue.contacts[index].photoURL)
-                    .into((ImageView) findViewById(R.id.rep_image));
+                    .into(repImage);
         } else {
-            findViewById(R.id.rep_image).setVisibility(View.GONE);
+            repImage.setVisibility(View.GONE);
         }
-        TextView phoneText = (TextView) findViewById(R.id.phone_number);
-        phoneText.setText(mIssue.contacts[index].phone);
-        Linkify.addLinks(phoneText, Linkify.PHONE_NUMBERS);
+        phoneNumber.setText(mIssue.contacts[index].phone);
+        Linkify.addLinks(phoneNumber, Linkify.PHONE_NUMBERS);
 
         // If the ScrollView is below the contact, scroll back up to show it.
-        final ScrollView scrollView = (ScrollView) findViewById(R.id.scroll_view);
-        if (scrollView.getScrollY() > findViewById(R.id.rep_info).getTop()) {
+        if (scrollView.getScrollY() > repInfoLayout.getTop()) {
             scrollView.post(new Runnable() {
                 @Override
                 public void run() {
                     // TODO: A little more scroll padding might be nice too.
-                    scrollView.smoothScrollTo(0, findViewById(R.id.rep_info).getTop());
+                    scrollView.smoothScrollTo(0, repInfoLayout.getTop());
                 }
             });
         }

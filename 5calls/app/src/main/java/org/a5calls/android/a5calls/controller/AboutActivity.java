@@ -9,6 +9,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.analytics.HitBuilders;
@@ -26,6 +27,9 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * The "About" page.
  */
@@ -35,16 +39,21 @@ public class AboutActivity extends AppCompatActivity {
     private final AccountManager accountManager = AccountManager.Instance;
     private FiveCallsApi.RequestStatusListener mStatusListener;
 
+    @BindView(R.id.about_us_btn) Button aboutUsButton;
+    @BindView(R.id.version_info) TextView version;
+    @BindView(R.id.calls_to_date) TextView callsToDate;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_about);
+        ButterKnife.bind(this);
 
         getSupportActionBar().setTitle(getResources().getString(R.string.about_title));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        findViewById(R.id.about_us_btn).setOnClickListener(new View.OnClickListener() {
+        aboutUsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // TODO: Add this to the app instead of going to the browser
@@ -55,7 +64,6 @@ public class AboutActivity extends AppCompatActivity {
             }
         });
 
-        TextView version = (TextView) findViewById(R.id.version_info);
         version.setText(String.format(getResources().getString(R.string.version_info),
                 BuildConfig.VERSION_NAME));
 
@@ -73,14 +81,14 @@ public class AboutActivity extends AppCompatActivity {
         mStatusListener = new FiveCallsApi.RequestStatusListener() {
             @Override
             public void onRequestError() {
-                Snackbar.make(findViewById(R.id.about_us_btn),
+                Snackbar.make(aboutUsButton,
                         getResources().getString(R.string.request_error),
                         Snackbar.LENGTH_LONG).show();
             }
 
             @Override
             public void onJsonError() {
-                Snackbar.make(findViewById(R.id.about_us_btn),
+                Snackbar.make(aboutUsButton,
                         getResources().getString(R.string.json_error),
                         Snackbar.LENGTH_LONG).show();
             }
@@ -92,7 +100,6 @@ public class AboutActivity extends AppCompatActivity {
 
             @Override
             public void onCallCount(int count) {
-                TextView callsToDate = (TextView) findViewById(R.id.calls_to_date);
                 callsToDate.setText(String.format(
                         getResources().getString(R.string.calls_to_date),
                         NumberFormat.getNumberInstance(Locale.US).format(count)));
