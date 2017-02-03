@@ -28,6 +28,9 @@ import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class LocationActivity extends AppCompatActivity {
 
     private static final String TAG = "LocationActivity";
@@ -44,10 +47,15 @@ public class LocationActivity extends AppCompatActivity {
     private boolean mFromMain = false;
     private LocationListener mLocationListener;
 
+    @BindView(R.id.zip_code) EditText zipEdit;
+    @BindView(R.id.zip_code_submit) Button zipButton;
+    @BindView(R.id.btn_gps) Button gpsButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(org.a5calls.android.a5calls.R.layout.activity_location);
+        setContentView(R.layout.activity_location);
+        ButterKnife.bind(this);
 
         // If has location, not the first time in the app.
         if (accountManager.hasLocation(this)) {
@@ -56,7 +64,6 @@ public class LocationActivity extends AppCompatActivity {
 
         // Load the zip code the user last used, if any.
         String zip = accountManager.getZip(this);
-        EditText zipEdit = (EditText) findViewById(R.id.zip_code);
         if (!TextUtils.isEmpty(zip)) {
             zipEdit.setText(zip);
         }
@@ -71,15 +78,13 @@ public class LocationActivity extends AppCompatActivity {
                 return false;
             }
         });
-        Button zipButton = (Button) findViewById(R.id.zip_code_submit);
+
         zipButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 submitZip();
             }
         });
-
-        Button gpsButton = (Button) findViewById(R.id.btn_gps);
         gpsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -111,7 +116,6 @@ public class LocationActivity extends AppCompatActivity {
     }
 
     private void submitZip() {
-        EditText zipEdit = (EditText) findViewById(R.id.zip_code);
         String zip = zipEdit.getText().toString();
         // Is it a string that is exactly 5 characters long?
         if (TextUtils.isEmpty(zip) || zip.length() != 5) {
