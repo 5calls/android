@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_main"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/background_color"
-    tools:context="org.a5calls.android.a5calls.controller.MainActivity"
-    >
+<FrameLayout android:id="@+id/activity_main"
+             xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:background="@color/background_color"
+             tools:context="org.a5calls.android.a5calls.controller.MainActivity">
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_container"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/issues_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
-            />
+            android:layout_marginTop="4dp"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </FrameLayout>
