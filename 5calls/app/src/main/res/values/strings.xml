@@ -41,7 +41,7 @@
     <string name="contact_reason_prompt">Why you\'re calling this office:</string>
     <string name="call_count_remaining">%1$d calls to make (%2$d total)</string>
     <string name="call_count_remaining_one">1 call to make (%1$d total)</string>
-    <string name="refresh">refresh</string>
+    <string name="refresh">Refresh</string>
     <string name="request_error_db_recorded_anyway">Call recorded, but there was a problem communicating with the server. Is your device online?</string>
     <string name="json_error_db_recorded_anyway">Call recorded, but we had some issues contacting the server.</string>
     <string name="settings">Settings</string>
@@ -51,4 +51,5 @@
     <string name="title_main">5 Calls for %1$s</string>
     <string name="btn_gps">Use my location</string>
     <string name="location_zip_prompt">Or enter your zip code:</string>
+    <string name="main_activity_location_error">Sorry, we could not read your location, please try re-entering it</string>
 </resources>

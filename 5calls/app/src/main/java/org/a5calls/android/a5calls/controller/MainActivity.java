@@ -146,6 +146,14 @@ public class MainActivity extends AppCompatActivity {
         } else if (item.getItemId() == R.id.menu_stats) {
             showStats();
             return true;
+        } else if (item.getItemId() == R.id.menu_refresh) {
+            swipeContainer.post(new Runnable() {
+                @Override public void run() {
+                    swipeContainer.setRefreshing(true);
+                    refreshIssues();
+                }
+            });
+            return true;
         } else if (item.getItemId() == R.id.menu_settings) {
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
@@ -222,6 +230,9 @@ public class MainActivity extends AppCompatActivity {
         } else if (!TextUtils.isEmpty(mZip)) {
             AppSingleton.getInstance(getApplicationContext()).getJsonController()
                     .getIssuesForLocation(mZip);
+        } else {
+            String message = getString(R.string.main_activity_location_error);
+            Snackbar.make(findViewById(R.id.activity_main), message, Snackbar.LENGTH_LONG).show();
         }
     }
 
