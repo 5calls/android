@@ -27,7 +27,7 @@ public enum AccountManager {
 
     // Defaults to true, we'eve already seen the tutorial.
     public boolean isTutorialSeen(Context context) {
-        return getSharedPrefs(context).getBoolean(KEY_INITIALIZED, true);
+        return getSharedPrefs(context).getBoolean(KEY_INITIALIZED, /* not seen yet */ false);
     }
 
     public void setTutorialSeen(Context context, boolean tutorialSeen) {
