@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     private String mLatitude;
     private String mLongitude;
 
-    @BindView(R.id.swipeContainer) SwipeRefreshLayout swipeContainer;
+    @BindView(R.id.swipe_container) SwipeRefreshLayout swipeContainer;
     @BindView(R.id.issues_recycler_view) RecyclerView issuesRecyclerView;
 
     @Override

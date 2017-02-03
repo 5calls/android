@@ -136,9 +136,20 @@ public class LocationActivity extends AppCompatActivity {
     }
 
     private void returnToMain() {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-        finish();
+        // Make sure we're still alive
+        if (isFinishing() || isDestroyed()) {
+            return;
+        }
+
+        // If we came from MainActivity and return with another Intent, it will create a deep stack
+        // of activities!
+        if (mFromMain) {
+            onBackPressed();
+        } else {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
     @Override
