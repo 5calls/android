@@ -82,8 +82,7 @@ public class FiveCallsApi {
             @Override
             public void onResponse(JSONObject response) {
                 if (response != null) {
-                    // TODO put the "unknown" location in String resources
-                    String locationName = "unknown location";
+                    String locationName = "";
                     try {
                         locationName = response.getString("normalizedLocation");
                     } catch (JSONException e) {

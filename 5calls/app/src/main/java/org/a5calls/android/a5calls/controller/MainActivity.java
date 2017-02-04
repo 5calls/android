@@ -211,6 +211,9 @@ public class MainActivity extends AppCompatActivity {
                             .saveIssuesToDatabaseForUpgrade(issues);
                     AccountManager.Instance.setDatabaseSavesContacts(getApplicationContext(), true);
                 }
+                if (TextUtils.isEmpty(locationName)) {
+                    locationName = getResources().getString(R.string.unknown_location);
+                }
                 mIssuesAdapter.setIssues(issues);
                 swipeContainer.setRefreshing(false);
             }

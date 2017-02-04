@@ -52,7 +52,7 @@
             android:layout_centerVertical="true"
             android:layout_alignParentBottom="true"
             android:id="@+id/issue_done_img"
-            android:contentDescription="@string/issue_done_content_description"
+            android:contentDescription="@null"
             android:layout_marginEnd="16dp"
             />
 

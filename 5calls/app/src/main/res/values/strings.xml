@@ -1,70 +1,194 @@
-<resources>
+<resources xmlns:xliff="http://schemas.android.com/tools">
+
+    <!-- The application name [CHAR_LIMIT=25] -->
     <string name="app_name">5 Calls</string>
+
+    <!-- The prompt on the location page to have a user set their location [CHAR_LIMIT=NONE] -->
     <string name="location_prompt">Set your location to find your local representatives.</string>
+
+    <!-- The label for the zip code edit text field [CHAR_LIMIT=50] -->
     <string name="zip_code_hint">5 digit zip</string>
+
+    <!-- The button for submitting your zip code as location [CHAR_LIMIT=30] -->
     <string name="submit">submit</string>
+
+    <!-- Error text on the zip code edittext field for invalid types of input [CHAR_LIMIT=75] -->
     <string name="zip_error">Please enter a valid 5 digit zip code</string>
+
+    <!-- Error message shown to the user when there was a problem communicating with the server [CHAR_LIMIT=150] -->
     <string name="request_error">There was a problem communicating with the server. Is your device online?</string>
+
+    <!-- Error message shown to the user when the app failed to parse the JSON response from the server [CHAR_LIMIT=150] -->
     <string name="json_error">Error: Invalid or no data for this zip code</string>
-    <string name="call_count">%1$d calls to make</string>
+
+    <!-- Message telling a user how many calls they still need to make on a particular issue [CHAR_LIMIT=30] -->
+    <string name="call_count"><xliff:g id="callCount">%1$d</xliff:g> calls to make</string>
+
+    <!-- Message telling a user they sill have one call to make on a particular issue [CHAR_LIMIT=30] -->
     <string name="call_count_one">1 call to make</string>
+
+    <!-- Prompt for explaining which contact/office to call [CHAR_LIMIT=50] -->
     <string name="call_this_office">Call this office:</string>
+
+    <!-- Call result button for when the contact was unavailable (i.e. couldn't even leave a voicemail) [CHAR_LIMIT=30] -->
     <string name="unavailable_btn">unavailable</string>
+
+    <!-- Call result button for when the user left a voicemail [CHAR_LIMIT=30] -->
     <string name="voicemail_btn">left voicemail</string>
+
+    <!-- Call result button for when the user made contact [CHAR_LIMIT=30] -->
     <string name="made_contact_btn">made contact</string>
+
+    <!-- Button for the user to skip contacting a particular contact on a particular issue [CHAR_LIMIT=30] -->
     <string name="skip_btn">skip</string>
+
+    <!-- Prompt for call result buttons, telling the user to click one to get to the next call for this issue [CHAR_LIMIT=NONE] -->
     <string name="buttons_prompt">Enter your result to get to the next call:</string>
+
+    <!-- Message to the user that no calls are left on a particular issue [CHAR_LIMIT=NONE] -->
     <string name="no_calls_left">No calls left for this issue!</string>
-    <string name="edit">edit</string>
-    <string name="reps_for_zip">Current issues and reps for %1$s</string>
+
+    <!-- Menu option to go to the About 5 Calls screen [CHAR_LIMIT=25] -->
     <string name="menu_about">About 5 Calls</string>
+
+    <!-- Title of the About 5 Calls screen [CHAR_LIMIT=30] -->
     <string name="about_title">About 5 Calls</string>
+
+    <!-- Header on the About 5 Calls screen [CHAR_LIMIT=30] -->
     <string name="about_header">MAKE YOUR VOICE HEARD</string>
+
+    <!-- First paragraph of About screen text [CHAR_LIMIT=NONE] -->
     <string name="about_p1">Turn your passive participation into active resistance. Facebook likes and Twitter retweets can\’t create the change you want to see. Calling your Government on the phone can.</string>
+
+    <!-- Call to action, "Spend 5 minutes, make 5 calls" [CHAR_LIMIT=] -->
     <string name="about_p2">Spend 5 minutes, make 5 calls.</string>
+
+    <!-- Body of text on the About 5 Calls screen, describing the app. \n\n is used to start the next paragraph. [CHAR_LIMIT=NONE] -->
     <string name="about_p3">There\'s one simple and straightforward way to influence the Government that is supposed to represent you: Call them on the phone.
                             \n\nCalling is the most effective way to influence your representative. 5 Calls gives you contacts and scripts so calling is quick and easy. We use your location to give you your local representatives so your calls are more impactful.
                             \n\nWant to know more?</string>
+
+    <!-- Button linking to a page about Why calling works [CHAR_LIMIT=30] -->
     <string name="why_calling_btn">why calling works</string>
+
+    <!-- Button linking to the 5calls.org about page [CHAR_LIMIT=30] -->
     <string name="about_us_btn">about us</string>
-    <string name="calls_to_date">%1$s calls to date</string>
+
+    <!-- Text to show the user the number of calls made by everyone [CHAR_LIMIT=50] -->
+    <string name="calls_to_date"><xliff:g id="callCount">%1$s</xliff:g> calls to date</string>
+
+    <!-- Message to the user shown when a call is recorded in the database and the server [CHAR_LIMIT=150] -->
     <string name="call_reported">Call reported successfully!</string>
-    <string name="issue_done_content_description">issue complete</string>
+
+    <!-- Text shown to the user on the splash / tutorial screen describing the 5 Calls app. \n\n is used to create new paragraphs. [CHAR_LIMIT=NONE] -->
     <string name="about_splash">There\'s one simple and straightforward way to influence the Government that is supposed to represent you: Call them on the phone.
                                 \n\nCalling is the most effective way to influence your representative. 5 Calls gives you local contacts and scripts so calling is quick and easy.</string>
+
+    <!-- Button shown to the user on the splash / tutorial screen to get started and go to the app [CHAR_LIMIT=30] -->
     <string name="get_started_btn">Get started</string>
+
+    <!-- Description of how the 5 Calls app is open-source, link to github page [CHAR_LIMIT=NONE] -->
     <string name="open_source_info">The 5 Calls app is open-source and volunteer made. Find it at github.com/5calls/android.</string>
-    <string name="version_info">Version %1$s</string>
+
+    <!-- Version code shown to the user in the about page [CHAR_LIMIT=NONE] -->
+    <string name="version_info">Version <xliff:g id="versionCode">%1$s</xliff:g></string>
+
+    <!-- Menu option to go to your impact page [CHAR_LIMIT=25] -->
     <string name="menu_stats">Your impact</string>
+
+    <!-- Header to the script used for calling [CHAR_LIMIT=NONE] -->
     <string name="call_script_prompt">Your script:</string>
+
+    <!-- Header to a section that says why the contact is someone you might call [CHAR_LIMIT=NONE] -->
     <string name="contact_reason_prompt">Why you\'re calling this office:</string>
-    <string name="call_count_remaining">%1$d calls to make (%2$d total)</string>
-    <string name="call_count_remaining_one">1 call to make (%1$d total)</string>
+
+    <!-- Shows the user how many calls remain and how many calls there are total for a particular issue [CHAR_LIMIT=50] -->
+    <string name="call_count_remaining"><xliff:g id="callsLeft">%1$d</xliff:g> calls to make (<xliff:g id="callsTotal">%2$d</xliff:g> total)</string>
+
+    <!-- Shows the user that 1 call remains and how many calls there are total for a particular issue [CHAR_LIMIT=50] -->
+    <string name="call_count_remaining_one">1 call to make (<xliff:g id="callsTotal">%1$d</xliff:g> total)</string>
+
+    <!-- Menu option to refresh the issues list [CHAR_LIMIT=25] -->
     <string name="refresh">Refresh issues</string>
+
+    <!-- Message shown when a call state was recorded locally but there was an issue communicating the result to the server. [CHAR_LIMIT=150] -->
     <string name="request_error_db_recorded_anyway">Call recorded, but there was a problem communicating with the server. Is your device online?</string>
+
+    <!-- Message shown when a call state was recorded locally but there was an issue parsing the JSON response from the server. [CHAR_LIMIT=150] -->
     <string name="json_error_db_recorded_anyway">Call recorded, but we had some issues contacting the server.</string>
+
+    <!-- Menu option to go to a settings page [CHAR_LIMIT=25] -->
     <string name="settings">Settings</string>
-    <string name="setting_usage_title">Send app usage data to 5calls</string>
+
+    <!-- Setting to send usage data (i.e. Analytics) to the 5 calls team [CHAR_LIMIT=50] -->
+    <string name="setting_usage_title">Send app usage data to 5 Calls</string>
+
+    <!-- Description of setting to send usage data to the 5 calls team [CHAR_LIMIT=NONE] -->
     <string name="settings_usage_summary">Data is anonymous and helps us understand how the 5 Calls app is used and make improvements.</string>
+
+    <!-- Menu option to update the location for the app [CHAR_LIMIT=25] -->
     <string name="menu_location">Update location</string>
-    <string name="title_main">5 Calls for %1$s</string>
+
+    <!-- Title for issues list page, starts with the app name and specifies the user's location [CHAR_LIMIT=30] -->
+    <string name="title_main">5 Calls for <xliff:g id="location">%1$s</xliff:g></string>
+
+    <!-- Button that will use the user's device location to set the location in the app [CHAR_LIMIT=30] -->
     <string name="btn_gps">Use my location</string>
+
+    <!-- Prompt to enter a zip code instead of using the phone's GPS location [CHAR_LIMIT=50] -->
     <string name="location_zip_prompt">Or enter your zip code:</string>
+
+    <!-- Error shown when the location cannot be parsed properly in the issues list page [CHAR_LIMIT=150] -->
     <string name="main_activity_location_error">Sorry, we could not read your location, please try re-entering it</string>
+
+    <!-- Title of the Your Impact activity showing a user their stats [CHAR_LIMIT=30] -->
     <string name="stats_activity">Your Impact</string>
+
+    <!-- Message that the user has no stats yet because they haven't made calls yet, shown on the impact page [CHAR_LIMIT=100] -->
     <string name="no_calls_impact_message">You haven\'t made any calls yet with the 5 Calls app!</string>
-    <string name="your_call_count">Your impact is %1$d calls!</string>
+
+    <!-- Short sentence with the user's total call count [CHAR_LIMIT=50] -->
+    <string name="your_call_count">Your impact is <xliff:g id="callCount">%1$d</xliff:g> calls!</string>
+
+    <!-- Short sentence with the user's total call count when they've made just 1 call [CHAR_LIMIT=50] -->
     <string name="your_call_count_one">Your impact is 1 call!</string>
+
+    <!-- Some motivational text about how great the user is for making calls, plus a lead into the call breakdown section of the stats page [CHAR_LIMIT=NONE] -->
     <string name="motivational_text">That\'s awesome, and you should feel awesome. Every call counts, and here is what you have achieved:</string>
-    <string name="impact_contact">You\'ve made contact %1$d times!</string>
-    <string name="impact_vm">You\'ve left %1$d voicemails.</string>
-    <string name="impact_unavailable">%1$d times the contact was unavailable.</string>
+
+    <!-- Tells the user how many times they've made contact [CHAR_LIMIT=50] -->
+    <string name="impact_contact">You\'ve made contact <xliff:g id="contactCallCount">"%1$d</xliff:g> times!</string>
+
+    <!-- Tells the user how many times they've left a voicemail [CHAR_LIMIT=50] -->
+    <string name="impact_vm">You\'ve left <xliff:g id="voicemailCallCount">%1$d</xliff:g> voicemails.</string>
+
+    <!-- Tells the user how many times they've called but the office was unavailable [CHAR_LIMIT=50] -->
+    <string name="impact_unavailable"><xliff:g id="unavailableCallCount">%1$d</xliff:g> times the contact was unavailable.</string>
+
+    <!-- Tells the user how many times they've made contact, if the count is 1 [CHAR_LIMIT=50] -->
     <string name="impact_contact_one">You\'ve made contact 1 time!</string>
+
+    <!-- Tells the user how many times they've left a voicemail, if the count is 1 [CHAR_LIMIT=50] -->
     <string name="impact_vm_one">You\'ve left 1 voicemail.</string>
+
+    <!-- Tells the user how many times they've called but the office was unavailable, if the count is 1 [CHAR_LIMIT=50] -->
     <string name="impact_unavailable_one">1 time the contact was unavailable.</string>
+
+    <!-- Unknown contact name [CHAR_LIMIT=50] -->
     <string name="unknown_contact">Unknown contact</string>
+
+    <!-- Unknown issue name [CHAR_LIMIT=NONE] -->
     <string name="unknown_issue">Unknown issue</string>
+
+    <!-- Unknown location set [CHAR_LIMIT=50] -->
+    <string name="unknown_location">Unknown location</string>
+
+    <!-- Label for a list of most contacted representatives [CHAR_LIMIT=100] -->
     <string name="top_contacts">Your most contacted representatives are:</string>
-    <string name="contact_call_stat">%1$d calls: %2$s</string>
-    <string name="contact_call_stat_one">1 call: %1$s</string>
+
+    <!-- Description of how many calls for a given contact name [CHAR_LIMIT=] -->
+    <string name="contact_call_stat"><xliff:g id="callCount">%1$d</xliff:g> calls: <xliff:g id="repName">%2$s</xliff:g></string>
+
+    <!-- Description of how many calls for a given contact name, if the count is 1 [CHAR_LIMIT=] -->
+    <string name="contact_call_stat_one">1 call: <xliff:g id="repName">%1$s</xliff:g></string>
 </resources>
