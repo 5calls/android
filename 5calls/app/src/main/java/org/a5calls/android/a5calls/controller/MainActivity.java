@@ -205,8 +205,10 @@ public class MainActivity extends AppCompatActivity {
                 // Note: If the user has made calls in other locations, then we won't be saving
                 // the issues and contacts to the DB from those locations. However, that's probably
                 // OK.
+                // TODO: Remove this extra save when all users are upgraded past version 0.07.
                 if (!AccountManager.Instance.getDatabaseSavesContacts(getApplicationContext())) {
-                    saveIssuesToDatabaseForUpgrade(issues);
+                    AppSingleton.getInstance(getApplicationContext()).getDatabaseHelper()
+                            .saveIssuesToDatabaseForUpgrade(issues);
                     AccountManager.Instance.setDatabaseSavesContacts(getApplicationContext(), true);
                 }
                 mIssuesAdapter.setIssues(issues);
@@ -226,23 +228,6 @@ public class MainActivity extends AppCompatActivity {
 
         AppSingleton.getInstance(getApplicationContext()).getJsonController().registerStatusListener(mStatusListener);
     }
-
-    private void saveIssuesToDatabaseForUpgrade(List<Issue> issues) {
-        DatabaseHelper db = AppSingleton.getInstance(getApplicationContext()).getDatabaseHelper();
-        Set<String> addedContacts = new HashSet<>();
-        for (Issue issue : issues) {
-            db.addIssue(issue.id, issue.name);
-            for (int i = 0; i < issue.contacts.length; i++) {
-                // Do a little less DB work by keeping added contacts in a set. Most contacts in
-                // the issues list are repeats anyway.
-                if (!addedContacts.contains(issue.contacts[i].id)) {
-                    db.addContact(issue.contacts[i].id, issue.contacts[i].name);
-                    addedContacts.add(issue.contacts[i].id);
-                }
-            }
-        }
-    }
-
 
     private void showStats() {
         Intent intent = new Intent(this, StatsActivity.class);

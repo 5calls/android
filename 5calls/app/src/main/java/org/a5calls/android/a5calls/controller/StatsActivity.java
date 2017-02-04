@@ -50,6 +50,10 @@ public class StatsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         DatabaseHelper db = AppSingleton.getInstance(this).getDatabaseHelper();
+        initializeUI(db);
+    }
+
+    private void initializeUI(DatabaseHelper db) {
         int count = db.getCallsCount();
         if (count == 0) {
             // Show a "no impact yet!" message.

@@ -8,8 +8,12 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.support.v4.util.Pair;
 import android.util.Log;
 
+import org.a5calls.android.a5calls.AppSingleton;
+
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Local database helper. I believe this is already "thread-safe" and such because SQLiteOpenHelper
@@ -118,20 +122,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor c = getReadableDatabase().rawQuery("SELECT " + IssuesColumns.ISSUE_NAME + " FROM " +
                 ISSUES_TABLE_NAME + " WHERE " + IssuesColumns.ISSUE_ID + " = \"" + issueId + "\"",
                 null);
+        String result = "";
         if (c.moveToNext()) {
-            return c.getString(0);
+            result = c.getString(0);
         }
-        return "";
+        c.close();
+        return result;
     }
 
     public String getContactName(String contactId) {
         Cursor c = getReadableDatabase().rawQuery("SELECT " + ContactColumns.CONTACT_NAME +
                 " FROM " + CONTACTS_TABLE_NAME + " WHERE " + ContactColumns.CONTACT_ID + " = \"" +
                 contactId + "\"", null);
+        String result = "";
         if (c.moveToNext()) {
-            return c.getString(0);
+            result = c.getString(0);
         }
-        return "";
+        c.close();
+        return result;
     }
 
     /**
@@ -191,7 +199,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor c = getReadableDatabase().rawQuery("SELECT " + CallsColumns.TIMESTAMP + " FROM " +
                 CALLS_TABLE_NAME + " WHERE " + CallsColumns.ISSUE_ID + " = ? AND " +
                 CallsColumns.CONTACT_ID + " = ?", new String[] {issueId, contactId});
-        return c.getCount() > 0;
+        boolean result = c.getCount() > 0;
+        c.close();
+        return result;
     }
 
     /**
@@ -230,6 +240,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             Pair<String, Integer> next = new Pair(c.getString(0), c.getInt(1));
             result.add(next);
         }
+        c.close();
         return result;
     }
 
@@ -246,6 +257,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             Pair<String, Integer> next = new Pair(c.getString(0), c.getInt(1));
             result.add(next);
         }
+        c.close();
         return result;
+    }
+
+    public void saveIssuesToDatabaseForUpgrade(List<Issue> issues) {
+        Set<String> addedContacts = new HashSet<>();
+        for (Issue issue : issues) {
+            addIssue(issue.id, issue.name);
+            for (int i = 0; i < issue.contacts.length; i++) {
+                // Do a little less DB work by keeping added contacts in a set. Most contacts in
+                // the issues list are repeats anyway.
+                if (!addedContacts.contains(issue.contacts[i].id)) {
+                    addContact(issue.contacts[i].id, issue.contacts[i].name);
+                    addedContacts.add(issue.contacts[i].id);
+                }
+            }
+        }
     }
 }
