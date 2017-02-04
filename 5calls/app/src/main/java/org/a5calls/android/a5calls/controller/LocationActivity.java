@@ -172,7 +172,15 @@ public class LocationActivity extends AppCompatActivity {
         if (requestCode == LOCATION_PERMISSION_REQUEST &&
                 grantResults[0] == PackageManager.PERMISSION_GRANTED &&
                 grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-            tryGettingLocation();
+            // Try getting the location in a Runnable because it is possible that if the location
+            // is cached we get it so fast that we returnToMain before we are done resuming, which
+            // causes a crash.
+            gpsButton.post(new Runnable() {
+                @Override
+                public void run() {
+                    tryGettingLocation();
+                }
+            });
             return;
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
