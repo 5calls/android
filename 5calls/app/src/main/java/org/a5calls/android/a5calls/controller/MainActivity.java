@@ -90,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
         registerApiListener();
 
+        swipeContainer.setColorSchemeResources(R.color.colorPrimary);
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override public void onRefresh() {
                 refreshIssues();

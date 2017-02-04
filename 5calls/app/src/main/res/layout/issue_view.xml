@@ -27,7 +27,7 @@
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/issue_done_img"
             android:id="@+id/issue_name"
-            android:textSize="@dimen/h2_text_size"
+            android:textSize="24sp"
             android:textStyle="bold"
             android:textColor="@color/colorPrimaryDark"
             />
@@ -39,7 +39,7 @@
             android:layout_below="@id/issue_name"
             android:layout_alignParentBottom="true"
             android:layout_toEndOf="@id/issue_done_img"
-            android:textSize="14sp"
+            android:textSize="16sp"
             android:textColor="@color/colorPrimaryDark"
             />
 

@@ -176,63 +176,54 @@
             android:layout_marginBottom="4dp"
             android:layout_marginTop="8dp"
             android:gravity="center_vertical"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             >
 
             <Button
                 android:id="@+id/unavailable_btn"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:background="@color/button_color"
                 android:minHeight="@dimen/accessibility_min_size"
-                android:paddingEnd="8dp"
-                android:paddingStart="8dp"
                 android:text="@string/unavailable_btn"
                 android:textColor="@color/colorPrimaryDark"
                 />
 
             <Button
                 android:id="@+id/voicemail_btn"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
-                android:layout_marginStart="4dp"
-                android:layout_weight="1"
+                android:layout_marginTop="8dp"
                 android:background="@color/button_color"
                 android:minHeight="@dimen/accessibility_min_size"
-                android:paddingEnd="8dp"
-                android:paddingStart="8dp"
                 android:text="@string/voicemail_btn"
                 android:textColor="@color/colorPrimaryDark"
                 />
 
             <Button
                 android:id="@+id/made_contact_btn"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_marginTop="8dp"
                 android:background="@color/button_color"
                 android:minHeight="@dimen/accessibility_min_size"
-                android:paddingEnd="8dp"
-                android:paddingStart="8dp"
                 android:text="@string/made_contact_btn"
                 android:textColor="@color/colorPrimaryDark"
                 />
+
+            <Button
+                android:id="@+id/skip_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@color/button_color"
+                android:minHeight="@dimen/accessibility_min_size"
+                android:text="@string/skip_btn"
+                android:textColor="@color/colorPrimaryDark"
+                />
+
         </LinearLayout>
 
-        <Button
-            android:id="@+id/skip_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/buttons_holder"
-            android:background="@color/button_color"
-            android:minHeight="@dimen/accessibility_min_size"
-            android:paddingEnd="8dp"
-            android:paddingStart="8dp"
-            android:text="@string/skip_btn"
-            android:textColor="@color/colorPrimaryDark"
-            />
 
     </RelativeLayout>
 

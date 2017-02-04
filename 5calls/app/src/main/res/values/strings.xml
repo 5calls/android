@@ -41,7 +41,7 @@
     <string name="contact_reason_prompt">Why you\'re calling this office:</string>
     <string name="call_count_remaining">%1$d calls to make (%2$d total)</string>
     <string name="call_count_remaining_one">1 call to make (%1$d total)</string>
-    <string name="refresh">Refresh</string>
+    <string name="refresh">Refresh issues</string>
     <string name="request_error_db_recorded_anyway">Call recorded, but there was a problem communicating with the server. Is your device online?</string>
     <string name="json_error_db_recorded_anyway">Call recorded, but we had some issues contacting the server.</string>
     <string name="settings">Settings</string>
