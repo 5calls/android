@@ -26,11 +26,14 @@ import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
+import org.a5calls.android.a5calls.model.DatabaseHelper;
 import org.a5calls.android.a5calls.model.FiveCallsApi;
 import org.a5calls.android.a5calls.model.Issue;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -195,6 +198,19 @@ public class MainActivity extends AppCompatActivity {
             public void onIssuesReceived(String locationName, List<Issue> issues) {
                 getSupportActionBar().setTitle(String.format(getResources().getString(
                         R.string.title_main), locationName));
+                // If this is the first time we've set issues ever, add all the contacts and
+                // issue IDs to the database to keep track of things the user has already called
+                // about. This allows upgrade from app version 0.07 without "unknown" contacts or
+                // issues in stats.
+                // Note: If the user has made calls in other locations, then we won't be saving
+                // the issues and contacts to the DB from those locations. However, that's probably
+                // OK.
+                // TODO: Remove this extra save when all users are upgraded past version 0.07.
+                if (!AccountManager.Instance.getDatabaseSavesContacts(getApplicationContext())) {
+                    AppSingleton.getInstance(getApplicationContext()).getDatabaseHelper()
+                            .saveIssuesToDatabaseForUpgrade(issues);
+                    AccountManager.Instance.setDatabaseSavesContacts(getApplicationContext(), true);
+                }
                 mIssuesAdapter.setIssues(issues);
                 swipeContainer.setRefreshing(false);
             }
@@ -213,14 +229,9 @@ public class MainActivity extends AppCompatActivity {
         AppSingleton.getInstance(getApplicationContext()).getJsonController().registerStatusListener(mStatusListener);
     }
 
-
     private void showStats() {
-        // TODO: Show the stats in a DialogFragment or even an activity.
-        int callsCount = AppSingleton.getInstance(getApplicationContext()).getDatabaseHelper()
-                .getCallsCount();
-        String message = String.format(getResources().getString(R.string.stats_message),
-                callsCount);
-        Snackbar.make(findViewById(R.id.activity_main), message, Snackbar.LENGTH_LONG).show();
+        Intent intent = new Intent(this, StatsActivity.class);
+        startActivity(intent);
     }
 
     private void refreshIssues() {

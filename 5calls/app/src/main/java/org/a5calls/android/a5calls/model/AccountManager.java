@@ -18,6 +18,7 @@ public enum AccountManager {
     private static final String KEY_USER_ZIP = "prefsKeyUserZip";
     private static final String KEY_LATITUDE = "prefsKeyLatitude";
     private static final String KEY_LONGITUDE = "prefsKeyLongitude";
+    private static final String KEY_DATABASE_SAVES_CONTACTS = "prefsKeyDbSavesContacts";
 
     public boolean hasLocation(Context context) {
         // If there's a lat/lng or a zip.
@@ -66,6 +67,15 @@ public enum AccountManager {
 
     public void setAllowAnalytics(Context context, boolean shouldAllow) {
         getSharedPrefs(context).edit().putBoolean(KEY_ALLOW_ANALYTICS, shouldAllow).apply();
+    }
+
+    public boolean getDatabaseSavesContacts(Context context) {
+        return getSharedPrefs(context).getBoolean(KEY_DATABASE_SAVES_CONTACTS, false);
+    }
+
+    public void setDatabaseSavesContacts(Context context, boolean savesContacts) {
+        getSharedPrefs(context).edit().putBoolean(KEY_DATABASE_SAVES_CONTACTS,
+                savesContacts).apply();
     }
 
     private SharedPreferences getSharedPrefs(Context context) {

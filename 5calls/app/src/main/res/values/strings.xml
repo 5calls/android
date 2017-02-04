@@ -17,8 +17,8 @@
     <string name="no_calls_left">No calls left for this issue!</string>
     <string name="edit">edit</string>
     <string name="reps_for_zip">Current issues and reps for %1$s</string>
-    <string name="menu_about">About</string>
-    <string name="about_title">About</string>
+    <string name="menu_about">About 5 Calls</string>
+    <string name="about_title">About 5 Calls</string>
     <string name="about_header">MAKE YOUR VOICE HEARD</string>
     <string name="about_p1">Turn your passive participation into active resistance. Facebook likes and Twitter retweets can\’t create the change you want to see. Calling your Government on the phone can.</string>
     <string name="about_p2">Spend 5 minutes, make 5 calls.</string>
@@ -35,8 +35,7 @@
     <string name="get_started_btn">Get started</string>
     <string name="open_source_info">The 5 Calls app is open-source and volunteer made. Find it at github.com/5calls/android.</string>
     <string name="version_info">Version %1$s</string>
-    <string name="menu_stats">Stats</string>
-    <string name="stats_message">Your impact is %1$d calls. (Detailed stats coming soon!)</string>
+    <string name="menu_stats">Your impact</string>
     <string name="call_script_prompt">Your script:</string>
     <string name="contact_reason_prompt">Why you\'re calling this office:</string>
     <string name="call_count_remaining">%1$d calls to make (%2$d total)</string>
@@ -52,4 +51,20 @@
     <string name="btn_gps">Use my location</string>
     <string name="location_zip_prompt">Or enter your zip code:</string>
     <string name="main_activity_location_error">Sorry, we could not read your location, please try re-entering it</string>
+    <string name="stats_activity">Your Impact</string>
+    <string name="no_calls_impact_message">You haven\'t made any calls yet with the 5 Calls app!</string>
+    <string name="your_call_count">Your impact is %1$d calls!</string>
+    <string name="your_call_count_one">Your impact is 1 call!</string>
+    <string name="motivational_text">That\'s awesome, and you should feel awesome. Every call counts, and here is what you have achieved:</string>
+    <string name="impact_contact">You\'ve made contact %1$d times!</string>
+    <string name="impact_vm">You\'ve left %1$d voicemails.</string>
+    <string name="impact_unavailable">%1$d times the contact was unavailable.</string>
+    <string name="impact_contact_one">You\'ve made contact 1 time!</string>
+    <string name="impact_vm_one">You\'ve left 1 voicemail.</string>
+    <string name="impact_unavailable_one">1 time the contact was unavailable.</string>
+    <string name="unknown_contact">Unknown contact</string>
+    <string name="unknown_issue">Unknown issue</string>
+    <string name="top_contacts">Your most contacted representatives are:</string>
+    <string name="contact_call_stat">%1$d calls: %2$s</string>
+    <string name="contact_call_stat_one">1 call: %1$s</string>
 </resources>

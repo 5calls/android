@@ -2,7 +2,6 @@ package org.a5calls.android.a5calls.controller;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -44,6 +43,10 @@ public class IssueActivity extends AppCompatActivity {
     private static final String TAG = "IssueActivity";
     public static final String KEY_ISSUE = "key_issue";
     public static final String KEY_ZIP = "key_zip";
+    public static final String VOICEMAIL = "vm";
+    public static final String CONTACTED = "contacted";
+    public static final String UNAVAILABLE = "unavailable";
+
     private static final String KEY_ACTIVE_CONTACT_INDEX = "active_contact_index";
 
     private final AccountManager accountManager = AccountManager.Instance;
@@ -147,7 +150,6 @@ public class IssueActivity extends AppCompatActivity {
         if (mIssue.contacts == null || mIssue.contacts.length == 0) {
             buttonsLayout.setVisibility(View.GONE);
             buttonsPrompt.setVisibility(View.GONE);
-            skipButton.setVisibility(View.GONE);
             callThisOffice.setVisibility(View.GONE);
             noCallsLeft.setVisibility(View.VISIBLE);
         } else {
@@ -180,24 +182,24 @@ public class IssueActivity extends AppCompatActivity {
             madeContactButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    reportEvent("contacted");
-                    reportCall("contacted", zip);
+                    reportEvent(CONTACTED);
+                    reportCall(CONTACTED, zip);
                 }
             });
 
             unavailableButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    reportEvent("unavailable");
-                    reportCall("unavailable", zip);
+                    reportEvent(UNAVAILABLE);
+                    reportCall(UNAVAILABLE, zip);
                 }
             });
 
             voicemailButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    reportEvent("vm");
-                    reportCall("vm", zip);
+                    reportEvent(VOICEMAIL);
+                    reportCall(VOICEMAIL, zip);
                 }
             });
         }
@@ -251,7 +253,8 @@ public class IssueActivity extends AppCompatActivity {
     private void reportCall(String callType, String zip) {
         setButtonsEnabled(false);
         AppSingleton.getInstance(getApplicationContext()).getDatabaseHelper().addCall(mIssue.id,
-                mIssue.contacts[mActiveContactIndex].id, callType, zip);
+                mIssue.name, mIssue.contacts[mActiveContactIndex].id,
+                mIssue.contacts[mActiveContactIndex].name, callType, zip);
         AppSingleton.getInstance(getApplicationContext()).getJsonController().reportCall(
                 mIssue.id, mIssue.contacts[mActiveContactIndex].id, callType, zip);
     }

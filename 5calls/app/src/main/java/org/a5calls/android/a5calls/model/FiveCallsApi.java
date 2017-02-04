@@ -138,7 +138,7 @@ public class FiveCallsApi {
         mRequestQueue.add(reportRequest);
     }
 
-    // Result is "vm", "unavailable", or "contacted"
+    // Result is "VOICEMAIL", "unavailable", or "contacted"
     // https://github.com/5calls/5calls/blob/master/static/js/main.js#L221
     public void reportCall(final String issueId, final String contactId, final String result,
                            final String zip) {
