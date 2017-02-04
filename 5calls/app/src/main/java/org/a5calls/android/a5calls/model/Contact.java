@@ -8,10 +8,6 @@ import android.os.Parcelable;
  *
  */
 public class Contact implements Parcelable {
-    public static final int NOT_CONTACTED = 0;
-    public static final int CONTACTED = 1;
-
-
     public String id;
     public String name;
     public String phone;
@@ -20,7 +16,7 @@ public class Contact implements Parcelable {
     public String state;
     public String reason;
     public String area;
-    public int contacted = NOT_CONTACTED;
+    public FieldOffice[] field_offices;
 
     protected Contact(Parcel in) {
         id = in.readString();
@@ -31,7 +27,7 @@ public class Contact implements Parcelable {
         state = in.readString();
         reason = in.readString();
         area = in.readString();
-        contacted = in.readInt();
+        field_offices = in.createTypedArray(FieldOffice.CREATOR);
     }
 
     public static final Creator<Contact> CREATOR = new Creator<Contact>() {
@@ -61,6 +57,6 @@ public class Contact implements Parcelable {
         dest.writeString(state);
         dest.writeString(reason);
         dest.writeString(area);
-        dest.writeInt(contacted);
+        dest.writeTypedArray(field_offices, PARCELABLE_WRITE_RETURN_VALUE);
     }
 }

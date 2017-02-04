@@ -34,6 +34,8 @@ public class FiveCallsApi {
     // DO NOT SUBMIT with DEBUG = true.
     // This only works on an emulator running on a machine that is running a local version of the
     // 5calls go server. For more on the go server, check out github.com/5calls/5calls.
+    // Recommended setting this to "true" for testing, though, to avoid adding fake calls to the
+    // server.
     private static final boolean DEBUG = false;
 
     private static final String GET_ISSUES_REQUEST = "https://5calls.org/issues/?address=";

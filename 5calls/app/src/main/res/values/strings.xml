@@ -186,9 +186,16 @@
     <!-- Label for a list of most contacted representatives [CHAR_LIMIT=100] -->
     <string name="top_contacts">Your most contacted representatives are:</string>
 
-    <!-- Description of how many calls for a given contact name [CHAR_LIMIT=] -->
+    <!-- Description of how many calls for a given contact name [CHAR_LIMIT=50] -->
     <string name="contact_call_stat"><xliff:g id="callCount">%1$d</xliff:g> calls: <xliff:g id="repName">%2$s</xliff:g></string>
 
-    <!-- Description of how many calls for a given contact name, if the count is 1 [CHAR_LIMIT=] -->
+    <!-- Description of how many calls for a given contact name, if the count is 1 [CHAR_LIMIT=50] -->
     <string name="contact_call_stat_one">1 call: <xliff:g id="repName">%1$s</xliff:g></string>
+
+    <!-- Link to expand a section about field office phone numbers [CHAR_LIMIT=30] -->
+    <string name="local_office_link">Call a local office</string>
+
+    <!-- Prompt for a section that lists field offices & phone numbers (not the DC office) for a contact [CHAR_LIMIT=NONE] -->
+    <string name="field_office_prompt">Field offices for <xliff:g id="contactName">%1$s</xliff:g></string>
+
 </resources>

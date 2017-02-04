@@ -9,8 +9,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.text.util.Linkify;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -26,11 +28,13 @@ import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
+import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.DatabaseHelper;
 import org.a5calls.android.a5calls.model.FiveCallsApi;
 import org.a5calls.android.a5calls.model.Issue;
 
 import java.util.List;
+import java.util.zip.Inflater;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -79,6 +83,10 @@ public class IssueActivity extends AppCompatActivity {
     @BindView(R.id.made_contact_btn) Button madeContactButton;
 
     @BindView(R.id.skip_btn) Button skipButton;
+
+    @BindView(R.id.local_office_btn) Button localOfficeButton;
+    @BindView(R.id.field_office_section) LinearLayout localOfficeSection;
+    @BindView(R.id.field_office_prompt) TextView localOfficePrompt;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -267,17 +275,31 @@ public class IssueActivity extends AppCompatActivity {
     }
 
     private void setupContactUi(int index) {
-        contactName.setText(mIssue.contacts[index].name);
-        contactReason.setText(mIssue.contacts[index].reason);
-        if (!TextUtils.isEmpty(mIssue.contacts[index].photoURL)) {
-            Glide.with(getApplicationContext())
-                    .load(mIssue.contacts[index].photoURL)
-                    .into(repImage);
+        final Contact contact = mIssue.contacts[index];
+        contactName.setText(contact.name);
+        contactReason.setText(contact.reason);
+        if (!TextUtils.isEmpty(contact.photoURL)) {
+            Glide.with(getApplicationContext()).load(contact.photoURL).into(repImage);
         } else {
             repImage.setVisibility(View.GONE);
         }
-        phoneNumber.setText(mIssue.contacts[index].phone);
+        phoneNumber.setText(contact.phone);
         Linkify.addLinks(phoneNumber, Linkify.PHONE_NUMBERS);
+
+        // TODO save local office section state on rotation
+        localOfficeSection.setVisibility(View.GONE);
+        localOfficeSection.removeViews(1, localOfficeSection.getChildCount() - 1);
+        if (contact.field_offices == null || contact.field_offices.length == 0) {
+            localOfficeButton.setVisibility(View.GONE);
+        } else {
+            localOfficeButton.setVisibility(View.VISIBLE);
+            localOfficeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    expandLocalOfficeSection(contact);
+                }
+            });
+        }
 
         // If the ScrollView is below the contact, scroll back up to show it.
         if (scrollView.getScrollY() > repInfoLayout.getTop()) {
@@ -288,6 +310,27 @@ public class IssueActivity extends AppCompatActivity {
                     scrollView.smoothScrollTo(0, repInfoLayout.getTop());
                 }
             });
+        }
+    }
+
+    private void expandLocalOfficeSection(Contact contact) {
+        // TODO: Animate this transition
+        localOfficeSection.setVisibility(View.VISIBLE);
+        localOfficePrompt.setText(String.format(getResources().getString(
+                R.string.field_office_prompt), contact.name));
+        // TODO: Use an adapter or ListView or something. There aren't expected to be
+        // so many local offices so this is OK for now.
+        LayoutInflater inflater = getLayoutInflater();
+        for (int i = 0; i < contact.field_offices.length; i++) {
+            ViewGroup localOfficeInfo = (ViewGroup) inflater.inflate(
+                    R.layout.field_office_list_item, null);
+            TextView numberView = (TextView) localOfficeInfo.findViewById(
+                    R.id.field_office_number);
+            numberView.setText(contact.field_offices[i].phone);
+            Linkify.addLinks(numberView, Linkify.PHONE_NUMBERS);
+            ((TextView) localOfficeInfo.findViewById(R.id.field_office_city)).setText(
+                    "- " + contact.field_offices[i].city);
+            localOfficeSection.addView(localOfficeInfo);
         }
     }
 

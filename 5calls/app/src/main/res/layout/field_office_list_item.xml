@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="32dp"
+    >
+
+    <!-- TODO: Make the local office click target accessible -->
+
+    <TextView
+        android:id="@+id/field_office_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minHeight="32dp"
+        android:textSize="18sp"
+        android:clickable="true"
+        android:textColor="@color/colorAccent"
+        />
+
+    <TextView
+        android:id="@+id/field_office_city"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:textSize="18sp"
+        android:textColor="@color/colorPrimary"
+        />
+
+</LinearLayout>

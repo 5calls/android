@@ -38,31 +38,31 @@
             android:textSize="16sp"
             />
 
+        <TextView
+            android:id="@+id/call_this_office"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/issue_description"
+            android:text="@string/call_this_office"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18sp"
+            android:textStyle="bold|italic"
+            android:layout_marginBottom="16dp"
+            />
+
         <RelativeLayout
             android:id="@+id/rep_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/issue_description"
+            android:layout_below="@id/call_this_office"
             >
 
             <ImageView
                 android:id="@+id/rep_image"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
                 android:layout_alignParentStart="true"
                 android:contentDescription="@null"
-                />
-
-            <TextView
-                android:id="@+id/call_this_office"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignWithParentIfMissing="true"
-                android:layout_toEndOf="@id/rep_image"
-                android:text="@string/call_this_office"
-                android:textColor="@color/colorPrimary"
-                android:textSize="18sp"
                 />
 
             <TextView
@@ -71,11 +71,12 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignWithParentIfMissing="true"
-                android:layout_below="@id/call_this_office"
+                android:layout_alignParentTop="true"
                 android:layout_toEndOf="@id/rep_image"
                 android:textColor="@color/colorPrimary"
                 android:textSize="24sp"
                 android:textStyle="bold"
+                android:layout_marginBottom="8dp"
                 />
 
             <TextView
@@ -84,12 +85,48 @@
                 android:layout_height="wrap_content"
                 android:layout_alignWithParentIfMissing="true"
                 android:layout_below="@id/contact_name"
-                android:layout_marginBottom="16dp"
                 android:layout_toEndOf="@id/rep_image"
                 android:textColor="@color/colorPrimary"
                 android:textSize="32sp"
                 android:textStyle="bold"
                 />
+
+            <Button
+                android:id="@+id/local_office_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignWithParentIfMissing="true"
+                android:layout_below="@id/phone_number"
+                android:layout_toEndOf="@id/rep_image"
+                android:text="@string/local_office_link"
+                android:background="@android:color/transparent"
+                android:textColor="@color/colorAccent"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                />
+
+            <LinearLayout
+                android:id="@+id/field_office_section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_below="@id/local_office_btn"
+                android:layout_alignParentStart="true"
+                android:layout_marginBottom="16dp"
+                android:layout_alignParentBottom="true"
+                >
+
+                <TextView
+                    android:id="@+id/field_office_prompt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="18sp"
+                    android:textStyle="bold|italic"
+                    />
+
+            </LinearLayout>
 
         </RelativeLayout>
 
@@ -97,9 +134,9 @@
             android:id="@+id/script_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/rep_info"
             android:orientation="vertical"
-            >
+            android:layout_below="@+id/rep_info"
+            android:layout_alignParentStart="true">
 
             <TextView
                 android:layout_width="match_parent"
@@ -107,8 +144,8 @@
                 android:layout_marginTop="16dp"
                 android:text="@string/contact_reason_prompt"
                 android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/text_size_paragraph"
-                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textStyle="bold|italic"
                 />
 
             <TextView
@@ -126,8 +163,8 @@
                 android:layout_marginTop="8dp"
                 android:text="@string/call_script_prompt"
                 android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/text_size_paragraph"
-                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textStyle="bold|italic"
                 />
 
             <TextView
@@ -151,7 +188,7 @@
             android:layout_marginTop="16dp"
             android:text="@string/no_calls_left"
             android:textColor="@color/colorPrimary"
-            android:textSize="16dp"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:visibility="gone"
             />
@@ -160,12 +197,13 @@
             android:id="@+id/buttons_prompt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/script_section"
             android:layout_marginTop="16dp"
             android:text="@string/buttons_prompt"
             android:textColor="@color/colorPrimary"
-            android:textSize="16dp"
-            android:textStyle="bold"
+            android:textSize="18sp"
+            android:textStyle="bold|italic"
+            android:layout_below="@+id/script_section"
+            android:layout_alignParentStart="true"
             />
 
         <LinearLayout
@@ -223,7 +261,6 @@
                 />
 
         </LinearLayout>
-
 
     </RelativeLayout>
 
