@@ -317,6 +317,7 @@ public class IssueActivity extends AppCompatActivity {
                     .setCategory("CallAction")
                     .setAction(event)
                     .setLabel(mIssue.id + " " + mIssue.contacts[mActiveContactIndex].id)
+                    .setValue(1)
                     .build());
         }
     }
