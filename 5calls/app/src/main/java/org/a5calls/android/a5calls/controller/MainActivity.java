@@ -306,7 +306,7 @@ public class MainActivity extends AppCompatActivity {
             });
             int totalCalls = issue.contacts.length;
             List<String> contacted = AppSingleton.getInstance(getApplicationContext())
-                    .getDatabaseHelper().getCallsForIssueAndZip(issue.id, mZip);
+                    .getDatabaseHelper().getCallsForIssueAndContacts(issue.id, issue.contacts);
             int callsLeft = totalCalls - contacted.size();
             if (callsLeft == totalCalls) {
                 if (totalCalls == 1) {

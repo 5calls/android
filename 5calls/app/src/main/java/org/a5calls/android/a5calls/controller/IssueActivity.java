@@ -1,10 +1,13 @@
 package org.a5calls.android.a5calls.controller;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.text.util.Linkify;
@@ -14,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -70,6 +74,7 @@ public class IssueActivity extends AppCompatActivity {
     @BindView(R.id.call_this_office) TextView callThisOffice;
     @BindView(R.id.contact_name) TextView contactName;
     @BindView(R.id.phone_number) TextView phoneNumber;
+    @BindView(R.id.contact_done_img) ImageButton contactChecked;
 
     @BindView(R.id.script_section) LinearLayout scriptLayout;
     @BindView(R.id.contact_reason) TextView contactReason;
@@ -157,9 +162,13 @@ public class IssueActivity extends AppCompatActivity {
         callScript.setText(mIssue.script);
 
         if (mIssue.contacts == null || mIssue.contacts.length == 0) {
+            // Hide everything if there are no contacts at all.
             buttonsLayout.setVisibility(View.GONE);
             buttonsPrompt.setVisibility(View.GONE);
             callThisOffice.setVisibility(View.GONE);
+            localOfficeButton.setVisibility(View.GONE);
+            scriptLayout.setVisibility(View.GONE);
+            repInfoLayout.setVisibility(View.GONE);
             noCallsLeft.setVisibility(View.VISIBLE);
         } else {
             boolean expandLocalOffices = false;
@@ -285,6 +294,7 @@ public class IssueActivity extends AppCompatActivity {
         contactName.setText(contact.name);
         contactReason.setText(contact.reason);
         if (!TextUtils.isEmpty(contact.photoURL)) {
+            repImage.setVisibility(View.VISIBLE);
             Glide.with(getApplicationContext()).load(contact.photoURL).into(repImage);
         } else {
             repImage.setVisibility(View.GONE);
@@ -310,6 +320,40 @@ public class IssueActivity extends AppCompatActivity {
                     }
                 });
             }
+        }
+
+        // Show a bit about whether they've been contacted yet
+        final List<String> previousCalls = AppSingleton.getInstance(this).getDatabaseHelper()
+                .getCallResults(mIssue.id, contact.id);
+        if (previousCalls.size() > 0) {
+            contactChecked.setVisibility(View.VISIBLE);
+            contactChecked.setImageLevel(1);
+            contactChecked.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String message = TextUtils.join(", ", previousCalls)
+                            .replace(IssueActivity.VOICEMAIL, getResources().getString(
+                                    R.string.voicemail_btn))
+                            .replace(IssueActivity.CONTACTED, getResources().getString(
+                                    R.string.made_contact_btn))
+                            .replace(IssueActivity.UNAVAILABLE, getResources().getString(
+                                    R.string.unavailable_btn));
+                    new AlertDialog.Builder(IssueActivity.this)
+                            .setTitle(R.string.contact_details_dialog_title)
+                            .setMessage(message)
+                            .setPositiveButton(android.R.string.ok,
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                        }
+                                    })
+                            .show();
+                }
+            });
+        } else {
+            contactChecked.setVisibility(View.GONE);
+            contactChecked.setOnClickListener(null);
         }
 
         // If the ScrollView is below the contact, scroll back up to show it.
@@ -347,15 +391,20 @@ public class IssueActivity extends AppCompatActivity {
     }
 
     private void tryLoadingNextContact() {
-        if (mActiveContactIndex == mIssue.contacts.length - 1) {
-            // Done!
-            returnToMain();
-        } else {
-            // TODO: Instead of just increasing the index, check to find the next *un-contacted*
-            // representative. If there is none, increasing the index is OK.
-            mActiveContactIndex++;
-            setupContactUi(mActiveContactIndex, /* don't expand local offices by default */ false);
+        mActiveContactIndex = (++mActiveContactIndex) % mIssue.contacts.length;
+        setupContactUi(mActiveContactIndex, /* don't expand local offices by default */ false);
+    }
+
+    // This isn't used right now but might be helpful later.
+    private int getNextUncontactedIndex() {
+        DatabaseHelper db = AppSingleton.getInstance(this).getDatabaseHelper();
+        for (int i = 0; i < mIssue.contacts.length; i++) {
+            int index = (mActiveContactIndex + i) % mIssue.contacts.length;
+            if (!db.hasCalled(mIssue.id, mIssue.contacts[index].id)) {
+                return index;
+            }
         }
+        return -1;
     }
 
     private void returnToMain() {

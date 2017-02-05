@@ -88,7 +88,7 @@
     <string name="get_started_btn">Get started</string>
 
     <!-- Description of how the 5 Calls app is open-source, link to github page [CHAR_LIMIT=NONE] -->
-    <string name="open_source_info">The 5 Calls app is open-source and volunteer made. Find it at github.com/5calls/android.</string>
+    <string name="open_source_info">The 5 Calls app is open-source and volunteer made. Find it at <u>github.com/5calls/android</u>.</string>
 
     <!-- Version code shown to the user in the about page [CHAR_LIMIT=NONE] -->
     <string name="version_info">Version <xliff:g id="versionCode">%1$s</xliff:g></string>
@@ -197,5 +197,11 @@
 
     <!-- Prompt for a section that lists field offices & phone numbers (not the DC office) for a contact [CHAR_LIMIT=NONE] -->
     <string name="field_office_prompt">Local offices for <xliff:g id="contactName">%1$s</xliff:g></string>
+
+    <!-- Content description for an image that shows a rep is already contacted for a particular issue [CHAR_LIMIT=NONE] -->
+    <string name="contact_done_img_description">(contacted)</string>
+
+    <!-- Title for a dialog telling a user what type of contact they've made with a rep on an issue [CHAR_LIMIT=30] -->
+    <string name="contact_details_dialog_title">You have already reported these actions:</string>
 
 </resources>

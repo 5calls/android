@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.v4.util.Pair;
+import android.text.TextUtils;
 import android.util.Log;
 
 import org.a5calls.android.a5calls.AppSingleton;
@@ -160,16 +161,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Gets the calls in the database for a particular issue.
+     * Gets the calls in the database for a particular issue and list of contacts.
      * @param issueId
-     * @param zip
+     * @param contacts
      * @return A list of the contact IDs contacted for this issue.
      */
-    public List<String> getCallsForIssueAndZip(String issueId, String zip) {
+    public List<String> getCallsForIssueAndContacts(String issueId, Contact[] contacts) {
+        String[] contactIdList = new String[contacts.length];
+        for (int i = 0; i < contacts.length; i++) {
+            contactIdList[i] = "'" + contacts[i].id + "'";
+        }
+        String contactIds = "(" + TextUtils.join(",", contactIdList) + ")";
         String query = "SELECT " + CallsColumns.CONTACT_ID + " FROM " +
                 CALLS_TABLE_NAME + " WHERE " + CallsColumns.ISSUE_ID + " = ? AND " +
-                CallsColumns.LOCATION + " = ? GROUP BY " + CallsColumns.CONTACT_ID;
-        Cursor c = getReadableDatabase().rawQuery(query, new String[] {issueId, zip});
+                CallsColumns.CONTACT_ID + " IN " + contactIds + " GROUP BY " +
+                CallsColumns.CONTACT_ID;
+        Cursor c = getReadableDatabase().rawQuery(query, new String[] {issueId});
         List<String> result = new ArrayList<>();
         while (c.moveToNext()) {
             result.add(c.getString(0));
@@ -191,7 +198,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Whether a contact has been called for a particular issue.
+     * Whether a contact has been called for a particular issue and contact.
      * @param issueId
      * @param contactId
      */
@@ -200,6 +207,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 CALLS_TABLE_NAME + " WHERE " + CallsColumns.ISSUE_ID + " = ? AND " +
                 CallsColumns.CONTACT_ID + " = ?", new String[] {issueId, contactId});
         boolean result = c.getCount() > 0;
+        c.close();
+        return result;
+    }
+
+    /**
+     * The types of calls made for a particular issue and contact.
+     * @param issueId
+     * @param contactId
+     * @return A list of the call results for this issue and contact.
+     */
+    public List<String> getCallResults(String issueId, String contactId) {
+        Cursor c = getReadableDatabase().rawQuery("SELECT " + CallsColumns.RESULT + " FROM " +
+                CALLS_TABLE_NAME + " WHERE " + CallsColumns.ISSUE_ID + " = ? AND " +
+                CallsColumns.CONTACT_ID + " = ? GROUP BY " + CallsColumns.RESULT,
+                new String[] {issueId, contactId});
+        List<String> result = new ArrayList<>();
+        while (c.moveToNext()) {
+            result.add(c.getString(0));
+        }
         c.close();
         return result;
     }
@@ -216,7 +242,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Gets the total number of unavailable calls this user has made
+     * Gets the total number of calls of a particular type (voicemail, unavailable, contacted) that
+     * this user has made
      */
     public int getCallsCountForType(String type) {
         Cursor c = getReadableDatabase().rawQuery(
