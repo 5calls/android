@@ -52,6 +52,7 @@ public class IssueActivity extends AppCompatActivity {
     public static final String UNAVAILABLE = "unavailable";
 
     private static final String KEY_ACTIVE_CONTACT_INDEX = "active_contact_index";
+    private static final String KEY_LOCAL_OFFICES_EXPANDED = "local_offices_expanded";
 
     private final AccountManager accountManager = AccountManager.Instance;
 
@@ -161,8 +162,11 @@ public class IssueActivity extends AppCompatActivity {
             callThisOffice.setVisibility(View.GONE);
             noCallsLeft.setVisibility(View.VISIBLE);
         } else {
+            boolean expandLocalOffices = false;
             if (savedInstanceState != null) {
                 mActiveContactIndex = savedInstanceState.getInt(KEY_ACTIVE_CONTACT_INDEX, 0);
+                expandLocalOffices = savedInstanceState.getBoolean(KEY_LOCAL_OFFICES_EXPANDED,
+                        false);
             } else {
                 DatabaseHelper databaseHelper =
                         AppSingleton.getInstance(getApplicationContext()).getDatabaseHelper();
@@ -177,7 +181,7 @@ public class IssueActivity extends AppCompatActivity {
                     }
                 }
             }
-            setupContactUi(mActiveContactIndex);
+            setupContactUi(mActiveContactIndex, expandLocalOffices);
 
             skipButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -232,6 +236,8 @@ public class IssueActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_ACTIVE_CONTACT_INDEX, mActiveContactIndex);
         outState.putParcelable(KEY_ISSUE, mIssue);
+        outState.putBoolean(KEY_LOCAL_OFFICES_EXPANDED,
+                localOfficeSection.getVisibility() == View.VISIBLE);
     }
 
     @Override
@@ -274,7 +280,7 @@ public class IssueActivity extends AppCompatActivity {
         unavailableButton.setEnabled(enabled);
     }
 
-    private void setupContactUi(int index) {
+    private void setupContactUi(int index, boolean expandLocalSection) {
         final Contact contact = mIssue.contacts[index];
         contactName.setText(contact.name);
         contactReason.setText(contact.reason);
@@ -286,19 +292,24 @@ public class IssueActivity extends AppCompatActivity {
         phoneNumber.setText(contact.phone);
         Linkify.addLinks(phoneNumber, Linkify.PHONE_NUMBERS);
 
-        // TODO save local office section state on rotation
-        localOfficeSection.setVisibility(View.GONE);
-        localOfficeSection.removeViews(1, localOfficeSection.getChildCount() - 1);
-        if (contact.field_offices == null || contact.field_offices.length == 0) {
-            localOfficeButton.setVisibility(View.GONE);
+        if (expandLocalSection) {
+            localOfficeButton.setVisibility(View.INVISIBLE);
+            expandLocalOfficeSection(contact);
         } else {
-            localOfficeButton.setVisibility(View.VISIBLE);
-            localOfficeButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    expandLocalOfficeSection(contact);
-                }
-            });
+            localOfficeSection.setVisibility(View.GONE);
+            localOfficeSection.removeViews(1, localOfficeSection.getChildCount() - 1);
+            if (contact.field_offices == null || contact.field_offices.length == 0) {
+                localOfficeButton.setVisibility(View.GONE);
+            } else {
+                localOfficeButton.setVisibility(View.VISIBLE);
+                localOfficeButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        localOfficeButton.setOnClickListener(null);
+                        expandLocalOfficeSection(contact);
+                    }
+                });
+            }
         }
 
         // If the ScrollView is below the contact, scroll back up to show it.
@@ -315,6 +326,7 @@ public class IssueActivity extends AppCompatActivity {
 
     private void expandLocalOfficeSection(Contact contact) {
         // TODO: Animate this transition
+        localOfficeButton.setVisibility(View.INVISIBLE);
         localOfficeSection.setVisibility(View.VISIBLE);
         localOfficePrompt.setText(String.format(getResources().getString(
                 R.string.field_office_prompt), contact.name));
@@ -342,7 +354,7 @@ public class IssueActivity extends AppCompatActivity {
             // TODO: Instead of just increasing the index, check to find the next *un-contacted*
             // representative. If there is none, increasing the index is OK.
             mActiveContactIndex++;
-            setupContactUi(mActiveContactIndex);
+            setupContactUi(mActiveContactIndex, /* don't expand local offices by default */ false);
         }
     }
 
