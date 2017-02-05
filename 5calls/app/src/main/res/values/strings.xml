@@ -46,7 +46,7 @@
     <string name="buttons_prompt">Enter your result to get to the next call:</string>
 
     <!-- Message to the user that no calls are left on a particular issue [CHAR_LIMIT=NONE] -->
-    <string name="no_calls_left">No calls left for this issue!</string>
+    <string name="no_calls_left">No calls left for this issue.</string>
 
     <!-- Menu option to go to the About 5 Calls screen [CHAR_LIMIT=25] -->
     <string name="menu_about">About 5 Calls</string>
@@ -203,5 +203,11 @@
 
     <!-- Title for a dialog telling a user what type of contact they've made with a rep on an issue [CHAR_LIMIT=30] -->
     <string name="contact_details_dialog_title">You have already reported these actions:</string>
+
+    <!-- Message shown to the user when a contact is skipped [CHAR_LIMIT=150] -->
+    <string name="skip_snackbar_message">Office skipped.</string>
+
+    <!-- Link to go back to the issues list main activity from an issue [CHAR_LIMIT=20] -->
+    <string name="back">back</string>
 
 </resources>

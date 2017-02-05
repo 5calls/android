@@ -116,18 +116,16 @@ public class IssueActivity extends AppCompatActivity {
         mStatusListener = new FiveCallsApi.RequestStatusListener() {
             @Override
             public void onRequestError() {
-                Snackbar.make(issueName,
-                        getResources().getString(R.string.request_error_db_recorded_anyway),
-                        Snackbar.LENGTH_LONG).show();
                 setButtonsEnabled(true);
+                tryLoadingNextContact(getResources().getString(
+                        R.string.request_error_db_recorded_anyway));
             }
 
             @Override
             public void onJsonError() {
-                Snackbar.make(issueName,
-                        getResources().getString(R.string.json_error_db_recorded_anyway),
-                        Snackbar.LENGTH_LONG).show();
                 setButtonsEnabled(true);
+                tryLoadingNextContact(getResources().getString(
+                        R.string.json_error_db_recorded_anyway));
             }
 
             @Override
@@ -143,11 +141,8 @@ public class IssueActivity extends AppCompatActivity {
             @Override
             public void onCallReported() {
                 Log.d(TAG, "call reported successfully!");
-                Snackbar.make(issueName,
-                        getResources().getString(R.string.call_reported),
-                        Snackbar.LENGTH_SHORT).show();
                 setButtonsEnabled(true);
-                tryLoadingNextContact();
+                tryLoadingNextContact(getResources().getString(R.string.call_reported));
             }
         };
         FiveCallsApi controller = AppSingleton.getInstance(getApplicationContext())
@@ -196,7 +191,7 @@ public class IssueActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     reportEvent("skip");
-                    tryLoadingNextContact();
+                    tryLoadingNextContact(getResources().getString(R.string.skip_snackbar_message));
                 }
             });
 
@@ -390,9 +385,22 @@ public class IssueActivity extends AppCompatActivity {
         }
     }
 
-    private void tryLoadingNextContact() {
-        mActiveContactIndex = (++mActiveContactIndex) % mIssue.contacts.length;
-        setupContactUi(mActiveContactIndex, /* don't expand local offices by default */ false);
+    private void tryLoadingNextContact(String snackbarMessage) {
+        if (mActiveContactIndex + 1 >= mIssue.contacts.length) {
+            Snackbar.make(issueName, snackbarMessage + " " +
+                    getResources().getString(R.string.no_calls_left), Snackbar.LENGTH_LONG)
+                    .setAction(getResources().getString(R.string.back), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            returnToMain();
+                        }
+                    })
+                    .show();
+        } else {
+            mActiveContactIndex++;
+            Snackbar.make(issueName, snackbarMessage, Snackbar.LENGTH_LONG).show();
+            setupContactUi(mActiveContactIndex, /* don't expand local offices by default */ false);
+        }
     }
 
     // This isn't used right now but might be helpful later.
