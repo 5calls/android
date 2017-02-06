@@ -210,4 +210,7 @@
     <!-- Link to go back to the issues list main activity from an issue [CHAR_LIMIT=20] -->
     <string name="back">back</string>
 
+    <!-- Done button for issues page [CHAR_LIMIT=30] -->
+    <string name="done">done</string>
+
 </resources>

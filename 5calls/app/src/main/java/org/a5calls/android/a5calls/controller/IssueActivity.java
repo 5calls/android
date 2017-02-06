@@ -172,28 +172,9 @@ public class IssueActivity extends AppCompatActivity {
                 expandLocalOffices = savedInstanceState.getBoolean(KEY_LOCAL_OFFICES_EXPANDED,
                         false);
             } else {
-                DatabaseHelper databaseHelper =
-                        AppSingleton.getInstance(getApplicationContext()).getDatabaseHelper();
-
                 mActiveContactIndex = 0;
-                // Try to start at the next un-contacted representative in the list.
-                for (int i = 0; i < mIssue.contacts.length; i++) {
-                    boolean contacted = databaseHelper.hasCalled(mIssue.id, mIssue.contacts[i].id);
-                    if (!contacted) {
-                        mActiveContactIndex = i;
-                        break;
-                    }
-                }
             }
             setupContactUi(mActiveContactIndex, expandLocalOffices);
-
-            skipButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    reportEvent("skip");
-                    tryLoadingNextContact(getResources().getString(R.string.skip_snackbar_message));
-                }
-            });
 
             madeContactButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -358,6 +339,25 @@ public class IssueActivity extends AppCompatActivity {
                 public void run() {
                     // TODO: A little more scroll padding might be nice too.
                     scrollView.smoothScrollTo(0, repInfoLayout.getTop());
+                }
+            });
+        }
+        if (index == mIssue.contacts.length - 1) {
+            skipButton.setText(getResources().getString(R.string.done));
+            skipButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    reportEvent("skip");
+                    // Since this is the last contact, just go back to the main menu if they "skip"
+                    returnToMain();
+                }
+            });
+        } else {
+            skipButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    reportEvent("skip");
+                    tryLoadingNextContact(getResources().getString(R.string.skip_snackbar_message));
                 }
             });
         }
