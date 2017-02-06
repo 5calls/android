@@ -16,8 +16,13 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
 import org.a5calls.android.a5calls.AppSingleton;
+import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
+import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.DatabaseHelper;
 import org.a5calls.android.a5calls.model.Issue;
 
@@ -114,6 +119,19 @@ public class StatsActivity extends AppCompatActivity {
             Log.d(TAG, name + " had " + issueStats.get(i).second + " calls");
         }
         */
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // We allow Analytics opt-out.
+        if (AccountManager.Instance.allowAnalytics(this)) {
+            // Obtain the shared Tracker instance.
+            FiveCallsApplication application = (FiveCallsApplication) getApplication();
+            Tracker tracker = application.getDefaultTracker();
+            tracker.setScreenName(TAG);
+            tracker.send(new HitBuilders.ScreenViewBuilder().build());
+        }
     }
 
     @Override
