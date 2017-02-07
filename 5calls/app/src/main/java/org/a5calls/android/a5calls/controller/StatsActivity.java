@@ -37,6 +37,7 @@ import butterknife.ButterKnife;
 // TODO: Add sharing
 public class StatsActivity extends AppCompatActivity {
     private static final String TAG = "StatsActivity";
+    private static final int NUM_CONTACTS_TO_SHOW = 3;
 
     @BindView(R.id.no_calls_message) TextView noCallsMessage;
     @BindView(R.id.stats_holder) LinearLayout statsHolder;
@@ -88,12 +89,13 @@ public class StatsActivity extends AppCompatActivity {
         // There's probably not that many contacts because mostly the user just calls their own
         // reps. However, it'd be good to move this to a RecyclerView or ListView with an adapter
         // in the future.
-        // TODO optimize this list creation.
+        // TODO optimize this list creation?
         List<Pair<String, Integer>> contactStats = db.getCallCountsByContact();
         LayoutInflater inflater = LayoutInflater.from(this);
         String callFormatString = getResources().getString(R.string.contact_call_stat);
         String callFormatStringOne = getResources().getString(R.string.contact_call_stat_one);
-        for (int i = 0; i < contactStats.size(); i++) {
+        int numToShow = Math.min(NUM_CONTACTS_TO_SHOW, contactStats.size());
+        for (int i = 0; i < numToShow; i++) {
             String name = db.getContactName(contactStats.get(i).first);
             if (TextUtils.isEmpty(name)) {
                 name = getResources().getString(R.string.unknown_contact);
