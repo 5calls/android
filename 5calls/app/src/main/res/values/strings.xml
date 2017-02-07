@@ -213,4 +213,19 @@
     <!-- Done button for issues page [CHAR_LIMIT=30] -->
     <string name="done">done</string>
 
+    <!-- Name for settings category for general settings[CHAR_LIMIT=50]-->
+    <string name="settings_category_general">General settings</string>
+
+    <!-- Name for settings category for reminder settings[CHAR_LIMIT=50]-->
+    <string name="settings_category_reminders">Reminders</string>
+
+    <!-- Title for time picker for reminders [CHAR_LIMIT=50]-->
+    <string name="settings_reminders_time_title">Reminder time</string>
+
+    <!-- Title for settings option to enable weekday reminders [CHAR_LIMIT=50]-->
+    <string name="settings_reminders_enable_title">Enable reminders</string>
+
+    <!-- Summary for settings option to enable weekday reminders [CHAR_LIMIT=NONE]-->
+    <string name="settings_reminders_enable_summary">Enable reminders to make 5 calls. Reminders will be shown once a day on weekdays</string>
+
 </resources>

@@ -1,9 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <CheckBoxPreference
-        android:title="@string/setting_usage_title"
-        android:defaultValue="true"
-        android:summary="@string/settings_usage_summary"
-        android:key="prefsKeyAllowAnalytics"
-        />
+
+    <PreferenceCategory
+        android:title="@string/settings_category_general"
+        >
+
+        <SwitchPreference
+            android:title="@string/setting_usage_title"
+            android:defaultValue="true"
+            android:summary="@string/settings_usage_summary"
+            android:key="prefsKeyAllowAnalytics"
+            />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/settings_category_reminders"
+        >
+
+        <SwitchPreference
+            android:title="@string/settings_reminders_enable_title"
+            android:key="prefsKeyEnableReminders"
+            android:defaultValue="true"
+            android:summary="@string/settings_reminders_enable_summary"
+            />
+
+        <org.a5calls.android.a5calls.controller.TimePreference
+            android:title="@string/settings_reminders_time_title"
+            android:key="prefsKeyRemindersTime"
+            android:summary="11:30 am"
+            />
+
+    </PreferenceCategory>
+
 </PreferenceScreen>
