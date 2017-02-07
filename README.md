@@ -21,7 +21,7 @@ The app is published on Google Play and has a Beta channnel for testing. If you 
 ##Contributors
  - [Katie Dektar](https://github.com/dektar)
  - [Greg Lee](https://github.com/gregliest)
- - [All contriubtors](https://github.com/5calls/android/graphs/contributors)
+ - [All contributors](https://github.com/5calls/android/graphs/contributors)
 
 ##Acknowledgments
 Thanks to [Nick O'Neill](https://github.com/nickoneill) for organizing the 5calls project.
