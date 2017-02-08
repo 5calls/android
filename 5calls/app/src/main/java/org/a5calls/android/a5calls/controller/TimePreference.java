@@ -67,16 +67,6 @@ public class TimePreference extends DialogPreference {
         mTimePicker.setIs24HourView(mIs24HourView);
         mTimePicker.setCurrentHour(mHour);
         mTimePicker.setCurrentMinute(mMinute);
-
-        mTimePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
-            @Override
-            public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-                mHour = hourOfDay;
-                mMinute = minute;
-                mIs24HourView = view.is24HourView();
-                updateSummary();
-            }
-        });
     }
 
     @Override
@@ -89,14 +79,13 @@ public class TimePreference extends DialogPreference {
     protected void onDialogClosed(boolean positiveResult) {
         super.onDialogClosed(positiveResult);
 
-        // If they just change am/pm, the callback actually doesn't get triggered above.
-        // See https://code.google.com/p/android/issues/detail?id=18982.
-        // As a work-around, make sure we get the right time set in the summary on submit.
         mHour = mTimePicker.getCurrentHour();
         mMinute = mTimePicker.getCurrentMinute();
-        updateSummary();
 
-        AccountManager.Instance.setNotificationMinutes(getContext(), mHour + 60 * mMinute);
+        if (positiveResult) {
+            AccountManager.Instance.setNotificationMinutes(getContext(), mHour * 60 + mMinute);
+            updateSummary();
+        }
     }
 
     private void updateSummary() {

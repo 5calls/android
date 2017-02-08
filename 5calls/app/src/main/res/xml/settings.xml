@@ -28,7 +28,6 @@
         <org.a5calls.android.a5calls.controller.TimePreference
             android:title="@string/settings_reminders_time_title"
             android:key="prefsKeyRemindersTime"
-            android:summary="11:00 am"
             />
 
     </PreferenceCategory>

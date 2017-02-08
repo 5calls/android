@@ -16,6 +16,7 @@ import com.google.android.gms.analytics.Tracker;
 import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
+import org.a5calls.android.a5calls.model.NotificationUtils;
 
 /**
  * Settings for the app
@@ -102,11 +103,16 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onDestroy() {
+        public void onStop() {
             // Set up the notification firing logic when the settings activity ends, so as not
             // to do the work too frequently.
-            // TODO
-            super.onDestroy();
+            if (accountManager.getAllowNotifications(getActivity())) {
+                NotificationUtils.setNotificationTime(getActivity(),
+                        accountManager.getNotificationMinutes(getActivity()));
+            } else {
+                NotificationUtils.clearNotifications(getActivity());
+            }
+            super.onStop();
         }
     }
 }

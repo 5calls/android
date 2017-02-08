@@ -50,6 +50,7 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private static final int ISSUE_DETAIL_REQUEST = 1;
+    public static final int NOTIFICATION_REQUEST = 2;
     private final AccountManager accountManager = AccountManager.Instance;
 
     private IssuesAdapter mIssuesAdapter;
