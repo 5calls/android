@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.preference.SwitchPreference;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -69,9 +70,8 @@ public class SettingsActivity extends AppCompatActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.settings);
 
-            // TODO: Get this from accountManager instead
-            boolean hasReminders = getPreferenceManager().getSharedPreferences()
-                    .getBoolean("prefsKeyEnableReminders", true);
+            boolean hasReminders = accountManager.getAllowNotifications(getActivity());
+            ((SwitchPreference) findPreference("prefsKeyEnableReminders")).setChecked(hasReminders);
             findPreference("prefsKeyRemindersTime").setEnabled(hasReminders);
         }
 
@@ -97,8 +97,16 @@ public class SettingsActivity extends AppCompatActivity {
             } else if (TextUtils.equals(key, "prefsKeyEnableReminders")) {
                 boolean result = sharedPreferences.getBoolean(key, true);
                 findPreference("prefsKeyRemindersTime").setEnabled(result);
-                // TODO
+                accountManager.setAllowNotifications(getActivity(), result);
             }
+        }
+
+        @Override
+        public void onDestroy() {
+            // Set up the notification firing logic when the settings activity ends, so as not
+            // to do the work too frequently.
+            // TODO
+            super.onDestroy();
         }
     }
 }

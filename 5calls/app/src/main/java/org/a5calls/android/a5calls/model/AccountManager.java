@@ -1,5 +1,6 @@
 package org.a5calls.android.a5calls.model;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
@@ -19,6 +20,11 @@ public enum AccountManager {
     private static final String KEY_LATITUDE = "prefsKeyLatitude";
     private static final String KEY_LONGITUDE = "prefsKeyLongitude";
     private static final String KEY_DATABASE_SAVES_CONTACTS = "prefsKeyDbSavesContacts";
+    private static final String KEY_NOTIFICATION_MINUTES = "prefsKeyNotificationMinutes";
+    private static final String KEY_ALLOW_NOTIFICATIONS = "prefsKeyAllowNotifications";
+
+    // Default to 11 am.
+    public static final int DEFAULT_NOTIFICATION_MINUTES = 60 * 11;
 
     public boolean hasLocation(Context context) {
         // If there's a lat/lng or a zip.
@@ -76,6 +82,25 @@ public enum AccountManager {
     public void setDatabaseSavesContacts(Context context, boolean savesContacts) {
         getSharedPrefs(context).edit().putBoolean(KEY_DATABASE_SAVES_CONTACTS,
                 savesContacts).apply();
+    }
+
+    public boolean getAllowNotifications(Context context) {
+        return getSharedPrefs(context).getBoolean(KEY_ALLOW_NOTIFICATIONS, true);
+    }
+
+    public void setAllowNotifications(Context context, boolean allowNotifications) {
+        getSharedPrefs(context).edit().putBoolean(KEY_ALLOW_NOTIFICATIONS, allowNotifications)
+                .apply();
+    }
+
+    public int getNotificationMinutes(Context context) {
+        return getSharedPrefs(context).getInt(KEY_NOTIFICATION_MINUTES,
+                DEFAULT_NOTIFICATION_MINUTES);
+    }
+
+    public void setNotificationMinutes(Context context, int notificationMinutes) {
+        getSharedPrefs(context).edit().putInt(KEY_NOTIFICATION_MINUTES, notificationMinutes)
+                .apply();
     }
 
     private SharedPreferences getSharedPrefs(Context context) {

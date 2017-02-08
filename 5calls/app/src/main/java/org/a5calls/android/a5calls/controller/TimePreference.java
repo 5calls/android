@@ -5,11 +5,17 @@ import android.content.Context;
 import android.os.Build;
 import android.preference.DialogPreference;
 import android.support.annotation.RequiresApi;
+import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TimePicker;
 
 import org.a5calls.android.a5calls.R;
+import org.a5calls.android.a5calls.model.AccountManager;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Time picker dialog preference
@@ -18,8 +24,8 @@ public class TimePreference extends DialogPreference {
 
     private TimePicker mTimePicker;
 
-    private int mInitialHourOfDay;
-    private int mInitialMinute;
+    private int mHour;
+    private int mMinute;
     private boolean mIs24HourView;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -47,12 +53,30 @@ public class TimePreference extends DialogPreference {
     private void init() {
         setPersistent(false);
         setDialogLayoutResource(R.layout.time_preference_dialog);
+        int storedMinutes = AccountManager.Instance.getNotificationMinutes(getContext());
+        mHour = storedMinutes / 60;
+        mMinute = storedMinutes % 60;
+        mIs24HourView = DateFormat.is24HourFormat(getContext());
+        updateSummary();
     }
 
     @Override
     protected void onBindDialogView(View view) {
         super.onBindDialogView(view);
         mTimePicker = (TimePicker) view.findViewById(R.id.time_picker);
+        mTimePicker.setIs24HourView(mIs24HourView);
+        mTimePicker.setCurrentHour(mHour);
+        mTimePicker.setCurrentMinute(mMinute);
+
+        mTimePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+            @Override
+            public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+                mHour = hourOfDay;
+                mMinute = minute;
+                mIs24HourView = view.is24HourView();
+                updateSummary();
+            }
+        });
     }
 
     @Override
@@ -64,19 +88,28 @@ public class TimePreference extends DialogPreference {
     @Override
     protected void onDialogClosed(boolean positiveResult) {
         super.onDialogClosed(positiveResult);
-        // TODO save the result somehow
+
+        // If they just change am/pm, the callback actually doesn't get triggered above.
+        // See https://code.google.com/p/android/issues/detail?id=18982.
+        // As a work-around, make sure we get the right time set in the summary on submit.
+        mHour = mTimePicker.getCurrentHour();
+        mMinute = mTimePicker.getCurrentMinute();
+        updateSummary();
+
+        AccountManager.Instance.setNotificationMinutes(getContext(), mHour + 60 * mMinute);
     }
 
-    /**
-     * Sets the current time.
-     *
-     * @param hourOfDay The current hour within the day.
-     * @param minuteOfHour The current minute within the hour.
-     */
-    public void updateTime(int hourOfDay, int minuteOfHour) {
-        mTimePicker.setCurrentHour(hourOfDay);
-        mTimePicker.setCurrentMinute(minuteOfHour);
-    }
+    private void updateSummary() {
+        Date date = new Date();
+        date.setHours(mHour);
+        date.setMinutes(mMinute);
+        SimpleDateFormat format;
+        if (mIs24HourView) {
+            format = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        } else {
+            format = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+        }
+        setSummary(format.format(date));
 
-    // TODO: Show a time picker in the dialog, and return the result properly.
+    }
 }
