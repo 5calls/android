@@ -41,15 +41,13 @@ import butterknife.ButterKnife;
 /**
  * The activity which handles zip code lookup and showing the issues list.
  * 
- * TODO: Add error message if the device is offline?
- * TODO: Add full "personal stats" DialogFragment that shows lots of information.
  * TODO: Add an email address sign-up field.
  * TODO: Sort issues based on which are "done" and which are not done or hide ones which are "done".
- * TODO: After making a call, jump the screen up to show the next contact!
  */
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private static final int ISSUE_DETAIL_REQUEST = 1;
+    public static final int NOTIFICATION_REQUEST = 2; // TODO log starts from the notifications
     private final AccountManager accountManager = AccountManager.Instance;
 
     private IssuesAdapter mIssuesAdapter;
@@ -176,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
             public void onRequestError() {
                 Snackbar.make(findViewById(R.id.activity_main),
                         getResources().getString(R.string.request_error),
-                        Snackbar.LENGTH_INDEFINITE).show();
+                        Snackbar.LENGTH_LONG).show();
                 // Our only type of request in MainActivity is a GET. If it doesn't work, clear the
                 // active issues list to avoid showing a stale list.
                 mIssuesAdapter.setIssues(Collections.<Issue>emptyList());
@@ -229,7 +227,8 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        AppSingleton.getInstance(getApplicationContext()).getJsonController().registerStatusListener(mStatusListener);
+        AppSingleton.getInstance(getApplicationContext()).getJsonController()
+                .registerStatusListener(mStatusListener);
     }
 
     private void showStats() {

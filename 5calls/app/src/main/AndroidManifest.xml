@@ -29,6 +29,8 @@
         <activity android:name=".controller.LocationActivity"/>
         <activity android:name=".controller.StatsActivity"
             android:label="@string/stats_activity"/>
+        <receiver
+            android:name=".controller.NotifyBroadcastReceiver" />
     </application>
 
 </manifest>

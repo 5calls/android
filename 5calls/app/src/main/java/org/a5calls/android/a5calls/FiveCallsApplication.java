@@ -16,8 +16,10 @@ package org.a5calls.android.a5calls;
  * limitations under the License.
  */
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
@@ -28,6 +30,7 @@ import com.google.android.gms.analytics.Tracker;
  */
 public class FiveCallsApplication extends Application {
     private Tracker mTracker;
+    private int mRunningActivities;
 
     /**
      * Gets the default {@link Tracker} for this {@link Application}.
@@ -40,5 +43,50 @@ public class FiveCallsApplication extends Application {
             mTracker = analytics.newTracker(R.xml.global_tracker);
         }
         return mTracker;
+    }
+
+    public boolean isRunning() {
+        return mRunningActivities > 0;
+    }
+
+    public FiveCallsApplication() {
+        super();
+        mRunningActivities = 0;
+        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
+            @Override
+            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+
+            }
+
+            @Override
+            public void onActivityStarted(Activity activity) {
+                mRunningActivities++;
+            }
+
+            @Override
+            public void onActivityResumed(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityPaused(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityStopped(Activity activity) {
+                mRunningActivities--;
+            }
+
+            @Override
+            public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+
+            }
+
+            @Override
+            public void onActivityDestroyed(Activity activity) {
+
+            }
+        });
     }
 }

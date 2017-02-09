@@ -89,7 +89,7 @@ public class StatsActivity extends AppCompatActivity {
         // There's probably not that many contacts because mostly the user just calls their own
         // reps. However, it'd be good to move this to a RecyclerView or ListView with an adapter
         // in the future.
-        // TODO optimize this list creation?
+        // TODO optimize this list creation
         List<Pair<String, Integer>> contactStats = db.getCallCountsByContact();
         LayoutInflater inflater = LayoutInflater.from(this);
         String callFormatString = getResources().getString(R.string.contact_call_stat);

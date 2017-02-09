@@ -14,7 +14,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.a5calls.android.a5calls.model.Issue;
+import org.a5calls.android.a5calls.BuildConfig;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,12 +31,11 @@ import java.util.Map;
 public class FiveCallsApi {
     private static final String TAG = "FiveCallsApi";
 
-    // DO NOT SUBMIT with DEBUG = true.
     // This only works on an emulator running on a machine that is running a local version of the
     // 5calls go server. For more on the go server, check out github.com/5calls/5calls.
     // Recommended setting this to "true" for testing, though, to avoid adding fake calls to the
     // server.
-    private static final boolean DEBUG = false;
+    private static final boolean USE_LOCAL_DEBUG_REPORT = false;
 
     private static final String GET_ISSUES_REQUEST = "https://5calls.org/issues/?address=";
 
@@ -111,9 +110,12 @@ public class FiveCallsApi {
     }
 
     public void getCallCount() {
+        String getReport = GET_REPORT;
+        if (BuildConfig.DEBUG && USE_LOCAL_DEBUG_REPORT) {
+            getReport = GET_REPORT_DEBUG;
+        }
         JsonObjectRequest reportRequest = new JsonObjectRequest(
-                Request.Method.GET, DEBUG ? GET_REPORT_DEBUG : GET_REPORT, null,
-                new Response.Listener<JSONObject>() {
+                Request.Method.GET, getReport, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
@@ -143,8 +145,12 @@ public class FiveCallsApi {
     // https://github.com/5calls/5calls/blob/master/static/js/main.js#L221
     public void reportCall(final String issueId, final String contactId, final String result,
                            final String zip) {
-        StringRequest request = new StringRequest(Request.Method.POST,
-                DEBUG ? GET_REPORT_DEBUG : GET_REPORT, new Response.Listener<String>() {
+        String getReport = GET_REPORT;
+        if (BuildConfig.DEBUG && USE_LOCAL_DEBUG_REPORT) {
+            getReport = GET_REPORT_DEBUG;
+        }
+        StringRequest request = new StringRequest(Request.Method.POST, getReport,
+                new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 for (RequestStatusListener listener : mStatusListeners) {
