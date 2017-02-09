@@ -11,8 +11,13 @@ import android.os.Build;
 import android.util.Log;
 
 import org.a5calls.android.a5calls.AppSingleton;
+import org.a5calls.android.a5calls.BuildConfig;
 import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Creates the notification to make more calls with 5calls.
@@ -25,6 +30,13 @@ public class NotifyBroadcastReceiver extends BroadcastReceiver {
         Log.d(TAG, "Broadcast received");
         if (((FiveCallsApplication) context.getApplicationContext()).isRunning()) {
             // Don't notify if we are already in the foreground.
+            return;
+        }
+        Calendar calendar = Calendar.getInstance(Locale.getDefault());
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        if ((dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY) &&
+                !BuildConfig.DEBUG) {
+            // Don't notify on weekends in prod builds
             return;
         }
         Intent resultIntent = new Intent(context, MainActivity.class);
