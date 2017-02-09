@@ -174,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
             public void onRequestError() {
                 Snackbar.make(findViewById(R.id.activity_main),
                         getResources().getString(R.string.request_error),
-                        Snackbar.LENGTH_INDEFINITE).show();
+                        Snackbar.LENGTH_LONG).show();
                 // Our only type of request in MainActivity is a GET. If it doesn't work, clear the
                 // active issues list to avoid showing a stale list.
                 mIssuesAdapter.setIssues(Collections.<Issue>emptyList());
