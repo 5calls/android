@@ -28,11 +28,19 @@
             android:textSize="@dimen/h2_text_size"
             />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="@string/location_gps_prompt"
+            android:textSize="@dimen/label_text_size"
+            />
+
         <Button
             android:id="@+id/btn_gps"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="16dp"
             android:text="@string/btn_gps"
             android:textColor="@color/colorPrimaryDark"
             />

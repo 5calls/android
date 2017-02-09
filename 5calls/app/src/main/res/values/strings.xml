@@ -19,7 +19,7 @@
     <string name="request_error">There was a problem communicating with the server. Is your device online?</string>
 
     <!-- Error message shown to the user when the app failed to parse the JSON response from the server [CHAR_LIMIT=150] -->
-    <string name="json_error">Error: Invalid or no data for this zip code</string>
+    <string name="json_error">Error: Invalid or no data for this location</string>
 
     <!-- Message telling a user how many calls they still need to make on a particular issue [CHAR_LIMIT=30] -->
     <string name="call_count"><xliff:g id="callCount">%1$d</xliff:g> calls to make</string>
@@ -135,8 +135,12 @@
     <!-- Button that will use the user's device location to set the location in the app [CHAR_LIMIT=30] -->
     <string name="btn_gps">Use my location</string>
 
-    <!-- Prompt to enter a zip code instead of using the phone's GPS location [CHAR_LIMIT=50] -->
-    <string name="location_zip_prompt">Or enter your zip code:</string>
+    <!-- Prompt to enter a zip code instead of using the phone's GPS location [CHAR_LIMIT=NONE] -->
+    <string name="location_zip_prompt">You can also use your zip code.
+        \nThis may not return all your representatives in some districts.</string>
+
+    <!-- Prompt to use your GPS location in the app [CHAR_LIMIT=NONE] -->
+    <string name="location_gps_prompt">Use your phone's location to find all representatives</string>
 
     <!-- Error shown when the location cannot be parsed properly in the issues list page [CHAR_LIMIT=150] -->
     <string name="main_activity_location_error">Sorry, we could not read your location, please try re-entering it</string>
