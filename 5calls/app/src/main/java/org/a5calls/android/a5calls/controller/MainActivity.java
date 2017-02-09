@@ -41,16 +41,13 @@ import butterknife.ButterKnife;
 /**
  * The activity which handles zip code lookup and showing the issues list.
  * 
- * TODO: Add error message if the device is offline?
- * TODO: Add full "personal stats" DialogFragment that shows lots of information.
  * TODO: Add an email address sign-up field.
  * TODO: Sort issues based on which are "done" and which are not done or hide ones which are "done".
- * TODO: After making a call, jump the screen up to show the next contact!
  */
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private static final int ISSUE_DETAIL_REQUEST = 1;
-    public static final int NOTIFICATION_REQUEST = 2;
+    public static final int NOTIFICATION_REQUEST = 2; // TODO log starts from the notifications
     private final AccountManager accountManager = AccountManager.Instance;
 
     private IssuesAdapter mIssuesAdapter;
