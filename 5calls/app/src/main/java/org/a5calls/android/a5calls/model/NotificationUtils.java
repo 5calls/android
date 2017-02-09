@@ -16,6 +16,10 @@ import java.util.Calendar;
 public class NotificationUtils {
     private static final long MS_PER_MIN = 1000 * 60;
 
+    // DO NOT SUBMIT if DEBUG == true.
+    // This causes notifications to go off more frequently.
+    private static final boolean DEBUG = false;
+
     public static void setNotificationTime(Context context, int minutes) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, minutes / 60);
@@ -28,8 +32,8 @@ public class NotificationUtils {
 
         PendingIntent pendingIntent = cancelPendingIntent(context);
         ((AlarmManager) context.getSystemService(Context.ALARM_SERVICE))
-                .setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), dayMillis,
-                        pendingIntent);
+                .setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                        DEBUG ? 6000 : dayMillis, pendingIntent);
     }
 
     public static void clearNotifications(Context context) {

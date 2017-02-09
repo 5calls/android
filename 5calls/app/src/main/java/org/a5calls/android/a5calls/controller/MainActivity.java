@@ -230,7 +230,8 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        AppSingleton.getInstance(getApplicationContext()).getJsonController().registerStatusListener(mStatusListener);
+        AppSingleton.getInstance(getApplicationContext()).getJsonController()
+                .registerStatusListener(mStatusListener);
     }
 
     private void showStats() {
