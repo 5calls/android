@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -38,7 +37,6 @@ import org.a5calls.android.a5calls.model.FiveCallsApi;
 import org.a5calls.android.a5calls.model.Issue;
 
 import java.util.List;
-import java.util.zip.Inflater;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -83,11 +81,9 @@ public class IssueActivity extends AppCompatActivity {
     @BindView(R.id.no_calls_left) TextView noCallsLeft;
     @BindView(R.id.buttons_prompt) TextView buttonsPrompt;
 
-    @BindView(R.id.buttons_holder) LinearLayout buttonsLayout;
     @BindView(R.id.unavailable_btn) Button unavailableButton;
     @BindView(R.id.voicemail_btn) Button voicemailButton;
     @BindView(R.id.made_contact_btn) Button madeContactButton;
-
     @BindView(R.id.skip_btn) Button skipButton;
 
     @BindView(R.id.local_office_btn) Button localOfficeButton;
@@ -140,8 +136,17 @@ public class IssueActivity extends AppCompatActivity {
 
             @Override
             public void onCallReported() {
+                // Note: Skips are not reported.
                 Log.d(TAG, "call reported successfully!");
                 setButtonsEnabled(true);
+                if (mActiveContactIndex == mIssue.contacts.length - 1) {
+                    // Show the check if this was the last one
+                    final List<String> previousCalls =
+                            AppSingleton.getInstance(IssueActivity.this).getDatabaseHelper()
+                                    .getCallResults(mIssue.id,
+                                            mIssue.contacts[mActiveContactIndex].id);
+                    showContactChecked(previousCalls);
+                }
                 tryLoadingNextContact(getResources().getString(R.string.call_reported));
             }
         };
@@ -158,7 +163,10 @@ public class IssueActivity extends AppCompatActivity {
 
         if (mIssue.contacts == null || mIssue.contacts.length == 0) {
             // Hide everything if there are no contacts at all.
-            buttonsLayout.setVisibility(View.GONE);
+            skipButton.setVisibility(View.GONE);
+            unavailableButton.setVisibility(View.GONE);
+            voicemailButton.setVisibility(View.GONE);
+            madeContactButton.setVisibility(View.GONE);
             buttonsPrompt.setVisibility(View.GONE);
             callThisOffice.setVisibility(View.GONE);
             localOfficeButton.setVisibility(View.GONE);
@@ -302,31 +310,7 @@ public class IssueActivity extends AppCompatActivity {
         final List<String> previousCalls = AppSingleton.getInstance(this).getDatabaseHelper()
                 .getCallResults(mIssue.id, contact.id);
         if (previousCalls.size() > 0) {
-            contactChecked.setVisibility(View.VISIBLE);
-            contactChecked.setImageLevel(1);
-            contactChecked.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String message = TextUtils.join(", ", previousCalls)
-                            .replace(IssueActivity.VOICEMAIL, getResources().getString(
-                                    R.string.voicemail_btn))
-                            .replace(IssueActivity.CONTACTED, getResources().getString(
-                                    R.string.made_contact_btn))
-                            .replace(IssueActivity.UNAVAILABLE, getResources().getString(
-                                    R.string.unavailable_btn));
-                    new AlertDialog.Builder(IssueActivity.this)
-                            .setTitle(R.string.contact_details_dialog_title)
-                            .setMessage(message)
-                            .setPositiveButton(android.R.string.ok,
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-
-                                        }
-                                    })
-                            .show();
-                }
-            });
+            showContactChecked(previousCalls);
         } else {
             contactChecked.setVisibility(View.GONE);
             contactChecked.setOnClickListener(null);
@@ -363,8 +347,35 @@ public class IssueActivity extends AppCompatActivity {
         }
     }
 
+    private void showContactChecked(final List<String> previousCalls) {
+        contactChecked.setVisibility(View.VISIBLE);
+        contactChecked.setImageLevel(1);
+        contactChecked.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String message = TextUtils.join(", ", previousCalls)
+                        .replace(IssueActivity.VOICEMAIL, getResources().getString(
+                                R.string.voicemail_btn))
+                        .replace(IssueActivity.CONTACTED, getResources().getString(
+                                R.string.made_contact_btn))
+                        .replace(IssueActivity.UNAVAILABLE, getResources().getString(
+                                R.string.unavailable_btn));
+                new AlertDialog.Builder(IssueActivity.this)
+                        .setTitle(R.string.contact_details_dialog_title)
+                        .setMessage(message)
+                        .setPositiveButton(android.R.string.ok,
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                    }
+                                })
+                        .show();
+            }
+        });
+    }
+
     private void expandLocalOfficeSection(Contact contact) {
-        // TODO: Animate this transition
         localOfficeButton.setVisibility(View.INVISIBLE);
         localOfficeSection.setVisibility(View.VISIBLE);
         localOfficePrompt.setText(String.format(getResources().getString(

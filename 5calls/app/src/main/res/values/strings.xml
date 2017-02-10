@@ -140,7 +140,7 @@
         \nThis may not return all your representatives in some districts.</string>
 
     <!-- Prompt to use your GPS location in the app [CHAR_LIMIT=NONE] -->
-    <string name="location_gps_prompt">Use your phone's location to find all representatives</string>
+    <string name="location_gps_prompt">Use your phone\'s location to find all representatives</string>
 
     <!-- Error shown when the location cannot be parsed properly in the issues list page [CHAR_LIMIT=150] -->
     <string name="main_activity_location_error">Sorry, we could not read your location, please try re-entering it</string>
