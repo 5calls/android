@@ -3,6 +3,7 @@ package org.a5calls.android.a5calls.controller;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -79,6 +80,16 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
             return;
+        }
+
+        if (!accountManager.isRemindersInfoShown(this)) {
+            // We haven't yet told the user that reminders exist, they probably upgraded to get here
+            // instead of learning about it in the tutorial. Give a dialog explaining more.
+            DialogFragment fragment = NewSettingsDialog.newInstance(R.string.reminders_dialog_title,
+                    R.string.reminders_dialog_content);
+            getSupportFragmentManager().beginTransaction().add(fragment, NewSettingsDialog.TAG)
+                    .commit();
+            accountManager.setRemindersInfoShown(this, true);
         }
 
         setContentView(R.layout.activity_main);
