@@ -81,8 +81,19 @@
     <string name="call_reported">Call reported successfully!</string>
 
     <!-- Text shown to the user on the splash / tutorial screen describing the 5 Calls app. \n\n is used to create new paragraphs. [CHAR_LIMIT=NONE] -->
-    <string name="about_splash">There\'s one simple and straightforward way to influence the Government that is supposed to represent you: Call them on the phone.
-                                \n\nCalling is the most effective way to influence your representative. 5 Calls gives you local contacts and scripts so calling is quick and easy.</string>
+    <string name="about_splash">There\'s one simple and straightforward way to influence the Government that is supposed to represent you: Call them on the phone.</string>
+
+    <!-- Tutorial screen text that calling is effective [CHAR_LIMIT=100] -->
+    <string name="about_p2_2">Calling is the most effective way to influence your representatives.</string>
+
+    <!-- Text shown to the user on the splash / tutorial screen describing more about the 5 Calls app. \n\n is used to create new paragraphs. [CHAR_LIMIT=NONE] -->
+    <string name="about_splash_2">5 Calls provides phone numbers and scripts so calling is quick and easy, finds your local representatives so your calls have more impact.</string>
+
+    <!-- Text shown to the user on the splash / tutorial screen letting them know about notifications and reminders [CHAR_LIMIT=NONE] -->
+    <string name="about_splash_3">The 5 Calls app helps you maintain involvement by reminding you several times a week to make calls. You can customize or turn off reminders in settings.</string>
+
+    <!-- Button shown to the user on the splash / tutorial screen to get to the next page of the tutorial [CHAR_LIMIT=30] -->
+    <string name="next">Next</string>
 
     <!-- Button shown to the user on the splash / tutorial screen to get started and go to the app [CHAR_LIMIT=30] -->
     <string name="get_started_btn">Get started</string>
