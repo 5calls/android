@@ -233,6 +233,7 @@ public class TutorialActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     // Set that the user has seen info about reminders.
                     AccountManager.Instance.setRemindersInfoShown(getActivity(), true);
+                    SettingsActivity.turnOnReminders(getActivity(), AccountManager.Instance);
 
                     // Return to the main activity
                     AccountManager.Instance.setTutorialSeen(getActivity(), true);

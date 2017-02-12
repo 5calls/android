@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction().add(fragment, NewSettingsDialog.TAG)
                     .commit();
             accountManager.setRemindersInfoShown(this, true);
+            SettingsActivity.turnOnReminders(this, accountManager);
         }
 
         Intent intent = getIntent();
