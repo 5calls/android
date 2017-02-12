@@ -20,6 +20,7 @@ public class NotificationUtils {
     // This causes notifications to go off more frequently on debug builds.
     private static final boolean FREQUENT_NOTIFICATION_DEBUG_MODE = false;
 
+    // TODO: Got to deal with daylight savings time...
     public static void setNotificationTime(Context context, int minutes) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, minutes / 60);
@@ -27,20 +28,15 @@ public class NotificationUtils {
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
 
-        Calendar now = Calendar.getInstance();
-        if (calendar.before(now)) {
-            // Start at tomorrow so we don't get immediate firing in prod mode
-            if (!BuildConfig.DEBUG) {
-                calendar.add(Calendar.DAY_OF_YEAR, 1);
-            }
-        }
         long intervalMillis = MS_PER_MIN * 60 * 24;
         if (BuildConfig.DEBUG) {
             if (FREQUENT_NOTIFICATION_DEBUG_MODE) {
-                intervalMillis = 6000; // If
+                intervalMillis = 6000;
             }
         }
 
+        // We try firing the alarm every day, but will only set the notification if it is one of
+        // the user's selected days.
         PendingIntent pendingIntent = cancelPendingIntent(context);
         ((AlarmManager) context.getSystemService(Context.ALARM_SERVICE))
                 .setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), intervalMillis,

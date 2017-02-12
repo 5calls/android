@@ -226,11 +226,60 @@
     <!-- Title for time picker for reminders [CHAR_LIMIT=50]-->
     <string name="settings_reminders_time_title">Reminder time</string>
 
-    <!-- Title for settings option to enable weekday reminders [CHAR_LIMIT=50]-->
+    <!-- Title for settings option to enable reminders [CHAR_LIMIT=50]-->
     <string name="settings_reminders_enable_title">Enable reminders</string>
 
-    <!-- Summary for settings option to enable weekday reminders [CHAR_LIMIT=NONE]-->
-    <string name="settings_reminders_enable_summary">Enable reminders to make 5 calls. Reminders will be shown once a day on weekdays.</string>
+    <!-- Summary for settings option to enable reminders [CHAR_LIMIT=NONE]-->
+    <string name="settings_reminders_enable_summary">Enable reminders to make 5 calls.</string>
+
+    <!-- Title for settings option to enable weekday reminders [CHAR_LIMIT=50]-->
+    <string name="settings_reminder_days_title">Remind me on these days</string>
+
+    <!-- Monday [CHAR_LIMIT=50] -->
+    <string name="monday">Monday</string>
+
+    <!-- Tuesday [CHAR_LIMIT=50] -->
+    <string name="tuesday">Tuesday</string>
+
+    <!-- Wednesday [CHAR_LIMIT=50] -->
+    <string name="wednesday">Wednesday</string>
+
+    <!-- Thursday [CHAR_LIMIT=50] -->
+    <string name="thursday">Thursday</string>
+
+    <!-- Friday [CHAR_LIMIT=50] -->
+    <string name="friday">Friday</string>
+
+    <!-- Saturday [CHAR_LIMIT=50] -->
+    <string name="saturday">Saturday</string>
+
+    <!-- Sunday [CHAR_LIMIT=50] -->
+    <string name="sunday">Sunday</string>
+
+    <!-- DO NOT TRANSLATE This is an array of the weekdays in order -->
+    <string-array name="reminder_days_titles">
+        <item>@string/monday</item>
+        <item>@string/tuesday</item>
+        <item>@string/wednesday</item>
+        <item>@string/thursday</item>
+        <item>@string/friday</item>
+        <item>@string/saturday</item>
+        <item>@string/sunday</item>
+    </string-array>
+
+    <!-- DO NOT TRANSLATE This is the value of the weekdays in order. Monday is 2. -->
+    <string-array name="reminder_days_values">
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>1</item> <!-- Sunday is 1 -->
+    </string-array>
+
+    <!-- Summary text for the days selection preference when no days are selected [CHAR_LIMIT=100] -->
+    <string name="no_days_selected">No days selected</string>
 
     <!-- Title for a notification reminder to make 5 calls [CHAR_LIMIT=30]-->
     <string name="notification_title">Make your voice heard</string>

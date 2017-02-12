@@ -2,6 +2,7 @@ package org.a5calls.android.a5calls.controller;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.MultiSelectListPreference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.SwitchPreference;
@@ -17,6 +18,12 @@ import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.NotificationUtils;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Settings for the app
@@ -71,9 +78,16 @@ public class SettingsActivity extends AppCompatActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.settings);
 
-            boolean hasReminders = accountManager.getAllowNotifications(getActivity());
-            ((SwitchPreference) findPreference("prefsKeyEnableReminders")).setChecked(hasReminders);
-            findPreference("prefsKeyRemindersTime").setEnabled(hasReminders);
+            boolean hasReminders = accountManager.getAllowReminders(getActivity());
+            ((SwitchPreference) findPreference(AccountManager.KEY_ALLOW_REMINDERS))
+                    .setChecked(hasReminders);
+
+            Set<String> reminderDays = accountManager.getReminderDays(getActivity());
+            MultiSelectListPreference daysPreference =
+                    (MultiSelectListPreference) findPreference(AccountManager.KEY_REMINDER_DAYS);
+            daysPreference.setValues(reminderDays);
+            updateReminderDaysSummary(daysPreference, reminderDays);
+            // TODO: Programmatically set the summary text on daysPreference
         }
 
         @Override
@@ -92,13 +106,18 @@ public class SettingsActivity extends AppCompatActivity {
 
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-            if (TextUtils.equals(key, "prefsKeyAllowAnalytics")) {
+            if (TextUtils.equals(key, AccountManager.KEY_ALLOW_ANALYTICS)) {
                 boolean result = sharedPreferences.getBoolean(key, true);
                 accountManager.setAllowAnalytics(getActivity(), result);
-            } else if (TextUtils.equals(key, "prefsKeyEnableReminders")) {
+            } else if (TextUtils.equals(key, AccountManager.KEY_ALLOW_REMINDERS)) {
                 boolean result = sharedPreferences.getBoolean(key, true);
-                findPreference("prefsKeyRemindersTime").setEnabled(result);
-                accountManager.setAllowNotifications(getActivity(), result);
+                accountManager.setAllowReminders(getActivity(), result);
+            } else if (TextUtils.equals(key, AccountManager.KEY_REMINDER_DAYS)) {
+                Set<String> result = sharedPreferences.getStringSet(key,
+                        AccountManager.DEFAULT_REMINDER_DAYS);
+                accountManager.setReminderDays(getActivity(), result);
+                updateReminderDaysSummary((MultiSelectListPreference) findPreference(
+                        AccountManager.KEY_REMINDER_DAYS), result);
             }
         }
 
@@ -106,13 +125,36 @@ public class SettingsActivity extends AppCompatActivity {
         public void onStop() {
             // Set up the notification firing logic when the settings activity ends, so as not
             // to do the work too frequently.
-            if (accountManager.getAllowNotifications(getActivity())) {
+            if (accountManager.getAllowReminders(getActivity())) {
                 NotificationUtils.setNotificationTime(getActivity(),
-                        accountManager.getNotificationMinutes(getActivity()));
+                        accountManager.getReminderMinutes(getActivity()));
             } else {
                 NotificationUtils.clearNotifications(getActivity());
             }
             super.onStop();
+        }
+
+        private void updateReminderDaysSummary(MultiSelectListPreference daysPreference,
+                                               Set<String> savedValues) {
+            if (savedValues == null || savedValues.size() == 0) {
+                daysPreference.setSummary(getActivity().getResources().getString(
+                        R.string.no_days_selected));
+                return;
+            }
+            List<String> daysEntries = Arrays.asList(getActivity().getResources()
+                    .getStringArray(R.array.reminder_days_titles));
+            List<String> daysEntriesValues = Arrays.asList(getActivity().getResources()
+                    .getStringArray(R.array.reminder_days_values));
+            String summary = "";
+            for (int i = 0; i < daysEntriesValues.size(); i++) {
+                if (savedValues.contains(daysEntriesValues.get(i))) {
+                    if (!TextUtils.isEmpty(summary)) {
+                        summary += ", ";
+                    }
+                    summary += daysEntries.get(i);
+                }
+            }
+            daysPreference.setSummary(summary);
         }
     }
 }

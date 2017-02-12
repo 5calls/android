@@ -53,7 +53,7 @@ public class TimePreference extends DialogPreference {
     private void init() {
         setPersistent(false);
         setDialogLayoutResource(R.layout.time_preference_dialog);
-        int storedMinutes = AccountManager.Instance.getNotificationMinutes(getContext());
+        int storedMinutes = AccountManager.Instance.getReminderMinutes(getContext());
         mHour = storedMinutes / 60;
         mMinute = storedMinutes % 60;
         mIs24HourView = DateFormat.is24HourFormat(getContext());
@@ -83,7 +83,7 @@ public class TimePreference extends DialogPreference {
         mMinute = mTimePicker.getCurrentMinute();
 
         if (positiveResult) {
-            AccountManager.Instance.setNotificationMinutes(getContext(), mHour * 60 + mMinute);
+            AccountManager.Instance.setReminderMinutes(getContext(), mHour * 60 + mMinute);
             updateSummary();
         }
     }

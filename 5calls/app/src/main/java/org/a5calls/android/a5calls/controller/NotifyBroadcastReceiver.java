@@ -14,10 +14,12 @@ import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.BuildConfig;
 import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
+import org.a5calls.android.a5calls.model.AccountManager;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Set;
 
 /**
  * Creates the notification to make more calls with 5calls.
@@ -32,13 +34,15 @@ public class NotifyBroadcastReceiver extends BroadcastReceiver {
             // Don't notify if we are already in the foreground.
             return;
         }
+
         Calendar calendar = Calendar.getInstance(Locale.getDefault());
-        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-        if ((dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY) &&
-                !BuildConfig.DEBUG) {
-            // Don't notify on weekends in prod builds
+        String dayOfWeek = String.valueOf(calendar.get(Calendar.DAY_OF_WEEK));
+        Set<String> notificationDays = AccountManager.Instance.getReminderDays(context);
+        if (!notificationDays.contains(dayOfWeek)) {
+            // Don't notify on unselected days of the week
             return;
         }
+
         Intent resultIntent = new Intent(context, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context,
                 MainActivity.NOTIFICATION_REQUEST, resultIntent, PendingIntent.FLAG_CANCEL_CURRENT);

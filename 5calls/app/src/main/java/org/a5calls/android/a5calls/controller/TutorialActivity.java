@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -38,6 +39,7 @@ public class TutorialActivity extends AppCompatActivity {
 
     @BindView(R.id.get_started_btn) Button getStartedButton;
     @BindView(R.id.calls_to_date) TextView callsToDate;
+    //@BindView(R.id.view_pager) ViewPager viewPager; // TODO use a ViewPager for multiscreens.
 
 
     @Override

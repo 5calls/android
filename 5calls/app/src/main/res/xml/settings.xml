@@ -23,11 +23,21 @@
             android:key="prefsKeyEnableReminders"
             android:defaultValue="true"
             android:summary="@string/settings_reminders_enable_summary"
+            android:disableDependentsState="false"
+            />
+
+        <MultiSelectListPreference
+            android:title="@string/settings_reminder_days_title"
+            android:key="prefsKeyReminderDays"
+            android:dependency="prefsKeyEnableReminders"
+            android:entries="@array/reminder_days_titles"
+            android:entryValues="@array/reminder_days_values"
             />
 
         <org.a5calls.android.a5calls.controller.TimePreference
             android:title="@string/settings_reminders_time_title"
             android:key="prefsKeyRemindersTime"
+            android:dependency="prefsKeyEnableReminders"
             />
 
     </PreferenceCategory>
