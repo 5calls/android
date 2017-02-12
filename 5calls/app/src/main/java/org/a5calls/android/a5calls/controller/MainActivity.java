@@ -1,15 +1,18 @@
 package org.a5calls.android.a5calls.controller;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,21 +29,18 @@ import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
-import org.a5calls.android.a5calls.model.DatabaseHelper;
 import org.a5calls.android.a5calls.model.FiveCallsApi;
 import org.a5calls.android.a5calls.model.Issue;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
  * The activity which handles zip code lookup and showing the issues list.
- * 
+ * <p>
  * TODO: Add an email address sign-up field.
  * TODO: Sort issues based on which are "done" and which are not done or hide ones which are "done".
  */
@@ -162,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         } else if (item.getItemId() == R.id.menu_location) {
             Intent intent = new Intent(this, LocationActivity.class);
+            intent.putExtra(LocationActivity.ALLOW_HOME_UP_KEY, true);
             startActivity(intent);
             return true;
         }
@@ -300,7 +301,15 @@ public class MainActivity extends AppCompatActivity {
                             IssueActivity.class);
                     issueIntent.putExtra(IssueActivity.KEY_ISSUE, issue);
                     issueIntent.putExtra(IssueActivity.KEY_ZIP, mZip);
-                    startActivityForResult(issueIntent, ISSUE_DETAIL_REQUEST);
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        ActivityOptionsCompat options = ActivityOptionsCompat.
+                                makeSceneTransitionAnimation(MainActivity.this, v, "issueTitle");
+                        startActivityForResult(issueIntent, ISSUE_DETAIL_REQUEST, options.toBundle());
+                    } else {
+                        startActivityForResult(issueIntent, ISSUE_DETAIL_REQUEST);
+                    }
+
                 }
             });
             int totalCalls = issue.contacts.length;

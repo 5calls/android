@@ -434,7 +434,7 @@ public class IssueActivity extends AppCompatActivity {
         } else {
             getParent().setResult(Activity.RESULT_OK, intent);
         }
-        finish();
+        supportFinishAfterTransition();
     }
 
     private void reportEvent(String event) {
