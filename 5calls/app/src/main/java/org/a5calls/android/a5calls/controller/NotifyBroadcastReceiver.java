@@ -59,5 +59,6 @@ public class NotifyBroadcastReceiver extends BroadcastReceiver {
         // TODO: Ask UX about the icon
         // TODO: add option on tutorial to turn off daily reminders
         // TODO: add an alert for upgrading users to turn off daily reminders
+        // TODO: Weekly reminders option?
     }
 }

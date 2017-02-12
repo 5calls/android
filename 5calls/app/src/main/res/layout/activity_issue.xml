@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
-    android:id="@+id/scroll_view"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scroll_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_color"
@@ -14,11 +14,11 @@
         android:id="@+id/main_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:paddingBottom="@dimen/activity_vertical_margin"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
-        android:orientation="vertical"
         >
 
         <TextView
@@ -45,11 +45,11 @@
             android:id="@+id/call_this_office"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:text="@string/call_this_office"
             android:textColor="@color/colorPrimary"
             android:textSize="18sp"
             android:textStyle="bold|italic"
-            android:layout_marginBottom="16dp"
             />
 
         <RelativeLayout
@@ -71,25 +71,25 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_alignWithParentIfMissing="true"
                 android:layout_alignParentTop="true"
+                android:layout_alignWithParentIfMissing="true"
+                android:layout_marginBottom="8dp"
                 android:layout_toEndOf="@id/rep_image"
                 android:textColor="@color/colorPrimary"
                 android:textSize="24sp"
                 android:textStyle="bold"
-                android:layout_marginBottom="8dp"
                 />
 
             <ImageButton
                 android:id="@+id/contact_done_img"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:scaleType="fitCenter"
-                android:contentDescription="@string/contact_done_img_description"
-                android:src="@drawable/checked"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
                 android:background="@android:color/transparent"
+                android:contentDescription="@string/contact_done_img_description"
+                android:scaleType="fitCenter"
+                android:src="@drawable/checked"
                 />
 
             <TextView
@@ -111,10 +111,10 @@
                 android:layout_alignWithParentIfMissing="true"
                 android:layout_below="@id/phone_number"
                 android:layout_toEndOf="@id/rep_image"
-                android:text="@string/local_office_link"
                 android:background="@android:color/transparent"
-                android:textColor="@color/colorAccent"
+                android:text="@string/local_office_link"
                 android:textAllCaps="false"
+                android:textColor="@color/colorAccent"
                 android:textSize="16sp"
                 />
 
@@ -124,8 +124,8 @@
             android:id="@+id/field_office_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:layout_marginBottom="16dp"
+            android:orientation="vertical"
             >
 
             <TextView
@@ -216,11 +216,11 @@
             android:id="@+id/unavailable_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:background="@color/button_color"
             android:minHeight="@dimen/accessibility_min_size"
             android:text="@string/unavailable_btn"
             android:textColor="@color/colorPrimaryDark"
-            android:layout_marginTop="8dp"
             />
 
         <Button
@@ -249,12 +249,12 @@
             android:id="@+id/skip_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
             android:layout_marginTop="8dp"
             android:background="@color/button_color"
             android:minHeight="@dimen/accessibility_min_size"
             android:text="@string/skip_btn"
             android:textColor="@color/colorPrimaryDark"
-            android:layout_marginBottom="4dp"
             />
 
     </LinearLayout>

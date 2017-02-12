@@ -26,8 +26,14 @@ public class NotificationUtils {
         calendar.set(Calendar.MINUTE, minutes % 60);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
-        // Note, if the calendar is in the past, then it just fires now and starts at the right
-        // time next time.
+
+        Calendar now = Calendar.getInstance();
+        if (calendar.before(now)) {
+            // Start at tomorrow so we don't get immediate firing in prod mode
+            if (!BuildConfig.DEBUG) {
+                calendar.add(Calendar.DAY_OF_YEAR, 1);
+            }
+        }
         long intervalMillis = MS_PER_MIN * 60 * 24;
         if (BuildConfig.DEBUG) {
             if (FREQUENT_NOTIFICATION_DEBUG_MODE) {

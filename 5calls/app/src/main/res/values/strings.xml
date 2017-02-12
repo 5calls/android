@@ -230,7 +230,7 @@
     <string name="settings_reminders_enable_title">Enable reminders</string>
 
     <!-- Summary for settings option to enable weekday reminders [CHAR_LIMIT=NONE]-->
-    <string name="settings_reminders_enable_summary">Enable reminders to make 5 calls. Reminders will be shown once a day on weekdays</string>
+    <string name="settings_reminders_enable_summary">Enable reminders to make 5 calls. Reminders will be shown once a day on weekdays.</string>
 
     <!-- Title for a notification reminder to make 5 calls [CHAR_LIMIT=30]-->
     <string name="notification_title">Make your voice heard</string>
