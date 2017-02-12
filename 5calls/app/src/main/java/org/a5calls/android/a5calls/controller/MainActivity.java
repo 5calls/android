@@ -48,7 +48,8 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private static final int ISSUE_DETAIL_REQUEST = 1;
-    public static final int NOTIFICATION_REQUEST = 2; // TODO log starts from the notifications
+    public static final int NOTIFICATION_REQUEST = 2;
+    public static final String EXTRA_FROM_NOTIFICATION = "extraFromNotification";
     private final AccountManager accountManager = AccountManager.Instance;
 
     private IssuesAdapter mIssuesAdapter;
@@ -90,6 +91,21 @@ public class MainActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction().add(fragment, NewSettingsDialog.TAG)
                     .commit();
             accountManager.setRemindersInfoShown(this, true);
+        }
+
+        Intent intent = getIntent();
+        if (intent != null && intent.getExtras() != null &&
+                intent.getExtras().getBoolean(EXTRA_FROM_NOTIFICATION, false)) {
+            if (accountManager.allowAnalytics(this)) {
+                // Obtain the shared Tracker instance.
+                FiveCallsApplication application = (FiveCallsApplication) getApplication();
+                Tracker tracker = application.getDefaultTracker();
+                tracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("Reminders")
+                        .setAction("LaunchFromReminder")
+                        .setValue(1)
+                        .build());
+            }
         }
 
         setContentView(R.layout.activity_main);

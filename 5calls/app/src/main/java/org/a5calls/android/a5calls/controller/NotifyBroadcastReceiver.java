@@ -44,6 +44,7 @@ public class NotifyBroadcastReceiver extends BroadcastReceiver {
         }
 
         Intent resultIntent = new Intent(context, MainActivity.class);
+        resultIntent.putExtra(MainActivity.EXTRA_FROM_NOTIFICATION, true);
         PendingIntent pendingIntent = PendingIntent.getActivity(context,
                 MainActivity.NOTIFICATION_REQUEST, resultIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         Notification.Builder builder = new Notification.Builder(context)
