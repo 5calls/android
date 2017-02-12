@@ -8,11 +8,20 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorButtonNormal">@color/button_color</item>
         <item name="android:alertDialogTheme">@style/AppTheme.Dialog</item>
+        <item name="android:windowContentTransitions">true</item>
+
+        <!-- specify shared element transitions -->
+        <item name="android:windowSharedElementEnterTransition">
+            @transition/transition</item>
+        <item name="android:windowSharedElementExitTransition">
+            @transition/transition</item>
     </style>
 
     <style name="AppTheme.Dialog" parent="@style/Theme.AppCompat.Light.Dialog">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="android:windowContentTransitions">true</item>
     </style>
 </resources>
