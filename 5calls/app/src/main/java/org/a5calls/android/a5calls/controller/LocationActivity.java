@@ -40,7 +40,8 @@ import butterknife.ButterKnife;
 public class LocationActivity extends AppCompatActivity {
     private static final String TAG = "LocationActivity";
 
-    public static final String ALLOW_HOME_UP_KEY = "allowHomeUp";  // Allows parent activity to control the home button
+    // Allows parent activity to control the home button
+    public static final String ALLOW_HOME_UP_KEY = "allowHomeUp";
     private static final int LOCATION_PERMISSION_REQUEST = 1;
 
     private final AccountManager accountManager = AccountManager.Instance;
@@ -258,7 +259,7 @@ public class LocationActivity extends AppCompatActivity {
             Geocoder geocoder = new Geocoder(this, Locale.getDefault());
             try {
                 List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-                if (addresses.size() > 0) {
+                if (addresses != null && addresses.size() > 0) {
                     accountManager.setZip(this, addresses.get(0).getPostalCode());
                 }
             } catch (IOException e) {
