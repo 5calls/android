@@ -23,15 +23,23 @@ public class NotificationUtils {
     // TODO: Got to deal with daylight savings time...
     public static void setNotificationTime(Context context, int minutes) {
         Calendar calendar = Calendar.getInstance();
+
+        // TODO: May want to add one to the day if the time is before now, because that causes
+        // an sort of immediate reminder firing event.
         calendar.set(Calendar.HOUR_OF_DAY, minutes / 60);
         calendar.set(Calendar.MINUTE, minutes % 60);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
 
         long intervalMillis = MS_PER_MIN * 60 * 24;
-        if (BuildConfig.DEBUG) {
-            if (FREQUENT_NOTIFICATION_DEBUG_MODE) {
-                intervalMillis = 6000;
+        if (BuildConfig.DEBUG && FREQUENT_NOTIFICATION_DEBUG_MODE) {
+            intervalMillis = 6000;
+        } else {
+            Calendar now = Calendar.getInstance();
+            // If the time is set to before now, the even will fire immediately, which may result in an
+            // extra notification. Go ahead and add a full day so it won't fire until tomorrow.
+            if (calendar.before(now)) {
+                calendar.add(Calendar.DAY_OF_YEAR, 1);
             }
         }
 

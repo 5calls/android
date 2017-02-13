@@ -99,7 +99,6 @@ public class SettingsActivity extends AppCompatActivity {
                     (MultiSelectListPreference) findPreference(AccountManager.KEY_REMINDER_DAYS);
             daysPreference.setValues(reminderDays);
             updateReminderDaysSummary(daysPreference, reminderDays);
-            // TODO: Programmatically set the summary text on daysPreference
         }
 
         @Override
