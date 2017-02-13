@@ -3,7 +3,9 @@ package org.a5calls.android.a5calls.controller;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
 import android.location.Criteria;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -28,12 +30,18 @@ import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class LocationActivity extends AppCompatActivity {
-
     private static final String TAG = "LocationActivity";
+
+    // Allows parent activity to control the home button
+    public static final String ALLOW_HOME_UP_KEY = "allowHomeUp";
     private static final int LOCATION_PERMISSION_REQUEST = 1;
 
     private final AccountManager accountManager = AccountManager.Instance;
@@ -44,7 +52,7 @@ public class LocationActivity extends AppCompatActivity {
      * 2076 N Hoyne Ave Chicago IL 60647-4559 is a Quigley
      */
 
-    private boolean mFromMain = false;
+    private boolean allowsHomeUp = false;
     private LocationListener mLocationListener;
 
     @BindView(R.id.zip_code) EditText zipEdit;
@@ -57,9 +65,13 @@ public class LocationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_location);
         ButterKnife.bind(this);
 
-        // If has location, not the first time in the app.
-        if (accountManager.hasLocation(this)) {
-            setFromMain();
+        // Allow home up if required
+        Intent intent = getIntent();
+        if (intent != null) {
+            if (intent.getBooleanExtra(ALLOW_HOME_UP_KEY, false)) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                allowsHomeUp = true;
+            }
         }
 
         // Load the zip code the user last used, if any.
@@ -68,11 +80,12 @@ public class LocationActivity extends AppCompatActivity {
             zipEdit.setText(zip);
         }
 
+        // Set listeners
         zipEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    submitZip();
+                    onSubmitZip(zipEdit.getText().toString());
                     return true;
                 }
                 return false;
@@ -82,9 +95,10 @@ public class LocationActivity extends AppCompatActivity {
         zipButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                submitZip();
+                onSubmitZip(zipEdit.getText().toString());
             }
         });
+
         gpsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,30 +129,6 @@ public class LocationActivity extends AppCompatActivity {
         super.onPause();
     }
 
-    private void submitZip() {
-        String zip = zipEdit.getText().toString();
-        // Is it a string that is exactly 5 characters long?
-        if (TextUtils.isEmpty(zip) || zip.length() != 5) {
-            zipEdit.setError(getResources().getString(R.string.zip_error));
-            return;
-        }
-        try {
-            // Make sure it is a number, too, by trying to parse it.
-            Integer.parseInt(zip);
-        } catch (NumberFormatException e) {
-            zipEdit.setError(getResources().getString(R.string.zip_error));
-            return;
-        }
-        // If we made it here, the zip is valid! Update the UI and send the request.
-        accountManager.setZip(this, zip);
-
-        // Delete latlng, because the user specifically requested a zip and we default to lat/long.
-        accountManager.setLat(this, null);
-        accountManager.setLng(this, null);
-
-        returnToMain();
-    }
-
     private void returnToMain() {
         // Make sure we're still alive
         if (isFinishing() || isDestroyed()) {
@@ -147,7 +137,7 @@ public class LocationActivity extends AppCompatActivity {
 
         // If we came from MainActivity and return with another Intent, it will create a deep stack
         // of activities!
-        if (mFromMain) {
+        if (allowsHomeUp) {
             onBackPressed();
         } else {
             Intent intent = new Intent(this, MainActivity.class);
@@ -201,15 +191,17 @@ public class LocationActivity extends AppCompatActivity {
             }
             return;
         }
+
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         String provider = locationManager.getBestProvider(new Criteria(), false);
         Location location = locationManager.getLastKnownLocation(provider);
+
         if (location == null) {
             mLocationListener = new LocationListener() {
 
                 @Override
                 public void onLocationChanged(Location location) {
-                    updateSharedPrefs(location);
+                    onReceiveLocation(location);
                 }
 
                 @Override
@@ -228,21 +220,53 @@ public class LocationActivity extends AppCompatActivity {
                 }
             };
             locationManager.requestLocationUpdates(provider, 10, 0, mLocationListener);
+
         } else {
-            updateSharedPrefs(location);
+            onReceiveLocation(location);
         }
     }
 
-    private void updateSharedPrefs(Location location) {
-        accountManager.setLat(this, String.valueOf(location.getLatitude()));
-        accountManager.setLng(this, String.valueOf(location.getLongitude()));
+    private void onSubmitZip(String zip) {
+        // Is it a string that is exactly 5 characters long?
+        if (TextUtils.isEmpty(zip) || zip.length() != 5) {
+            zipEdit.setError(getResources().getString(R.string.zip_error));
+            return;
+        }
+        try {
+            // Make sure it is a number, too, by trying to parse it.
+            Integer.parseInt(zip);
+        } catch (NumberFormatException e) {
+            zipEdit.setError(getResources().getString(R.string.zip_error));
+            return;
+        }
+        // If we made it here, the zip is valid! Update the UI and send the request.
+        accountManager.setZip(this, zip);
+
+        // Delete latlng, because the user specifically requested a zip and we default to lat/long.
+        accountManager.setLat(this, null);
+        accountManager.setLng(this, null);
+
         returnToMain();
     }
 
-    private void setFromMain() {
-        // If we already have a zip, this isn't our first time to the app, so we can go "up"
-        // to return to the main activity.
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mFromMain = true;
+
+    private void onReceiveLocation(Location location) {
+        accountManager.setLat(this, String.valueOf(location.getLatitude()));
+        accountManager.setLng(this, String.valueOf(location.getLongitude()));
+
+        // Update the zip field from the location
+        if (location != null) {
+            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+            try {
+                List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                if (addresses != null && addresses.size() > 0) {
+                    accountManager.setZip(this, addresses.get(0).getPostalCode());
+                }
+            } catch (IOException e) {
+                // Do nothing
+            }
+        }
+
+        returnToMain();
     }
 }

@@ -190,6 +190,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         } else if (item.getItemId() == R.id.menu_location) {
             Intent intent = new Intent(this, LocationActivity.class);
+            intent.putExtra(LocationActivity.ALLOW_HOME_UP_KEY, true);
             startActivity(intent);
             return true;
         }
