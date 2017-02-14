@@ -40,6 +40,7 @@ public class AboutActivity extends AppCompatActivity {
     private FiveCallsApi.RequestStatusListener mStatusListener;
 
     @BindView(R.id.about_us_btn) Button aboutUsButton;
+    @BindView(R.id.rate_us_btn) Button rateUsButton;
     @BindView(R.id.version_info) TextView version;
     @BindView(R.id.calls_to_date) TextView callsToDate;
 
@@ -64,19 +65,23 @@ public class AboutActivity extends AppCompatActivity {
             }
         });
 
-        version.setText(String.format(getResources().getString(R.string.version_info),
-                BuildConfig.VERSION_NAME));
-
-        // TODO: Find the correct URL for Why Calling Works
-        /*findViewById(R.id.why_calling_btn).setOnClickListener(new View.OnClickListener() {
+        rateUsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: Add this to the app instead of going to the browser
-                Uri uriUrl = Uri.parse("https://5calls.org/");
-                Intent intent = new Intent(Intent.ACTION_VIEW, uriUrl);
-                startActivity(intent);
+                // From http://stackoverflow.com/questions/11753000/how-to-open-the-google-play-store-directly-from-my-android-application
+                final String appPackageName = getPackageName();
+                try {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(
+                            "market://details?id=" + appPackageName)));
+                } catch (android.content.ActivityNotFoundException ex) {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(
+                            "https://play.google.com/store/apps/details?id=" + appPackageName)));
+                }
             }
-        });*/
+        });
+
+        version.setText(String.format(getResources().getString(R.string.version_info),
+                BuildConfig.VERSION_NAME));
 
         mStatusListener = new FiveCallsApi.RequestStatusListener() {
             @Override

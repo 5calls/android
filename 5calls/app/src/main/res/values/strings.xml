@@ -65,17 +65,25 @@
 
     <!-- Body of text on the About 5 Calls screen, describing the app. \n\n is used to start the next paragraph. [CHAR_LIMIT=NONE] -->
     <string name="about_p3">There\'s one simple and straightforward way to influence the Government that is supposed to represent you: Call them on the phone.
-                            \n\nCalling is the most effective way to influence your representative. 5 Calls gives you contacts and scripts so calling is quick and easy. We use your location to give you your local representatives so your calls are more impactful.
-                            \n\nWant to know more?</string>
+                            \n\nCalling is the most effective way to influence your representative. 5 Calls gives you contacts and scripts so calling is quick and easy. We use your location to give you your local representatives so your calls are more impactful.</string>
 
     <!-- Button linking to a page about Why calling works [CHAR_LIMIT=30] -->
     <string name="why_calling_btn">why calling works</string>
 
+    <!-- Prompt to click on the "About Us" button [CHAR_LIMIT=100] -->
+    <string name="about_us_prompt">Want to know more?</string>
+
+    <!-- Prompt to click on the "Rate" button [CHAR_LIMIT=100] -->
+    <string name="rate_us_prompt">If the 5 Calls app has been useful to you, we would appreciate it if you rate us in the Play Store.</string>
+
     <!-- Button linking to the 5calls.org about page [CHAR_LIMIT=30] -->
     <string name="about_us_btn">about us</string>
 
+    <!-- Button linking to the 5calls.org Play Store page to request a rating [CHAR_LIMIT=30] -->
+    <string name="rate_us_btn">Rate 5 Calls</string>
+
     <!-- Text to show the user the number of calls made by everyone [CHAR_LIMIT=50] -->
-    <string name="calls_to_date"><xliff:g id="callCount">%1$s</xliff:g> calls to date</string>
+    <string name="calls_to_date">Together we've made <xliff:g id="callCount">%1$s</xliff:g> calls</string>
 
     <!-- Message to the user shown when a call is recorded in the database and the server [CHAR_LIMIT=150] -->
     <string name="call_reported">Call reported successfully!</string>

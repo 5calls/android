@@ -55,51 +55,56 @@
             android:textSize="@dimen/text_size_paragraph"
             />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal"
-            >
-            <!--
-            <Button
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:minHeight="@dimen/accessibility_min_size"
-                android:id="@+id/why_calling_btn"
-                android:text="@string/why_calling_btn"
-                android:layout_marginEnd="8dp"
-                android:background="@color/button_color"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:textColor="@color/colorPrimaryDark"
-                />
-                -->
-
-            <Button
-                android:id="@+id/about_us_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/button_color"
-                android:minHeight="@dimen/accessibility_min_size"
-                android:paddingEnd="8dp"
-                android:paddingStart="8dp"
-                android:text="@string/about_us_btn"
-                android:textColor="@color/colorPrimaryDark"
-                />
-
-        </LinearLayout>
-
         <TextView
             android:id="@+id/calls_to_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:textAlignment="center"
+            android:layout_marginBottom="32dp"
             android:textColor="@color/colorAccent"
             android:textSize="@dimen/h2_text_size"
             android:textStyle="bold"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/about_us_prompt"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/text_size_paragraph"
+            android:textStyle="bold|italic"
+            />
+
+        <Button
+            android:id="@+id/about_us_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:minHeight="@dimen/accessibility_min_size"
+            android:text="@string/about_us_btn"
+            android:textColor="@color/colorAccent"
+            android:background="@android:color/transparent"
+            android:textAlignment="textStart"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/rate_us_prompt"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/text_size_paragraph"
+            android:textStyle="bold|italic"
+            />
+
+        <Button
+            android:id="@+id/rate_us_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/accessibility_min_size"
+            android:text="@string/rate_us_btn"
+            android:textColor="@color/colorAccent"
+            android:background="@android:color/transparent"
+            android:textAlignment="textStart"
             />
 
         <TextView
