@@ -83,7 +83,7 @@
     <string name="rate_us_btn">Rate 5 Calls</string>
 
     <!-- Text to show the user the number of calls made by everyone [CHAR_LIMIT=50] -->
-    <string name="calls_to_date">Together we've made <xliff:g id="callCount">%1$s</xliff:g> calls</string>
+    <string name="calls_to_date">Together we\'ve made <xliff:g id="callCount">%1$s</xliff:g> calls</string>
 
     <!-- Message to the user shown when a call is recorded in the database and the server [CHAR_LIMIT=150] -->
     <string name="call_reported">Call reported successfully!</string>
