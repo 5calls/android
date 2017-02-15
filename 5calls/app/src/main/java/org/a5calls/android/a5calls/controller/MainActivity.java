@@ -354,7 +354,7 @@ public class MainActivity extends AppCompatActivity {
                             totalCalls));
                 }
             }
-            holder.doneIcon.setImageLevel(callsLeft == 0 ? 1 : 0);
+            holder.doneIcon.setImageLevel(callsLeft == 0 && totalCalls > 0 ? 1 : 0);
         }
 
         @Override
