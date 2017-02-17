@@ -1,0 +1,311 @@
+<resources xmlns:xliff="http://schemas.android.com/tools">
+
+    <!-- The application name [CHAR_LIMIT=25] -->
+    <string name="app_name">5 Calls</string>
+
+    <!-- The prompt on the location page to have a user set their location [CHAR_LIMIT=NONE] -->
+    <string name="location_prompt">Entre su ubicacicón para encontrar a sus representantes locales.</string>
+
+    <!-- The label for the zip code edit text field [CHAR_LIMIT=50] -->
+    <string name="zip_code_hint">Código postal de 5 dígitos</string>
+
+    <!-- The button for submitting your zip code as location [CHAR_LIMIT=30] -->
+    <string name="submit">envíe</string>
+
+    <!-- Error text on the zip code edittext field for invalid types of input [CHAR_LIMIT=75] -->
+    <string name="zip_error">Entre un código postal válido de 5 dígitos</string>
+
+    <!-- Error message shown to the user when there was a problem communicating with the server [CHAR_LIMIT=150] -->
+    <string name="request_error">Hay un problema en comunicarse con el servidor. ¿Esta conectado su aparato?</string>
+
+    <!-- Error message shown to the user when the app failed to parse the JSON response from the server [CHAR_LIMIT=150] -->
+    <string name="json_error">Error: Datos inválidos o inexistentes para esta ubicación</string>
+
+    <!-- Message telling a user how many calls they still need to make on a particular issue [CHAR_LIMIT=30] -->
+    <string name="call_count"><xliff:g id="callCount">%1$d</xliff:g> llamadas para hacer</string>
+
+    <!-- Message telling a user they sill have one call to make on a particular issue [CHAR_LIMIT=30] -->
+    <string name="call_count_one">1 llamada para hacer</string>
+
+    <!-- Prompt for explaining which contact/office to call [CHAR_LIMIT=50] -->
+    <string name="call_this_office">Llame a esta oficina:</string>
+
+    <!-- Call result button for when the contact was unavailable (i.e. couldn't even leave a voicemail) [CHAR_LIMIT=30] -->
+    <string name="unavailable_btn">indisponible</string>
+
+    <!-- Call result button for when the user left a voicemail [CHAR_LIMIT=30] -->
+    <string name="voicemail_btn">deje mensaje de voz</string>
+
+    <!-- Call result button for when the user made contact [CHAR_LIMIT=30] -->
+    <string name="made_contact_btn">contacto hecho</string>
+
+    <!-- Button for the user to skip contacting a particular contact on a particular issue [CHAR_LIMIT=30] -->
+    <string name="skip_btn">saltar</string>
+
+    <!-- Prompt for call result buttons, telling the user to click one to get to the next call for this issue [CHAR_LIMIT=NONE] -->
+    <string name="buttons_prompt">Entre su resultado para seguir a la siguiente llamada:</string>
+
+    <!-- Message to the user that no calls are left on a particular issue [CHAR_LIMIT=NONE] -->
+    <string name="no_calls_left">No faltan llamadas pare este asunto.</string>
+
+    <!-- Menu option to go to the About 5 Calls screen [CHAR_LIMIT=25] -->
+    <string name="menu_about">Sobre 5 Calls</string>
+
+    <!-- Title of the About 5 Calls screen [CHAR_LIMIT=30] -->
+    <string name="about_title">Sobre 5 Calls</string>
+
+    <!-- Header on the About 5 Calls screen [CHAR_LIMIT=30] -->
+    <string name="about_header">QUE SE ESCUCHE SU VOZ</string>
+
+    <!-- First paragraph of About screen text [CHAR_LIMIT=NONE] -->
+    <string name="about_p1">Convierta su participación pasiva a resistencia activa. Los likes en Facebook y retweets en Twitter no pueden crear el cambio que usted desea ver pero llamarle a su gobierno por teléfono si puede.</string>
+
+    <!-- Call to action, "Spend 5 minutes, make 5 calls" [CHAR_LIMIT=] -->
+    <string name="about_p2">Tome 5 minutos, haga 5 llamadas.</string>
+
+    <!-- Body of text on the About 5 Calls screen, describing the app.   n  n is used to start the next paragraph. [CHAR_LIMIT=NONE] -->
+    <string name="about_p3">Hay una forma sencilla y directa de influir al Gobierno que se supone te representa: Llámales por teléfono.
+                            \nLlamar por teléfono es la forma más efectiva de influir a sus representantes. 5 Calls te da contactos y guiones para que puedas llamar rápido y fácilmente. Usamos su ubicación para darle a sus representantes locales para que sus llamadas sean más impactantes.</string>
+
+    <!-- Button linking to a page about Why calling works [CHAR_LIMIT=30] -->
+    <string name="why_calling_btn">why calling works</string>
+
+    <!-- Button linking to the 5calls.org about page [CHAR_LIMIT=30] -->
+    <string name="about_us_btn">sober nosotros</string>
+
+    <!-- Text to show the user the number of calls made by everyone [CHAR_LIMIT=50] -->
+    <string name="calls_to_date"><xliff:g id="callCount">%1$s</xliff:g> llamadas a la fecha</string>
+
+    <!-- Message to the user shown when a call is recorded in the database and the server [CHAR_LIMIT=150] -->
+    <string name="call_reported">Llamadas comunicadas con exito!</string>
+
+    <!-- Text shown to the user on the splash / tutorial screen describing the 5 Calls app.   n  n is used to create new paragraphs. [CHAR_LIMIT=NONE] -->
+    <string name="about_splash">Hay una forma sencilla y directa de influir al Gobierno que se supone te representa: Llámales por teléfono.</string>
+
+    <!-- Tutorial screen text that calling is effective [CHAR_LIMIT=100] -->
+    <string name="about_p2_2">Llamar por teléfono es la forma más efectiva de influir a sus representantes.</string>
+
+    <!-- Text shown to the user on the splash / tutorial screen describing more about the 5 Calls app.   n  n is used to create new paragraphs. [CHAR_LIMIT=NONE] -->
+    <string name="about_splash_2">5 Calls te da contactos y guiones para que puedas llamar rápido y fácilmente. Usamos su ubicación para darle a sus representantes locales para que sus llamadas sean más impactantes.</string>
+
+    <!-- Text shown to the user on the splash / tutorial screen letting them know about notifications and reminders [CHAR_LIMIT=NONE] -->
+    <string name="about_splash_3">La aplicación de 5 Calls le ayuda a mantener la participación recordándole varias veces a la semana para hacer llamadas.
+                                    \nPuede personalizar o desactivar los recordatorios en la configuración.</string>
+
+    <!-- Button shown to the user on the splash / tutorial screen to get to the next page of the tutorial [CHAR_LIMIT=30] -->
+    <string name="next">Siguiente</string>
+
+    <!-- Button shown to the user on the splash / tutorial screen to get started and go to the app [CHAR_LIMIT=30] -->
+    <string name="get_started_btn">Empieza</string>
+
+    <!-- Description of how the 5 Calls app is open-source, link to github page [CHAR_LIMIT=NONE] -->
+    <string name="open_source_info">La aplicación de 5 llamadas es de código abierto y hecha por voluntarios. Encuéntralo en <u>github.com/5calls/android</u>.</string>
+
+    <!-- Version code shown to the user in the about page [CHAR_LIMIT=NONE] -->
+    <string name="version_info">Versión <xliff:g id="versionCode">%1$s</xliff:g></string>
+
+    <!-- Menu option to go to your impact page [CHAR_LIMIT=25] -->
+    <string name="menu_stats">Su impacto</string>
+
+    <!-- Header to the script used for calling [CHAR_LIMIT=NONE] -->
+    <string name="call_script_prompt">Su guión:</string>
+
+    <!-- Header to a section that says why the contact is someone you might call [CHAR_LIMIT=NONE] -->
+    <string name="contact_reason_prompt">Razon for llamar a estate oficina:</string>
+
+    <!-- Shows the user how many calls remain and how many calls there are total for a particular issue [CHAR_LIMIT=50] -->
+    <string name="call_count_remaining"><xliff:g id="callsLeft">%1$d</xliff:g> LLamadas para hacer(<xliff:g id="callsTotal">%2$d</xliff:g> total)</string>
+
+    <!-- Shows the user that 1 call remains and how many calls there are total for a particular issue [CHAR_LIMIT=50] -->
+    <string name="call_count_remaining_one">1 llamada para hacer(<xliff:g id="callsTotal">%1$d</xliff:g> total)</string>
+
+    <!-- Menu option to refresh the issues list [CHAR_LIMIT=25] -->
+    <string name="refresh">Reactualizar asuntos</string>
+
+    <!-- Message shown when a call state was recorded locally but there was an issue communicating the result to the server. [CHAR_LIMIT=150] -->
+    <string name="request_error_db_recorded_anyway">Llamada registrada, pero hubo un problema al comunicarse con el servidor. ¿Está en línea su aparato?</string>
+
+    <!-- Message shown when a call state was recorded locally but there was an issue parsing the JSON response from the server. [CHAR_LIMIT=150] -->
+    <string name="json_error_db_recorded_anyway">Llamada grabada, pero tuvimos algunos problemas al contactar al servidor.</string>
+
+    <!-- Menu option to go to a settings page [CHAR_LIMIT=25] -->
+    <string name="settings">Configuración</string>
+
+    <!-- Setting to send usage data (i.e. Analytics) to the 5 calls team [CHAR_LIMIT=50] -->
+    <string name="setting_usage_title">Envia datos de uso de la aplicación 5 Calls</string>
+
+    <!-- Description of setting to send usage data to the 5 calls team [CHAR_LIMIT=NONE] -->
+    <string name="settings_usage_summary">Los datos son anónimos y nos ayudan a entender cómo se utiliza la aplicación de 5 Calls y mejorarla.</string>
+
+    <!-- Menu option to update the location for the app [CHAR_LIMIT=25] -->
+    <string name="menu_location">Actualizar ubicación</string>
+
+    <!-- Title for issues list page, starts with the app name and specifies the user's location [CHAR_LIMIT=30] -->
+    <string name="title_main">5 Calls para <xliff:g id="location">%1$s</xliff:g></string>
+
+    <!-- Button that will use the user's device location to set the location in the app [CHAR_LIMIT=30] -->
+    <string name="btn_gps">Use mi ubicación</string>
+
+    <!-- Prompt to enter a zip code instead of using the phone's GPS location [CHAR_LIMIT=NONE] -->
+    <string name="location_zip_prompt">Tambien se puede usar su coding postal.
+          nEn algunos distritos, es posible que esta manera no presenta todos sus representantes.</string>
+
+    <!-- Prompt to use your GPS location in the app [CHAR_LIMIT=NONE] -->
+    <string name="location_gps_prompt">Use la ubicación de tu teléfono para encontrar a todos los representantes</string>
+
+    <!-- Error shown when the location cannot be parsed properly in the issues list page [CHAR_LIMIT=150] -->
+    <string name="main_activity_location_error">Lo sentimos, no pudimos encontrar su ubicación, por favor, inténtalo nuevamente</string>
+
+    <!-- Title of the Your Impact activity showing a user their stats [CHAR_LIMIT=30] -->
+    <string name="stats_activity">Su impacto</string>
+
+    <!-- Message that the user has no stats yet because they haven't made calls yet, shown on the impact page [CHAR_LIMIT=100] -->
+    <string name="no_calls_impact_message">¡Todavía no has hecho llamadas con la aplicación de 5 llamadas!</string>
+
+    <!-- Short sentence with the user's total call count [CHAR_LIMIT=50] -->
+    <string name="your_call_count">Su impacto es <xliff:g id="callCount">%1$d</xliff:g> calls!</string>
+
+    <!-- Short sentence with the user's total call count when they've made just 1 call [CHAR_LIMIT=50] -->
+    <string name="your_call_count_one">Su impacto es 1 llamada!</string>
+
+    <!-- Some motivational text about how great the user is for making calls, plus a lead into the call breakdown section of the stats page [CHAR_LIMIT=NONE] -->
+    <string name="motivational_text">Eso es impresionante, y deberías sentirte orgulloso. Cada llamada cuenta, y esto es lo que has logrado:</string>
+
+    <!-- Tells the user how many times they've made contact [CHAR_LIMIT=50] -->
+    <string name="impact_contact">Has hecho contacto <xliff:g id="contactCallCount">"%1$d</xliff:g> veces!</string>
+
+    <!-- Tells the user how many times they've left a voicemail [CHAR_LIMIT=50] -->
+    <string name="impact_vm">Has dejado <xliff:g id="voicemailCallCount">%1$d</xliff:g> mensajes!</string>
+
+    <!-- Tells the user how many times they've called but the office was unavailable [CHAR_LIMIT=50] -->
+    <string name="impact_unavailable"><xliff:g id="unavailableCallCount">%1$d</xliff:g> veces el contacto no estaba disponible.</string>
+
+    <!-- Tells the user how many times they've made contact, if the count is 1 [CHAR_LIMIT=50] -->
+    <string name="impact_contact_one">Has hecho contacto uno vez!</string>
+
+    <!-- Tells the user how many times they've left a voicemail, if the count is 1 [CHAR_LIMIT=50] -->
+    <string name="impact_vm_one">Has dejado un mensaje.</string>
+
+    <!-- Tells the user how many times they've called but the office was unavailable, if the count is 1 [CHAR_LIMIT=50] -->
+    <string name="impact_unavailable_one">1 vez el contacto no estaba disponible.</string>
+
+    <!-- Unknown contact name [CHAR_LIMIT=50] -->
+    <string name="unknown_contact">Contacto desconocido</string>
+
+    <!-- Unknown issue name [CHAR_LIMIT=NONE] -->
+    <string name="unknown_issue">Asunto desconocido</string>
+
+    <!-- Unknown location set [CHAR_LIMIT=50] -->
+    <string name="unknown_location">Ubicacion desconocida</string>
+
+    <!-- Label for a list of most contacted representatives [CHAR_LIMIT=100] -->
+    <string name="top_contacts">Sus representantes más contactados son:</string>
+
+    <!-- Description of how many calls for a given contact name [CHAR_LIMIT=50] -->
+    <string name="contact_call_stat"><xliff:g id="callCount">%1$d</xliff:g> llamadas: <xliff:g id="repName">%2$s</xliff:g></string>
+
+    <!-- Description of how many calls for a given contact name, if the count is 1 [CHAR_LIMIT=50] -->
+    <string name="contact_call_stat_one">1 llamada: <xliff:g id="repName">%1$s</xliff:g></string>
+
+    <!-- Link to expand a section about field office phone numbers [CHAR_LIMIT=30] -->
+    <string name="local_office_link">Llame a <u>local office</u></string>
+
+    <!-- Prompt for a section that lists field offices & phone numbers (not the DC office) for a contact [CHAR_LIMIT=NONE] -->
+    <string name="field_office_prompt">Oficinas locales para <xliff:g id="contactName">%1$s</xliff:g></string>
+
+    <!-- Content description for an image that shows a rep is already contacted for a particular issue [CHAR_LIMIT=NONE] -->
+    <string name="contact_done_img_description">(contactado)</string>
+
+    <!-- Title for a dialog telling a user what type of contact they've made with a rep on an issue [CHAR_LIMIT=30] -->
+    <string name="contact_details_dialog_title">Ya ha informado de estas acciones:</string>
+
+    <!-- Message shown to the user when a contact is skipped [CHAR_LIMIT=150] -->
+    <string name="skip_snackbar_message">Oficina omitida.</string>
+
+    <!-- Link to go back to the issues list main activity from an issue [CHAR_LIMIT=20] -->
+    <string name="back">regresar</string>
+
+    <!-- Done button for issues page [CHAR_LIMIT=30] -->
+    <string name="done">hecho</string>
+
+    <!-- Name for settings category for general settings[CHAR_LIMIT=50]-->
+    <string name="settings_category_general">Configuración general</string>
+
+    <!-- Name for settings category for reminder settings[CHAR_LIMIT=50]-->
+    <string name="settings_category_reminders">Recordatarios</string>
+
+    <!-- Title for time picker for reminders [CHAR_LIMIT=50]-->
+    <string name="settings_reminders_time_title">Tiempo de recordatorio</string>
+
+    <!-- Title for settings option to enable reminders [CHAR_LIMIT=50]-->
+    <string name="settings_reminders_enable_title">Permite recordatarios</string>
+
+    <!-- Summary for settings option to enable reminders [CHAR_LIMIT=NONE]-->
+    <string name="settings_reminders_enable_summary">Permite recordatarios para hacer 5 llamadas.</string>
+
+    <!-- Title for settings option to enable weekday reminders [CHAR_LIMIT=50]-->
+    <string name="settings_reminder_days_title">Recuerdame en estos días</string>
+
+    <!-- Monday [CHAR_LIMIT=50] -->
+    <string name="monday">Lunes</string>
+
+    <!-- Tuesday [CHAR_LIMIT=50] -->
+    <string name="tuesday">Martes</string>
+
+    <!-- Wednesday [CHAR_LIMIT=50] -->
+    <string name="wednesday">Miercoles</string>
+
+    <!-- Thursday [CHAR_LIMIT=50] -->
+    <string name="thursday">Jueves</string>
+
+    <!-- Friday [CHAR_LIMIT=50] -->
+    <string name="friday">Viernes</string>
+
+    <!-- Saturday [CHAR_LIMIT=50] -->
+    <string name="saturday">Sabado</string>
+
+    <!-- Sunday [CHAR_LIMIT=50] -->
+    <string name="sunday">Domingo</string>
+
+    <!-- DO NOT TRANSLATE This is an array of the weekdays in order -->
+    <string-array name="reminder_days_titles">
+        <item>@string/monday</item>
+        <item>@string/tuesday</item>
+        <item>@string/wednesday</item>
+        <item>@string/thursday</item>
+        <item>@string/friday</item>
+        <item>@string/saturday</item>
+        <item>@string/sunday</item>
+    </string-array>
+
+    <!-- DO NOT TRANSLATE This is the value of the weekdays in order. Monday is 2. -->
+    <string-array name="reminder_days_values">
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>1</item> <!-- Sunday is 1 -->
+    </string-array>
+
+    <!-- Summary text for the days selection preference when no days are selected [CHAR_LIMIT=100] -->
+    <string name="no_days_selected">No hay días seleccionados</string>
+
+    <!-- Title for a notification reminder to make 5 calls [CHAR_LIMIT=30]-->
+    <string name="notification_title">Haz escuchar tu voz</string>
+
+    <!-- Text for a notification reminder to make 5 calls [CHAR_LIMIT=50]-->
+    <string name="notification_text">Dedique 5 minutos para ponerse en contacto con sus representantes.</string>
+
+    <!-- Title for a dialog that lets users know on upgrade that reminders have been added [CHAR_LIMIT=50] -->
+    <string name="reminders_dialog_title">Nueva función ańadida</string>
+
+    <!-- Content for a dialog that lets users know on upgrade that reminders have been added [CHAR_LIMIT=50] -->
+    <string name="reminders_dialog_content">La aplicación de 5 Calls ahora puede ayudarle a mantener la participación recordándole varias veces a la semana para hacer llamadas.
+                                    n  nPuede personalizar o desactivar los recordatorios en la configuración.</string>
+
+    <!-- Button to go to the settings activity [CHAR_LIMIT=25] -->
+    <string name="go_to_settings">Ve a configuración</string>
+
+</resources>
