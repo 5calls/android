@@ -71,7 +71,7 @@
     <string name="why_calling_btn">why calling works</string>
 
     <!-- Button linking to the 5calls.org about page [CHAR_LIMIT=30] -->
-    <string name="about_us_btn">sober nosotros</string>
+    <string name="about_us_btn">sobre nosotros</string>
 
     <!-- Text to show the user the number of calls made by everyone [CHAR_LIMIT=50] -->
     <string name="calls_to_date"><xliff:g id="callCount">%1$s</xliff:g> llamadas a la fecha</string>
