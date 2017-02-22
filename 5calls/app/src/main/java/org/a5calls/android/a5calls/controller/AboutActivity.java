@@ -6,9 +6,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -43,6 +46,7 @@ public class AboutActivity extends AppCompatActivity {
     @BindView(R.id.rate_us_btn) Button rateUsButton;
     @BindView(R.id.version_info) TextView version;
     @BindView(R.id.calls_to_date) TextView callsToDate;
+    @BindView(R.id.license_btn) Button licenseButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,6 +81,13 @@ public class AboutActivity extends AppCompatActivity {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(
                             "https://play.google.com/store/apps/details?id=" + appPackageName)));
                 }
+            }
+        });
+
+        licenseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showOpenSourceLicenses();
             }
         });
 
@@ -149,5 +160,16 @@ public class AboutActivity extends AppCompatActivity {
             tracker.setScreenName(TAG);
             tracker.send(new HitBuilders.ScreenViewBuilder().build());
         }
+    }
+
+    // Inspired by https://www.bignerdranch.com/blog/open-source-licenses-and-android/
+    private void showOpenSourceLicenses() {
+        WebView view = (WebView) LayoutInflater.from(this).inflate(R.layout.licence_view, null);
+        view.loadUrl("file:///android_asset/licenses.html");
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.license_btn))
+                .setView(view)
+                .setPositiveButton(android.R.string.ok, null)
+                .show();
     }
 }

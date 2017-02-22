@@ -2,19 +2,6 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
-        android:title="@string/settings_category_general"
-        >
-
-        <SwitchPreference
-            android:title="@string/setting_usage_title"
-            android:defaultValue="true"
-            android:summary="@string/settings_usage_summary"
-            android:key="prefsKeyAllowAnalytics"
-            />
-
-    </PreferenceCategory>
-
-    <PreferenceCategory
         android:title="@string/settings_category_reminders"
         >
 
@@ -38,6 +25,19 @@
             android:title="@string/settings_reminders_time_title"
             android:key="prefsKeyRemindersTime"
             android:dependency="prefsKeyEnableReminders"
+            />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/settings_category_general"
+        >
+
+        <SwitchPreference
+            android:title="@string/setting_usage_title"
+            android:defaultValue="true"
+            android:summary="@string/settings_usage_summary"
+            android:key="prefsKeyAllowAnalytics"
             />
 
     </PreferenceCategory>
