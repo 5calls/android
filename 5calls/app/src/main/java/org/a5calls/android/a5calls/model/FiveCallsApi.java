@@ -90,6 +90,12 @@ public class FiveCallsApi {
                         e.printStackTrace();
                     }
                     JSONArray jsonArray = response.optJSONArray("issues");
+                    if (jsonArray == null) {
+                        for (RequestStatusListener listener : mStatusListeners) {
+                            listener.onJsonError();
+                        }
+                        return;
+                    }
                     Type listType = new TypeToken<ArrayList<Issue>>(){}.getType();
                     List<Issue> issues = new Gson().fromJson(jsonArray.toString(),
                             listType);

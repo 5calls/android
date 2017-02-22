@@ -19,7 +19,7 @@
     <string name="request_error">There was a problem communicating with the server. Is your device online?</string>
 
     <!-- Error message shown to the user when the app failed to parse the JSON response from the server [CHAR_LIMIT=150] -->
-    <string name="json_error">Error: Invalid or no data for this location</string>
+    <string name="json_error">Error: Invalid or no data for this location. Try again later.</string>
 
     <!-- Message telling a user how many calls they still need to make on a particular issue [CHAR_LIMIT=30] -->
     <string name="call_count"><xliff:g id="callCount">%1$d</xliff:g> calls to make</string>
