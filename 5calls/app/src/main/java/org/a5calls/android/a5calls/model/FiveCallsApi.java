@@ -99,6 +99,7 @@ public class FiveCallsApi {
                     Type listType = new TypeToken<ArrayList<Issue>>(){}.getType();
                     List<Issue> issues = new Gson().fromJson(jsonArray.toString(),
                             listType);
+                    // TODO: Sanitize contact IDs here
                     for (RequestStatusListener listener : mStatusListeners) {
                         listener.onIssuesReceived(locationName, issues);
                     }
