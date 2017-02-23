@@ -316,6 +316,8 @@
 
     <!-- Button to go to the settings activity [CHAR_LIMIT=25] -->
     <string name="go_to_settings">Go to settings</string>
+
+    <!-- Button to view the open source licenses for libraries used in this project [CHAR_LIMIT=50] -->
     <string name="license_btn">Open Source Licenses</string>
 
 </resources>

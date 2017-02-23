@@ -70,8 +70,17 @@
     <!-- Button linking to a page about Why calling works [CHAR_LIMIT=30] -->
     <string name="why_calling_btn">why calling works</string>
 
+    <!-- Prompt to click on the "About Us" button [CHAR_LIMIT=100] -->
+    <string name="about_us_prompt">¿Quiere saber más?</string>
+
+    <!-- Prompt to click on the "Rate" button [CHAR_LIMIT=100] -->
+    <string name="rate_us_prompt">Si la aplicación de 5 Calls ha sido útil, por favor dénos una reseña en el Play Store.</string>
+
     <!-- Button linking to the 5calls.org about page [CHAR_LIMIT=30] -->
     <string name="about_us_btn">sobre nosotros</string>
+
+    <!-- Button linking to the 5calls.org Play Store page to request a rating [CHAR_LIMIT=30] -->
+    <string name="rate_us_btn">Reseñe 5 Calls</string>
 
     <!-- Text to show the user the number of calls made by everyone [CHAR_LIMIT=50] -->
     <string name="calls_to_date"><xliff:g id="callCount">%1$s</xliff:g> llamadas a la fecha</string>
@@ -148,7 +157,7 @@
 
     <!-- Prompt to enter a zip code instead of using the phone's GPS location [CHAR_LIMIT=NONE] -->
     <string name="location_zip_prompt">Tambien se puede usar su coding postal.
-          nEn algunos distritos, es posible que esta manera no presenta todos sus representantes.</string>
+          \nEn algunos distritos, es posible que esta manera no presenta todos sus representantes.</string>
 
     <!-- Prompt to use your GPS location in the app [CHAR_LIMIT=NONE] -->
     <string name="location_gps_prompt">Use la ubicación de tu teléfono para encontrar a todos los representantes</string>
@@ -303,9 +312,12 @@
 
     <!-- Content for a dialog that lets users know on upgrade that reminders have been added [CHAR_LIMIT=50] -->
     <string name="reminders_dialog_content">La aplicación de 5 Calls ahora puede ayudarle a mantener la participación recordándole varias veces a la semana para hacer llamadas.
-                                    n  nPuede personalizar o desactivar los recordatorios en la configuración.</string>
+                                    \n\nPuede personalizar o desactivar los recordatorios en la configuración.</string>
 
     <!-- Button to go to the settings activity [CHAR_LIMIT=25] -->
     <string name="go_to_settings">Ve a configuración</string>
+
+    <!-- Button to view the open source licenses for libraries used in this project [CHAR_LIMIT=50] -->
+    <string name="license_btn">Licencias de código abierto</string>
 
 </resources>
