@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.support.annotation.VisibleForTesting;
 import android.support.v4.util.Pair;
 import android.text.TextUtils;
 import android.util.Log;
@@ -121,7 +122,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public String getIssueName(String issueId) {
         Cursor c = getReadableDatabase().rawQuery("SELECT " + IssuesColumns.ISSUE_NAME + " FROM " +
-                ISSUES_TABLE_NAME + " WHERE " + IssuesColumns.ISSUE_ID + " = \"" + issueId + "\"",
+                ISSUES_TABLE_NAME + " WHERE " + IssuesColumns.ISSUE_ID + " = '" + issueId + "'",
                 null);
         String result = "";
         if (c.moveToNext()) {
@@ -132,9 +133,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public String getContactName(String contactId) {
+        contactId = sanitizeContactId(contactId);
         Cursor c = getReadableDatabase().rawQuery("SELECT " + ContactColumns.CONTACT_NAME +
-                " FROM " + CONTACTS_TABLE_NAME + " WHERE " + ContactColumns.CONTACT_ID + " = \"" +
-                contactId + "\"", null);
+                " FROM " + CONTACTS_TABLE_NAME + " WHERE " + ContactColumns.CONTACT_ID + " = '" +
+                contactId + "'", null);
         String result = "";
         if (c.moveToNext()) {
             result = c.getString(0);
@@ -169,7 +171,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public List<String> getCallsForIssueAndContacts(String issueId, Contact[] contacts) {
         String[] contactIdList = new String[contacts.length];
         for (int i = 0; i < contacts.length; i++) {
-            contactIdList[i] = "'" + contacts[i].id + "'";
+            contactIdList[i] = "'" + sanitizeContactId(contacts[i].id) + "'";
         }
         String contactIds = "(" + TextUtils.join(",", contactIdList) + ")";
         String query = "SELECT " + CallsColumns.CONTACT_ID + " FROM " +
@@ -203,6 +205,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @param contactId
      */
     public boolean hasCalled(String issueId, String contactId) {
+        contactId = sanitizeContactId(contactId);
         Cursor c = getReadableDatabase().rawQuery("SELECT " + CallsColumns.TIMESTAMP + " FROM " +
                 CALLS_TABLE_NAME + " WHERE " + CallsColumns.ISSUE_ID + " = ? AND " +
                 CallsColumns.CONTACT_ID + " = ?", new String[] {issueId, contactId});
@@ -218,6 +221,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @return A list of the call results for this issue and contact.
      */
     public List<String> getCallResults(String issueId, String contactId) {
+        contactId = sanitizeContactId(contactId);
         Cursor c = getReadableDatabase().rawQuery("SELECT " + CallsColumns.RESULT + " FROM " +
                 CALLS_TABLE_NAME + " WHERE " + CallsColumns.ISSUE_ID + " = ? AND " +
                 CallsColumns.CONTACT_ID + " = ? GROUP BY " + CallsColumns.RESULT,
@@ -248,7 +252,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public int getCallsCountForType(String type) {
         Cursor c = getReadableDatabase().rawQuery(
                 "SELECT " + CallsColumns.TIMESTAMP + " FROM " + CALLS_TABLE_NAME + " WHERE " +
-                CallsColumns.RESULT + " = \"" + type + "\"", null);
+                CallsColumns.RESULT + " = '" + type + "'", null);
         int count = c.getCount();
         c.close();
         return count;
@@ -301,5 +305,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 }
             }
         }
+    }
+
+    @VisibleForTesting
+    public static String sanitizeContactId(String contactId) {
+        // TODO this only works on single quotes and not double quotes. Triple quotes are still
+        // an unknown issue. Should use a regex or something.
+        if (contactId.contains("'") && !contactId.contains("''")) {
+            return contactId.replace("'", "''");
+        }
+        return contactId;
     }
 }
