@@ -7,8 +7,8 @@ android {
         applicationId "org.a5calls.android.a5calls"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 14
-        versionName "1.4"
+        versionCode 15
+        versionName "1.5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -18,8 +18,8 @@ android {
         }
     }
     lintOptions {
-        // Check for errors in release builds but don't abort.
-        abortOnError false
+        // Check for errors in release builds. Change to false to force build.
+        abortOnError true
     }
 }
 
