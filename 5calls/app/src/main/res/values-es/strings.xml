@@ -163,7 +163,7 @@
     <string name="location_gps_prompt">Use la ubicación de tu teléfono para encontrar a todos los representantes</string>
 
     <!-- Error shown when the location cannot be parsed properly in the issues list page [CHAR_LIMIT=150] -->
-    <string name="main_activity_location_error">Lo sentimos, no pudimos encontrar su ubicación, por favor, inténtalo nuevamente</string>
+    <string name="main_activity_location_error">Lo sentimos, no pudimos encontrar su ubicación, por favor, inténtelo otra vez</string>
 
     <!-- Title of the Your Impact activity showing a user their stats [CHAR_LIMIT=30] -->
     <string name="stats_activity">Su impacto</string>
@@ -321,6 +321,6 @@
     <string name="license_btn">Licencias de código abierto</string>
 
     <!-- Button to try loading data from the 5 Calls API again, shown after an error [CHAR_LIMIT=50] -->
-    <string name="try_again_btn">Inténtalo de nuevo</string>
+    <string name="try_again_btn">Inténtelo de nuevo</string>
 
 </resources>
