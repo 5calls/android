@@ -1,6 +1,7 @@
 package org.a5calls.android.a5calls.controller;
 
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
@@ -17,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,14 +29,11 @@ import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
-import org.a5calls.android.a5calls.model.DatabaseHelper;
 import org.a5calls.android.a5calls.model.FiveCallsApi;
 import org.a5calls.android.a5calls.model.Issue;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -206,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
                         Snackbar.LENGTH_LONG).show();
                 // Our only type of request in MainActivity is a GET. If it doesn't work, clear the
                 // active issues list to avoid showing a stale list.
-                mIssuesAdapter.setIssues(Collections.<Issue>emptyList());
+                mIssuesAdapter.setIssues(Collections.<Issue>emptyList(), true);
                 swipeContainer.setRefreshing(false);
             }
 
@@ -217,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
                         Snackbar.LENGTH_LONG).show();
                 // Our only type of request in MainActivity is a GET. If it doesn't work, clear the
                 // active issues list to avoid showing a stale list.
-                mIssuesAdapter.setIssues(Collections.<Issue>emptyList());
+                mIssuesAdapter.setIssues(Collections.<Issue>emptyList(), true);
                 swipeContainer.setRefreshing(false);
             }
 
@@ -241,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
                 if (TextUtils.isEmpty(locationName)) {
                     locationName = getResources().getString(R.string.unknown_location);
                 }
-                mIssuesAdapter.setIssues(issues);
+                mIssuesAdapter.setIssues(issues, false);
                 swipeContainer.setRefreshing(false);
             }
 
@@ -288,14 +287,19 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private class IssuesAdapter extends RecyclerView.Adapter<IssueViewHolder> {
+    private class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+        private static final int VIEW_TYPE_EMPTY = 0;
+        private static final int VIEW_TYPE_ISSUE = 1;
+
         private List<Issue> mIssues = Collections.emptyList();
+        private boolean mHasError = false;
 
         public IssuesAdapter() {
 
         }
 
-        public void setIssues(List<Issue> issues) {
+        public void setIssues(List<Issue> issues, boolean hasError) {
+            mHasError = hasError;
             mIssues = issues;
             notifyDataSetChanged();
         }
@@ -311,61 +315,94 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public IssueViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            CardView v = (CardView) LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.issue_view, parent, false);
-            IssueViewHolder vh = new IssueViewHolder(v);
-            return vh;
-        }
-
-        @Override
-        public void onBindViewHolder(final IssueViewHolder holder, int position) {
-            final Issue issue = mIssues.get(position);
-            holder.name.setText(issue.name);
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent issueIntent = new Intent(holder.itemView.getContext(),
-                            IssueActivity.class);
-                    issueIntent.putExtra(IssueActivity.KEY_ISSUE, issue);
-                    issueIntent.putExtra(IssueActivity.KEY_ZIP, mZip);
-                    startActivityForResult(issueIntent, ISSUE_DETAIL_REQUEST);
-                }
-            });
-            int totalCalls = issue.contacts.length;
-            List<String> contacted = AppSingleton.getInstance(getApplicationContext())
-                    .getDatabaseHelper().getCallsForIssueAndContacts(issue.id, issue.contacts);
-            int callsLeft = totalCalls - contacted.size();
-            if (callsLeft == totalCalls) {
-                if (totalCalls == 1) {
-                    holder.numCalls.setText(getResources().getString(R.string.call_count_one));
-                } else {
-                    holder.numCalls.setText(String.format(
-                            getResources().getString(R.string.call_count), totalCalls));
-                }
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            if (viewType == VIEW_TYPE_EMPTY) {
+                View empty = LayoutInflater.from(parent.getContext()).inflate(
+                        R.layout.empty_issues_view, parent, false);
+                RecyclerView.ViewHolder holder = new EmptyViewHolder(empty);
+                return holder;
             } else {
-                if (callsLeft == 1) {
-                    holder.numCalls.setText(String.format(
-                            getResources().getString(R.string.call_count_remaining_one),
-                            totalCalls));
-                } else {
-                    holder.numCalls.setText(String.format(
-                            getResources().getString(R.string.call_count_remaining), callsLeft,
-                            totalCalls));
-                }
+                CardView v = (CardView) LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.issue_view, parent, false);
+                IssueViewHolder holder = new IssueViewHolder(v);
+                return holder;
             }
-            holder.doneIcon.setImageLevel(callsLeft == 0 && totalCalls > 0 ? 1 : 0);
         }
 
         @Override
-        public void onViewRecycled(IssueViewHolder holder) {
-            holder.itemView.setOnClickListener(null);
+        public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
+            if (getItemViewType(position) == VIEW_TYPE_ISSUE) {
+                IssueViewHolder vh = (IssueViewHolder) holder;
+                final Issue issue = mIssues.get(position);
+                vh.name.setText(issue.name);
+                vh.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent issueIntent = new Intent(holder.itemView.getContext(),
+                                IssueActivity.class);
+                        issueIntent.putExtra(IssueActivity.KEY_ISSUE, issue);
+                        issueIntent.putExtra(IssueActivity.KEY_ZIP, mZip);
+                        startActivityForResult(issueIntent, ISSUE_DETAIL_REQUEST);
+                    }
+                });
+                int totalCalls = issue.contacts.length;
+                List<String> contacted = AppSingleton.getInstance(getApplicationContext())
+                        .getDatabaseHelper().getCallsForIssueAndContacts(issue.id, issue.contacts);
+                int callsLeft = totalCalls - contacted.size();
+                if (callsLeft == totalCalls) {
+                    if (totalCalls == 1) {
+                        vh.numCalls.setText(getResources().getString(R.string.call_count_one));
+                    } else {
+                        vh.numCalls.setText(String.format(
+                                getResources().getString(R.string.call_count), totalCalls));
+                    }
+                } else {
+                    if (callsLeft == 1) {
+                        vh.numCalls.setText(String.format(
+                                getResources().getString(R.string.call_count_remaining_one),
+                                totalCalls));
+                    } else {
+                        vh.numCalls.setText(String.format(
+                                getResources().getString(R.string.call_count_remaining), callsLeft,
+                                totalCalls));
+                    }
+                }
+                vh.doneIcon.setImageLevel(callsLeft == 0 && totalCalls > 0 ? 1 : 0);
+            } else {
+                EmptyViewHolder vh = (EmptyViewHolder) holder;
+                vh.refreshButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        refreshIssues();
+                    }
+                });
+            }
+        }
+
+        @Override
+        public void onViewRecycled(RecyclerView.ViewHolder holder) {
+            if (holder instanceof IssueViewHolder) {
+                holder.itemView.setOnClickListener(null);
+            } else if (holder instanceof EmptyViewHolder) {
+                ((EmptyViewHolder) holder).refreshButton.setOnClickListener(null);
+            }
             super.onViewRecycled(holder);
         }
 
         @Override
         public int getItemCount() {
+            if (mIssues.size() == 0 && mHasError) {
+                return 1;
+            }
             return mIssues.size();
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            if (mIssues.size() == 0 && position == 0 && mHasError) {
+                return VIEW_TYPE_EMPTY;
+            }
+            return VIEW_TYPE_ISSUE;
         }
     }
 
@@ -379,6 +416,19 @@ public class MainActivity extends AppCompatActivity {
             name = (TextView) itemView.findViewById(R.id.issue_name);
             numCalls = (TextView) itemView.findViewById(R.id.issue_call_count);
             doneIcon = (ImageView) itemView.findViewById(R.id.issue_done_img);
+        }
+    }
+
+    private class EmptyViewHolder extends RecyclerView.ViewHolder {
+        public Button refreshButton;
+
+        public EmptyViewHolder(View itemView) {
+            super(itemView);
+            refreshButton = (Button) itemView.findViewById(R.id.refresh_btn);
+            // Tinting the compound drawable only works API 23+, so do this manually.
+            refreshButton.getCompoundDrawablesRelative()[0].mutate().setColorFilter(
+                    refreshButton.getResources().getColor(R.color.colorAccent),
+                    PorterDuff.Mode.MULTIPLY);
         }
     }
 }

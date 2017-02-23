@@ -320,4 +320,7 @@
     <!-- Button to view the open source licenses for libraries used in this project [CHAR_LIMIT=50] -->
     <string name="license_btn">Open Source Licenses</string>
 
+    <!-- Button to try loading data from the 5 Calls API again, shown after an error [CHAR_LIMIT=50] -->
+    <string name="try_again_btn">Try again</string>
+
 </resources>
