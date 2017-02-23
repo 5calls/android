@@ -60,7 +60,7 @@
     <!-- First paragraph of About screen text [CHAR_LIMIT=NONE] -->
     <string name="about_p1">Turn your passive participation into active resistance. Facebook likes and Twitter retweets can\’t create the change you want to see. Calling your Government on the phone can.</string>
 
-    <!-- Call to action, "Spend 5 minutes, make 5 calls" [CHAR_LIMIT=] -->
+    <!-- Call to action, 'Spend 5 minutes, make 5 calls' [CHAR_LIMIT=] -->
     <string name="about_p2">Spend 5 minutes, make 5 calls.</string>
 
     <!-- Body of text on the About 5 Calls screen, describing the app. \n\n is used to start the next paragraph. [CHAR_LIMIT=NONE] -->
