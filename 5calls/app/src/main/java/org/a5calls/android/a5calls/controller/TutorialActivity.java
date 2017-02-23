@@ -187,6 +187,10 @@ public class TutorialActivity extends AppCompatActivity {
             mStatusListener = new FiveCallsApi.RequestStatusListener() {
                 @Override
                 public void onRequestError() {
+                    if (!isAdded()) {
+                        // No longer attached to the activity!
+                        return;
+                    }
                     Snackbar.make(callsToDate,
                             getResources().getString(R.string.request_error),
                             Snackbar.LENGTH_LONG).show();
@@ -194,6 +198,10 @@ public class TutorialActivity extends AppCompatActivity {
 
                 @Override
                 public void onJsonError() {
+                    if (!isAdded()) {
+                        // No longer attached to the activity!
+                        return;
+                    }
                     Snackbar.make(callsToDate,
                             getResources().getString(R.string.json_error),
                             Snackbar.LENGTH_LONG).show();
@@ -206,6 +214,10 @@ public class TutorialActivity extends AppCompatActivity {
 
                 @Override
                 public void onCallCount(int count) {
+                    if (!isAdded()) {
+                        // No longer attached to the activity!
+                        return;
+                    }
                     callsToDate.setText(String.format(
                             getResources().getString(R.string.calls_to_date),
                             NumberFormat.getNumberInstance(Locale.US).format(count)));
