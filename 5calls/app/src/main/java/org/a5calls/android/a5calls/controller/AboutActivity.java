@@ -1,7 +1,6 @@
 package org.a5calls.android.a5calls.controller;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -40,7 +39,7 @@ public class AboutActivity extends AppCompatActivity {
     private static final String TAG = "AboutActivity";
 
     private final AccountManager accountManager = AccountManager.Instance;
-    private FiveCallsApi.RequestStatusListener mStatusListener;
+    private FiveCallsApi.CallRequestListener mStatusListener;
 
     @BindView(R.id.about_us_btn) Button aboutUsButton;
     @BindView(R.id.rate_us_btn) Button rateUsButton;
@@ -94,7 +93,7 @@ public class AboutActivity extends AppCompatActivity {
         version.setText(String.format(getResources().getString(R.string.version_info),
                 BuildConfig.VERSION_NAME));
 
-        mStatusListener = new FiveCallsApi.RequestStatusListener() {
+        mStatusListener = new FiveCallsApi.CallRequestListener() {
             @Override
             public void onRequestError() {
                 Snackbar.make(aboutUsButton,
@@ -107,11 +106,6 @@ public class AboutActivity extends AppCompatActivity {
                 Snackbar.make(aboutUsButton,
                         getResources().getString(R.string.json_error),
                         Snackbar.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onIssuesReceived(String locationName, List<Issue> issues) {
-                // unused
             }
 
             @Override
@@ -128,14 +122,14 @@ public class AboutActivity extends AppCompatActivity {
         };
         FiveCallsApi controller = AppSingleton.getInstance(getApplicationContext())
                 .getJsonController();
-        controller.registerStatusListener(mStatusListener);
+        controller.registerCallRequestListener(mStatusListener);
         controller.getCallCount();
     }
 
     @Override
     protected void onDestroy() {
         AppSingleton.getInstance(getApplicationContext()).getJsonController()
-                .unregisterStatusListener(mStatusListener);
+                .unregisterCallRequestListener(mStatusListener);
         super.onDestroy();
     }
 

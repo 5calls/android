@@ -55,8 +55,8 @@ public class LocationActivity extends AppCompatActivity {
     private boolean allowsHomeUp = false;
     private LocationListener mLocationListener;
 
-    @BindView(R.id.zip_code) EditText zipEdit;
-    @BindView(R.id.zip_code_submit) Button zipButton;
+    @BindView(R.id.address_edit) EditText addressEdit;
+    @BindView(R.id.address_submit) Button addressButton;
     @BindView(R.id.btn_gps) Button gpsButton;
 
     @Override
@@ -74,28 +74,28 @@ public class LocationActivity extends AppCompatActivity {
             }
         }
 
-        // Load the zip code the user last used, if any.
-        String zip = accountManager.getZip(this);
+        // Load the address the user last used, if any.
+        String zip = accountManager.getAddress(this);
         if (!TextUtils.isEmpty(zip)) {
-            zipEdit.setText(zip);
+            addressEdit.setText(zip);
         }
 
         // Set listeners
-        zipEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        addressEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    onSubmitZip(zipEdit.getText().toString());
+                    onSubmitAddress(addressEdit.getText().toString());
                     return true;
                 }
                 return false;
             }
         });
 
-        zipButton.setOnClickListener(new View.OnClickListener() {
+        addressButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onSubmitZip(zipEdit.getText().toString());
+                onSubmitAddress(addressEdit.getText().toString());
             }
         });
 
@@ -226,23 +226,16 @@ public class LocationActivity extends AppCompatActivity {
         }
     }
 
-    private void onSubmitZip(String zip) {
-        // Is it a string that is exactly 5 characters long?
-        if (TextUtils.isEmpty(zip) || zip.length() != 5) {
-            zipEdit.setError(getResources().getString(R.string.zip_error));
+    private void onSubmitAddress(String address) {
+        if (TextUtils.isEmpty(address)) {
+            addressEdit.setError(getResources().getString(R.string.error_address_empty));
             return;
         }
-        try {
-            // Make sure it is a number, too, by trying to parse it.
-            Integer.parseInt(zip);
-        } catch (NumberFormatException e) {
-            zipEdit.setError(getResources().getString(R.string.zip_error));
-            return;
-        }
-        // If we made it here, the zip is valid! Update the UI and send the request.
-        accountManager.setZip(this, zip);
+        // Update the UI and send the request.
+        accountManager.setAddress(this, address);
 
-        // Delete latlng, because the user specifically requested a zip and we default to lat/long.
+        // Delete latlng, because the user specifically requested an address and we default to
+        // lat/long.
         accountManager.setLat(this, null);
         accountManager.setLng(this, null);
 
@@ -253,19 +246,26 @@ public class LocationActivity extends AppCompatActivity {
     private void onReceiveLocation(Location location) {
         accountManager.setLat(this, String.valueOf(location.getLatitude()));
         accountManager.setLng(this, String.valueOf(location.getLongitude()));
+        accountManager.setAddress(this, null);
 
-        // Update the zip field from the location
+        // Update the address field from the location
+        // TODO: Now that this is no longer only a zip field, this doesn't make sense, because
+        // we could enter any level of detail.
+        // For now, leave it blank. Revisit in the future.
+        /*
         if (location != null) {
             Geocoder geocoder = new Geocoder(this, Locale.getDefault());
             try {
-                List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                List<Address> addresses = geocoder.getFromLocation(location.getLatitude(),
+                        location.getLongitude(), 1);
                 if (addresses != null && addresses.size() > 0) {
-                    accountManager.setZip(this, addresses.get(0).getPostalCode());
+                    accountManager.setAddress(this, addresses.get(0).getPostalCode());
                 }
             } catch (IOException e) {
                 // Do nothing
             }
         }
+        */
 
         returnToMain();
     }

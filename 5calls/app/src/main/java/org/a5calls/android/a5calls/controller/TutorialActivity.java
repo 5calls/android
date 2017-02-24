@@ -1,20 +1,17 @@
 package org.a5calls.android.a5calls.controller;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.analytics.HitBuilders;
@@ -156,7 +153,7 @@ public class TutorialActivity extends AppCompatActivity {
 
     public static class ThirdTutorialPageFragment extends Fragment {
 
-        private FiveCallsApi.RequestStatusListener mStatusListener;
+        private FiveCallsApi.CallRequestListener mStatusListener;
         private TextView callsToDate;
 
         public static ThirdTutorialPageFragment newInstance() {
@@ -172,7 +169,7 @@ public class TutorialActivity extends AppCompatActivity {
         @Override
         public void onDestroy() {
             AppSingleton.getInstance(getActivity()).getJsonController()
-                    .unregisterStatusListener(mStatusListener);
+                    .unregisterCallRequestListener(mStatusListener);
             super.onDestroy();
         }
 
@@ -184,7 +181,7 @@ public class TutorialActivity extends AppCompatActivity {
             callsToDate = (TextView) rootView.findViewById(R.id.calls_to_date);
 
             // TODO: Re-use this listener between AboutActivity and here, since it's really the same.
-            mStatusListener = new FiveCallsApi.RequestStatusListener() {
+            mStatusListener = new FiveCallsApi.CallRequestListener() {
                 @Override
                 public void onRequestError() {
                     if (!isAdded()) {
@@ -208,11 +205,6 @@ public class TutorialActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onIssuesReceived(String locationName, List<Issue> issues) {
-                    // unused
-                }
-
-                @Override
                 public void onCallCount(int count) {
                     if (!isAdded()) {
                         // No longer attached to the activity!
@@ -230,7 +222,7 @@ public class TutorialActivity extends AppCompatActivity {
             };
             FiveCallsApi controller = AppSingleton.getInstance(getActivity())
                     .getJsonController();
-            controller.registerStatusListener(mStatusListener);
+            controller.registerCallRequestListener(mStatusListener);
             controller.getCallCount();
 
             rootView.findViewById(R.id.btn_back).setOnClickListener(new View.OnClickListener() {

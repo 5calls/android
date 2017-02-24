@@ -20,6 +20,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +36,7 @@ public class FiveCallsApi {
     // 5calls go server. For more on the go server, check out github.com/5calls/5calls.
     // Recommended setting this to "true" for testing, though, to avoid adding fake calls to the
     // server.
-    private static final boolean USE_LOCAL_DEBUG_REPORT = false;
+    private static final boolean USE_LOCAL_DEBUG_REPORT = true;
 
     private static final String GET_ISSUES_REQUEST = "https://5calls.org/issues/?address=";
 
@@ -44,28 +45,45 @@ public class FiveCallsApi {
     // This is for local testing only and shouldn't be part of prod.
     private static final String GET_REPORT_DEBUG = "http://10.0.2.2:8090/report";
 
-    public interface RequestStatusListener {
+    public interface CallRequestListener {
         void onRequestError();
         void onJsonError();
-        void onIssuesReceived(String locationName, List<Issue> issues);
         void onCallCount(int count);
         void onCallReported();
     }
 
+    public interface IssuesRequestListener {
+        void onRequestError();
+        void onJsonError();
+        void onAddressError();
+        void onIssuesReceived(String locationName, List<Issue> issues);
+    }
+
     private RequestQueue mRequestQueue;
-    private List<RequestStatusListener> mStatusListeners = new ArrayList<>();
+    private List<CallRequestListener> mCallRequestListeners = new ArrayList<>();
+    private List<IssuesRequestListener> mIssuesRequestListeners = new ArrayList<>();
 
     public FiveCallsApi(Context context) {
         mRequestQueue = Volley.newRequestQueue(context);
     }
 
-    public void registerStatusListener(RequestStatusListener statusListener) {
-        mStatusListeners.add(statusListener);
+    public void registerCallRequestListener(CallRequestListener callRequestListener) {
+        mCallRequestListeners.add(callRequestListener);
     }
 
-    public void unregisterStatusListener(RequestStatusListener statusListener) {
-        if (mStatusListeners.contains(statusListener)) {
-            mStatusListeners.remove(statusListener);
+    public void unregisterCallRequestListener(CallRequestListener callRequestListener) {
+        if (mCallRequestListeners.contains(callRequestListener)) {
+            mCallRequestListeners.remove(callRequestListener);
+        }
+    }
+
+    public void registerIssuesRequestListener(IssuesRequestListener issuesRequestListener) {
+        mIssuesRequestListeners.add(issuesRequestListener);
+    }
+
+    public void unregisterIssuesRequestListener(IssuesRequestListener issuesRequestListener) {
+        if (mIssuesRequestListeners.contains(issuesRequestListener)) {
+            mIssuesRequestListeners.remove(issuesRequestListener);
         }
     }
 
@@ -76,7 +94,7 @@ public class FiveCallsApi {
     }
 
     public void getIssuesForLocation(String address) {
-        String url = GET_ISSUES_REQUEST + address;
+        String url = GET_ISSUES_REQUEST + URLEncoder.encode(address);
         // Request a JSON Object response from the provided URL.
         JsonObjectRequest statusRequest = new JsonObjectRequest(
                 Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -85,13 +103,19 @@ public class FiveCallsApi {
                 if (response != null) {
                     String locationName = "";
                     try {
+                        if (response.getBoolean("invalidAddress")) {
+                            for (IssuesRequestListener listener : mIssuesRequestListeners) {
+                                listener.onAddressError();
+                            }
+                            return;
+                        }
                         locationName = response.getString("normalizedLocation");
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     JSONArray jsonArray = response.optJSONArray("issues");
                     if (jsonArray == null) {
-                        for (RequestStatusListener listener : mStatusListeners) {
+                        for (IssuesRequestListener listener : mIssuesRequestListeners) {
                             listener.onJsonError();
                         }
                         return;
@@ -100,7 +124,7 @@ public class FiveCallsApi {
                     List<Issue> issues = new Gson().fromJson(jsonArray.toString(),
                             listType);
                     // TODO: Sanitize contact IDs here
-                    for (RequestStatusListener listener : mStatusListeners) {
+                    for (IssuesRequestListener listener : mIssuesRequestListeners) {
                         listener.onIssuesReceived(locationName, issues);
                     }
                 }
@@ -108,7 +132,9 @@ public class FiveCallsApi {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                onRequestError(error);
+                for (IssuesRequestListener listener : mIssuesRequestListeners) {
+                    listener.onRequestError();
+                }
             }
         });
         statusRequest.setTag(TAG);
@@ -127,11 +153,11 @@ public class FiveCallsApi {
             public void onResponse(JSONObject response) {
                 try {
                     int count = response.getInt("count");
-                    for (RequestStatusListener listener : mStatusListeners) {
+                    for (CallRequestListener listener : mCallRequestListeners) {
                         listener.onCallCount(count);
                     }
                 } catch (JSONException e) {
-                    for (RequestStatusListener listener : mStatusListeners) {
+                    for (CallRequestListener listener : mCallRequestListeners) {
                         listener.onJsonError();
                     }
                     e.printStackTrace();
@@ -160,7 +186,7 @@ public class FiveCallsApi {
                 new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                for (RequestStatusListener listener : mStatusListeners) {
+                for (CallRequestListener listener : mCallRequestListeners) {
                     listener.onCallReported();
                 }
             }
@@ -193,7 +219,7 @@ public class FiveCallsApi {
     }
 
     private void onRequestError(VolleyError error) {
-        for (RequestStatusListener listener : mStatusListeners) {
+        for (CallRequestListener listener : mCallRequestListeners) {
             listener.onRequestError();
         }
         if (error.getMessage() == null) {

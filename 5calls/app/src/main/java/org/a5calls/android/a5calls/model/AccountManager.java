@@ -19,7 +19,7 @@ public enum AccountManager {
 
     private static final String KEY_INITIALIZED = "prefsKeyInitialized";
     public static final String KEY_ALLOW_ANALYTICS = "prefsKeyAllowAnalytics";
-    private static final String KEY_USER_ZIP = "prefsKeyUserZip";
+    private static final String KEY_USER_ADDRESS = "prefsKeyUserZip";
     private static final String KEY_LATITUDE = "prefsKeyLatitude";
     private static final String KEY_LONGITUDE = "prefsKeyLongitude";
     private static final String KEY_DATABASE_SAVES_CONTACTS = "prefsKeyDbSavesContacts";
@@ -36,9 +36,9 @@ public enum AccountManager {
             new HashSet<>(Arrays.asList("2", "4", "6"));
 
     public boolean hasLocation(Context context) {
-        // If there's a lat/lng or a zip.
+        // If there's a lat/lng or an address.
         return (!TextUtils.isEmpty(getLat(context)) && !TextUtils.isEmpty(getLng(context)))
-                || !TextUtils.isEmpty(getZip(context));
+                || !TextUtils.isEmpty(getAddress(context));
     }
 
     // Defaults to true, we'eve already seen the tutorial.
@@ -60,12 +60,12 @@ public enum AccountManager {
                 .apply();
     }
 
-    public String getZip(Context context) {
-        return getSharedPrefs(context).getString(KEY_USER_ZIP, "");
+    public String getAddress(Context context) {
+        return getSharedPrefs(context).getString(KEY_USER_ADDRESS, "");
     }
 
-    public void setZip(Context context, String zip) {
-        getSharedPrefs(context).edit().putString(KEY_USER_ZIP, zip).apply();
+    public void setAddress(Context context, String address) {
+        getSharedPrefs(context).edit().putString(KEY_USER_ADDRESS, address).apply();
     }
 
     public String getLat(Context context) {

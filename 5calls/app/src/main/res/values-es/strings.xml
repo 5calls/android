@@ -6,14 +6,8 @@
     <!-- The prompt on the location page to have a user set their location [CHAR_LIMIT=NONE] -->
     <string name="location_prompt">Entre su ubicacicón para encontrar a sus representantes locales.</string>
 
-    <!-- The label for the zip code edit text field [CHAR_LIMIT=50] -->
-    <string name="zip_code_hint">Código postal de 5 dígitos</string>
-
-    <!-- The button for submitting your zip code as location [CHAR_LIMIT=30] -->
+    <!-- The button for submitting your address or zip code as location [CHAR_LIMIT=30] -->
     <string name="submit">envíe</string>
-
-    <!-- Error text on the zip code edittext field for invalid types of input [CHAR_LIMIT=75] -->
-    <string name="zip_error">Entre un código postal válido de 5 dígitos</string>
 
     <!-- Error message shown to the user when there was a problem communicating with the server [CHAR_LIMIT=150] -->
     <string name="request_error">Hay un problema en comunicarse con el servidor. ¿Esta conectado su aparato?</string>
@@ -154,10 +148,6 @@
 
     <!-- Button that will use the user's device location to set the location in the app [CHAR_LIMIT=30] -->
     <string name="btn_gps">Use mi ubicación</string>
-
-    <!-- Prompt to enter a zip code instead of using the phone's GPS location [CHAR_LIMIT=NONE] -->
-    <string name="location_zip_prompt">Tambien se puede usar su coding postal.
-          \nEn algunos distritos, es posible que esta manera no presenta todos sus representantes.</string>
 
     <!-- Prompt to use your GPS location in the app [CHAR_LIMIT=NONE] -->
     <string name="location_gps_prompt">Use la ubicación de tu teléfono para encontrar a todos los representantes</string>

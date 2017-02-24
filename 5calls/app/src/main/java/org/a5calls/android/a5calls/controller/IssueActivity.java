@@ -48,7 +48,7 @@ import butterknife.ButterKnife;
 public class IssueActivity extends AppCompatActivity {
     private static final String TAG = "IssueActivity";
     public static final String KEY_ISSUE = "key_issue";
-    public static final String KEY_ZIP = "key_zip";
+    public static final String KEY_ADDRESS = "key_address";
     public static final String VOICEMAIL = "vm";
     public static final String CONTACTED = "contacted";
     public static final String UNAVAILABLE = "unavailable";
@@ -58,7 +58,7 @@ public class IssueActivity extends AppCompatActivity {
 
     private final AccountManager accountManager = AccountManager.Instance;
 
-    private FiveCallsApi.RequestStatusListener mStatusListener;
+    private FiveCallsApi.CallRequestListener mStatusListener;
     private Issue mIssue;
     private int mActiveContactIndex;
     private Tracker mTracker = null;
@@ -94,7 +94,7 @@ public class IssueActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        final String zip = getIntent().getStringExtra(KEY_ZIP);
+        final String address = getIntent().getStringExtra(KEY_ADDRESS);
         if (savedInstanceState == null) {
             mIssue = getIntent().getParcelableExtra(KEY_ISSUE);
         } else {
@@ -109,7 +109,7 @@ public class IssueActivity extends AppCompatActivity {
         setContentView(R.layout.activity_issue);
         ButterKnife.bind(this);
 
-        mStatusListener = new FiveCallsApi.RequestStatusListener() {
+        mStatusListener = new FiveCallsApi.CallRequestListener() {
             @Override
             public void onRequestError() {
                 setButtonsEnabled(true);
@@ -122,11 +122,6 @@ public class IssueActivity extends AppCompatActivity {
                 setButtonsEnabled(true);
                 tryLoadingNextContact(getResources().getString(
                         R.string.json_error_db_recorded_anyway));
-            }
-
-            @Override
-            public void onIssuesReceived(String locationName, List<Issue> issues) {
-                // unused
             }
 
             @Override
@@ -152,7 +147,7 @@ public class IssueActivity extends AppCompatActivity {
         };
         FiveCallsApi controller = AppSingleton.getInstance(getApplicationContext())
                 .getJsonController();
-        controller.registerStatusListener(mStatusListener);
+        controller.registerCallRequestListener(mStatusListener);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(mIssue.name);
@@ -188,7 +183,7 @@ public class IssueActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     reportEvent(CONTACTED);
-                    reportCall(CONTACTED, zip);
+                    reportCall(CONTACTED, address);
                 }
             });
 
@@ -196,7 +191,7 @@ public class IssueActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     reportEvent(UNAVAILABLE);
-                    reportCall(UNAVAILABLE, zip);
+                    reportCall(UNAVAILABLE, address);
                 }
             });
 
@@ -204,7 +199,7 @@ public class IssueActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     reportEvent(VOICEMAIL);
-                    reportCall(VOICEMAIL, zip);
+                    reportCall(VOICEMAIL, address);
                 }
             });
         }
@@ -220,7 +215,7 @@ public class IssueActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         AppSingleton.getInstance(getApplicationContext()).getJsonController()
-                .unregisterStatusListener(mStatusListener);
+                .unregisterCallRequestListener(mStatusListener);
         super.onDestroy();
     }
 
@@ -257,13 +252,13 @@ public class IssueActivity extends AppCompatActivity {
         returnToMain();
     }
 
-    private void reportCall(String callType, String zip) {
+    private void reportCall(String callType, String address) {
         setButtonsEnabled(false);
         AppSingleton.getInstance(getApplicationContext()).getDatabaseHelper().addCall(mIssue.id,
                 mIssue.name, mIssue.contacts[mActiveContactIndex].id,
-                mIssue.contacts[mActiveContactIndex].name, callType, zip);
+                mIssue.contacts[mActiveContactIndex].name, callType, address);
         AppSingleton.getInstance(getApplicationContext()).getJsonController().reportCall(
-                mIssue.id, mIssue.contacts[mActiveContactIndex].id, callType, zip);
+                mIssue.id, mIssue.contacts[mActiveContactIndex].id, callType, address);
     }
 
     private void setButtonsEnabled(boolean enabled) {

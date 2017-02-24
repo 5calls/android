@@ -11,7 +11,6 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -52,8 +51,8 @@ public class MainActivity extends AppCompatActivity {
     private final AccountManager accountManager = AccountManager.Instance;
 
     private IssuesAdapter mIssuesAdapter;
-    private FiveCallsApi.RequestStatusListener mStatusListener;
-    private String mZip;
+    private FiveCallsApi.IssuesRequestListener mIssuesRequestListener;
+    private String mAddress;
     private String mLatitude;
     private String mLongitude;
 
@@ -129,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         AppSingleton.getInstance(getApplicationContext()).getJsonController()
-                .unregisterStatusListener(mStatusListener);
+                .unregisterIssuesRequestListener(mIssuesRequestListener);
         super.onDestroy();
     }
 
@@ -137,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        mZip = accountManager.getZip(this);
+        mAddress = accountManager.getAddress(this);
         mLatitude = accountManager.getLat(this);
         mLongitude = accountManager.getLng(this);
 
@@ -188,16 +187,20 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             return true;
         } else if (item.getItemId() == R.id.menu_location) {
-            Intent intent = new Intent(this, LocationActivity.class);
-            intent.putExtra(LocationActivity.ALLOW_HOME_UP_KEY, true);
-            startActivity(intent);
+            launchLocationActivity();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    private void launchLocationActivity() {
+        Intent intent = new Intent(this, LocationActivity.class);
+        intent.putExtra(LocationActivity.ALLOW_HOME_UP_KEY, true);
+        startActivity(intent);
+    }
+
     private void registerApiListener() {
-        mStatusListener = new FiveCallsApi.RequestStatusListener() {
+        mIssuesRequestListener = new FiveCallsApi.IssuesRequestListener() {
             @Override
             public void onRequestError() {
                 Snackbar.make(findViewById(R.id.activity_main),
@@ -205,7 +208,8 @@ public class MainActivity extends AppCompatActivity {
                         Snackbar.LENGTH_LONG).show();
                 // Our only type of request in MainActivity is a GET. If it doesn't work, clear the
                 // active issues list to avoid showing a stale list.
-                mIssuesAdapter.setIssues(Collections.<Issue>emptyList(), true);
+                mIssuesAdapter.setIssues(Collections.<Issue>emptyList(),
+                        IssuesAdapter.ERROR_REQUEST);
                 swipeContainer.setRefreshing(false);
             }
 
@@ -216,14 +220,30 @@ public class MainActivity extends AppCompatActivity {
                         Snackbar.LENGTH_LONG).show();
                 // Our only type of request in MainActivity is a GET. If it doesn't work, clear the
                 // active issues list to avoid showing a stale list.
-                mIssuesAdapter.setIssues(Collections.<Issue>emptyList(), true);
+                mIssuesAdapter.setIssues(Collections.<Issue>emptyList(),
+                        IssuesAdapter.ERROR_REQUEST);
+                swipeContainer.setRefreshing(false);
+            }
+
+            @Override
+            public void onAddressError() {
+                Snackbar.make(findViewById(R.id.activity_main),
+                        getResources().getString(R.string.error_address_invalid),
+                        Snackbar.LENGTH_LONG).show();
+                // Clear the issues but don't show the refresh button because this is an address
+                // problem.
+                mIssuesAdapter.setIssues(Collections.<Issue>emptyList(),
+                        IssuesAdapter.ERROR_ADDRESS);
                 swipeContainer.setRefreshing(false);
             }
 
             @Override
             public void onIssuesReceived(String locationName, List<Issue> issues) {
+                locationName = TextUtils.isEmpty(locationName) ?
+                        getResources().getString(R.string.unknown_location) : locationName;
                 getSupportActionBar().setTitle(String.format(getResources().getString(
                         R.string.title_main), locationName));
+
                 // If this is the first time we've set issues ever, add all the contacts and
                 // issue IDs to the database to keep track of things the user has already called
                 // about. This allows upgrade from app version 0.07 without "unknown" contacts or
@@ -237,26 +257,13 @@ public class MainActivity extends AppCompatActivity {
                             .saveIssuesToDatabaseForUpgrade(issues);
                     AccountManager.Instance.setDatabaseSavesContacts(getApplicationContext(), true);
                 }
-                if (TextUtils.isEmpty(locationName)) {
-                    locationName = getResources().getString(R.string.unknown_location);
-                }
-                mIssuesAdapter.setIssues(issues, false);
+                mIssuesAdapter.setIssues(issues, IssuesAdapter.NO_ERROR);
                 swipeContainer.setRefreshing(false);
-            }
-
-            @Override
-            public void onCallCount(int count) {
-                // unused
-            }
-
-            @Override
-            public void onCallReported() {
-                // unused
             }
         };
 
         AppSingleton.getInstance(getApplicationContext()).getJsonController()
-                .registerStatusListener(mStatusListener);
+                .registerIssuesRequestListener(mIssuesRequestListener);
     }
 
     private void showStats() {
@@ -265,17 +272,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void refreshIssues() {
-        if (!TextUtils.isEmpty(mLatitude) && !TextUtils.isEmpty(mLongitude)) {
+        String location = getLocationString();
+        if (!TextUtils.isEmpty(location)) {
             AppSingleton.getInstance(getApplicationContext()).getJsonController()
-                    .getIssuesForLocation(mLatitude + "," + mLongitude);
-
-        } else if (!TextUtils.isEmpty(mZip)) {
-            AppSingleton.getInstance(getApplicationContext()).getJsonController()
-                    .getIssuesForLocation(mZip);
+                    .getIssuesForLocation(location);
         } else {
             String message = getString(R.string.main_activity_location_error);
             Snackbar.make(findViewById(R.id.activity_main), message, Snackbar.LENGTH_LONG).show();
         }
+    }
+
+    private String getLocationString() {
+        if (!TextUtils.isEmpty(mLatitude) && !TextUtils.isEmpty(mLongitude)) {
+            return mLatitude + "," + mLongitude;
+
+        } else if (!TextUtils.isEmpty(mAddress)) {
+            return mAddress;
+        }
+        return null;
     }
 
     @Override
@@ -288,18 +302,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-        private static final int VIEW_TYPE_EMPTY = 0;
+        // TODO: Use an enum.
+        public static final int NO_ERROR = 10;
+        public static final int ERROR_REQUEST = 11;
+        public static final int ERROR_ADDRESS = 12;
+        public static final int NO_ISSUES_YET = 13;
+
+        private static final int VIEW_TYPE_EMPTY_REQUEST = 0;
         private static final int VIEW_TYPE_ISSUE = 1;
+        private static final int VIEW_TYPE_EMPTY_ADDRESS = 2;
 
         private List<Issue> mIssues = Collections.emptyList();
-        private boolean mHasError = false;
+        private int mErrorType = NO_ISSUES_YET;
 
         public IssuesAdapter() {
 
         }
 
-        public void setIssues(List<Issue> issues, boolean hasError) {
-            mHasError = hasError;
+        public void setIssues(List<Issue> issues, int errorType) {
+            mErrorType = errorType;
             mIssues = issues;
             notifyDataSetChanged();
         }
@@ -316,10 +337,15 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            if (viewType == VIEW_TYPE_EMPTY) {
+            if (viewType == VIEW_TYPE_EMPTY_REQUEST) {
                 View empty = LayoutInflater.from(parent.getContext()).inflate(
                         R.layout.empty_issues_view, parent, false);
-                RecyclerView.ViewHolder holder = new EmptyViewHolder(empty);
+                RecyclerView.ViewHolder holder = new EmptyRequestViewHolder(empty);
+                return holder;
+            } else if (viewType == VIEW_TYPE_EMPTY_ADDRESS) {
+                View empty = LayoutInflater.from(parent.getContext()).inflate(
+                        R.layout.empty_issues_address_view, parent, false);
+                RecyclerView.ViewHolder holder = new EmptyAddressViewHolder(empty);
                 return holder;
             } else {
                 CardView v = (CardView) LayoutInflater.from(parent.getContext())
@@ -331,7 +357,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
-            if (getItemViewType(position) == VIEW_TYPE_ISSUE) {
+            int type = getItemViewType(position);
+            if (type == VIEW_TYPE_ISSUE) {
                 IssueViewHolder vh = (IssueViewHolder) holder;
                 final Issue issue = mIssues.get(position);
                 vh.name.setText(issue.name);
@@ -341,7 +368,7 @@ public class MainActivity extends AppCompatActivity {
                         Intent issueIntent = new Intent(holder.itemView.getContext(),
                                 IssueActivity.class);
                         issueIntent.putExtra(IssueActivity.KEY_ISSUE, issue);
-                        issueIntent.putExtra(IssueActivity.KEY_ZIP, mZip);
+                        issueIntent.putExtra(IssueActivity.KEY_ADDRESS, getLocationString());
                         startActivityForResult(issueIntent, ISSUE_DETAIL_REQUEST);
                     }
                 });
@@ -368,12 +395,20 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 vh.doneIcon.setImageLevel(callsLeft == 0 && totalCalls > 0 ? 1 : 0);
-            } else {
-                EmptyViewHolder vh = (EmptyViewHolder) holder;
+            } else if (type == VIEW_TYPE_EMPTY_REQUEST) {
+                EmptyRequestViewHolder vh = (EmptyRequestViewHolder) holder;
                 vh.refreshButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         refreshIssues();
+                    }
+                });
+            } else if (type == VIEW_TYPE_EMPTY_ADDRESS) {
+                EmptyAddressViewHolder vh = (EmptyAddressViewHolder) holder;
+                vh.locationButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        launchLocationActivity();
                     }
                 });
             }
@@ -383,15 +418,17 @@ public class MainActivity extends AppCompatActivity {
         public void onViewRecycled(RecyclerView.ViewHolder holder) {
             if (holder instanceof IssueViewHolder) {
                 holder.itemView.setOnClickListener(null);
-            } else if (holder instanceof EmptyViewHolder) {
-                ((EmptyViewHolder) holder).refreshButton.setOnClickListener(null);
+            } else if (holder instanceof EmptyRequestViewHolder) {
+                ((EmptyRequestViewHolder) holder).refreshButton.setOnClickListener(null);
+            } else if (holder instanceof EmptyAddressViewHolder) {
+                ((EmptyAddressViewHolder) holder).locationButton.setOnClickListener(null);
             }
             super.onViewRecycled(holder);
         }
 
         @Override
         public int getItemCount() {
-            if (mIssues.size() == 0 && mHasError) {
+            if (mIssues.size() == 0 && mErrorType == ERROR_REQUEST || mErrorType == ERROR_ADDRESS) {
                 return 1;
             }
             return mIssues.size();
@@ -399,8 +436,13 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getItemViewType(int position) {
-            if (mIssues.size() == 0 && position == 0 && mHasError) {
-                return VIEW_TYPE_EMPTY;
+            if (mIssues.size() == 0 && position == 0) {
+                if (mErrorType == ERROR_REQUEST) {
+                    return VIEW_TYPE_EMPTY_REQUEST;
+                }
+                if (mErrorType == ERROR_ADDRESS) {
+                    return VIEW_TYPE_EMPTY_ADDRESS;
+                }
             }
             return VIEW_TYPE_ISSUE;
         }
@@ -419,15 +461,29 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private class EmptyViewHolder extends RecyclerView.ViewHolder {
+    // TODO: Combine EmptyRequestViewHolder and EmptyAddressViewHolder, change strings dynamically.
+    private class EmptyRequestViewHolder extends RecyclerView.ViewHolder {
         public Button refreshButton;
 
-        public EmptyViewHolder(View itemView) {
+        public EmptyRequestViewHolder(View itemView) {
             super(itemView);
             refreshButton = (Button) itemView.findViewById(R.id.refresh_btn);
             // Tinting the compound drawable only works API 23+, so do this manually.
             refreshButton.getCompoundDrawablesRelative()[0].mutate().setColorFilter(
                     refreshButton.getResources().getColor(R.color.colorAccent),
+                    PorterDuff.Mode.MULTIPLY);
+        }
+    }
+
+    private class EmptyAddressViewHolder extends RecyclerView.ViewHolder {
+        public Button locationButton;
+
+        public EmptyAddressViewHolder(View itemView) {
+            super(itemView);
+            locationButton = (Button) itemView.findViewById(R.id.location_btn);
+            // Tinting the compound drawable only works API 23+, so do this manually.
+            locationButton.getCompoundDrawablesRelative()[0].mutate().setColorFilter(
+                    locationButton.getResources().getColor(R.color.colorAccent),
                     PorterDuff.Mode.MULTIPLY);
         }
     }

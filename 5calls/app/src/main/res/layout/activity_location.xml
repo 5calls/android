@@ -22,7 +22,6 @@
             android:id="@+id/location_prompt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:labelFor="@+id/zip_code"
             android:text="@string/location_prompt"
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/h2_text_size"
@@ -49,7 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="48dp"
-            android:text="@string/location_zip_prompt"
+            android:text="@string/location_address_prompt"
             android:textSize="@dimen/label_text_size"
             />
 
@@ -60,19 +59,18 @@
             >
 
             <EditText
-                android:id="@+id/zip_code"
+                android:id="@+id/address_edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_toStartOf="@+id/zip_code_submit"
-                android:hint="@string/zip_code_hint"
+                android:layout_toStartOf="@+id/address_submit"
+                android:hint="@string/address_hint"
                 android:imeOptions="actionDone"
-                android:inputType="number"
                 android:minHeight="@dimen/accessibility_min_size"
                 />
 
             <Button
-                android:id="@id/zip_code_submit"
+                android:id="@id/address_submit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
