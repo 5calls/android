@@ -314,7 +314,7 @@
     <string name="try_again_btn">Try again</string>
 
     <!-- Prompt to enter an address or zip code instead of using the phone's GPS location [CHAR_LIMIT=NONE] -->
-    <string name="location_address_prompt">You can also use your address or zip code.
+    <string name="location_address_prompt">Enter your address or zip code.
         \nA 5 digit zip code may not return all your representatives in split districts.</string>
 
     <!-- Hint text for edittext to enter an address or zip code for the user's location [CHAR_LIMIT=50] -->

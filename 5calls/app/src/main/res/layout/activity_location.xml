@@ -28,11 +28,13 @@
             />
 
         <TextView
+            android:id="@+id/gps_prompt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:text="@string/location_gps_prompt"
             android:textSize="@dimen/label_text_size"
+            android:visibility="gone"
             />
 
         <Button
@@ -42,12 +44,13 @@
             android:layout_marginTop="16dp"
             android:text="@string/btn_gps"
             android:textColor="@color/colorPrimaryDark"
+            android:visibility="gone"
             />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="48dp"
+            android:layout_marginTop="32dp"
             android:text="@string/location_address_prompt"
             android:textSize="@dimen/label_text_size"
             />

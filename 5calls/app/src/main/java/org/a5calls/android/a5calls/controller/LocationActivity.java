@@ -58,6 +58,7 @@ public class LocationActivity extends AppCompatActivity {
     @BindView(R.id.address_edit) EditText addressEdit;
     @BindView(R.id.address_submit) Button addressButton;
     @BindView(R.id.btn_gps) Button gpsButton;
+    @BindView(R.id.gps_prompt) TextView gpsPrompt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,12 +100,20 @@ public class LocationActivity extends AppCompatActivity {
             }
         });
 
-        gpsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                tryGettingLocation();
-            }
-        });
+        if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_LOCATION_GPS)) {
+            gpsPrompt.setVisibility(View.VISIBLE);
+            gpsButton.setVisibility(View.VISIBLE);
+            gpsButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    tryGettingLocation();
+                }
+            });
+        } else {
+            // No GPS available, so don't show the GPS location section.
+            gpsPrompt.setVisibility(View.GONE);
+            gpsButton.setVisibility(View.GONE);
+        }
     }
 
     @Override
