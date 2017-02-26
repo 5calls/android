@@ -336,7 +336,6 @@
     <string name="share_subject">I\'ve used 5 Calls to make an impact</string>
 
     <!-- Content of an email or message shared from the "Your Impact" screen sharing how many calls you've made [CHAR_LIMIT=NONE] -->
-    <string name="share_content">I\'ve made <xliff:g id="call_count">%1$d</xliff:g> calls to government officials! In <xliff:g id="contact_call_count">%2$d</xliff:g> I made contact, I left a voicemail in <xliff:g id="vm_call_count">%3$d</xliff:g>, and for the rest the office was unavailable.
-        \n\nIt\'s easy to contact your reps at www.5calls.org.</string>
+    <string name="share_content">I\'ve made <xliff:g id="call_count">%1$d</xliff:g> calls to my government officials, making my voice heard. Join me at www.5calls.org. It's easy to have an impact!</string>
 
 </resources>

@@ -166,10 +166,8 @@ public class StatsActivity extends AppCompatActivity {
         shareIntent.setAction(Intent.ACTION_SEND);
         shareIntent.putExtra(Intent.EXTRA_SUBJECT, R.string.share_subject);
         shareIntent.putExtra(Intent.EXTRA_TEXT,
-                String.format(getResources().getString(R.string.share_content),
-                        mCallCount, mContactCount, mVmCount));
+                String.format(getResources().getString(R.string.share_content), mCallCount));
         shareIntent.setType("text/plain");
-
         startActivity(Intent.createChooser(shareIntent, getResources().getString(
                 R.string.share_chooser_title)));
     }
