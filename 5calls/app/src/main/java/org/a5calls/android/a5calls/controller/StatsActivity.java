@@ -164,7 +164,8 @@ public class StatsActivity extends AppCompatActivity {
     private void sendShare() {
         Intent shareIntent = new Intent();
         shareIntent.setAction(Intent.ACTION_SEND);
-        shareIntent.putExtra(Intent.EXTRA_SUBJECT, R.string.share_subject);
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(
+                R.string.share_subject));
         shareIntent.putExtra(Intent.EXTRA_TEXT,
                 String.format(getResources().getString(R.string.share_content), mCallCount));
         shareIntent.setType("text/plain");

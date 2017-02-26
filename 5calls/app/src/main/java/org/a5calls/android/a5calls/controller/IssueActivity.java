@@ -12,6 +12,8 @@ import android.text.TextUtils;
 import android.text.util.Linkify;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -238,10 +240,20 @@ public class IssueActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_issue, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
+                return true;
+            case R.id.menu_share:
+                sendShare();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -441,5 +453,18 @@ public class IssueActivity extends AppCompatActivity {
                     .setValue(1)
                     .build());
         }
+    }
+
+    private void sendShare() {
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(
+                R.string.issue_share_subject));
+        shareIntent.putExtra(Intent.EXTRA_TEXT,
+                String.format(getResources().getString(R.string.issue_share_content), mIssue.name,
+                        mIssue.id));
+        shareIntent.setType("text/plain");
+        startActivity(Intent.createChooser(shareIntent, getResources().getString(
+                R.string.share_chooser_title)));
     }
 }

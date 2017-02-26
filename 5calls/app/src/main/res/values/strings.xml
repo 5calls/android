@@ -329,13 +329,19 @@
     <!-- Menu option to share your stats / impact [CHAR_LIMIT=50] -->
     <string name="menu_share">Share</string>
 
-    <!-- Title for dialog letting you pick which app to share your stats to [CHAR_LIMIT=70] -->
-    <string name="share_chooser_title">Share your stats to…</string>
+    <!-- Title for dialog letting you pick which app to share some information to [CHAR_LIMIT=70] -->
+    <string name="share_chooser_title">Share to…</string>
 
     <!-- Subject for an email sent from the "Your Impact" screen sharing how many calls you've made [CHAR_LIMIT=200] -->
     <string name="share_subject">I\'ve used 5 Calls to make an impact</string>
 
     <!-- Content of an email or message shared from the "Your Impact" screen sharing how many calls you've made [CHAR_LIMIT=NONE] -->
-    <string name="share_content">I\'ve made <xliff:g id="call_count">%1$d</xliff:g> calls to my government officials, making my voice heard. Join me at www.5calls.org. It's easy to have an impact!</string>
+    <string name="share_content">I\'ve made <xliff:g id="call_count">%1$d</xliff:g> calls to my government officials, making my voice heard. Join me at www.5calls.org. It\'s easy to have an impact!</string>
+
+    <!-- Subject for an email sent from an issue detail screen sharing an issue [CHAR_LIMIT=200] -->
+    <string name="issue_share_subject">I want you to know about this issue I found on 5 Calls</string>
+
+    <!-- Content of an email or message shared from an issue detail screen sharing an issue [CHAR_LIMIT=NONE] -->
+    <string name="issue_share_content">I just called my rep to <xliff:g id="issue_summary">%1$s</xliff:g> — you should too: http://5calls.org/#issue/<xliff:g id="issue_id">%2$s</xliff:g>?utm_campaign=twshare</string>
 
 </resources>
