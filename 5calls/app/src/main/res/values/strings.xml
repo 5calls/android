@@ -227,22 +227,22 @@
     <!-- Done button for issues page [CHAR_LIMIT=30] -->
     <string name="done">done</string>
 
-    <!-- Name for settings category for general settings[CHAR_LIMIT=50]-->
+    <!-- Name for settings category for general settings[CHAR_LIMIT=50] -->
     <string name="settings_category_general">General settings</string>
 
-    <!-- Name for settings category for reminder settings[CHAR_LIMIT=50]-->
+    <!-- Name for settings category for reminder settings[CHAR_LIMIT=50] -->
     <string name="settings_category_reminders">Reminders</string>
 
-    <!-- Title for time picker for reminders [CHAR_LIMIT=50]-->
+    <!-- Title for time picker for reminders [CHAR_LIMIT=50] -->
     <string name="settings_reminders_time_title">Reminder time</string>
 
-    <!-- Title for settings option to enable reminders [CHAR_LIMIT=50]-->
+    <!-- Title for settings option to enable reminders [CHAR_LIMIT=50] -->
     <string name="settings_reminders_enable_title">Enable reminders</string>
 
-    <!-- Summary for settings option to enable reminders [CHAR_LIMIT=NONE]-->
+    <!-- Summary for settings option to enable reminders [CHAR_LIMIT=NONE] -->
     <string name="settings_reminders_enable_summary">Enable reminders to make 5 calls.</string>
 
-    <!-- Title for settings option to enable weekday reminders [CHAR_LIMIT=50]-->
+    <!-- Title for settings option to enable weekday reminders [CHAR_LIMIT=50] -->
     <string name="settings_reminder_days_title">Remind me on these days</string>
 
     <!-- Monday [CHAR_LIMIT=50] -->
@@ -291,10 +291,10 @@
     <!-- Summary text for the days selection preference when no days are selected [CHAR_LIMIT=100] -->
     <string name="no_days_selected">No days selected</string>
 
-    <!-- Title for a notification reminder to make 5 calls [CHAR_LIMIT=30]-->
+    <!-- Title for a notification reminder to make 5 calls [CHAR_LIMIT=30 -->
     <string name="notification_title">Make your voice heard</string>
 
-    <!-- Text for a notification reminder to make 5 calls [CHAR_LIMIT=50]-->
+    <!-- Text for a notification reminder to make 5 calls [CHAR_LIMIT=50] -->
     <string name="notification_text">Spend 5 minutes to contact your representatives.</string>
 
     <!-- Title for a dialog that lets users know on upgrade that reminders have been added [CHAR_LIMIT=50] -->
@@ -325,5 +325,18 @@
 
     <!-- Error message shown on the address text field when a user tries to submit an empty address [CHAR_LIMIT=50] -->
     <string name="error_address_empty">Enter an address or zip code</string>
+
+    <!-- Menu option to share your stats / impact [CHAR_LIMIT=50] -->
+    <string name="menu_share">Share</string>
+
+    <!-- Title for dialog letting you pick which app to share your stats to [CHAR_LIMIT=70] -->
+    <string name="share_chooser_title">Share your stats to…</string>
+
+    <!-- Subject for an email sent from the "Your Impact" screen sharing how many calls you've made [CHAR_LIMIT=200] -->
+    <string name="share_subject">I\'ve used 5 Calls to make an impact</string>
+
+    <!-- Content of an email or message shared from the "Your Impact" screen sharing how many calls you've made [CHAR_LIMIT=NONE] -->
+    <string name="share_content">I\'ve made <xliff:g id="call_count">%1$d</xliff:g> calls to government officials! In <xliff:g id="contact_call_count">%2$d</xliff:g> I made contact, I left a voicemail in <xliff:g id="vm_call_count">%3$d</xliff:g>, and for the rest the office was unavailable.
+        \n\nIt\'s easy to contact your reps at www.5calls.org.</string>
 
 </resources>

@@ -36,7 +36,7 @@ public class FiveCallsApi {
     // 5calls go server. For more on the go server, check out github.com/5calls/5calls.
     // Recommended setting this to "true" for testing, though, to avoid adding fake calls to the
     // server.
-    private static final boolean USE_LOCAL_DEBUG_REPORT = true;
+    private static final boolean USE_LOCAL_DEBUG_REPORT = false;
 
     private static final String GET_ISSUES_REQUEST = "https://5calls.org/issues/?address=";
 

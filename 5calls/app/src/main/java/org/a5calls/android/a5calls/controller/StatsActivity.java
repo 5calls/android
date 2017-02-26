@@ -1,19 +1,18 @@
 package org.a5calls.android.a5calls.controller;
 
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.ShareActionProvider;
 import android.text.TextUtils;
-import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.gms.analytics.HitBuilders;
@@ -24,7 +23,6 @@ import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.DatabaseHelper;
-import org.a5calls.android.a5calls.model.Issue;
 
 import java.util.List;
 
@@ -34,10 +32,14 @@ import butterknife.ButterKnife;
 /**
  * Tell the user how great they are!
  */
-// TODO: Add sharing
 public class StatsActivity extends AppCompatActivity {
     private static final String TAG = "StatsActivity";
     private static final int NUM_CONTACTS_TO_SHOW = 3;
+
+    private int mCallCount = 0;
+    private int mContactCount = 0;
+    private int mVmCount = 0;
+    private ShareActionProvider mShareActionProvider;
 
     @BindView(R.id.no_calls_message) TextView noCallsMessage;
     @BindView(R.id.stats_holder) LinearLayout statsHolder;
@@ -60,31 +62,28 @@ public class StatsActivity extends AppCompatActivity {
     }
 
     private void initializeUI(DatabaseHelper db) {
-        int count = db.getCallsCount();
-        if (count == 0) {
+        mCallCount = db.getCallsCount();
+        if (mCallCount == 0) {
             // Show a "no impact yet!" message.
             noCallsMessage.setVisibility(View.VISIBLE);
             statsHolder.setVisibility(View.GONE);
             return;
         }
+
         noCallsMessage.setVisibility(View.GONE);
         statsHolder.setVisibility(View.VISIBLE);
-        callCountHeader.setText(count == 1 ?
-                getResources().getString(R.string.your_call_count_one) :
-                String.format(getResources().getString(R.string.your_call_count), count));
+        callCountHeader.setText(getTextForCount(
+                mCallCount, R.string.your_call_count_one, R.string.your_call_count));
 
-        int contactCount = db.getCallsCountForType(IssueActivity.CONTACTED);
-        int vmCount = db.getCallsCountForType(IssueActivity.VOICEMAIL);
+        mContactCount = db.getCallsCountForType(IssueActivity.CONTACTED);
+        mVmCount = db.getCallsCountForType(IssueActivity.VOICEMAIL);
         int unavailableCount = db.getCallsCountForType(IssueActivity.UNAVAILABLE);
-        statsContacted.setText(contactCount == 1 ?
-                getResources().getString(R.string.impact_contact_one) :
-                String.format(getResources().getString(R.string.impact_contact), contactCount));
-        statsVoicemail.setText(vmCount == 1 ? getResources().getString(R.string.impact_vm_one) :
-                String.format(getResources().getString(R.string.impact_vm), vmCount));
-        statsUnavailable.setText(unavailableCount == 1 ?
-                getResources().getString(R.string.impact_unavailable_one) :
-                String.format(getResources().getString(R.string.impact_unavailable),
-                        unavailableCount));
+        statsContacted.setText(getTextForCount(
+                mContactCount, R.string.impact_contact_one, R.string.impact_contact));
+        statsVoicemail.setText(getTextForCount(
+                mVmCount, R.string.impact_vm_one, R.string.impact_vm));
+        statsUnavailable.setText(getTextForCount(
+                unavailableCount, R.string.impact_unavailable_one, R.string.impact_unavailable));
 
         // There's probably not that many contacts because mostly the user just calls their own
         // reps. However, it'd be good to move this to a RecyclerView or ListView with an adapter
@@ -121,6 +120,9 @@ public class StatsActivity extends AppCompatActivity {
             Log.d(TAG, name + " had " + issueStats.get(i).second + " calls");
         }
         */
+
+        // Show the share button.
+        invalidateOptionsMenu();
     }
 
     @Override
@@ -137,12 +139,43 @@ public class StatsActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (mCallCount == 0) {
+            return super.onCreateOptionsMenu(menu);
+        }
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_stats, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
                 return true;
+            case R.id.menu_share:
+                sendShare();
+                return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void sendShare() {
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, R.string.share_subject);
+        shareIntent.putExtra(Intent.EXTRA_TEXT,
+                String.format(getResources().getString(R.string.share_content),
+                        mCallCount, mContactCount, mVmCount));
+        shareIntent.setType("text/plain");
+
+        startActivity(Intent.createChooser(shareIntent, getResources().getString(
+                R.string.share_chooser_title)));
+    }
+
+    private String getTextForCount(int count, int resIdOne, int resIdFormat) {
+        return count == 1 ? getResources().getString(resIdOne) :
+                String.format(getResources().getString(resIdFormat), count);
     }
 }
