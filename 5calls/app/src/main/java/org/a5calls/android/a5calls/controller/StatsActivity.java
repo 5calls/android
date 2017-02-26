@@ -37,9 +37,8 @@ public class StatsActivity extends AppCompatActivity {
     private static final int NUM_CONTACTS_TO_SHOW = 3;
 
     private int mCallCount = 0;
-    private int mContactCount = 0;
-    private int mVmCount = 0;
     private ShareActionProvider mShareActionProvider;
+    private Tracker mTracker;
 
     @BindView(R.id.no_calls_message) TextView noCallsMessage;
     @BindView(R.id.stats_holder) LinearLayout statsHolder;
@@ -75,13 +74,13 @@ public class StatsActivity extends AppCompatActivity {
         callCountHeader.setText(getTextForCount(
                 mCallCount, R.string.your_call_count_one, R.string.your_call_count));
 
-        mContactCount = db.getCallsCountForType(IssueActivity.CONTACTED);
-        mVmCount = db.getCallsCountForType(IssueActivity.VOICEMAIL);
+        int contactCount = db.getCallsCountForType(IssueActivity.CONTACTED);
+        int vmCount = db.getCallsCountForType(IssueActivity.VOICEMAIL);
         int unavailableCount = db.getCallsCountForType(IssueActivity.UNAVAILABLE);
         statsContacted.setText(getTextForCount(
-                mContactCount, R.string.impact_contact_one, R.string.impact_contact));
+                contactCount, R.string.impact_contact_one, R.string.impact_contact));
         statsVoicemail.setText(getTextForCount(
-                mVmCount, R.string.impact_vm_one, R.string.impact_vm));
+                vmCount, R.string.impact_vm_one, R.string.impact_vm));
         statsUnavailable.setText(getTextForCount(
                 unavailableCount, R.string.impact_unavailable_one, R.string.impact_unavailable));
 
@@ -132,9 +131,9 @@ public class StatsActivity extends AppCompatActivity {
         if (AccountManager.Instance.allowAnalytics(this)) {
             // Obtain the shared Tracker instance.
             FiveCallsApplication application = (FiveCallsApplication) getApplication();
-            Tracker tracker = application.getDefaultTracker();
-            tracker.setScreenName(TAG);
-            tracker.send(new HitBuilders.ScreenViewBuilder().build());
+            mTracker = application.getDefaultTracker();
+            mTracker.setScreenName(TAG);
+            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
         }
     }
 
@@ -169,6 +168,16 @@ public class StatsActivity extends AppCompatActivity {
         shareIntent.putExtra(Intent.EXTRA_TEXT,
                 String.format(getResources().getString(R.string.share_content), mCallCount));
         shareIntent.setType("text/plain");
+
+        if (mTracker != null) {
+            mTracker.send(new HitBuilders.EventBuilder()
+                    .setCategory("Share")
+                    .setAction("StatsShare")
+                    .setLabel(mCallCount + " calls")
+                    .setValue(1)
+                    .build());
+        }
+
         startActivity(Intent.createChooser(shareIntent, getResources().getString(
                 R.string.share_chooser_title)));
     }

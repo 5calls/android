@@ -464,6 +464,16 @@ public class IssueActivity extends AppCompatActivity {
                 String.format(getResources().getString(R.string.issue_share_content), mIssue.name,
                         mIssue.id));
         shareIntent.setType("text/plain");
+
+        if (mTracker != null) {
+            mTracker.send(new HitBuilders.EventBuilder()
+                    .setCategory("Share")
+                    .setAction("IssueShare")
+                    .setLabel(mIssue.id)
+                    .setValue(1)
+                    .build());
+        }
+
         startActivity(Intent.createChooser(shareIntent, getResources().getString(
                 R.string.share_chooser_title)));
     }
