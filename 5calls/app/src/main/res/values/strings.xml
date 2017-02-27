@@ -342,6 +342,6 @@
     <string name="issue_share_subject">I want you to know about this issue I found on 5 Calls</string>
 
     <!-- Content of an email or message shared from an issue detail screen sharing an issue [CHAR_LIMIT=NONE] -->
-    <string name="issue_share_content">I just called my rep to <xliff:g id="issue_summary">%1$s</xliff:g> — you should too: http://5calls.org/#issue/<xliff:g id="issue_id">%2$s</xliff:g>?utm_campaign=twshare</string>
+    <string name="issue_share_content">I just called my rep to <xliff:g id="issue_summary">%1$s</xliff:g> — you should too: http://5calls.org/#issue/<xliff:g id="issue_id">%2$s</xliff:g></string>
 
 </resources>
