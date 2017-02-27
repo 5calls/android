@@ -70,6 +70,8 @@
                 android:hint="@string/address_hint"
                 android:imeOptions="actionDone"
                 android:minHeight="@dimen/accessibility_min_size"
+                android:layout_alignParentLeft="true"
+                android:layout_toLeftOf="@id/address_submit"
                 />
 
             <Button
@@ -82,6 +84,8 @@
                 android:minWidth="@dimen/accessibility_min_size"
                 android:text="@string/submit"
                 android:textColor="@color/colorPrimaryDark"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="16dp"
                 />
 
         </RelativeLayout>

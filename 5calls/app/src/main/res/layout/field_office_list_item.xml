@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:paddingStart="16dp"
+    android:paddingLeft="16dp"
     >
 
     <!-- TODO: Make the local office click target accessible -->
@@ -26,6 +27,7 @@
         android:layout_marginStart="4dp"
         android:textColor="@color/colorPrimary"
         android:textSize="18sp"
+        android:layout_marginLeft="4dp"
         />
 
 </LinearLayout>

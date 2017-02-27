@@ -469,7 +469,7 @@ public class MainActivity extends AppCompatActivity {
             super(itemView);
             refreshButton = (Button) itemView.findViewById(R.id.refresh_btn);
             // Tinting the compound drawable only works API 23+, so do this manually.
-            refreshButton.getCompoundDrawablesRelative()[0].mutate().setColorFilter(
+            refreshButton.getCompoundDrawables()[0].mutate().setColorFilter(
                     refreshButton.getResources().getColor(R.color.colorAccent),
                     PorterDuff.Mode.MULTIPLY);
         }
@@ -482,7 +482,7 @@ public class MainActivity extends AppCompatActivity {
             super(itemView);
             locationButton = (Button) itemView.findViewById(R.id.location_btn);
             // Tinting the compound drawable only works API 23+, so do this manually.
-            locationButton.getCompoundDrawablesRelative()[0].mutate().setColorFilter(
+            locationButton.getCompoundDrawables()[0].mutate().setColorFilter(
                     locationButton.getResources().getColor(R.color.colorAccent),
                     PorterDuff.Mode.MULTIPLY);
         }

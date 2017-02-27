@@ -59,8 +59,8 @@
             android:id="@+id/calls_to_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             android:layout_marginBottom="32dp"
+            android:layout_marginTop="16dp"
             android:textColor="@color/colorAccent"
             android:textSize="@dimen/h2_text_size"
             android:textStyle="bold"
@@ -79,12 +79,13 @@
             android:id="@+id/about_us_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="start"
             android:layout_margin="0dp"
+            android:background="@android:color/transparent"
             android:minHeight="@dimen/accessibility_min_size"
             android:text="@string/about_us_btn"
-            android:textColor="@color/colorAccent"
-            android:background="@android:color/transparent"
             android:textAlignment="textStart"
+            android:textColor="@color/colorAccent"
             />
 
         <TextView
@@ -100,11 +101,12 @@
             android:id="@+id/rate_us_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:background="@android:color/transparent"
             android:minHeight="@dimen/accessibility_min_size"
             android:text="@string/rate_us_btn"
-            android:textColor="@color/colorAccent"
-            android:background="@android:color/transparent"
             android:textAlignment="textStart"
+            android:textColor="@color/colorAccent"
             />
 
         <TextView
@@ -130,8 +132,8 @@
             android:id="@+id/license_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minHeight="@dimen/accessibility_min_size"
             android:background="@android:color/transparent"
+            android:minHeight="@dimen/accessibility_min_size"
             android:text="@string/license_btn"
             android:textColor="@color/colorAccent"
             />

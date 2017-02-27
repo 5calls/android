@@ -57,6 +57,7 @@
             android:minHeight="@dimen/accessibility_min_size"
             android:text="@string/next"
             android:textColor="@color/colorAccent"
+            android:layout_alignParentRight="true"
             />
 
 </RelativeLayout>

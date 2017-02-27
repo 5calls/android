@@ -140,8 +140,9 @@ public class LocationActivity extends AppCompatActivity {
 
     private void returnToMain() {
         // Make sure we're still alive
-        if (isFinishing() || isDestroyed()) {
-            return;
+        if (isFinishing() ||
+                (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && isDestroyed())) {
+                return;
         }
 
         // If we came from MainActivity and return with another Intent, it will create a deep stack

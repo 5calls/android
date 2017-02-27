@@ -14,6 +14,10 @@
                 android:width="42dp"
                 android:height="42dp"
                 />
+            <solid
+                android:width="42dp"
+                android:height="42dp"
+                />
         </shape>
     </item>
     <item android:maxLevel="1">
