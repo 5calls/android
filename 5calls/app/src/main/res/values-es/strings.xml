@@ -313,4 +313,35 @@
     <!-- Button to try loading data from the 5 Calls API again, shown after an error [CHAR_LIMIT=50] -->
     <string name="try_again_btn">Inténtelo de nuevo</string>
 
+    <!-- Prompt to enter an address or zip code instead of using the phone's GPS location [CHAR_LIMIT=NONE] -->
+    <string name="location_address_prompt">Entre su dirección o código postal.
+        \nSi Ud. vive en un distrito electoral que cubre más que un código postal, es posible que no recibiere un listo de todos sus representantes.</string>
+
+    <!-- Hint text for edittext to enter an address or zip code for the user's location [CHAR_LIMIT=50] -->
+    <string name="address_hint">Dirección o código postal</string>
+
+    <!-- Error message for when an address is invalid according to the API [CHAR_LIMIT=150] -->
+    <string name="error_address_invalid">Esta dirección no es válida. Por favor actualice su dirección e intente de nuevo.</string>
+
+    <!-- Error message shown on the address text field when a user tries to submit an empty address [CHAR_LIMIT=50] -->
+    <string name="error_address_empty">Introduzca una dirección o un código postal</string>
+
+    <!-- Menu option to share your stats / impact [CHAR_LIMIT=50] -->
+    <string name="menu_share">Comparta</string>
+
+    <!-- Title for dialog letting you pick which app to share some information to [CHAR_LIMIT=70] -->
+    <string name="share_chooser_title">Comparta con…</string>
+
+    <!-- Subject for an email sent from the "Your Impact" screen sharing how many calls you've made [CHAR_LIMIT=200] -->
+    <string name="share_subject">He usado 5 Calls para marcar una diferencia</string>
+
+    <!-- Content of an email or message shared from the "Your Impact" screen sharing how many calls you've made [CHAR_LIMIT=NONE] -->
+    <string name="share_content">He hecho <xliff:g id="call_count">%1$d</xliff:g> llamadas a mis funcionarios para dar mi opinión. Únase conmigo en 5calls.org. ¡Es fácil marcar una diferencia!</string>
+
+    <!-- Subject for an email sent from an issue detail screen sharing an issue [CHAR_LIMIT=200] -->
+    <string name="issue_share_subject">Quiero que sepa de este asunto que encontré en 5 Calls.</string>
+
+    <!-- Content of an email or message shared from an issue detail screen sharing an issue [CHAR_LIMIT=NONE] -->
+    <string name="issue_share_content">Acabo de llamar a mi representante sobre este asunto: <xliff:g id="issue_summary">%1$s</xliff:g>. Debe hacer lo mismo: http://5calls.org/#issue/<xliff:g id="issue_id">%2$s</xliff:g></string>
+
 </resources>
