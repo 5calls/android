@@ -1,6 +1,7 @@
 package org.a5calls.android.a5calls.controller;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.MultiSelectListPreference;
@@ -70,14 +71,13 @@ public class SettingsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public static void turnOnReminders(Activity activity, AccountManager manager) {
+    public static void turnOnReminders(Context context, AccountManager manager) {
         // Set up the notification firing logic when the settings activity ends, so as not
         // to do the work too frequently.
-        if (manager.getAllowReminders(activity)) {
-            NotificationUtils.setNotificationTime(activity,
-                    manager.getReminderMinutes(activity));
+        if (manager.getAllowReminders(context)) {
+            NotificationUtils.setNotificationTime(context, manager.getReminderMinutes(context));
         } else {
-            NotificationUtils.clearNotifications(activity);
+            NotificationUtils.clearNotifications(context);
         }
     }
 

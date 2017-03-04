@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 
 import org.a5calls.android.a5calls.BuildConfig;
-import org.a5calls.android.a5calls.controller.MainActivity;
 import org.a5calls.android.a5calls.controller.NotifyBroadcastReceiver;
 
 import java.util.Calendar;
