@@ -8,7 +8,6 @@
     <uses-feature android:name="android.hardware.location.gps"
         android:required="false"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.SET_TIME_ZONE"/>
 
     <application
         android:name=".FiveCallsApplication"
