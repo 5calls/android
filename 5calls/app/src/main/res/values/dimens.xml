@@ -7,4 +7,9 @@
     <dimen name="h1_text_size">32sp</dimen>
     <dimen name="text_size_paragraph">16sp</dimen>
     <dimen name="h2_text_size">28sp</dimen>
+
+    <dimen name="rep_image_size">120dp</dimen>
+
+    <dimen name="min_resizable_text_size">14sp</dimen>
+    <dimen name="one_sp">1sp</dimen>
 </resources>

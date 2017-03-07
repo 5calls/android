@@ -3,14 +3,18 @@ package org.a5calls.android.a5calls.controller;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.text.util.Linkify;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,6 +30,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
@@ -286,7 +291,20 @@ public class IssueActivity extends AppCompatActivity {
         contactReason.setText(contact.reason);
         if (!TextUtils.isEmpty(contact.photoURL)) {
             repImage.setVisibility(View.VISIBLE);
-            Glide.with(getApplicationContext()).load(contact.photoURL).into(repImage);
+            Glide.with(getApplicationContext())
+                    .load(contact.photoURL)
+                    .asBitmap()
+                    .centerCrop()
+                    .into(new BitmapImageViewTarget(repImage) {
+                        @Override
+                        protected void setResource(Bitmap resource) {
+                            RoundedBitmapDrawable drawable = RoundedBitmapDrawableFactory.create(
+                                    repImage.getContext().getResources(), resource);
+                            drawable.setCircular(true);
+                            drawable.setGravity(Gravity.TOP);
+                            repImage.setImageDrawable(drawable);
+                        }
+                    });
         } else {
             repImage.setVisibility(View.GONE);
         }
@@ -397,8 +415,10 @@ public class IssueActivity extends AppCompatActivity {
                     R.id.field_office_number);
             numberView.setText(contact.field_offices[i].phone);
             Linkify.addLinks(numberView, Linkify.PHONE_NUMBERS);
-            ((TextView) localOfficeInfo.findViewById(R.id.field_office_city)).setText(
-                    "- " + contact.field_offices[i].city);
+            if (!TextUtils.isEmpty(contact.field_offices[i].city)) {
+                ((TextView) localOfficeInfo.findViewById(R.id.field_office_city)).setText(
+                        "- " + contact.field_offices[i].city);
+            }
             localOfficeSection.addView(localOfficeInfo);
         }
     }
