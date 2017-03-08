@@ -1,6 +1,5 @@
 package org.a5calls.android.a5calls.controller;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -21,9 +20,7 @@ import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.NotificationUtils;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -81,6 +78,14 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
+    public static void updateAllowAnalytics(Context context, boolean allowAnalytics) {
+        if (allowAnalytics) {
+            ((FiveCallsApplication) context.getApplicationContext()).enableAnalyticsHandler();
+        } else {
+            ((FiveCallsApplication) context.getApplicationContext()).disableAnalyticsHandler();
+        }
+    }
+
     public static class SettingsFragment extends PreferenceFragment implements
             SharedPreferences.OnSharedPreferenceChangeListener{
         private final AccountManager accountManager = AccountManager.Instance;
@@ -120,6 +125,7 @@ public class SettingsActivity extends AppCompatActivity {
             if (TextUtils.equals(key, AccountManager.KEY_ALLOW_ANALYTICS)) {
                 boolean result = sharedPreferences.getBoolean(key, true);
                 accountManager.setAllowAnalytics(getActivity(), result);
+                updateAllowAnalytics(getActivity(), result);
             } else if (TextUtils.equals(key, AccountManager.KEY_ALLOW_REMINDERS)) {
                 boolean result = sharedPreferences.getBoolean(key, true);
                 accountManager.setAllowReminders(getActivity(), result);
