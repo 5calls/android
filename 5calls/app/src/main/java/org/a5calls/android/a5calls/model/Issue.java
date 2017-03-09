@@ -13,6 +13,7 @@ public class Issue implements Parcelable {
     public String name;
     public String reason;
     public String script;
+    public boolean inactive;
     public Contact[] contacts;
 
     protected Issue(Parcel in) {
@@ -20,6 +21,7 @@ public class Issue implements Parcelable {
         name = in.readString();
         reason = in.readString();
         script = in.readString();
+        inactive = in.readInt() != 0;
         contacts = in.createTypedArray(Contact.CREATOR);
     }
 
@@ -46,6 +48,7 @@ public class Issue implements Parcelable {
         dest.writeString(name);
         dest.writeString(reason);
         dest.writeString(script);
+        dest.writeInt(inactive ? 1 : 0);
         dest.writeTypedArray(contacts, PARCELABLE_WRITE_RETURN_VALUE);
     }
 }

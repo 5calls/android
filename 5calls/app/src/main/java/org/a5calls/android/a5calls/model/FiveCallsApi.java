@@ -22,6 +22,8 @@ import org.json.JSONObject;
 import java.lang.reflect.Type;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -95,6 +97,16 @@ public class FiveCallsApi {
 
     public void getIssuesForLocation(String address) {
         String url = GET_ISSUES_REQUEST + URLEncoder.encode(address);
+        buildIssuesRequest(url, mIssuesRequestListeners);
+    }
+
+    public void getInactiveIssuesForLocation(String address, IssuesRequestListener listener) {
+        String url = GET_ISSUES_REQUEST + URLEncoder.encode(address) + "&inactive=true";
+        List<IssuesRequestListener> list = Collections.singletonList(listener);
+        buildIssuesRequest(url, list);
+    }
+
+    private void buildIssuesRequest(String url, final List<IssuesRequestListener> listeners) {
         // Request a JSON Object response from the provided URL.
         JsonObjectRequest statusRequest = new JsonObjectRequest(
                 Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -104,7 +116,7 @@ public class FiveCallsApi {
                     String locationName = "";
                     try {
                         if (response.getBoolean("invalidAddress")) {
-                            for (IssuesRequestListener listener : mIssuesRequestListeners) {
+                            for (IssuesRequestListener listener : listeners) {
                                 listener.onAddressError();
                             }
                             return;
@@ -115,7 +127,7 @@ public class FiveCallsApi {
                     }
                     JSONArray jsonArray = response.optJSONArray("issues");
                     if (jsonArray == null) {
-                        for (IssuesRequestListener listener : mIssuesRequestListeners) {
+                        for (IssuesRequestListener listener : listeners) {
                             listener.onJsonError();
                         }
                         return;
@@ -124,7 +136,7 @@ public class FiveCallsApi {
                     List<Issue> issues = new Gson().fromJson(jsonArray.toString(),
                             listType);
                     // TODO: Sanitize contact IDs here
-                    for (IssuesRequestListener listener : mIssuesRequestListeners) {
+                    for (IssuesRequestListener listener : listeners) {
                         listener.onIssuesReceived(locationName, issues);
                     }
                 }
@@ -132,7 +144,7 @@ public class FiveCallsApi {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                for (IssuesRequestListener listener : mIssuesRequestListeners) {
+                for (IssuesRequestListener listener : listeners) {
                     listener.onRequestError();
                 }
             }

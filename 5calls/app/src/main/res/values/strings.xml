@@ -347,4 +347,7 @@
     <!-- Action on the reminder notification to snooze the notification for one hour [CHAR_LIMIT=15] -->
     <string name="snooze">Remind me later</string>
 
+    <!-- Button to load more and/or inactive issues [CHAR_LIMIT=50] -->
+    <string name="load_more_btn">Load more issues</string>
+
 </resources>

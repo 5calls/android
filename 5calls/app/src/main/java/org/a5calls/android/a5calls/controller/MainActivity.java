@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.gms.analytics.HitBuilders;
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int ISSUE_DETAIL_REQUEST = 1;
     public static final int NOTIFICATION_REQUEST = 2;
     public static final String EXTRA_FROM_NOTIFICATION = "extraFromNotification";
+    private static final String KEY_INACTIVE_ISSUES_LOADED = "inactiveIssuesLoaded";
     private final AccountManager accountManager = AccountManager.Instance;
 
     private IssuesAdapter mIssuesAdapter;
@@ -55,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     private String mAddress;
     private String mLatitude;
     private String mLongitude;
+    private boolean mLoadInactiveIssues = false;
 
     @BindView(R.id.swipe_container) SwipeRefreshLayout swipeContainer;
     @BindView(R.id.issues_recycler_view) RecyclerView issuesRecyclerView;
@@ -117,6 +120,8 @@ public class MainActivity extends AppCompatActivity {
 
         registerApiListener();
 
+        mLoadInactiveIssues = savedInstanceState != null &&
+                savedInstanceState.getBoolean(KEY_INACTIVE_ISSUES_LOADED, false);
         swipeContainer.setColorSchemeResources(R.color.colorPrimary);
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override public void onRefresh() {
@@ -156,6 +161,12 @@ public class MainActivity extends AppCompatActivity {
             tracker.setScreenName(TAG);
             tracker.send(new HitBuilders.ScreenViewBuilder().build());
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(KEY_INACTIVE_ISSUES_LOADED, mLoadInactiveIssues);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -259,6 +270,10 @@ public class MainActivity extends AppCompatActivity {
                 }
                 mIssuesAdapter.setIssues(issues, IssuesAdapter.NO_ERROR);
                 swipeContainer.setRefreshing(false);
+
+                if (mLoadInactiveIssues) {
+                    loadInactiveIssues();
+                }
             }
         };
 
@@ -280,6 +295,42 @@ public class MainActivity extends AppCompatActivity {
             String message = getString(R.string.main_activity_location_error);
             Snackbar.make(findViewById(R.id.activity_main), message, Snackbar.LENGTH_LONG).show();
         }
+    }
+
+    private void loadInactiveIssues() {
+        mLoadInactiveIssues = true;
+        String location = getLocationString();
+        AppSingleton.getInstance(getApplicationContext()).getJsonController()
+                .getInactiveIssuesForLocation(location, new FiveCallsApi.IssuesRequestListener() {
+                    @Override
+                    public void onRequestError() {
+                        Snackbar.make(findViewById(R.id.activity_main),
+                                getResources().getString(R.string.request_error),
+                                Snackbar.LENGTH_LONG).show();
+                        mIssuesAdapter.addInactiveIssuesFailed();
+                    }
+
+                    @Override
+                    public void onJsonError() {
+                        Snackbar.make(findViewById(R.id.activity_main),
+                                getResources().getString(R.string.json_error),
+                                Snackbar.LENGTH_LONG).show();
+                        mIssuesAdapter.addInactiveIssuesFailed();
+                    }
+
+                    @Override
+                    public void onAddressError() {
+                        Snackbar.make(findViewById(R.id.activity_main),
+                                getResources().getString(R.string.error_address_invalid),
+                                Snackbar.LENGTH_LONG).show();
+                        mIssuesAdapter.addInactiveIssuesFailed();
+                    }
+
+                    @Override
+                    public void onIssuesReceived(String locationName, List<Issue> issues) {
+                        mIssuesAdapter.addInactiveIssues(issues);
+                    }
+                });
     }
 
     private String getLocationString() {
@@ -311,18 +362,33 @@ public class MainActivity extends AppCompatActivity {
         private static final int VIEW_TYPE_EMPTY_REQUEST = 0;
         private static final int VIEW_TYPE_ISSUE = 1;
         private static final int VIEW_TYPE_EMPTY_ADDRESS = 2;
+        private static final int VIEW_TYPE_LOAD_MORE_BUTTON = 3;
 
         private List<Issue> mIssues = Collections.emptyList();
         private int mErrorType = NO_ISSUES_YET;
+        private boolean mInactiveIssuesLoaded = false;
+        private boolean mLoadingInactiveIssues = false;
 
         public IssuesAdapter() {
-
         }
 
         public void setIssues(List<Issue> issues, int errorType) {
             mErrorType = errorType;
             mIssues = issues;
             notifyDataSetChanged();
+        }
+
+        public void addInactiveIssues(List<Issue> issues) {
+            mInactiveIssuesLoaded = true;
+            mLoadingInactiveIssues = false;
+            mIssues.addAll(issues);
+            notifyDataSetChanged();
+        }
+
+        public void addInactiveIssuesFailed() {
+            mInactiveIssuesLoaded = false;
+            mLoadingInactiveIssues = false;
+            notifyItemChanged(mIssues.size());
         }
 
         public void updateIssue(Issue issue) {
@@ -340,18 +406,22 @@ public class MainActivity extends AppCompatActivity {
             if (viewType == VIEW_TYPE_EMPTY_REQUEST) {
                 View empty = LayoutInflater.from(parent.getContext()).inflate(
                         R.layout.empty_issues_view, parent, false);
-                RecyclerView.ViewHolder holder = new EmptyRequestViewHolder(empty);
-                return holder;
+                return new EmptyRequestViewHolder(empty);
             } else if (viewType == VIEW_TYPE_EMPTY_ADDRESS) {
                 View empty = LayoutInflater.from(parent.getContext()).inflate(
                         R.layout.empty_issues_address_view, parent, false);
-                RecyclerView.ViewHolder holder = new EmptyAddressViewHolder(empty);
-                return holder;
+                return new EmptyAddressViewHolder(empty);
+            } else if (viewType == VIEW_TYPE_LOAD_MORE_BUTTON) {
+                View v = LayoutInflater.from(parent.getContext()).inflate(
+                        R.layout.load_more_view, parent, false);
+                LoadMoreViewHolder vh = new LoadMoreViewHolder(v);
+                vh.loadMoreButton.setVisibility(mLoadingInactiveIssues ? View.GONE : View.VISIBLE);
+                vh.progressBar.setVisibility(mLoadingInactiveIssues ? View.VISIBLE : View.GONE);
+                return vh;
             } else {
                 CardView v = (CardView) LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.issue_view, parent, false);
-                IssueViewHolder holder = new IssueViewHolder(v);
-                return holder;
+                return new IssueViewHolder(v);
             }
         }
 
@@ -411,6 +481,17 @@ public class MainActivity extends AppCompatActivity {
                         launchLocationActivity();
                     }
                 });
+            } else if (type == VIEW_TYPE_LOAD_MORE_BUTTON) {
+                final LoadMoreViewHolder vh = (LoadMoreViewHolder) holder;
+                vh.loadMoreButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mLoadingInactiveIssues = true;
+                        vh.loadMoreButton.setVisibility(View.GONE);
+                        vh.progressBar.setVisibility(View.VISIBLE);
+                        loadInactiveIssues();
+                    }
+                });
             }
         }
 
@@ -431,6 +512,10 @@ public class MainActivity extends AppCompatActivity {
             if (mIssues.size() == 0 && mErrorType == ERROR_REQUEST || mErrorType == ERROR_ADDRESS) {
                 return 1;
             }
+            if (!mInactiveIssuesLoaded && mIssues.size() > 0) {
+                // For the load more button, only shown if some issues exist already
+                return mIssues.size() + 1;
+            }
             return mIssues.size();
         }
 
@@ -443,6 +528,9 @@ public class MainActivity extends AppCompatActivity {
                 if (mErrorType == ERROR_ADDRESS) {
                     return VIEW_TYPE_EMPTY_ADDRESS;
                 }
+            }
+            if (position == mIssues.size() && mIssues.size() > 0) {
+                return VIEW_TYPE_LOAD_MORE_BUTTON;
             }
             return VIEW_TYPE_ISSUE;
         }
@@ -485,6 +573,17 @@ public class MainActivity extends AppCompatActivity {
             locationButton.getCompoundDrawables()[0].mutate().setColorFilter(
                     locationButton.getResources().getColor(R.color.colorAccent),
                     PorterDuff.Mode.MULTIPLY);
+        }
+    }
+
+    private class LoadMoreViewHolder extends RecyclerView.ViewHolder {
+        public Button loadMoreButton;
+        public ProgressBar progressBar;
+
+        public LoadMoreViewHolder(View itemView) {
+            super(itemView);
+            loadMoreButton = (Button) itemView.findViewById(R.id.load_more_btn);
+            progressBar = (ProgressBar) itemView.findViewById(R.id.progress_bar);
         }
     }
 }
