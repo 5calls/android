@@ -3,13 +3,18 @@ package org.a5calls.android.a5calls.controller;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -61,6 +66,10 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.swipe_container) SwipeRefreshLayout swipeContainer;
     @BindView(R.id.issues_recycler_view) RecyclerView issuesRecyclerView;
+    @BindView(R.id.drawer_layout) DrawerLayout drawerLayout;
+    @BindView(R.id.toolbar) Toolbar actionBar;
+    @BindView(R.id.nav_view) NavigationView navigationView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +121,14 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        setSupportActionBar(actionBar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
+
+        if (navigationView != null) {
+            setupDrawerContent(navigationView);
+        }
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         issuesRecyclerView.setLayoutManager(layoutManager);
@@ -178,14 +195,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_about) {
-            Intent intent = new Intent(this, AboutActivity.class);
-            startActivity(intent);
+        if (item.getItemId() == android.R.id.home) {
+            drawerLayout.openDrawer(GravityCompat.START);
             return true;
-        } else if (item.getItemId() == R.id.menu_stats) {
-            showStats();
-            return true;
-        } else if (item.getItemId() == R.id.menu_refresh) {
+        }
+        else if (item.getItemId() == R.id.menu_refresh) {
             swipeContainer.post(new Runnable() {
                 @Override public void run() {
                     swipeContainer.setRefreshing(true);
@@ -193,15 +207,37 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
             return true;
-        } else if (item.getItemId() == R.id.menu_settings) {
-            Intent intent = new Intent(this, SettingsActivity.class);
-            startActivity(intent);
-            return true;
         } else if (item.getItemId() == R.id.menu_location) {
             launchLocationActivity();
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setupDrawerContent(NavigationView navigationView) {
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem item) {
+                        //menuItem.setChecked(true); // don't use this atm
+                        drawerLayout.closeDrawers();
+
+                        if (item.getItemId() == R.id.menu_about) {
+                            Intent intent = new Intent(MainActivity.this, AboutActivity.class);
+                            startActivity(intent);
+                            return true;
+                        } else if (item.getItemId() == R.id.menu_stats) {
+                            showStats();
+                            return true;
+                        } else if (item.getItemId() == R.id.menu_settings) {
+                            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                            startActivity(intent);
+                            return true;
+                        }
+
+                        return true;
+                    }
+                });
     }
 
     private void launchLocationActivity() {
