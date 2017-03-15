@@ -22,4 +22,6 @@
         <item name="colorButtonNormal">@color/button_color</item>
         <item name="android:alertDialogTheme">@style/AppTheme.Dialog</item>
     </style>
+
+    <style name="AppTheme.NoBarTheme.MainActivity" parent="AppTheme.NoBarTheme"/>
 </resources>
