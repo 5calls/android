@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
@@ -69,7 +70,8 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.drawer_layout) DrawerLayout drawerLayout;
     @BindView(R.id.toolbar) Toolbar actionBar;
     @BindView(R.id.nav_view) NavigationView navigationView;
-
+    @BindView(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsingToolbarLayout;
+    @BindView(R.id.action_bar_subtitle) TextView actionBarSubtitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,6 +159,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        loadStats();
 
         mAddress = accountManager.getAddress(this);
         mLatitude = accountManager.getLat(this);
@@ -288,7 +292,7 @@ public class MainActivity extends AppCompatActivity {
             public void onIssuesReceived(String locationName, List<Issue> issues) {
                 locationName = TextUtils.isEmpty(locationName) ?
                         getResources().getString(R.string.unknown_location) : locationName;
-                getSupportActionBar().setTitle(String.format(getResources().getString(
+                collapsingToolbarLayout.setTitle(String.format(getResources().getString(
                         R.string.title_main), locationName));
 
                 // If this is the first time we've set issues ever, add all the contacts and
@@ -315,6 +319,16 @@ public class MainActivity extends AppCompatActivity {
 
         AppSingleton.getInstance(getApplicationContext()).getJsonController()
                 .registerIssuesRequestListener(mIssuesRequestListener);
+    }
+
+    private void loadStats() {
+        int callCount = AppSingleton.getInstance(getApplicationContext())
+                .getDatabaseHelper().getCallsCount();
+        if (callCount > 1) {
+            // Don't bother if it is less than 1.
+            actionBarSubtitle.setText(String.format(
+                    getResources().getString(R.string.your_call_count_summary), callCount));
+        }
     }
 
     private void showStats() {

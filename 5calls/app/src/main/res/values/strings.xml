@@ -350,4 +350,7 @@
     <!-- Button to load more and/or inactive issues [CHAR_LIMIT=50] -->
     <string name="load_more_btn">Load more issues</string>
 
+    <!-- Stats summary shown on the home page [CHAR_LIMIT=75] -->
+    <string name="your_call_count_summary">You\'ve made <xliff:g id="callCount">%1$d</xliff:g> calls</string>
+
 </resources>
