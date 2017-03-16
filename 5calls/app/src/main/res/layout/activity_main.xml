@@ -31,8 +31,9 @@
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
                 app:contentScrim="?attr/colorPrimary"
+                app:statusBarScrim="@android:color/transparent"
                 app:expandedTitleMarginBottom="72dp"
-                app:expandedTitleMarginEnd="64dp"
+                app:expandedTitleMarginEnd="48dp"
                 app:expandedTitleMarginStart="48dp"
                 app:expandedTitleTextAppearance="@style/AppTheme.CollapsingToolbar"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
@@ -59,7 +60,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     app:layout_collapseMode="pin"
-                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                    app:popupTheme="@style/AppTheme.NoBarTheme.MainActivity"
+                    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
                     />
 
             </android.support.design.widget.CollapsingToolbarLayout>
