@@ -192,6 +192,7 @@
                 android:padding="16dp"
                 android:textColor="@color/textColorDarkGrey"
                 android:textSize="@dimen/text_size_paragraph"
+                android:textIsSelectable="true"
                 />
 
         </LinearLayout>
