@@ -353,4 +353,7 @@
     <!-- Stats summary shown on the home page [CHAR_LIMIT=75] -->
     <string name="your_call_count_summary">You\'ve made <xliff:g id="callCount">%1$d</xliff:g> calls</string>
 
+    <!-- Navigation link to the FAQ page [CHAR_LIMIT=25] -->
+    <string name="menu_faq">FAQ</string>
+
 </resources>

@@ -2,6 +2,7 @@ package org.a5calls.android.a5calls.controller;
 
 import android.content.Intent;
 import android.graphics.PorterDuff;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -237,6 +238,10 @@ public class MainActivity extends AppCompatActivity {
                             Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
                             startActivity(intent);
                             return true;
+                        } else if (item.getItemId() == R.id.menu_faq) {
+                            Uri uriUrl = Uri.parse("https://5calls.org/faq.html");
+                            Intent intent = new Intent(Intent.ACTION_VIEW, uriUrl);
+                            startActivity(intent);
                         }
 
                         return true;
