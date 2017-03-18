@@ -77,14 +77,6 @@ public class IssueActivity extends AppCompatActivity {
         issueName.setText(mIssue.name);
         issueDescription.setText(mIssue.reason);
 
-        if (mIssue.contacts == null || mIssue.contacts.length == 0) {
-            repPrompt.setVisibility(View.GONE);
-            noCallsLeft.setVisibility(View.VISIBLE);
-            // TODO: Add messaging about split districts?
-        } else {
-            loadRepList();
-        }
-
         // We allow Analytics opt-out.
         if (accountManager.allowAnalytics(this)) {
             // Obtain the shared Tracker instance.
@@ -105,6 +97,13 @@ public class IssueActivity extends AppCompatActivity {
         if (mTracker != null) {
             mTracker.setScreenName(TAG);
             mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        }
+        if (mIssue.contacts == null || mIssue.contacts.length == 0) {
+            repPrompt.setVisibility(View.GONE);
+            noCallsLeft.setVisibility(View.VISIBLE);
+            // TODO: Add messaging about split districts?
+        } else {
+            loadRepList();
         }
     }
 
@@ -168,6 +167,7 @@ public class IssueActivity extends AppCompatActivity {
     }
 
     private void loadRepList() {
+        repList.removeAllViews();
         for (int i = 0; i < mIssue.contacts.length; i++) {
             View repView = LayoutInflater.from(this).inflate(R.layout.rep_list_view, null);
             populateRepView(repView, mIssue.contacts[i], i);

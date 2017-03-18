@@ -125,13 +125,7 @@ public class RepCallActivity extends AppCompatActivity {
             public void onCallReported() {
                 // Note: Skips are not reported.
                 Log.d(TAG, "call reported successfully!");
-                setButtonsEnabled(true);
-                scrollView.scrollTo(0, 0);
-                // Show the check
-                final List<String> previousCalls =
-                        AppSingleton.getInstance(RepCallActivity.this).getDatabaseHelper()
-                                .getCallResults(mIssue.id, mIssue.contacts[mActiveContactIndex].id);
-                showContactChecked(previousCalls);
+                onBackPressed();
             }
         };
         FiveCallsApi controller = AppSingleton.getInstance(getApplicationContext())

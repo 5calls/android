@@ -13,8 +13,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
         >
 
@@ -27,6 +25,8 @@
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/h1_text_size"
             android:textStyle="bold"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
             />
 
         <TextView
@@ -36,6 +36,8 @@
             android:layout_marginBottom="16dp"
             android:textColor="@color/colorPrimary"
             android:textSize="16sp"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
             />
 
         <TextView
@@ -45,6 +47,8 @@
             android:text="@string/rep_section_prompt"
             android:textColor="@color/textColorDarkGrey"
             android:textSize="16sp"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
             />
 
         <TextView
@@ -57,6 +61,8 @@
             android:textSize="16sp"
             android:textStyle="bold"
             android:visibility="gone"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
             />
 
         <LinearLayout
@@ -64,6 +70,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:showDividers="middle"
+            android:divider="@drawable/layout_divider"
             />
 
     </LinearLayout>
