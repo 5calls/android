@@ -36,8 +36,8 @@
     <!-- Button for the user to skip contacting a particular contact on a particular issue [CHAR_LIMIT=30] -->
     <string name="skip_btn">skip</string>
 
-    <!-- Prompt for call result buttons, telling the user to click one to get to the next call for this issue [CHAR_LIMIT=NONE] -->
-    <string name="buttons_prompt">Enter your result to get to the next call:</string>
+    <!-- Prompt for call result buttons [CHAR_LIMIT=NONE] -->
+    <string name="buttons_prompt">Enter your result:</string>
 
     <!-- Message to the user that no calls are left on a particular issue [CHAR_LIMIT=NONE] -->
     <string name="no_calls_left">No calls left for this issue.</string>
@@ -355,5 +355,8 @@
 
     <!-- Navigation link to the FAQ page [CHAR_LIMIT=25] -->
     <string name="menu_faq">FAQ</string>
+
+    <!-- Header for the representatives / contacts list [CHAR_LIMIT=100] -->
+    <string name="rep_section_prompt">Contacts to call for this issue:</string>
 
 </resources>

@@ -9,5 +9,6 @@
     <color name="script_background_color">#f5f5f5</color>
     <color name="check_color">#0f9d58</color>
     <color name="textColorDarkGrey">#333333</color>
+    <color name="textColorLightGrey">#666</color>
     <color name="check_circle_outside_color">#CCC</color>
 </resources>

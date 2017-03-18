@@ -27,6 +27,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".controller.IssueActivity" />
+        <activity android:name=".controller.RepCallActivity" />
         <activity android:name=".controller.AboutActivity" />
         <activity android:name=".controller.TutorialActivity" />
         <activity android:name=".controller.SettingsActivity" />

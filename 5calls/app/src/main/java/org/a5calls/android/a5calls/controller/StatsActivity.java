@@ -74,9 +74,9 @@ public class StatsActivity extends AppCompatActivity {
         callCountHeader.setText(getTextForCount(
                 mCallCount, R.string.your_call_count_one, R.string.your_call_count));
 
-        int contactCount = db.getCallsCountForType(IssueActivity.CONTACTED);
-        int vmCount = db.getCallsCountForType(IssueActivity.VOICEMAIL);
-        int unavailableCount = db.getCallsCountForType(IssueActivity.UNAVAILABLE);
+        int contactCount = db.getCallsCountForType(RepCallActivity.CONTACTED);
+        int vmCount = db.getCallsCountForType(RepCallActivity.VOICEMAIL);
+        int unavailableCount = db.getCallsCountForType(RepCallActivity.UNAVAILABLE);
         statsContacted.setText(getTextForCount(
                 contactCount, R.string.impact_contact_one, R.string.impact_contact));
         statsVoicemail.setText(getTextForCount(

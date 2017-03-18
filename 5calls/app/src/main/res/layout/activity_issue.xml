@@ -7,9 +7,6 @@
     android:background="@color/background_color"
     >
 
-    <!-- TODO: add android:animateLayoutChanges="true"
-         but it needs to play nice with the scroll after a click -->
-
     <LinearLayout
         android:id="@+id/main_layout"
         android:layout_width="match_parent"
@@ -42,160 +39,13 @@
             />
 
         <TextView
-            android:id="@+id/call_this_office"
+            android:id="@+id/rep_prompt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:text="@string/call_this_office"
-            android:textColor="@color/colorPrimary"
-            android:textSize="18sp"
-            android:textStyle="bold|italic"
+            android:text="@string/rep_section_prompt"
+            android:textColor="@color/textColorDarkGrey"
+            android:textSize="16sp"
             />
-
-        <RelativeLayout
-            android:id="@+id/rep_info"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
-
-            <ImageView
-                android:id="@+id/rep_image"
-                android:layout_width="@dimen/rep_image_size"
-                android:layout_height="@dimen/rep_image_size"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:contentDescription="@null"
-                android:layout_marginRight="16dp"
-                />
-
-            <TextView
-                android:id="@+id/contact_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:layout_alignWithParentIfMissing="true"
-                android:layout_marginBottom="8dp"
-                android:layout_toEndOf="@id/rep_image"
-                android:layout_toRightOf="@id/rep_image"
-                android:textColor="@color/colorPrimary"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                />
-
-            <ImageButton
-                android:id="@+id/contact_done_img"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:background="@android:color/transparent"
-                android:contentDescription="@string/contact_done_img_description"
-                android:scaleType="fitCenter"
-                android:src="@drawable/checked"
-                />
-
-            <org.a5calls.android.a5calls.controller.SingleLineResizableTextView
-                android:id="@+id/phone_number"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignWithParentIfMissing="true"
-                android:layout_below="@id/contact_name"
-                android:layout_toEndOf="@id/rep_image"
-                android:layout_toRightOf="@id/rep_image"
-                android:textColor="@color/colorPrimary"
-                android:textSize="32sp"
-                android:textStyle="bold"
-                />
-
-            <Button
-                android:id="@+id/local_office_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignWithParentIfMissing="true"
-                android:layout_below="@id/phone_number"
-                android:layout_toEndOf="@id/rep_image"
-                android:layout_toRightOf="@id/rep_image"
-                android:background="@android:color/transparent"
-                android:text="@string/local_office_link"
-                android:textAllCaps="false"
-                android:textColor="@color/colorAccent"
-                android:textSize="16sp"
-                />
-
-        </RelativeLayout>
-
-        <LinearLayout
-            android:id="@+id/field_office_section"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:orientation="vertical"
-            >
-
-            <TextView
-                android:id="@+id/field_office_prompt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:textColor="@color/colorPrimary"
-                android:textSize="18sp"
-                android:textStyle="bold|italic"
-                />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/script_section"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            >
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/contact_reason_prompt"
-                android:textColor="@color/colorPrimary"
-                android:textSize="18sp"
-                android:textStyle="bold|italic"
-                />
-
-            <TextView
-                android:id="@+id/contact_reason"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/text_size_paragraph"
-                />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/call_script_prompt"
-                android:textColor="@color/colorPrimary"
-                android:textSize="18sp"
-                android:textStyle="bold|italic"
-                />
-
-            <TextView
-                android:id="@+id/call_script"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@color/script_background_color"
-                android:padding="16dp"
-                android:textColor="@color/textColorDarkGrey"
-                android:textSize="@dimen/text_size_paragraph"
-                android:textIsSelectable="true"
-                />
-
-        </LinearLayout>
 
         <TextView
             android:id="@+id/no_calls_left"
@@ -209,60 +59,11 @@
             android:visibility="gone"
             />
 
-        <TextView
-            android:id="@+id/buttons_prompt"
+        <LinearLayout
+            android:id="@+id/rep_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/buttons_prompt"
-            android:textColor="@color/colorPrimary"
-            android:textSize="18sp"
-            android:textStyle="bold|italic"
-            />
-
-        <Button
-            android:id="@+id/unavailable_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:background="@color/button_color"
-            android:minHeight="@dimen/accessibility_min_size"
-            android:text="@string/unavailable_btn"
-            android:textColor="@color/colorPrimaryDark"
-            />
-
-        <Button
-            android:id="@+id/voicemail_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:background="@color/button_color"
-            android:minHeight="@dimen/accessibility_min_size"
-            android:text="@string/voicemail_btn"
-            android:textColor="@color/colorPrimaryDark"
-            />
-
-        <Button
-            android:id="@+id/made_contact_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:background="@color/button_color"
-            android:minHeight="@dimen/accessibility_min_size"
-            android:text="@string/made_contact_btn"
-            android:textColor="@color/colorPrimaryDark"
-            />
-
-        <Button
-            android:id="@+id/skip_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:layout_marginTop="8dp"
-            android:background="@color/button_color"
-            android:minHeight="@dimen/accessibility_min_size"
-            android:text="@string/skip_btn"
-            android:textColor="@color/colorPrimaryDark"
+            android:orientation="vertical"
             />
 
     </LinearLayout>

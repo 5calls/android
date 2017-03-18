@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -493,7 +492,7 @@ public class MainActivity extends AppCompatActivity {
                         Intent issueIntent = new Intent(holder.itemView.getContext(),
                                 IssueActivity.class);
                         issueIntent.putExtra(IssueActivity.KEY_ISSUE, issue);
-                        issueIntent.putExtra(IssueActivity.KEY_ADDRESS, getLocationString());
+                        issueIntent.putExtra(RepCallActivity.KEY_ADDRESS, getLocationString());
                         startActivityForResult(issueIntent, ISSUE_DETAIL_REQUEST);
                     }
                 });
