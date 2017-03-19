@@ -12,12 +12,14 @@
         android:icon="@drawable/ic_info_black_24dp"
         android:title="@string/menu_about"
         />
-
+    <!-- Waiting on the right URL -->
+    <!--
     <item
         android:id="@+id/menu_faq"
         android:icon="@drawable/ic_live_help_white_24dp"
         android:title="@string/menu_faq"
         />
+        -->
 
     <item
         android:id="@+id/menu_settings"
