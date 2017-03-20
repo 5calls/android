@@ -7,7 +7,7 @@ android {
         applicationId "org.a5calls.android.a5calls"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 22
+        versionCode 23
         versionName "1.7"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -19,7 +19,7 @@ android {
     }
     lintOptions {
         // Check for errors in release builds. Change to false to force build.
-        abortOnError false
+        abortOnError true
     }
 }
 

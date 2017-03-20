@@ -347,4 +347,16 @@
     <!-- Action on the reminder notification to snooze the notification for one hour [CHAR_LIMIT=15] -->
     <string name="snooze">Recuérdeme más tarde</string>
 
+    <!-- Button to load more and/or inactive issues [CHAR_LIMIT=50] -->
+    <string name="load_more_btn">cargar más asuntos</string>
+
+    <!-- Stats summary shown on the home page [CHAR_LIMIT=75] -->
+    <string name="your_call_count_summary">Has hecho <xliff:g id="callCount">%1$d</xliff:g> llamadas</string>
+
+    <!-- Navigation link to the FAQ page [CHAR_LIMIT=25] -->
+    <string name="menu_faq">FAQ</string>
+
+    <!-- Header for the representatives / contacts list [CHAR_LIMIT=100] -->
+    <string name="rep_section_prompt">Contactos para llamar a este asunto:</string>
+
 </resources>
