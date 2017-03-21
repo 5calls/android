@@ -1,10 +1,12 @@
 package org.a5calls.android.a5calls.controller;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.NavUtils;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
@@ -100,8 +102,10 @@ public class RepCallActivity extends AppCompatActivity {
         setContentView(R.layout.activity_rep_call);
         ButterKnife.bind(this);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(mIssue.name);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(mIssue.name);
+        }
 
         mStatusListener = new FiveCallsApi.CallRequestListener() {
             @Override
@@ -125,7 +129,7 @@ public class RepCallActivity extends AppCompatActivity {
             public void onCallReported() {
                 // Note: Skips are not reported.
                 Log.d(TAG, "call reported successfully!");
-                onBackPressed();
+                returnToIssue();
             }
         };
         FiveCallsApi controller = AppSingleton.getInstance(getApplicationContext())
@@ -201,7 +205,7 @@ public class RepCallActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                onBackPressed();
+                returnToIssue();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -284,7 +288,7 @@ public class RepCallActivity extends AppCompatActivity {
             public void onClick(View v) {
                 reportEvent("skip");
                 // Since this is the last contact, just go back to the main menu if they "skip"
-                onBackPressed();
+                returnToIssue();
             }
         });
     }
@@ -353,5 +357,14 @@ public class RepCallActivity extends AppCompatActivity {
                     .setValue(1)
                     .build());
         }
+    }
+
+    private void returnToIssue() {
+        if (isFinishing()) {
+            return;
+        }
+        Intent upIntent = NavUtils.getParentActivityIntent(this);
+        upIntent.putExtra(IssueActivity.KEY_ISSUE, mIssue);
+        NavUtils.navigateUpTo(this, upIntent);
     }
 }

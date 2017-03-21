@@ -26,14 +26,41 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".controller.IssueActivity" />
-        <activity android:name=".controller.RepCallActivity" />
-        <activity android:name=".controller.AboutActivity" />
+        <activity android:name=".controller.IssueActivity"
+            android:launchMode="singleTop"
+            android:parentActivityName=".controller.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".controller.MainActivity" />
+            </activity>
+        <activity android:name=".controller.RepCallActivity"
+            android:parentActivityName=".controller.IssueActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".controller.IssueActivity" />
+        </activity>
+        <activity android:name=".controller.AboutActivity"
+            android:parentActivityName=".controller.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".controller.MainActivity" />
+        </activity>
         <activity android:name=".controller.TutorialActivity" />
-        <activity android:name=".controller.SettingsActivity" />
+        <activity android:name=".controller.SettingsActivity"
+            android:parentActivityName=".controller.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".controller.MainActivity" />
+        </activity>
         <activity android:name=".controller.LocationActivity"/>
         <activity android:name=".controller.StatsActivity"
-            android:label="@string/stats_activity"/>
+            android:label="@string/stats_activity"
+            android:parentActivityName=".controller.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".controller.MainActivity" />
+        </activity>
+
         <receiver
             android:name=".controller.NotifyBroadcastReceiver" />
         <receiver

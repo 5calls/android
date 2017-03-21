@@ -71,8 +71,10 @@ public class IssueActivity extends AppCompatActivity {
         setContentView(R.layout.activity_issue);
         ButterKnife.bind(this);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(mIssue.name);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(mIssue.name);
+        }
 
         issueName.setText(mIssue.name);
         issueDescription.setText(mIssue.reason);

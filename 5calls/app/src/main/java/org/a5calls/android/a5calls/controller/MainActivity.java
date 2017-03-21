@@ -125,8 +125,10 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         setSupportActionBar(actionBar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
+        }
 
         if (navigationView != null) {
             setupDrawerContent(navigationView);

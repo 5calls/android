@@ -54,7 +54,9 @@ public class StatsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_stats);
         ButterKnife.bind(this);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         DatabaseHelper db = AppSingleton.getInstance(this).getDatabaseHelper();
         initializeUI(db);

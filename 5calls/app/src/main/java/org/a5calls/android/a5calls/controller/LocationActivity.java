@@ -70,7 +70,9 @@ public class LocationActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent != null) {
             if (intent.getBooleanExtra(ALLOW_HOME_UP_KEY, false)) {
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                }
                 allowsHomeUp = true;
             }
         }
@@ -148,7 +150,7 @@ public class LocationActivity extends AppCompatActivity {
         // If we came from MainActivity and return with another Intent, it will create a deep stack
         // of activities!
         if (allowsHomeUp) {
-            onBackPressed();
+            finish();
         } else {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
@@ -160,7 +162,7 @@ public class LocationActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                onBackPressed();
+                returnToMain();
                 return true;
         }
         return super.onOptionsItemSelected(item);
