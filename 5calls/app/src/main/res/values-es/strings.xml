@@ -342,7 +342,7 @@
     <string name="issue_share_subject">Quiero que sepa de este asunto que encontré en 5 Calls.</string>
 
     <!-- Content of an email or message shared from an issue detail screen sharing an issue [CHAR_LIMIT=NONE] -->
-    <string name="issue_share_content">Acabo de llamar a mi representante sobre este asunto: <xliff:g id="issue_summary">%1$s</xliff:g>. Debe hacer lo mismo: http://5calls.org/#issue/<xliff:g id="issue_id">%2$s</xliff:g></string>
+    <string name="issue_share_content">Acabo de llamar a mi representante sobre este asunto: <xliff:g id="issue_summary">%1$s</xliff:g>. Debe hacer lo mismo: http://5calls.org/issue/<xliff:g id="issue_id">%2$s</xliff:g></string>
 
     <!-- Action on the reminder notification to snooze the notification for one hour [CHAR_LIMIT=15] -->
     <string name="snooze">Recuérdeme más tarde</string>
