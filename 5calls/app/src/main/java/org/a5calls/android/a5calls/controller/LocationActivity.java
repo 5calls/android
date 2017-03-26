@@ -171,9 +171,9 @@ public class LocationActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-        if (requestCode == LOCATION_PERMISSION_REQUEST &&
-                grantResults[0] == PackageManager.PERMISSION_GRANTED &&
-                grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+        if (requestCode == LOCATION_PERMISSION_REQUEST && grantResults.length > 0 && (
+                grantResults[0] == PackageManager.PERMISSION_GRANTED || (grantResults.length > 1 &&
+                        grantResults[1] == PackageManager.PERMISSION_GRANTED))) {
             // Try getting the location in a Runnable because it is possible that if the location
             // is cached we get it so fast that we returnToMain before we are done resuming, which
             // causes a crash.
