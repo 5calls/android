@@ -22,7 +22,6 @@ import org.json.JSONObject;
 import java.lang.reflect.Type;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -34,18 +33,13 @@ import java.util.Map;
 public class FiveCallsApi {
     private static final String TAG = "FiveCallsApi";
 
-    // This only works on an emulator running on a machine that is running a local version of the
-    // 5calls go server. For more on the go server, check out github.com/5calls/5calls.
-    // Recommended setting this to "true" for testing, though, to avoid adding fake calls to the
-    // server.
-    private static final boolean USE_LOCAL_DEBUG_REPORT = false;
+    // Set TESTING "true" to set a parameter to the count call request which marks it as a test
+    // request on the server. This will only work on debug builds.
+    private static final boolean TESTING = false;
 
     private static final String GET_ISSUES_REQUEST = "https://5calls.org/issues/?address=";
 
     private static final String GET_REPORT = "https://5calls.org/report";
-
-    // This is for local testing only and shouldn't be part of prod.
-    private static final String GET_REPORT_DEBUG = "http://10.0.2.2:8090/report";
 
     public interface CallRequestListener {
         void onRequestError();
@@ -156,9 +150,6 @@ public class FiveCallsApi {
 
     public void getCallCount() {
         String getReport = GET_REPORT;
-        if (BuildConfig.DEBUG && USE_LOCAL_DEBUG_REPORT) {
-            getReport = GET_REPORT_DEBUG;
-        }
         JsonObjectRequest reportRequest = new JsonObjectRequest(
                 Request.Method.GET, getReport, null, new Response.Listener<JSONObject>() {
             @Override
@@ -191,9 +182,6 @@ public class FiveCallsApi {
     public void reportCall(final String issueId, final String contactId, final String result,
                            final String zip) {
         String getReport = GET_REPORT;
-        if (BuildConfig.DEBUG && USE_LOCAL_DEBUG_REPORT) {
-            getReport = GET_REPORT_DEBUG;
-        }
         StringRequest request = new StringRequest(Request.Method.POST, getReport,
                 new Response.Listener<String>() {
             @Override
@@ -215,18 +203,18 @@ public class FiveCallsApi {
                 params.put("result", result);
                 params.put("contactid", contactId);
                 params.put("location", zip);
-                params.put("via", "android");
+                params.put("via", (BuildConfig.DEBUG && TESTING) ? "test" : "android");
                 return params;
             }
 
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<String, String>();
+                Map<String, String> params = new HashMap<>();
                 params.put("Content-Type", "application/x-www-form-urlencoded");
                 return params;
             }
         };
-        request.setTag(TAG); // TODO: same tag OK?
+        request.setTag(TAG);
         // Add the request to the RequestQueue.
         mRequestQueue.add(request);
     }

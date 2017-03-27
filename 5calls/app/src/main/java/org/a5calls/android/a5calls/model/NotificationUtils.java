@@ -14,6 +14,7 @@ import java.util.Calendar;
  * Manages scheduling notifications
  */
 public class NotificationUtils {
+    private static final String TAG = "NotificationUtils";
     private static final long MS_PER_MIN = 1000 * 60;
 
     // This causes notifications to go off more frequently on debug builds.
