@@ -295,11 +295,23 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onIssuesReceived(String locationName, List<Issue> issues) {
+            public void onIssuesReceived(String locationName, boolean splitDistrict,
+                                         List<Issue> issues) {
                 locationName = TextUtils.isEmpty(locationName) ?
                         getResources().getString(R.string.unknown_location) : locationName;
                 collapsingToolbarLayout.setTitle(String.format(getResources().getString(
                         R.string.title_main), locationName));
+
+                if (splitDistrict) {
+                    Snackbar.make(swipeContainer, R.string.split_district_warning,
+                            Snackbar.LENGTH_INDEFINITE)
+                            .setAction(R.string.update, new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    launchLocationActivity();
+                                }
+                            }).show();
+                }
 
                 // If this is the first time we've set issues ever, add all the contacts and
                 // issue IDs to the database to keep track of things the user has already called
@@ -383,7 +395,8 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onIssuesReceived(String locationName, List<Issue> issues) {
+                    public void onIssuesReceived(String locationName, boolean splitDistrict,
+                                                 List<Issue> issues) {
                         mIssuesAdapter.addInactiveIssues(issues);
                     }
                 });
@@ -498,6 +511,7 @@ public class MainActivity extends AppCompatActivity {
                         startActivityForResult(issueIntent, ISSUE_DETAIL_REQUEST);
                     }
                 });
+
                 int totalCalls = issue.contacts.length;
                 List<String> contacted = AppSingleton.getInstance(getApplicationContext())
                         .getDatabaseHelper().getCallsForIssueAndContacts(issue.id, issue.contacts);

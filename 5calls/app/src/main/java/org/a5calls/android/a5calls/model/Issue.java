@@ -14,6 +14,7 @@ public class Issue implements Parcelable {
     public String reason;
     public String script;
     public boolean inactive;
+
     public Contact[] contacts;
 
     protected Issue(Parcel in) {

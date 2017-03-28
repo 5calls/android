@@ -35,7 +35,7 @@ public class FiveCallsApi {
 
     // Set TESTING "true" to set a parameter to the count call request which marks it as a test
     // request on the server. This will only work on debug builds.
-    private static final boolean TESTING = false;
+    private static final boolean TESTING = true;
 
     private static final String GET_ISSUES_REQUEST = "https://5calls.org/issues/?address=";
 
@@ -52,7 +52,7 @@ public class FiveCallsApi {
         void onRequestError();
         void onJsonError();
         void onAddressError();
-        void onIssuesReceived(String locationName, List<Issue> issues);
+        void onIssuesReceived(String locationName, boolean splitDistrict, List<Issue> issues);
     }
 
     private RequestQueue mRequestQueue;
@@ -108,6 +108,7 @@ public class FiveCallsApi {
             public void onResponse(JSONObject response) {
                 if (response != null) {
                     String locationName = "";
+                    boolean splitDistrict = false;
                     try {
                         if (response.getBoolean("invalidAddress")) {
                             for (IssuesRequestListener listener : listeners) {
@@ -116,6 +117,7 @@ public class FiveCallsApi {
                             return;
                         }
                         locationName = response.getString("normalizedLocation");
+                        splitDistrict = response.getBoolean("splitDistrict");
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -131,7 +133,7 @@ public class FiveCallsApi {
                             listType);
                     // TODO: Sanitize contact IDs here
                     for (IssuesRequestListener listener : listeners) {
-                        listener.onIssuesReceived(locationName, issues);
+                        listener.onIssuesReceived(locationName, splitDistrict, issues);
                     }
                 }
             }

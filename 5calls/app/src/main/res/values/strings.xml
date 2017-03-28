@@ -359,4 +359,10 @@
     <!-- Header for the representatives / contacts list [CHAR_LIMIT=100] -->
     <string name="rep_section_prompt">Contacts to call for this issue:</string>
 
+    <!-- Warning that you may be in a split district [CHAR_LIMIT=90] -->
+    <string name="split_district_warning">The location you set is not specific enough to find your representative in the House.</string>
+
+    <!-- Action for a snackbar which brings you to the location update screen [CHAR_LIMIT=10] -->
+    <string name="update">update</string>
+
 </resources>

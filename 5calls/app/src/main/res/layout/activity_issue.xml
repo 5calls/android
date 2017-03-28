@@ -21,12 +21,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
             android:textAllCaps="true"
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/h1_text_size"
             android:textStyle="bold"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"
             />
 
         <TextView
@@ -34,44 +34,85 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:textColor="@color/colorPrimary"
-            android:textSize="16sp"
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin"
+            android:textColor="@color/colorPrimary"
+            android:textSize="16sp"
             />
 
         <TextView
             android:id="@+id/rep_prompt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
             android:text="@string/rep_section_prompt"
             android:textColor="@color/textColorDarkGrey"
             android:textSize="16sp"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"
             />
 
-        <TextView
+        <RelativeLayout
             android:id="@+id/no_calls_left"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="@string/no_calls_left"
-            android:textColor="@color/colorPrimary"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:visibility="gone"
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin"
-            />
+            android:visibility="gone"
+            >
+
+            <TextView
+                android:id="@+id/no_calls_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_toLeftOf="@+id/update_location_btn"
+                android:layout_toStartOf="@id/update_location_btn"
+                android:text="@string/no_calls_left"
+                android:textColor="@color/colorPrimary"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                />
+
+            <TextView
+                android:id="@+id/split_district_warning"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/no_calls_message"
+                android:layout_marginTop="8dp"
+                android:layout_toLeftOf="@id/update_location_btn"
+                android:layout_toStartOf="@id/update_location_btn"
+                android:text="@string/split_district_warning"
+                android:textColor="@color/colorPrimary"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                />
+
+            <Button
+                android:id="@id/update_location_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@id/split_district_warning"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:background="@android:color/transparent"
+                android:minHeight="@dimen/accessibility_min_size"
+                android:text="@string/update"
+                android:textColor="@color/colorAccent"
+                />
+
+        </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/rep_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:divider="@drawable/layout_divider"
             android:orientation="vertical"
             android:showDividers="middle"
-            android:divider="@drawable/layout_divider"
             />
 
     </LinearLayout>

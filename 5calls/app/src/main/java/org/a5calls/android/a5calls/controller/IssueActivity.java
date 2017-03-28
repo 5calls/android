@@ -15,6 +15,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -53,7 +55,8 @@ public class IssueActivity extends AppCompatActivity {
 
     @BindView(R.id.issue_name) TextView issueName;
     @BindView(R.id.issue_description) TextView issueDescription;
-    @BindView(R.id.no_calls_left) TextView noCallsLeft;
+    @BindView(R.id.no_calls_left) ViewGroup noCallsLeft;
+    @BindView(R.id.update_location_btn) Button updateLocationBtn;
     @BindView(R.id.rep_prompt) TextView repPrompt;
     @BindView(R.id.rep_list) LinearLayout repList;
 
@@ -103,7 +106,14 @@ public class IssueActivity extends AppCompatActivity {
         if (mIssue.contacts == null || mIssue.contacts.length == 0) {
             repPrompt.setVisibility(View.GONE);
             noCallsLeft.setVisibility(View.VISIBLE);
-            // TODO: Add messaging about split districts?
+            updateLocationBtn.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(IssueActivity.this, LocationActivity.class);
+                    startActivity(intent);
+                }
+            });
         } else {
             loadRepList();
         }
