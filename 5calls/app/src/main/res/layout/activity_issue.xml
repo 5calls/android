@@ -1,120 +1,161 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/scroll_view"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_color"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android.support.design="http://schemas.android.com/tools"
+    android:background="@color/background_color">
 
-    <LinearLayout
-        android:id="@+id/main_layout"
+    <android.support.v4.widget.NestedScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
+        android:layout_height="match_parent"
+        android:background="@color/background_color"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:clipToPadding="false"
+        android:layout_marginBottom="48dp"
         >
 
-        <TextView
-            android:id="@+id/issue_name"
+        <LinearLayout
+            android:id="@+id/main_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"
-            android:textAllCaps="true"
-            android:textColor="@color/colorPrimary"
-            android:textSize="@dimen/h1_text_size"
-            android:textStyle="bold"
-            />
-
-        <TextView
-            android:id="@+id/issue_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"
-            android:textColor="@color/colorPrimary"
-            android:textSize="16sp"
-            />
-
-        <TextView
-            android:id="@+id/rep_prompt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"
-            android:text="@string/rep_section_prompt"
-            android:textColor="@color/textColorDarkGrey"
-            android:textSize="16sp"
-            />
-
-        <RelativeLayout
-            android:id="@+id/no_calls_left"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"
-            android:visibility="gone"
+            android:orientation="vertical"
+            android:paddingBottom="16dp"
+            android:paddingTop="@dimen/activity_vertical_margin"
             >
 
             <TextView
-                android:id="@+id/no_calls_message"
-                android:layout_width="wrap_content"
+                android:id="@+id/issue_name"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_toLeftOf="@+id/update_location_btn"
-                android:layout_toStartOf="@id/update_location_btn"
-                android:text="@string/no_calls_left"
+                android:layout_marginBottom="16dp"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:textAllCaps="true"
                 android:textColor="@color/colorPrimary"
-                android:textSize="16sp"
+                android:textSize="@dimen/h1_text_size"
                 android:textStyle="bold"
                 />
 
             <TextView
-                android:id="@+id/split_district_warning"
-                android:layout_width="wrap_content"
+                android:id="@+id/issue_description"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_below="@id/no_calls_message"
-                android:layout_marginTop="8dp"
-                android:layout_toLeftOf="@id/update_location_btn"
-                android:layout_toStartOf="@id/update_location_btn"
-                android:text="@string/split_district_warning"
+                android:layout_marginBottom="16dp"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
                 android:textColor="@color/colorPrimary"
                 android:textSize="16sp"
+                />
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/bottom_sheet_behavior"
+        app:behavior_peekHeight="48dp"
+        app:behavior_hideable="false"
+        android:elevation="16dp"
+        android:id="@+id/bottom_sheet"
+        android.support.design:ignore="UnusedAttribute"
+        android:background="@color/colorAccent"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="8dp"
+            >
+
+            <TextView
+                android:id="@+id/rep_prompt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="16dp"
+                android:paddingTop="16dp"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:text="@string/rep_section_prompt"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:background="@color/colorAccent"
                 android:textStyle="bold"
                 />
 
-            <Button
-                android:id="@id/update_location_btn"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/rep_list"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignBaseline="@id/split_district_warning"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:background="@android:color/transparent"
-                android:minHeight="@dimen/accessibility_min_size"
-                android:text="@string/update"
-                android:textColor="@color/colorAccent"
+                android:divider="@drawable/layout_divider"
+                android:orientation="vertical"
+                android:showDividers="middle"
                 />
 
-        </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/no_calls_left"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:visibility="gone"
+                android:background="@color/issue_background_color"
+                >
 
-        <LinearLayout
-            android:id="@+id/rep_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:divider="@drawable/layout_divider"
-            android:orientation="vertical"
-            android:showDividers="middle"
-            />
+                <TextView
+                    android:id="@+id/no_calls_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_toLeftOf="@+id/update_location_btn"
+                    android:layout_toStartOf="@id/update_location_btn"
+                    android:text="@string/no_calls_left"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    />
 
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/split_district_warning"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@id/no_calls_message"
+                    android:layout_marginTop="8dp"
+                    android:layout_toLeftOf="@id/update_location_btn"
+                    android:layout_toStartOf="@id/update_location_btn"
+                    android:text="@string/split_district_warning"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    />
 
-</ScrollView>
+                <Button
+                    android:id="@id/update_location_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@id/split_district_warning"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:background="@android:color/transparent"
+                    android:minHeight="@dimen/accessibility_min_size"
+                    android:text="@string/update"
+                    android:textColor="@color/colorAccent"
+                    />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+</android.support.design.widget.CoordinatorLayout>

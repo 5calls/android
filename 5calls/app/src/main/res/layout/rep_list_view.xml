@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="72dp"
+    android:minHeight="@dimen/accessibility_min_size"
     android:orientation="vertical"
     android:paddingBottom="8dp"
     android:paddingTop="8dp"
@@ -22,10 +23,10 @@
         android:contentDescription="@null"
         />
 
-    <TextView
-        android:id="@+id/contact_name"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignWithParentIfMissing="true"
@@ -33,25 +34,27 @@
         android:layout_marginRight="42dp"
         android:layout_toEndOf="@id/rep_image"
         android:layout_toRightOf="@id/rep_image"
-        android:textColor="@color/colorPrimary"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        />
+        >
 
-    <TextView
-        android:id="@+id/contact_reason"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignWithParentIfMissing="true"
-        android:layout_below="@id/contact_name"
-        android:layout_marginRight="42dp"
-        android:layout_marginTop="4dp"
-        android:layout_toEndOf="@id/rep_image"
-        android:layout_toRightOf="@id/rep_image"
-        android:textColor="@color/textColorLightGrey"
-        android:textSize="14sp"
-        />
+        <TextView
+            android:id="@+id/contact_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            />
+
+        <TextView
+            android:id="@+id/contact_reason"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/textColorLightGrey"
+            android:textSize="14sp"
+            />
+
+    </LinearLayout>
 
     <ImageButton
         android:id="@+id/contact_done_img"
