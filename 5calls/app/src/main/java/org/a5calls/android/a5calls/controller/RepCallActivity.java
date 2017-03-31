@@ -81,7 +81,6 @@ public class RepCallActivity extends AppCompatActivity {
     @BindView(R.id.unavailable_btn) Button unavailableButton;
     @BindView(R.id.voicemail_btn) Button voicemailButton;
     @BindView(R.id.made_contact_btn) Button madeContactButton;
-    @BindView(R.id.skip_btn) Button skipButton;
 
     @BindView(R.id.local_office_btn) Button localOfficeButton;
     @BindView(R.id.field_office_section) LinearLayout localOfficeSection;
@@ -221,7 +220,6 @@ public class RepCallActivity extends AppCompatActivity {
     }
 
     private void setButtonsEnabled(boolean enabled) {
-        skipButton.setEnabled(enabled);
         voicemailButton.setEnabled(enabled);
         madeContactButton.setEnabled(enabled);
         unavailableButton.setEnabled(enabled);
@@ -282,15 +280,6 @@ public class RepCallActivity extends AppCompatActivity {
             contactChecked.setVisibility(View.GONE);
             contactChecked.setOnClickListener(null);
         }
-
-        skipButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                reportEvent("skip");
-                // Since this is the last contact, just go back to the main menu if they "skip"
-                returnToIssue();
-            }
-        });
     }
 
     private void showContactChecked(final List<String> previousCalls) {
@@ -345,7 +334,7 @@ public class RepCallActivity extends AppCompatActivity {
     }
 
     private void showError(int errorStringId) {
-        Snackbar.make(skipButton, errorStringId, Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(madeContactButton, errorStringId, Snackbar.LENGTH_SHORT).show();
     }
 
     private void reportEvent(String event) {

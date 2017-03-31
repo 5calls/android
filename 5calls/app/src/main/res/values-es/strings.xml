@@ -357,6 +357,6 @@
     <string name="menu_faq">Preguntas frecuentes</string>
 
     <!-- Header for the representatives / contacts list [CHAR_LIMIT=100] -->
-    <string name="rep_section_prompt">Contactos para llamar sobre asunto:</string>
+    <string name="rep_section_prompt">Contactos para llamar sobre asunto</string>
 
 </resources>

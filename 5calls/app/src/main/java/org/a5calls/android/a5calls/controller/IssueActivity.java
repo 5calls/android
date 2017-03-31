@@ -66,10 +66,11 @@ public class IssueActivity extends AppCompatActivity {
     @BindView(R.id.issue_description) TextView issueDescription;
     @BindView(R.id.no_calls_left) ViewGroup noCallsLeft;
     @BindView(R.id.update_location_btn) Button updateLocationBtn;
-    @BindView(R.id.rep_prompt) TextView repPrompt;
+    @BindView(R.id.rep_prompt) ViewGroup repPrompt;
     @BindView(R.id.rep_list) LinearLayout repList;
     @BindView(R.id.bottom_sheet) NestedScrollView bottomSheet;
     @BindView(R.id.main_layout) ViewGroup issueTextSection;
+    @BindView(R.id.expand_contacts_icon) ImageView expandContactsIcon;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -119,8 +120,9 @@ public class IssueActivity extends AppCompatActivity {
                     mIsAnimating = true;
                 } else {
                     mIsAnimating = false;
+                    expandContactsIcon.setRotation(newState == BottomSheetBehavior.STATE_EXPANDED ?
+                            180 : 0);
                 }
-                Log.d(TAG, "new state: " + newState);
             }
 
             @Override
@@ -129,11 +131,11 @@ public class IssueActivity extends AppCompatActivity {
                         behavior.getState() != BottomSheetBehavior.STATE_SETTLING) {
                     return;
                 }
+                expandContactsIcon.setRotation(slideOffset * 180);
                 CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams)
                         scrollView.getLayoutParams();
                 params.bottomMargin = collapsedSize + (int) ((bottomSheet.getMeasuredHeight() -
                         collapsedSize) * slideOffset);
-                Log.d(TAG, "bottom: " + params.bottomMargin + " slideOffset " + slideOffset);
                 scrollView.setLayoutParams(params);
                 // Only auto-scroll up if we are already scrolled to the bottom.
                 if (wasAtBottom) {
@@ -153,7 +155,6 @@ public class IssueActivity extends AppCompatActivity {
                 if (scrollView.getHeight() + scrollView.getScrollY() >=
                         issueTextSection.getMeasuredHeight()) {
                     if (behavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
-                        Log.d(TAG, "expanding manually");
                         behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                     }
                 }

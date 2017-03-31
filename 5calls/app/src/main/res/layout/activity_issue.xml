@@ -73,20 +73,40 @@
             android:layout_marginBottom="8dp"
             >
 
-            <TextView
+            <LinearLayout
                 android:id="@+id/rep_prompt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="16dp"
-                android:paddingTop="16dp"
+                android:background="@color/colorAccent"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
-                android:text="@string/rep_section_prompt"
-                android:textColor="@android:color/white"
-                android:textSize="16sp"
-                android:background="@color/colorAccent"
-                android:textStyle="bold"
-                />
+                android:orientation="horizontal"
+                >
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:id="@+id/expand_contacts_icon"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_expand_more_white_24dp"
+                    android:layout_gravity="center_vertical"
+                    />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="16dp"
+                    android:paddingTop="16dp"
+                    android:paddingLeft="16dp"
+                    android:layout_centerVertical="true"
+                    android:text="@string/rep_section_prompt"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    />
+
+
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/rep_list"
