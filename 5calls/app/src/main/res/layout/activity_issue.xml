@@ -90,6 +90,7 @@
                     android:contentDescription="@null"
                     android:src="@drawable/ic_expand_more_white_24dp"
                     android:layout_gravity="center_vertical"
+                    android:rotation="180"
                     />
 
                 <TextView

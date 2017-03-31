@@ -121,7 +121,7 @@ public class IssueActivity extends AppCompatActivity {
                 } else {
                     mIsAnimating = false;
                     expandContactsIcon.setRotation(newState == BottomSheetBehavior.STATE_EXPANDED ?
-                            180 : 0);
+                            0 : 180);
                 }
             }
 
@@ -131,7 +131,7 @@ public class IssueActivity extends AppCompatActivity {
                         behavior.getState() != BottomSheetBehavior.STATE_SETTLING) {
                     return;
                 }
-                expandContactsIcon.setRotation(slideOffset * 180);
+                expandContactsIcon.setRotation(180 - slideOffset * 180);
                 CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams)
                         scrollView.getLayoutParams();
                 params.bottomMargin = collapsedSize + (int) ((bottomSheet.getMeasuredHeight() -
@@ -302,8 +302,11 @@ public class IssueActivity extends AppCompatActivity {
                 .getCallResults(mIssue.id, contact.id);
         if (previousCalls.size() > 0) {
             contactChecked.setImageLevel(1);
+            contactChecked.setContentDescription(getResources().getString(
+                    R.string.contact_done_img_description));
         } else {
             contactChecked.setImageLevel(0);
+            contactChecked.setContentDescription(null);
         }
 
         repView.setOnClickListener(new View.OnClickListener() {
