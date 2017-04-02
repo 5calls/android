@@ -239,11 +239,11 @@ public class MainActivity extends AppCompatActivity {
                             Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
                             startActivity(intent);
                             return true;
-                        } /*else if (item.getItemId() == R.id.menu_faq) {
-                            Uri uriUrl = Uri.parse("https://5calls.org/faq.html");
+                        } else if (item.getItemId() == R.id.menu_faq) {
+                            Uri uriUrl = Uri.parse("https://5calls.org/faq");
                             Intent intent = new Intent(Intent.ACTION_VIEW, uriUrl);
                             startActivity(intent);
-                        } */
+                        }
 
                         return true;
                     }

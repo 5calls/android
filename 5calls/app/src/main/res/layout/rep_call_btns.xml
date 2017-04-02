@@ -37,16 +37,4 @@
         android:textColor="@color/colorPrimaryDark"
         />
 
-    <Button
-        android:id="@+id/skip_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:layout_marginTop="8dp"
-        android:background="@color/button_color"
-        android:minHeight="@dimen/accessibility_min_size"
-        android:text="@string/skip_btn"
-        android:textColor="@color/colorPrimaryDark"
-        />
-
 </merge>

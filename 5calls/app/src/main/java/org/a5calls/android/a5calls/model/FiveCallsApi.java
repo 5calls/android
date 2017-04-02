@@ -35,7 +35,7 @@ public class FiveCallsApi {
 
     // Set TESTING "true" to set a parameter to the count call request which marks it as a test
     // request on the server. This will only work on debug builds.
-    private static final boolean TESTING = true;
+    private static final boolean TESTING = false;
 
     private static final String GET_ISSUES_REQUEST = "https://5calls.org/issues/?address=";
 
