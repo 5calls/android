@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.Log;
 
 import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
@@ -36,6 +37,7 @@ public class NotifyBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        Log.d(TAG, "received broadcast");
         if (TextUtils.equals(intent.getAction(), ACTION_DO_SNOOZE)) {
             // Cancel the notification
             ((NotificationManager) context.getSystemService(NOTIFICATION_SERVICE))
