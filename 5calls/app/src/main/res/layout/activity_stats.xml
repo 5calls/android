@@ -17,6 +17,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:text="@string/no_calls_impact_message"
@@ -30,6 +32,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:orientation="vertical"
@@ -39,7 +43,7 @@
                 android:id="@+id/your_call_count"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorAccent"
+                android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/h1_text_size"
                 android:textStyle="bold"
                 />
@@ -49,38 +53,26 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/motivational_text"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/colorPrimaryDark"
                 android:textSize="@dimen/text_size_paragraph"
                 />
 
             <TextView
-                android:id="@+id/stats_contacted"
+                android:id="@+id/stats_summary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:textColor="@color/colorPrimary"
-                android:textSize="24sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 />
 
-            <TextView
-                android:id="@+id/stats_vm"
+            <com.jjoe64.graphview.GraphView
+                android:id="@+id/graph"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="200dp"
                 android:layout_marginTop="8dp"
-                android:textColor="@color/colorPrimary"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                />
-
-            <TextView
-                android:id="@+id/stats_unavailable"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:textColor="@color/colorPrimary"
-                android:textSize="24sp"
-                android:textStyle="bold"
+                android:padding="4dp"
                 />
 
             <TextView
@@ -88,7 +80,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/top_contacts"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/colorPrimaryDark"
+                android:textStyle="bold"
                 android:textSize="@dimen/text_size_paragraph"
                 />
 

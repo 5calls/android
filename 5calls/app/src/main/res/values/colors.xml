@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#1875d1</color>
-    <color name="colorPrimaryDark">#0d4d8e</color>
+    <color name="colorPrimaryDark">#0F4B86</color>
     <color name="colorAccent">#e53935</color>
     <color name="background_color">#FFFFFF</color>
     <color name="issue_background_color">#eee</color>
@@ -11,4 +11,8 @@
     <color name="textColorDarkGrey">#333333</color>
     <color name="textColorLightGrey">#666</color>
     <color name="check_circle_outside_color">#CCC</color>
+    <color name="contacted_color">@color/colorAccent</color>
+    <color name="voicemail_color">@color/colorPrimary</color>
+    <color name="unavailable_color">@color/colorPrimaryDark</color>
+    <color name="graph_legend_background_color">#9EEE</color>
 </resources>

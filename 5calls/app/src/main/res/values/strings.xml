@@ -171,22 +171,22 @@
     <string name="motivational_text">That\'s awesome, and you should feel awesome. Every call counts, and here is what you have achieved:</string>
 
     <!-- Tells the user how many times they've made contact [CHAR_LIMIT=50] -->
-    <string name="impact_contact">You\'ve made contact <xliff:g id="contactCallCount">"%1$d</xliff:g> times!</string>
+    <string name="impact_contact">You\'ve made contact <xliff:g id="contactCallCount">"%1$d</xliff:g> times, </string>
 
     <!-- Tells the user how many times they've left a voicemail [CHAR_LIMIT=50] -->
-    <string name="impact_vm">You\'ve left <xliff:g id="voicemailCallCount">%1$d</xliff:g> voicemails.</string>
+    <string name="impact_vm">left <xliff:g id="voicemailCallCount">%1$d</xliff:g> voicemails, </string>
 
     <!-- Tells the user how many times they've called but the office was unavailable [CHAR_LIMIT=50] -->
-    <string name="impact_unavailable"><xliff:g id="unavailableCallCount">%1$d</xliff:g> times the contact was unavailable.</string>
+    <string name="impact_unavailable">and <xliff:g id="unavailableCallCount">%1$d</xliff:g> times the contact was unavailable.</string>
 
     <!-- Tells the user how many times they've made contact, if the count is 1 [CHAR_LIMIT=50] -->
-    <string name="impact_contact_one">You\'ve made contact 1 time!</string>
+    <string name="impact_contact_one">You\'ve made contact 1 time, </string>
 
     <!-- Tells the user how many times they've left a voicemail, if the count is 1 [CHAR_LIMIT=50] -->
-    <string name="impact_vm_one">You\'ve left 1 voicemail.</string>
+    <string name="impact_vm_one">left 1 voicemail, </string>
 
     <!-- Tells the user how many times they've called but the office was unavailable, if the count is 1 [CHAR_LIMIT=50] -->
-    <string name="impact_unavailable_one">1 time the contact was unavailable.</string>
+    <string name="impact_unavailable_one">and 1 time the contact was unavailable.</string>
 
     <!-- Unknown contact name [CHAR_LIMIT=50] -->
     <string name="unknown_contact">Unknown contact</string>

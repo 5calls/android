@@ -43,6 +43,8 @@ dependencies {
 
     compile 'com.google.android.gms:play-services-analytics:10.0.1'
 
+    compile 'com.jjoe64:graphview:4.1.0'
+
     // If you add any other open-source libraries, make sure to update assets/licenses.html
     // with the appropriate license information.
 }

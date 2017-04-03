@@ -171,19 +171,19 @@
     <string name="motivational_text">Eso es impresionante, y deberías sentirte orgulloso. Cada llamada cuenta, y esto es lo que has logrado:</string>
 
     <!-- Tells the user how many times they've made contact [CHAR_LIMIT=50] -->
-    <string name="impact_contact">Has hecho contacto <xliff:g id="contactCallCount">"%1$d</xliff:g> veces!</string>
+    <string name="impact_contact">Has hecho contacto <xliff:g id="contactCallCount">"%1$d</xliff:g> veces, </string>
 
     <!-- Tells the user how many times they've left a voicemail [CHAR_LIMIT=50] -->
-    <string name="impact_vm">Has dejado <xliff:g id="voicemailCallCount">%1$d</xliff:g> mensajes!</string>
+    <string name="impact_vm">has dejado <xliff:g id="voicemailCallCount">%1$d</xliff:g> mensajes, </string>
 
     <!-- Tells the user how many times they've called but the office was unavailable [CHAR_LIMIT=50] -->
     <string name="impact_unavailable"><xliff:g id="unavailableCallCount">%1$d</xliff:g> veces el contacto no estaba disponible.</string>
 
     <!-- Tells the user how many times they've made contact, if the count is 1 [CHAR_LIMIT=50] -->
-    <string name="impact_contact_one">Has hecho contacto uno vez!</string>
+    <string name="impact_contact_one">Has hecho contacto uno vez, </string>
 
     <!-- Tells the user how many times they've left a voicemail, if the count is 1 [CHAR_LIMIT=50] -->
-    <string name="impact_vm_one">Has dejado un mensaje.</string>
+    <string name="impact_vm_one">has dejado un mensaje, </string>
 
     <!-- Tells the user how many times they've called but the office was unavailable, if the count is 1 [CHAR_LIMIT=50] -->
     <string name="impact_unavailable_one">1 vez el contacto no estaba disponible.</string>

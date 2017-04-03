@@ -6,7 +6,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ShareActionProvider;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,6 +20,10 @@ import android.widget.TextView;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
 
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.FiveCallsApplication;
@@ -43,9 +50,8 @@ public class StatsActivity extends AppCompatActivity {
     @BindView(R.id.no_calls_message) TextView noCallsMessage;
     @BindView(R.id.stats_holder) LinearLayout statsHolder;
     @BindView(R.id.your_call_count) TextView callCountHeader;
-    @BindView(R.id.stats_contacted) TextView statsContacted;
-    @BindView(R.id.stats_vm) TextView statsVoicemail;
-    @BindView(R.id.stats_unavailable) TextView statsUnavailable;
+    @BindView(R.id.stats_summary) TextView statsSummary;
+    @BindView(R.id.graph) GraphView graph;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -73,18 +79,22 @@ public class StatsActivity extends AppCompatActivity {
 
         noCallsMessage.setVisibility(View.GONE);
         statsHolder.setVisibility(View.VISIBLE);
-        callCountHeader.setText(getTextForCount(
+        callCountHeader.setText(getStringForCount(
                 mCallCount, R.string.your_call_count_one, R.string.your_call_count));
 
-        int contactCount = db.getCallsCountForType(RepCallActivity.CONTACTED);
-        int vmCount = db.getCallsCountForType(RepCallActivity.VOICEMAIL);
-        int unavailableCount = db.getCallsCountForType(RepCallActivity.UNAVAILABLE);
-        statsContacted.setText(getTextForCount(
-                contactCount, R.string.impact_contact_one, R.string.impact_contact));
-        statsVoicemail.setText(getTextForCount(
-                vmCount, R.string.impact_vm_one, R.string.impact_vm));
-        statsUnavailable.setText(getTextForCount(
-                unavailableCount, R.string.impact_unavailable_one, R.string.impact_unavailable));
+        List<Long> contacts = db.getCallTimestampsForType(RepCallActivity.CONTACTED);
+        List<Long> voicemails = db.getCallTimestampsForType(RepCallActivity.VOICEMAIL);
+        List<Long> unavailables = db.getCallTimestampsForType(RepCallActivity.UNAVAILABLE);
+        
+        Spannable contactString = getTextForCount(contacts.size(),
+                R.string.impact_contact_one, R.string.impact_contact, R.color.contacted_color);
+        Spannable vmString = getTextForCount(voicemails.size(),
+                R.string.impact_vm_one, R.string.impact_vm, R.color.voicemail_color);
+        Spannable unavailableString = getTextForCount(unavailables.size(),
+                R.string.impact_unavailable_one, R.string.impact_unavailable,
+                R.color.unavailable_color);
+        statsSummary.setText(TextUtils.concat(TextUtils.concat(contactString, vmString),
+                unavailableString));
 
         // There's probably not that many contacts because mostly the user just calls their own
         // reps. However, it'd be good to move this to a RecyclerView or ListView with an adapter
@@ -122,8 +132,65 @@ public class StatsActivity extends AppCompatActivity {
         }
         */
 
+        createGraph(contacts, voicemails, unavailables);
+
         // Show the share button.
         invalidateOptionsMenu();
+    }
+
+    private void createGraph(List<Long> contacts, List<Long> voicemails, List<Long> unavailables) {
+        long firstTimestamp = Long.MAX_VALUE;
+        if (contacts.size() > 0) {
+            firstTimestamp = Math.min(firstTimestamp, contacts.get(0));
+        }
+        if (voicemails.size() > 0) {
+            firstTimestamp = Math.min(firstTimestamp, voicemails.get(0));
+        }
+        if (unavailables.size() > 0) {
+            firstTimestamp = Math.min(firstTimestamp, unavailables.get(0));
+        }
+        LineGraphSeries<DataPoint> contactedSeries = makeSeries(contacts, firstTimestamp,
+                R.color.contacted_color);
+        LineGraphSeries<DataPoint> voicemailSeries = makeSeries(voicemails, firstTimestamp,
+                R.color.voicemail_color);
+        LineGraphSeries<DataPoint> unavailableSeries = makeSeries(unavailables, firstTimestamp,
+                R.color.unavailable_color);
+        graph.addSeries(contactedSeries);
+        graph.addSeries(voicemailSeries);
+        graph.addSeries(unavailableSeries);
+
+        graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this));
+        graph.getGridLabelRenderer().setNumHorizontalLabels(getResources().getInteger(
+                R.integer.horizontal_labels_count));
+        graph.getGridLabelRenderer().setNumVerticalLabels(5);
+        graph.getGridLabelRenderer().setGridColor(getResources().getColor(android.R.color.white));
+        graph.getGridLabelRenderer().setHumanRounding(false);
+
+        /*
+        // Allow manual zoom. Need to make sure the user can't zoom in too much...
+        graph.getViewport().setYAxisBoundsManual(true);
+        graph.getViewport().setScalable(true);
+        graph.getViewport().setScrollable(true);
+        */
+    }
+
+    private LineGraphSeries<DataPoint> makeSeries(List<Long> timestamps, long firstTimestamp,
+                                                  int colorId) {
+        DataPoint[] points = new DataPoint[timestamps.size() + 2];
+        // Add a first timestamp so the graphs all start at (0, 0)
+        points[0] = new DataPoint(firstTimestamp, 0);
+        int count = 0;
+        for (int i = 0; i < timestamps.size(); i++) {
+            points[i + 1] = new DataPoint(timestamps.get(i), ++count);
+        }
+        // Add right now to the timestamps, to scale the graph as expected.
+        points[timestamps.size() + 1] = new DataPoint(System.currentTimeMillis(), count);
+
+        // Styling
+        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(points);
+        series.setColor(getResources().getColor(colorId));
+        series.setThickness(getResources().getDimensionPixelSize(R.dimen.graph_line_width));
+        return series;
     }
 
     @Override
@@ -184,7 +251,15 @@ public class StatsActivity extends AppCompatActivity {
                 R.string.share_chooser_title)));
     }
 
-    private String getTextForCount(int count, int resIdOne, int resIdFormat) {
+    private Spannable getTextForCount(int count, int resIdOne, int resIdFormat, int resIdColor) {
+        String string = getStringForCount(count, resIdOne, resIdFormat);
+        Spannable result = new SpannableString(string);
+        result.setSpan(new ForegroundColorSpan(getResources().getColor(resIdColor)), 0,
+                string.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return result;
+    }
+
+    private String getStringForCount(int count, int resIdOne, int resIdFormat) {
         return count == 1 ? getResources().getString(resIdOne) :
                 String.format(getResources().getString(resIdFormat), count);
     }

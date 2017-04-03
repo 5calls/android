@@ -246,16 +246,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Gets the total number of calls of a particular type (voicemail, unavailable, contacted) that
-     * this user has made
+     * Gets the list of timestamps of calls of a particular type (voicemail, unavailable, contacted)
+     * that this user has made
      */
-    public int getCallsCountForType(String type) {
+    public List<Long> getCallTimestampsForType(String type) {
         Cursor c = getReadableDatabase().rawQuery(
                 "SELECT " + CallsColumns.TIMESTAMP + " FROM " + CALLS_TABLE_NAME + " WHERE " +
                 CallsColumns.RESULT + " = '" + type + "'", null);
-        int count = c.getCount();
+        List<Long> result = new ArrayList<>();
+        while (c.moveToNext()) {
+            result.add(c.getLong(0));
+        }
         c.close();
-        return count;
+        return result;
     }
 
     /**

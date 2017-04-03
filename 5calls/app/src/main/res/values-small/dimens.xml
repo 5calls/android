@@ -2,4 +2,5 @@
 <resources>
     <dimen name="rep_image_size">60dp</dimen>
     <dimen name="expanded_toolbar_title_size">18sp</dimen>
+    <integer name="horizontal_labels_count">2</integer>
 </resources>
