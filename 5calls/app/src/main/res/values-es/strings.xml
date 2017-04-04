@@ -168,7 +168,7 @@
     <string name="your_call_count_one">Su impacto es 1 llamada!</string>
 
     <!-- Some motivational text about how great the user is for making calls, plus a lead into the call breakdown section of the stats page [CHAR_LIMIT=NONE] -->
-    <string name="motivational_text">Eso es impresionante, y deberías sentirte orgulloso. Cada llamada cuenta, y esto es lo que has logrado:</string>
+    <string name="motivational_text">¡Está marcando la diferencia! Llamando a sus representantes es el método más eficaz de influenciarlos, y aquí se puede ver lo que ha logrado:</string>
 
     <!-- Tells the user how many times they've made contact [CHAR_LIMIT=50] -->
     <string name="impact_contact">Has hecho contacto <xliff:g id="contactCallCount">"%1$d</xliff:g> veces, </string>
@@ -360,9 +360,9 @@
     <string name="rep_section_prompt">Contactos para llamar sobre asunto</string>
 
     <!-- Warning that you may be in a split district [CHAR_LIMIT=90] -->
-    <string name="split_district_warning">La ubicación que establezca no es lo suficientemente específica para encontrar a todos sus representantes.</string>
+    <string name="split_district_warning">Se necesita una dirección más exacta para identificar a su representante</string>
 
-    <!-- Action for a snackbar which brings you to the location update screen [CHAR_LIMIT=10] -->
-    <string name="update">actualizar</string>
+    <!-- Action for a snackbar or button which brings you to the location update screen [CHAR_LIMIT=10] -->
+    <string name="update">Actualización</string>
 
 </resources>

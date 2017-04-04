@@ -164,10 +164,10 @@ public class StatsActivity extends AppCompatActivity {
                 R.integer.horizontal_labels_count));
         graph.getGridLabelRenderer().setNumVerticalLabels(5);
         graph.getGridLabelRenderer().setGridColor(getResources().getColor(android.R.color.white));
-
-        // This gets the x axis to expand to fit all data points, but messes up the Y axis showing
-        // only round numbers.
-        graph.getGridLabelRenderer().setHumanRounding(false);
+        graph.getGridLabelRenderer().setHumanRounding(false, true);
+        graph.getViewport().setMinX(firstTimestamp - 10);
+        graph.getViewport().setMaxX(System.currentTimeMillis() + 10);
+        graph.getViewport().setXAxisBoundsManual(true);
 
         /*
         // Allow manual zoom. Need to make sure the user can't zoom in too much...
