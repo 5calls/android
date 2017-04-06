@@ -10,7 +10,9 @@ FiveCallsApi is used to request a list of issues from the server in MainActivity
 ## Development
 To run the app locally, you'll need to generate your own `google-services.json` file from the [Google website](https://developers.google.com/mobile/add).  It doesn't matter what services you enable because you won't be talking to the prod Google account, but you should include Analytics.
 
-There is not a great solution to avoid having test calls counted on the server, so please be thoughtful about recording calls. If you want to implement a DEBUG mode solution for fake HTTP requests and responses, that'd be welcome!
+You will also need to import [GraphView](http://www.android-graphview.org/) as a module from [github.com/dektar/graphview](https://github.com/dektar/graphview). 
+
+To test the app, set `TESTING=true` in `FiveCallsApi.java`. This makes sure that calls logged to the server are marked as test calls.
 
 ## TODOs and Issues
 Issues marked "[up for grabs](https://github.com/5calls/android/labels/up%20for%20grabs)" are available for contributors. Please add a comment to the issue when you start working on it to avoid conflicts. Feel free to add new issues to the list too -- even better if new issues have some justification or background information.
@@ -19,6 +21,8 @@ Issues marked "[up for grabs](https://github.com/5calls/android/labels/up%20for%
 The app is published on Google Play and has a Beta channnel for testing. If you are interested in getting Beta releases and helping with user testing, reach out to @dektar to be added!
 
 [![Get it on Google Play](https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png)](https://play.google.com/store/apps/details?id=org.a5calls.android.a5calls&rdid=org.a5calls.android.a5calls)
+
+The app is also available on the [Amazon App Store](https://www.amazon.com/5-Calls-Civic-Action/dp/B06Y128HV6).
 
 ## Contributors
  - [Katie Dektar](https://github.com/dektar)

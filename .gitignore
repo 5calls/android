@@ -40,3 +40,6 @@ captures/
 *.jks
 
 translations.csv
+
+# Graph view module
+5calls/GraphView/
