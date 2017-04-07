@@ -38,6 +38,7 @@ import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.FiveCallsApi;
 import org.a5calls.android.a5calls.model.Issue;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -433,7 +434,7 @@ public class MainActivity extends AppCompatActivity {
         private static final int VIEW_TYPE_EMPTY_ADDRESS = 2;
         private static final int VIEW_TYPE_LOAD_MORE_BUTTON = 3;
 
-        private List<Issue> mIssues = Collections.emptyList();
+        private List<Issue> mIssues = new ArrayList<>();
         private int mErrorType = NO_ISSUES_YET;
         private boolean mInactiveIssuesLoaded = false;
         private boolean mLoadingInactiveIssues = false;
