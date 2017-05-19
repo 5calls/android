@@ -97,6 +97,10 @@ public class RepCallActivity extends AppCompatActivity {
         final String address = getIntent().getStringExtra(KEY_ADDRESS);
         mActiveContactIndex = getIntent().getIntExtra(KEY_ACTIVE_CONTACT_INDEX, 0);
         mIssue = getIntent().getParcelableExtra(KEY_ISSUE);
+        if (mIssue == null) {
+            finish();
+            return;
+        }
 
         setContentView(R.layout.activity_rep_call);
         ButterKnife.bind(this);
