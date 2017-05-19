@@ -17,7 +17,6 @@
         android:id="@+id/menu_faq"
         android:icon="@drawable/ic_live_help_white_24dp"
         android:title="@string/menu_faq"
-        android:visible="false"
         />
 
     <item
