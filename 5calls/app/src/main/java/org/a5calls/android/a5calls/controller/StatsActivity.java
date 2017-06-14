@@ -1,8 +1,13 @@
 package org.a5calls.android.a5calls.controller;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.FileProvider;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ShareActionProvider;
@@ -31,6 +36,9 @@ import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.DatabaseHelper;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 import butterknife.BindView;
@@ -151,10 +159,13 @@ public class StatsActivity extends AppCompatActivity {
         }
         LineGraphSeries<DataPoint> contactedSeries = makeSeries(contacts, firstTimestamp,
                 R.color.contacted_color);
+        contactedSeries.setTitle(getResources().getString(R.string.made_contact_btn));
         LineGraphSeries<DataPoint> voicemailSeries = makeSeries(voicemails, firstTimestamp,
                 R.color.voicemail_color);
+        voicemailSeries.setTitle(getResources().getString(R.string.voicemail_btn));
         LineGraphSeries<DataPoint> unavailableSeries = makeSeries(unavailables, firstTimestamp,
                 R.color.unavailable_color);
+        unavailableSeries.setTitle(getResources().getString(R.string.unavailable_btn));
         graph.addSeries(contactedSeries);
         graph.addSeries(voicemailSeries);
         graph.addSeries(unavailableSeries);
@@ -233,13 +244,18 @@ public class StatsActivity extends AppCompatActivity {
     }
 
     private void sendShare() {
+        Uri imageUri = saveGraphImage();
         Intent shareIntent = new Intent();
         shareIntent.setAction(Intent.ACTION_SEND);
         shareIntent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(
                 R.string.share_subject));
         shareIntent.putExtra(Intent.EXTRA_TEXT,
                 String.format(getResources().getString(R.string.share_content), mCallCount));
-        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+        shareIntent.setType("image/png");
+        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        startActivity(Intent.createChooser(shareIntent, "send"));
+        shareIntent.setType("*/*");
 
         if (mTracker != null) {
             mTracker.send(new HitBuilders.EventBuilder()
@@ -252,6 +268,50 @@ public class StatsActivity extends AppCompatActivity {
 
         startActivity(Intent.createChooser(shareIntent, getResources().getString(
                 R.string.share_chooser_title)));
+    }
+
+    private Uri saveGraphImage() {
+        Bitmap bitmap = generateGraphBitmap();
+        File shareFolder = new File(getFilesDir(), "pictures");
+        if (!shareFolder.exists()) {
+            shareFolder.mkdirs();
+        }
+        File sharedImage = new File(shareFolder, "5calls_stats.png");
+        try {
+            FileOutputStream stream = new FileOutputStream(sharedImage);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            stream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        Uri contentUri = FileProvider.getUriForFile(this,
+                "org.a5calls.android.a5calls.fileprovider", sharedImage);
+        return contentUri;
+    }
+
+    private Bitmap generateGraphBitmap() {
+        // Show a title and legend for the share
+        graph.setTitle("Calls over time");
+        graph.getLegendRenderer().setVisible(true);
+
+        // From https://stackoverflow.com/questions/5536066/convert-view-to-bitmap-on-android.
+        //Define a bitmap with the same size as the view
+        Bitmap returnedBitmap = Bitmap.createBitmap(graph.getWidth(), graph.getHeight(),
+                Bitmap.Config.ARGB_8888);
+        //Bind a canvas to it
+        Canvas canvas = new Canvas(returnedBitmap);
+        // Draw a background
+        canvas.drawColor(Color.WHITE);
+        // draw the view on the canvas
+        graph.draw(canvas);
+
+        // Undo the legend and title.
+        graph.setTitle("");
+        graph.getLegendRenderer().setVisible(false);
+
+        //return the bitmap
+        return returnedBitmap;
     }
 
     private Spannable getTextForCount(int count, int resIdOne, int resIdFormat, int resIdColor) {
