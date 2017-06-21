@@ -24,6 +24,7 @@ import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.FiveCallsApi;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.R;
+import org.a5calls.android.a5calls.util.CustomTabsUtil;
 
 import java.text.NumberFormat;
 import java.util.List;
@@ -41,6 +42,7 @@ public class AboutActivity extends AppCompatActivity {
     private final AccountManager accountManager = AccountManager.Instance;
     private FiveCallsApi.CallRequestListener mStatusListener;
 
+    @BindView(R.id.sign_up_newsletter_btn) Button signUpNewsletterButton;
     @BindView(R.id.about_us_btn) Button aboutUsButton;
     @BindView(R.id.rate_us_btn) Button rateUsButton;
     @BindView(R.id.version_info) TextView version;
@@ -57,14 +59,17 @@ public class AboutActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(getResources().getString(R.string.about_title));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        signUpNewsletterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CustomTabsUtil.launchUrl(AboutActivity.this, Uri.parse(getString(R.string.newsletter_url)));
+            }
+        });
+
         aboutUsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: Add this to the app instead of going to the browser
-                // TODO: Meanwhile, get it to open such that the back button returns here.
-                Uri uriUrl = Uri.parse("https://5calls.org/#about");
-                Intent intent = new Intent(Intent.ACTION_VIEW, uriUrl);
-                startActivity(intent);
+                CustomTabsUtil.launchUrl(AboutActivity.this, Uri.parse(getString(R.string.about_url)));
             }
         });
 

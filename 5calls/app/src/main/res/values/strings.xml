@@ -70,6 +70,9 @@
     <!-- Prompt to click on the "Rate" button [CHAR_LIMIT=100] -->
     <string name="rate_us_prompt">If the 5 Calls app has been useful to you, we would appreciate it if you rate us in the Play Store.</string>
 
+    <!-- Button linking to the 5calls.org newsletter signup page [CHAR_LIMIT=40] -->
+    <string name="sign_up_newsletter_btn">sign up for the 5 Calls newsletter</string>
+
     <!-- Button linking to the 5calls.org about page [CHAR_LIMIT=30] -->
     <string name="about_us_btn">about us</string>
 
@@ -364,5 +367,14 @@
 
     <!-- Action for a snackbar or button which brings you to the location update screen [CHAR_LIMIT=10] -->
     <string name="update">update</string>
+
+    <!-- URL to sign up for the 5 Calls newsletter [CHAR_LIMIT=NONE] -->
+    <string name="newsletter_url" translatable="false">https://my.sendinblue.com/users/subscribe/js_id/2p22o/id/1</string>
+
+    <!-- URL for the 5 Calls About page [CHAR_LIMIT=NONE] -->
+    <string name="about_url" translatable="false">https://5calls.org/about</string>
+
+    <!-- URL for the 5 Calls FAQ page [CHAR_LIMIT=NONE] -->
+    <string name="faq_url" translatable="false">https://5calls.org/faq</string>
 
 </resources>
