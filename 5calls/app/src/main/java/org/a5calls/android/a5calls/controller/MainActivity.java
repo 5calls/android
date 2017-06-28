@@ -37,6 +37,7 @@ import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.FiveCallsApi;
 import org.a5calls.android.a5calls.model.Issue;
+import org.a5calls.android.a5calls.util.CustomTabsUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -241,9 +242,7 @@ public class MainActivity extends AppCompatActivity {
                             startActivity(intent);
                             return true;
                         } else if (item.getItemId() == R.id.menu_faq) {
-                            Uri uriUrl = Uri.parse("https://5calls.org/faq");
-                            Intent intent = new Intent(Intent.ACTION_VIEW, uriUrl);
-                            startActivity(intent);
+                            CustomTabsUtil.launchUrl(MainActivity.this, Uri.parse(getString(R.string.faq_url)));
                         }
 
                         return true;

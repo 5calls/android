@@ -66,6 +66,19 @@
             android:textStyle="bold"
             />
 
+        <Button
+            android:id="@+id/sign_up_newsletter_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_margin="0dp"
+            android:background="@android:color/transparent"
+            android:minHeight="@dimen/accessibility_min_size"
+            android:text="@string/sign_up_newsletter_btn"
+            android:textAlignment="textStart"
+            android:textColor="@color/colorAccent"
+            />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
