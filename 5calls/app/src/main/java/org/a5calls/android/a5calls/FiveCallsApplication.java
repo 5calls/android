@@ -25,6 +25,7 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 
 import org.a5calls.android.a5calls.model.AccountManager;
+import org.a5calls.android.a5calls.model.NotificationUtils;
 
 /**
  * This is a subclass of {@link Application} used to provide shared objects for this app, such as
@@ -51,7 +52,8 @@ public class FiveCallsApplication extends Application {
 
             @Override
             public void onActivityResumed(Activity activity) {
-
+                // Clear reminder notifications whenever the app is re-opened.
+                NotificationUtils.clearNotifications(activity);
             }
 
             @Override

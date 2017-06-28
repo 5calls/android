@@ -27,7 +27,7 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 public class NotifyBroadcastReceiver extends BroadcastReceiver {
     private static final String TAG = "NotifyBroadcastRcvr";
 
-    private static final int NOTIFICATION_ID = 42;
+    public static final int NOTIFICATION_ID = 42;
     private static final int SNOOZE_REQUEST_CODE = 1;
     private static final int CANCEL_REQUEST_CODE = 2;
 

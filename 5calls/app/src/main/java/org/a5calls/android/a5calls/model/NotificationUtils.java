@@ -1,6 +1,7 @@
 package org.a5calls.android.a5calls.model;
 
 import android.app.AlarmManager;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -52,8 +53,14 @@ public class NotificationUtils {
                         pendingIntent);
     }
 
-    public static void clearNotifications(Context context) {
+    public static void cancelFutureNotifications(Context context) {
         cancelPendingIntent(context);
+    }
+
+    public static void clearNotifications(Context context) {
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(
+                Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(NotifyBroadcastReceiver.NOTIFICATION_ID);
     }
 
     private static PendingIntent cancelPendingIntent(Context context) {

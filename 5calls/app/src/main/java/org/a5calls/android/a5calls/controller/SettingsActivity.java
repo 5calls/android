@@ -74,7 +74,7 @@ public class SettingsActivity extends AppCompatActivity {
         if (manager.getAllowReminders(context)) {
             NotificationUtils.setNotificationTime(context, manager.getReminderMinutes(context));
         } else {
-            NotificationUtils.clearNotifications(context);
+            NotificationUtils.cancelFutureNotifications(context);
         }
     }
 
