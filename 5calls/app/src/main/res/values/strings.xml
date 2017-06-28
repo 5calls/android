@@ -369,7 +369,7 @@
     <string name="update">update</string>
 
     <!-- URL to sign up for the 5 Calls newsletter [CHAR_LIMIT=NONE] -->
-    <string name="newsletter_url" translatable="false">https://my.sendinblue.com/users/subscribe/js_id/2p22o/id/1</string>
+    <string name="newsletter_url" translatable="false">https://5calls.org/newsletter</string>
 
     <!-- URL for the 5 Calls About page [CHAR_LIMIT=NONE] -->
     <string name="about_url" translatable="false">https://5calls.org/about</string>
