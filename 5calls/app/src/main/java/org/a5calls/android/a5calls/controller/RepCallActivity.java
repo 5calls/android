@@ -1,5 +1,6 @@
 package org.a5calls.android.a5calls.controller;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -39,7 +40,9 @@ import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.FiveCallsApi;
 import org.a5calls.android.a5calls.model.Issue;
+import org.a5calls.android.a5calls.view.OutcomeView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -54,9 +57,6 @@ public class RepCallActivity extends AppCompatActivity {
     private static final String TAG = "RepCallActivity";
 
     public static final String KEY_ADDRESS = "key_address";
-    public static final String VOICEMAIL = "vm";
-    public static final String CONTACTED = "contacted";
-    public static final String UNAVAILABLE = "unavailable";
 
     public static final String KEY_ACTIVE_CONTACT_INDEX = "active_contact_index";
     private static final String KEY_LOCAL_OFFICES_EXPANDED = "local_offices_expanded";
@@ -69,6 +69,7 @@ public class RepCallActivity extends AppCompatActivity {
     private Tracker mTracker = null;
 
     @BindView(R.id.scroll_view) ScrollView scrollView;
+    @BindView(R.id.rep_call_root) LinearLayout linearLayout;
 
     @BindView(R.id.rep_info) RelativeLayout repInfoLayout;
     @BindView(R.id.rep_image) ImageView repImage;
@@ -78,9 +79,6 @@ public class RepCallActivity extends AppCompatActivity {
     @BindView(R.id.contact_done_img) ImageButton contactChecked;
 
     @BindView(R.id.buttons_prompt) TextView buttonsPrompt;
-    @BindView(R.id.unavailable_btn) Button unavailableButton;
-    @BindView(R.id.voicemail_btn) Button voicemailButton;
-    @BindView(R.id.made_contact_btn) Button madeContactButton;
 
     @BindView(R.id.local_office_btn) Button localOfficeButton;
     @BindView(R.id.field_office_section) LinearLayout localOfficeSection;
@@ -89,6 +87,8 @@ public class RepCallActivity extends AppCompatActivity {
     @BindView(R.id.script_section) LinearLayout scriptLayout;
     @BindView(R.id.contact_reason) TextView contactReason;
     @BindView(R.id.call_script) TextView callScript;
+
+    OutcomeView outcomeView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -113,13 +113,13 @@ public class RepCallActivity extends AppCompatActivity {
         mStatusListener = new FiveCallsApi.CallRequestListener() {
             @Override
             public void onRequestError() {
-                setButtonsEnabled(true);
+                outcomeView.setButtonsEnabled(true);
                 showError(R.string.request_error_db_recorded_anyway);
             }
 
             @Override
             public void onJsonError() {
-                setButtonsEnabled(true);
+                outcomeView.setButtonsEnabled(true);
                 showError(R.string.json_error_db_recorded_anyway);
             }
 
@@ -148,29 +148,15 @@ public class RepCallActivity extends AppCompatActivity {
         }
         setupContactUi(mActiveContactIndex, expandLocalOffices);
 
-        madeContactButton.setOnClickListener(new View.OnClickListener() {
+        outcomeView = new OutcomeView(this, mIssue.outcomes, new OutcomeView.Callback() {
             @Override
-            public void onClick(View v) {
-                reportEvent(RepCallActivity.CONTACTED);
-                reportCall(RepCallActivity.CONTACTED, address);
+            public void onOutcomeClick(String outcome) {
+                reportEvent(outcome);
+                reportCall(outcome, address);
             }
         });
 
-        unavailableButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                reportEvent(RepCallActivity.UNAVAILABLE);
-                reportCall(RepCallActivity.UNAVAILABLE, address);
-            }
-        });
-
-        voicemailButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                reportEvent(RepCallActivity.VOICEMAIL);
-                reportCall(RepCallActivity.VOICEMAIL, address);
-            }
-        });
+        linearLayout.addView(outcomeView);
 
         // We allow Analytics opt-out.
         if (accountManager.allowAnalytics(this)) {
@@ -215,18 +201,12 @@ public class RepCallActivity extends AppCompatActivity {
     }
 
     private void reportCall(String callType, String address) {
-        setButtonsEnabled(false);
+        outcomeView.setButtonsEnabled(false);
         AppSingleton.getInstance(getApplicationContext()).getDatabaseHelper().addCall(mIssue.id,
                 mIssue.name, mIssue.contacts[mActiveContactIndex].id,
                 mIssue.contacts[mActiveContactIndex].name, callType, address);
         AppSingleton.getInstance(getApplicationContext()).getJsonController().reportCall(
                 mIssue.id, mIssue.contacts[mActiveContactIndex].id, callType, address);
-    }
-
-    private void setButtonsEnabled(boolean enabled) {
-        voicemailButton.setEnabled(enabled);
-        madeContactButton.setEnabled(enabled);
-        unavailableButton.setEnabled(enabled);
     }
 
     private void setupContactUi(int index, boolean expandLocalSection) {
@@ -298,16 +278,9 @@ public class RepCallActivity extends AppCompatActivity {
         contactChecked.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String message = TextUtils.join(", ", previousCalls)
-                        .replace(RepCallActivity.VOICEMAIL, getResources().getString(
-                                R.string.voicemail_btn))
-                        .replace(RepCallActivity.CONTACTED, getResources().getString(
-                                R.string.made_contact_btn))
-                        .replace(RepCallActivity.UNAVAILABLE, getResources().getString(
-                                R.string.unavailable_btn));
                 new AlertDialog.Builder(RepCallActivity.this)
                         .setTitle(R.string.contact_details_dialog_title)
-                        .setMessage(message)
+                        .setMessage(getReportedActionsMessage(RepCallActivity.this, previousCalls))
                         .setPositiveButton(android.R.string.ok,
                                 new DialogInterface.OnClickListener() {
                                     @Override
@@ -318,6 +291,21 @@ public class RepCallActivity extends AppCompatActivity {
                         .show();
             }
         });
+    }
+
+    private String getReportedActionsMessage(Context context, List<String> previousActions) {
+        String result = "";
+
+        if (previousActions != null) {
+            List<String> displayedActions = new ArrayList<>();
+            for (String prev : previousActions) {
+                displayedActions.add(OutcomeView.getDisplayString(context, prev));
+            }
+
+            result = TextUtils.join(", ", displayedActions);
+        }
+
+        return result;
     }
 
     private void expandLocalOfficeSection(Contact contact) {
@@ -344,7 +332,7 @@ public class RepCallActivity extends AppCompatActivity {
     }
 
     private void showError(int errorStringId) {
-        Snackbar.make(madeContactButton, errorStringId, Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(scrollView, errorStringId, Snackbar.LENGTH_SHORT).show();
     }
 
     private void reportEvent(String event) {

@@ -15,6 +15,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.a5calls.android.a5calls.BuildConfig;
+import org.a5calls.android.a5calls.net.OkHttp3Stack;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,6 +27,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import okhttp3.OkHttpClient;
 
 /**
  * Class to handle server gets and posts.
@@ -60,7 +63,7 @@ public class FiveCallsApi {
     private List<IssuesRequestListener> mIssuesRequestListeners = new ArrayList<>();
 
     public FiveCallsApi(Context context) {
-        mRequestQueue = Volley.newRequestQueue(context);
+        mRequestQueue = Volley.newRequestQueue(context, new OkHttp3Stack(new OkHttpClient()));
     }
 
     public void registerCallRequestListener(CallRequestListener callRequestListener) {

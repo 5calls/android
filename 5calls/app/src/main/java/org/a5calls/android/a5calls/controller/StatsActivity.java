@@ -35,6 +35,7 @@ import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.DatabaseHelper;
+import org.a5calls.android.a5calls.view.OutcomeView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -90,9 +91,13 @@ public class StatsActivity extends AppCompatActivity {
         callCountHeader.setText(getStringForCount(
                 mCallCount, R.string.your_call_count_one, R.string.your_call_count));
 
-        List<Long> contacts = db.getCallTimestampsForType(RepCallActivity.CONTACTED);
-        List<Long> voicemails = db.getCallTimestampsForType(RepCallActivity.VOICEMAIL);
-        List<Long> unavailables = db.getCallTimestampsForType(RepCallActivity.UNAVAILABLE);
+        List<Long> contacts = db.getCallTimestampsForType(OutcomeView.CONTACTED);
+        contacts.addAll(db.getCallTimestampsForType(OutcomeView.CONTACT));
+
+        List<Long> voicemails = db.getCallTimestampsForType(OutcomeView.VOICEMAIL);
+        voicemails.addAll(db.getCallTimestampsForType(OutcomeView.VM));
+
+        List<Long> unavailables = db.getCallTimestampsForType(OutcomeView.UNAVAILABLE);
         
         Spannable contactString = getTextForCount(contacts.size(),
                 R.string.impact_contact_one, R.string.impact_contact, R.color.contacted_color);
@@ -101,8 +106,7 @@ public class StatsActivity extends AppCompatActivity {
         Spannable unavailableString = getTextForCount(unavailables.size(),
                 R.string.impact_unavailable_one, R.string.impact_unavailable,
                 R.color.unavailable_color);
-        statsSummary.setText(TextUtils.concat(TextUtils.concat(contactString, vmString),
-                unavailableString));
+        statsSummary.setText(TextUtils.concat(contactString, vmString, unavailableString));
 
         // There's probably not that many contacts because mostly the user just calls their own
         // reps. However, it'd be good to move this to a RecyclerView or ListView with an adapter

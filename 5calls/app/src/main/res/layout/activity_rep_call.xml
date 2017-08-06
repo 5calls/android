@@ -8,6 +8,7 @@
     >
 
     <LinearLayout
+        android:id="@+id/rep_call_root"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -192,8 +193,5 @@
             android:textSize="18sp"
             android:textStyle="bold|italic"
             />
-
-        <include layout="@layout/rep_call_btns"/>
-
     </LinearLayout>
 </ScrollView>

@@ -16,6 +16,7 @@ public class Issue implements Parcelable {
     public boolean inactive;
 
     public Contact[] contacts;
+    public String[] outcomes;
 
     protected Issue(Parcel in) {
         id = in.readString();
@@ -24,6 +25,7 @@ public class Issue implements Parcelable {
         script = in.readString();
         inactive = in.readInt() != 0;
         contacts = in.createTypedArray(Contact.CREATOR);
+        outcomes = in.createStringArray();
     }
 
     public static final Creator<Issue> CREATOR = new Creator<Issue>() {
@@ -51,5 +53,6 @@ public class Issue implements Parcelable {
         dest.writeString(script);
         dest.writeInt(inactive ? 1 : 0);
         dest.writeTypedArray(contacts, PARCELABLE_WRITE_RETURN_VALUE);
+        dest.writeStringArray(outcomes);
     }
 }
