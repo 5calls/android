@@ -15,7 +15,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.a5calls.android.a5calls.BuildConfig;
-import org.a5calls.android.a5calls.net.OkHttp3Stack;
+import org.a5calls.android.a5calls.net.OkHttpStack;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -63,7 +63,7 @@ public class FiveCallsApi {
     private List<IssuesRequestListener> mIssuesRequestListeners = new ArrayList<>();
 
     public FiveCallsApi(Context context) {
-        mRequestQueue = Volley.newRequestQueue(context, new OkHttp3Stack(new OkHttpClient()));
+        mRequestQueue = Volley.newRequestQueue(context, new OkHttpStack(new OkHttpClient()));
     }
 
     public void registerCallRequestListener(CallRequestListener callRequestListener) {

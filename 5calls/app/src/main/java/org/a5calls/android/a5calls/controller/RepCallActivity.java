@@ -12,6 +12,8 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.text.util.Linkify;
 import android.util.Log;
@@ -36,6 +38,7 @@ import com.google.android.gms.analytics.Tracker;
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
+import org.a5calls.android.a5calls.adapter.OutcomeAdapter;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.FiveCallsApi;
@@ -43,6 +46,7 @@ import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.view.OutcomeView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -67,9 +71,9 @@ public class RepCallActivity extends AppCompatActivity {
     private Issue mIssue;
     private int mActiveContactIndex;
     private Tracker mTracker = null;
+    private OutcomeAdapter outcomeAdapter;
 
     @BindView(R.id.scroll_view) ScrollView scrollView;
-    @BindView(R.id.rep_call_root) LinearLayout linearLayout;
 
     @BindView(R.id.rep_info) RelativeLayout repInfoLayout;
     @BindView(R.id.rep_image) ImageView repImage;
@@ -79,6 +83,7 @@ public class RepCallActivity extends AppCompatActivity {
     @BindView(R.id.contact_done_img) ImageButton contactChecked;
 
     @BindView(R.id.buttons_prompt) TextView buttonsPrompt;
+    @BindView(R.id.outcome_list) RecyclerView outcomeList;
 
     @BindView(R.id.local_office_btn) Button localOfficeButton;
     @BindView(R.id.field_office_section) LinearLayout localOfficeSection;
@@ -87,8 +92,6 @@ public class RepCallActivity extends AppCompatActivity {
     @BindView(R.id.script_section) LinearLayout scriptLayout;
     @BindView(R.id.contact_reason) TextView contactReason;
     @BindView(R.id.call_script) TextView callScript;
-
-    OutcomeView outcomeView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -113,13 +116,13 @@ public class RepCallActivity extends AppCompatActivity {
         mStatusListener = new FiveCallsApi.CallRequestListener() {
             @Override
             public void onRequestError() {
-                outcomeView.setButtonsEnabled(true);
+                outcomeAdapter.setEnabled(true);
                 showError(R.string.request_error_db_recorded_anyway);
             }
 
             @Override
             public void onJsonError() {
-                outcomeView.setButtonsEnabled(true);
+                outcomeAdapter.setEnabled(true);
                 showError(R.string.json_error_db_recorded_anyway);
             }
 
@@ -148,15 +151,16 @@ public class RepCallActivity extends AppCompatActivity {
         }
         setupContactUi(mActiveContactIndex, expandLocalOffices);
 
-        outcomeView = new OutcomeView(this, mIssue.outcomes, new OutcomeView.Callback() {
+        outcomeAdapter = new OutcomeAdapter(Arrays.asList(mIssue.outcomeModels), new OutcomeAdapter.Callback() {
             @Override
-            public void onOutcomeClick(String outcome) {
+            public void onOutcomeClicked(String outcome) {
                 reportEvent(outcome);
                 reportCall(outcome, address);
             }
         });
 
-        linearLayout.addView(outcomeView);
+        outcomeList.setLayoutManager(new GridLayoutManager(this, 2));
+        outcomeList.setAdapter(outcomeAdapter);
 
         // We allow Analytics opt-out.
         if (accountManager.allowAnalytics(this)) {
@@ -201,7 +205,7 @@ public class RepCallActivity extends AppCompatActivity {
     }
 
     private void reportCall(String callType, String address) {
-        outcomeView.setButtonsEnabled(false);
+        outcomeAdapter.setEnabled(false);
         AppSingleton.getInstance(getApplicationContext()).getDatabaseHelper().addCall(mIssue.id,
                 mIssue.name, mIssue.contacts[mActiveContactIndex].id,
                 mIssue.contacts[mActiveContactIndex].name, callType, address);

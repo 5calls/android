@@ -1,5 +1,21 @@
 package org.a5calls.android.a5calls.net;
 
+/*
+ * Copyright (C) 2016 Eric Cochran
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.toolbox.HttpStack;
@@ -27,12 +43,12 @@ import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.message.BasicStatusLine;
 
 /**
- * Taken from: https://gist.github.com/NightlyNexus/bdacc5c6951fd9a82b01695e6f6bc600
+ * {@link HttpStack HttpStack} backed by OkHttp 3.
  */
-public class OkHttp3Stack implements HttpStack {
+public final class OkHttpStack implements HttpStack {
     private final OkHttpClient client;
 
-    public OkHttp3Stack(OkHttpClient client) {
+    public OkHttpStack(OkHttpClient client) {
         this.client = client;
     }
 

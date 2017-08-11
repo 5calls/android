@@ -193,5 +193,10 @@
             android:textSize="18sp"
             android:textStyle="bold|italic"
             />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/outcome_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 </ScrollView>
