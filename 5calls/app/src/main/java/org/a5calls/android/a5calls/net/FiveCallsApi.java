@@ -1,6 +1,5 @@
-package org.a5calls.android.a5calls.model;
+package org.a5calls.android.a5calls.net;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.android.volley.AuthFailureError;
@@ -10,12 +9,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.a5calls.android.a5calls.BuildConfig;
-import org.a5calls.android.a5calls.net.OkHttpStack;
+import org.a5calls.android.a5calls.model.Issue;
+import org.a5calls.android.a5calls.model.Outcome;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,8 +26,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import okhttp3.OkHttpClient;
 
 /**
  * Class to handle server gets and posts.
@@ -46,24 +43,32 @@ public class FiveCallsApi {
 
     public interface CallRequestListener {
         void onRequestError();
+
         void onJsonError();
+
         void onCallCount(int count);
+
         void onCallReported();
     }
 
     public interface IssuesRequestListener {
         void onRequestError();
+
         void onJsonError();
+
         void onAddressError();
+
         void onIssuesReceived(String locationName, boolean splitDistrict, List<Issue> issues);
     }
 
     private RequestQueue mRequestQueue;
+    private Gson mGson;
     private List<CallRequestListener> mCallRequestListeners = new ArrayList<>();
     private List<IssuesRequestListener> mIssuesRequestListeners = new ArrayList<>();
 
-    public FiveCallsApi(Context context) {
-        mRequestQueue = Volley.newRequestQueue(context, new OkHttpStack(new OkHttpClient()));
+    public FiveCallsApi(RequestQueue requestQueue, Gson gson) {
+        mRequestQueue = requestQueue;
+        mGson = gson;
     }
 
     public void registerCallRequestListener(CallRequestListener callRequestListener) {
@@ -132,8 +137,11 @@ public class FiveCallsApi {
                         return;
                     }
                     Type listType = new TypeToken<ArrayList<Issue>>(){}.getType();
-                    List<Issue> issues = new Gson().fromJson(jsonArray.toString(),
+                    List<Issue> issues = mGson.fromJson(jsonArray.toString(),
                             listType);
+
+                    filterSkipOutcomes(issues);
+
                     // TODO: Sanitize contact IDs here
                     for (IssuesRequestListener listener : listeners) {
                         listener.onIssuesReceived(locationName, splitDistrict, issues);
@@ -189,20 +197,20 @@ public class FiveCallsApi {
         String getReport = GET_REPORT;
         StringRequest request = new StringRequest(Request.Method.POST, getReport,
                 new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                for (CallRequestListener listener : mCallRequestListeners) {
-                    listener.onCallReported();
-                }
-            }
-        }, new Response.ErrorListener() {
+                    @Override
+                    public void onResponse(String response) {
+                        for (CallRequestListener listener : mCallRequestListeners) {
+                            listener.onCallReported();
+                        }
+                    }
+                }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 onRequestError(error);
             }
-        }){
+        }) {
             @Override
-            protected Map<String,String> getParams() {
+            protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("issueid", issueId);
                 params.put("result", result);
@@ -232,6 +240,24 @@ public class FiveCallsApi {
             Log.d("Error", "no message");
         } else {
             Log.d("Error", error.getMessage());
+        }
+    }
+
+    private void filterSkipOutcomes(List<Issue> issues) {
+        if (issues != null) {
+            for (Issue issue : issues) {
+                if (issue.outcomeModels != null) {
+                    List<Outcome> filteredOutcomes = new ArrayList<>();
+
+                    for (Outcome outcome : issue.outcomeModels) {
+                        if (!Outcome.Status.SKIP.equals(outcome.status)) {
+                            filteredOutcomes.add(outcome);
+                        }
+                    }
+
+                    issue.outcomeModels = filteredOutcomes;
+                }
+            }
         }
     }
 }

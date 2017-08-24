@@ -6,11 +6,16 @@ import android.os.Parcelable;
 public class Outcome implements Parcelable {
 
     public String label;
-    public String status;
+    public Status status;
+
+    public Outcome(String label, Status status) {
+        this.label = label;
+        this.status = status;
+    }
 
     protected Outcome(Parcel in) {
         label = in.readString();
-        status = in.readString();
+        status = Status.fromString(in.readString());
     }
 
     public static final Creator<Outcome> CREATOR = new Creator<Outcome>() {
@@ -33,6 +38,35 @@ public class Outcome implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(label);
-        dest.writeString(status);
+        dest.writeString(status.toString());
+    }
+
+    public enum Status {
+        UNAVAILABLE("unavailable"),
+        VOICEMAIL("voicemail"),
+        CONTACT("contact"),
+        SKIP("skip"),
+        UNKNOWN("unknown");
+
+        String status;
+
+        Status(String status) {
+            this.status = status;
+        }
+
+        @Override
+        public String toString() {
+            return status;
+        }
+
+        public static Status fromString(String input) {
+            for (Status status : values()) {
+                if (status.toString().equals(input)) {
+                    return status;
+                }
+            }
+
+            return UNKNOWN;
+        }
     }
 }

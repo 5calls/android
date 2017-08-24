@@ -41,12 +41,11 @@ import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.adapter.OutcomeAdapter;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.Contact;
-import org.a5calls.android.a5calls.model.FiveCallsApi;
 import org.a5calls.android.a5calls.model.Issue;
+import org.a5calls.android.a5calls.net.FiveCallsApi;
 import org.a5calls.android.a5calls.view.OutcomeView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -151,7 +150,7 @@ public class RepCallActivity extends AppCompatActivity {
         }
         setupContactUi(mActiveContactIndex, expandLocalOffices);
 
-        outcomeAdapter = new OutcomeAdapter(Arrays.asList(mIssue.outcomeModels), new OutcomeAdapter.Callback() {
+        outcomeAdapter = new OutcomeAdapter(mIssue.outcomeModels, new OutcomeAdapter.Callback() {
             @Override
             public void onOutcomeClicked(String outcome) {
                 reportEvent(outcome);

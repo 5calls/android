@@ -21,11 +21,9 @@ import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
-import org.a5calls.android.a5calls.model.FiveCallsApi;
-import org.a5calls.android.a5calls.model.Issue;
+import org.a5calls.android.a5calls.net.FiveCallsApi;
 
 import java.text.NumberFormat;
-import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;

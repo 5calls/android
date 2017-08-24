@@ -62,7 +62,7 @@ public class OutcomeAdapter extends RecyclerView.Adapter<OutcomeAdapter.ViewHold
                 @Override
                 public void onClick(View v) {
                     if (callback != null) {
-                        callback.onOutcomeClicked(outcome.status);
+                        callback.onOutcomeClicked(outcome.status.toString());
                     }
                 }
             });
