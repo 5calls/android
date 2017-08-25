@@ -76,6 +76,9 @@
     <!-- Button linking to the 5calls.org about page [CHAR_LIMIT=30] -->
     <string name="about_us_btn">about us</string>
 
+    <!-- Button that allows users to send 5 Calls an email [CHAR_LIMIT=30] -->
+    <string name="contact_us_btn">contact us</string>
+
     <!-- Button linking to the 5calls.org Play Store page to request a rating [CHAR_LIMIT=30] -->
     <string name="rate_us_btn">Rate 5 Calls</string>
 
@@ -376,5 +379,14 @@
 
     <!-- URL for the 5 Calls FAQ page [CHAR_LIMIT=NONE] -->
     <string name="faq_url" translatable="false">https://5calls.org/faq</string>
+
+    <!-- Email address to contact 5 Calls [CHAR_LIMIT=NONE] -->
+    <string name="email_address" translatable="false">make5calls@gmail.com</string>
+
+    <!-- Default subject for an email sent from the about page [CHAR_LIMIT=NONE] -->
+    <string name="email_subject">Feedback from 5 Calls Android App</string>
+
+    <!-- Name of the intent chooser for sending emails [CHAR_LIMIT=NONE] -->
+    <string name="send_email">Send Email</string>
 
 </resources>

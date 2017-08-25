@@ -1,6 +1,7 @@
 package org.a5calls.android.a5calls.controller;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -22,12 +23,10 @@ import org.a5calls.android.a5calls.BuildConfig;
 import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.FiveCallsApi;
-import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.util.CustomTabsUtil;
 
 import java.text.NumberFormat;
-import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -38,12 +37,14 @@ import butterknife.ButterKnife;
  */
 public class AboutActivity extends AppCompatActivity {
     private static final String TAG = "AboutActivity";
+    private static final String EMAIL_CONTENT_TYPE = "message/rfc822";
 
     private final AccountManager accountManager = AccountManager.Instance;
     private FiveCallsApi.CallRequestListener mStatusListener;
 
     @BindView(R.id.sign_up_newsletter_btn) Button signUpNewsletterButton;
     @BindView(R.id.about_us_btn) Button aboutUsButton;
+    @BindView(R.id.contact_us_btn) Button contactUsButton;
     @BindView(R.id.rate_us_btn) Button rateUsButton;
     @BindView(R.id.version_info) TextView version;
     @BindView(R.id.calls_to_date) TextView callsToDate;
@@ -70,6 +71,17 @@ public class AboutActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 CustomTabsUtil.launchUrl(AboutActivity.this, Uri.parse(getString(R.string.about_url)));
+            }
+        });
+
+        contactUsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+                final Intent intentChooser = Intent.createChooser(
+                        getSendEmailIntent(getResources()),
+                        getResources().getString(R.string.send_email)
+                );
+                startActivity(intentChooser);
             }
         });
 
@@ -170,5 +182,20 @@ public class AboutActivity extends AppCompatActivity {
                 .setView(view)
                 .setPositiveButton(android.R.string.ok, null)
                 .show();
+    }
+
+    /**
+     * @return an {@link Intent} that allows the user to send an email to 5 Calls
+     */
+    private static Intent getSendEmailIntent(final Resources resources) {
+        final String[] emailAddress = {resources.getString(R.string.email_address)};
+        final String subject = resources.getString(R.string.email_subject);
+
+        final Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.putExtra(Intent.EXTRA_EMAIL, emailAddress);
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        intent.setType(EMAIL_CONTENT_TYPE);
+
+        return intent;
     }
 }
