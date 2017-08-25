@@ -119,6 +119,9 @@
     <!-- Header to a section that says why the contact is someone you might call [CHAR_LIMIT=NONE] -->
     <string name="contact_reason_prompt">Why you\'re calling this office:</string>
 
+    <!-- Default text for a section that says why the contact is someone you might call [CHAR_LIMIT=NONE] -->
+    <string name="contact_reason_default">This organization is driving legislation related to the issue.</string>
+
     <!-- Shows the user how many calls remain and how many calls there are total for a particular issue [CHAR_LIMIT=50] -->
     <string name="call_count_remaining"><xliff:g id="callsLeft">%1$d</xliff:g> calls to make (<xliff:g id="callsTotal">%2$d</xliff:g> total)</string>
 

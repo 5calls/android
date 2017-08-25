@@ -232,7 +232,13 @@ public class RepCallActivity extends AppCompatActivity {
     private void setupContactUi(int index, boolean expandLocalSection) {
         final Contact contact = mIssue.contacts[index];
         contactName.setText(contact.name);
-        contactReason.setText(contact.reason);
+
+        // Set the reason for contacting this rep, using default text if no reason is provided.
+        final String contactReasonText = contact.reason.isEmpty()
+                ? getResources().getString(R.string.contact_reason_default)
+                : contact.reason;
+        contactReason.setText(contactReasonText);
+
         if (!TextUtils.isEmpty(contact.photoURL)) {
             repImage.setVisibility(View.VISIBLE);
             Glide.with(getApplicationContext())
