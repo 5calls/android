@@ -35,7 +35,7 @@ import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.DatabaseHelper;
-import org.a5calls.android.a5calls.view.OutcomeView;
+import org.a5calls.android.a5calls.model.Outcome;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -91,13 +91,9 @@ public class StatsActivity extends AppCompatActivity {
         callCountHeader.setText(getStringForCount(
                 mCallCount, R.string.your_call_count_one, R.string.your_call_count));
 
-        List<Long> contacts = db.getCallTimestampsForType(OutcomeView.CONTACTED);
-        contacts.addAll(db.getCallTimestampsForType(OutcomeView.CONTACT));
-
-        List<Long> voicemails = db.getCallTimestampsForType(OutcomeView.VOICEMAIL);
-        voicemails.addAll(db.getCallTimestampsForType(OutcomeView.VM));
-
-        List<Long> unavailables = db.getCallTimestampsForType(OutcomeView.UNAVAILABLE);
+        List<Long> contacts = db.getCallTimestampsForType(Outcome.Status.CONTACTED);
+        List<Long> voicemails = db.getCallTimestampsForType(Outcome.Status.VOICEMAIL);
+        List<Long> unavailables = db.getCallTimestampsForType(Outcome.Status.UNAVAILABLE);
         
         Spannable contactString = getTextForCount(contacts.size(),
                 R.string.impact_contact_one, R.string.impact_contact, R.color.contacted_color);

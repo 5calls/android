@@ -8,9 +8,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.VisibleForTesting;
 import android.support.v4.util.Pair;
 import android.text.TextUtils;
-import android.util.Log;
-
-import org.a5calls.android.a5calls.AppSingleton;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -249,10 +246,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * Gets the list of timestamps of calls of a particular type (voicemail, unavailable, contacted)
      * that this user has made
      */
-    public List<Long> getCallTimestampsForType(String type) {
+    public List<Long> getCallTimestampsForType(Outcome.Status status) {
+        String statusName = status.toString();
+
         Cursor c = getReadableDatabase().rawQuery(
                 "SELECT " + CallsColumns.TIMESTAMP + " FROM " + CALLS_TABLE_NAME + " WHERE " +
-                CallsColumns.RESULT + " = '" + type + "'", null);
+                CallsColumns.RESULT + " = '" + statusName + "'", null);
         List<Long> result = new ArrayList<>();
         while (c.moveToNext()) {
             result.add(c.getLong(0));

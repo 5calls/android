@@ -18,4 +18,5 @@
     <integer name="horizontal_labels_count">4</integer>
 
     <dimen name="expanded_toolbar_title_size">26sp</dimen>
+    <dimen name="min_button_width">220dp</dimen>
 </resources>

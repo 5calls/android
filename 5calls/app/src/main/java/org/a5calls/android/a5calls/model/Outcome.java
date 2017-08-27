@@ -1,7 +1,10 @@
 package org.a5calls.android.a5calls.model;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import org.a5calls.android.a5calls.R;
 
 public class Outcome implements Parcelable {
 
@@ -46,7 +49,9 @@ public class Outcome implements Parcelable {
         VOICEMAIL("voicemail"),
         CONTACT("contact"),
         SKIP("skip"),
-        UNKNOWN("unknown");
+        UNKNOWN("unknown"),
+        VM("vm"), // deprecated
+        CONTACTED("contacted"); // deprecated
 
         String status;
 
@@ -68,5 +73,27 @@ public class Outcome implements Parcelable {
 
             return UNKNOWN;
         }
+    }
+
+    public static String getDisplayString(Context context, String outcome) {
+        String result;
+
+        switch (Outcome.Status.fromString(outcome)) {
+            case VOICEMAIL:
+            case VM:
+                result = context.getResources().getString(R.string.voicemail_btn);
+                break;
+            case UNAVAILABLE:
+                result = context.getResources().getString(R.string.unavailable_btn);
+                break;
+            case CONTACT:
+            case CONTACTED:
+                result = context.getResources().getString(R.string.made_contact_btn);
+                break;
+            default:
+                result = outcome;
+        }
+
+        return result;
     }
 }

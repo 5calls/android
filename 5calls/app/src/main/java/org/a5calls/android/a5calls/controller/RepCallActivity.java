@@ -1,5 +1,6 @@
 package org.a5calls.android.a5calls.controller;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,6 +17,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.text.util.Linkify;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -42,8 +44,8 @@ import org.a5calls.android.a5calls.adapter.OutcomeAdapter;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.Issue;
+import org.a5calls.android.a5calls.model.Outcome;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
-import org.a5calls.android.a5calls.view.OutcomeView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -158,7 +160,7 @@ public class RepCallActivity extends AppCompatActivity {
             }
         });
 
-        outcomeList.setLayoutManager(new GridLayoutManager(this, 2));
+        outcomeList.setLayoutManager(new GridLayoutManager(this, getSpanCount(RepCallActivity.this)));
         outcomeList.setAdapter(outcomeAdapter);
 
         // We allow Analytics opt-out.
@@ -302,7 +304,7 @@ public class RepCallActivity extends AppCompatActivity {
         if (previousActions != null) {
             List<String> displayedActions = new ArrayList<>();
             for (String prev : previousActions) {
-                displayedActions.add(OutcomeView.getDisplayString(context, prev));
+                displayedActions.add(Outcome.getDisplayString(context, prev));
             }
 
             result = TextUtils.join(", ", displayedActions);
@@ -356,5 +358,14 @@ public class RepCallActivity extends AppCompatActivity {
         Intent upIntent = NavUtils.getParentActivityIntent(this);
         upIntent.putExtra(IssueActivity.KEY_ISSUE, mIssue);
         NavUtils.navigateUpTo(this, upIntent);
+    }
+
+    private int getSpanCount(Activity activity) {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+
+        double minButtonWidth = activity.getResources().getDimension(R.dimen.min_button_width);
+
+        return (int) (displayMetrics.widthPixels / minButtonWidth);
     }
 }
