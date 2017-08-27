@@ -53,3 +53,5 @@ dependencies {
     // If you add any other open-source libraries, make sure to update assets/licenses.html
     // with the appropriate license information.
 }
+
+apply plugin: 'com.google.gms.google-services'
