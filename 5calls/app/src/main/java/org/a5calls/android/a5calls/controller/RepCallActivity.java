@@ -234,7 +234,7 @@ public class RepCallActivity extends AppCompatActivity {
         contactName.setText(contact.name);
 
         // Set the reason for contacting this rep, using default text if no reason is provided.
-        final String contactReasonText = contact.reason.isEmpty()
+        final String contactReasonText = TextUtils.isEmpty(contact.reason)
                 ? getResources().getString(R.string.contact_reason_default)
                 : contact.reason;
         contactReason.setText(contactReasonText);
