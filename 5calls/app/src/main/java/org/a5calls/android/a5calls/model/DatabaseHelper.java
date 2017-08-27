@@ -22,7 +22,7 @@ import java.util.Set;
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
 
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     private static final String CALLS_TABLE_NAME = "UserCallsDatabase";
     private static final String ISSUES_TABLE_NAME = "UserIssuesTable";
     private static final String CONTACTS_TABLE_NAME = "UserContactsTable";
@@ -73,9 +73,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (newVersion >= 2) {
+        if (oldVersion < 2) {
             db.execSQL(ISSUES_TABLE_CREATE);
             db.execSQL(CONTACTS_TABLE_CREATE);
+        }
+
+        if (oldVersion < 3) {
+            ContentValues contactContentValues = new ContentValues();
+            contactContentValues.put(CallsColumns.RESULT, Outcome.Status.CONTACT.toString());
+            db.update(CALLS_TABLE_NAME,
+                    contactContentValues,
+                    CallsColumns.RESULT + " = ?",
+                    new String[]{Outcome.Status.CONTACTED.toString()});
+
+            ContentValues voicemailContentValues = new ContentValues();
+            voicemailContentValues.put(CallsColumns.RESULT, Outcome.Status.VOICEMAIL.toString());
+            db.update(CALLS_TABLE_NAME,
+                    voicemailContentValues,
+                    CallsColumns.RESULT + " = ?",
+                    new String[]{Outcome.Status.VM.toString()});
         }
     }
 

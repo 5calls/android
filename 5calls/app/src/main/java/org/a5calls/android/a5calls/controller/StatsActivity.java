@@ -91,7 +91,7 @@ public class StatsActivity extends AppCompatActivity {
         callCountHeader.setText(getStringForCount(
                 mCallCount, R.string.your_call_count_one, R.string.your_call_count));
 
-        List<Long> contacts = db.getCallTimestampsForType(Outcome.Status.CONTACTED);
+        List<Long> contacts = db.getCallTimestampsForType(Outcome.Status.CONTACT);
         List<Long> voicemails = db.getCallTimestampsForType(Outcome.Status.VOICEMAIL);
         List<Long> unavailables = db.getCallTimestampsForType(Outcome.Status.UNAVAILABLE);
         
