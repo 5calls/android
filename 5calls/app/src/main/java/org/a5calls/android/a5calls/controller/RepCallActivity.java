@@ -46,6 +46,7 @@ import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.model.Outcome;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
+import org.a5calls.android.a5calls.view.GridItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -160,8 +161,12 @@ public class RepCallActivity extends AppCompatActivity {
             }
         });
 
-        outcomeList.setLayoutManager(new GridLayoutManager(this, getSpanCount(RepCallActivity.this)));
+        outcomeList.setLayoutManager(
+                new GridLayoutManager(this, getSpanCount(RepCallActivity.this)));
         outcomeList.setAdapter(outcomeAdapter);
+
+        int gridPadding = (int) getResources().getDimension(R.dimen.grid_padding);
+        outcomeList.addItemDecoration(new GridItemDecoration(gridPadding, getSpanCount(RepCallActivity.this)));
 
         // We allow Analytics opt-out.
         if (accountManager.allowAnalytics(this)) {

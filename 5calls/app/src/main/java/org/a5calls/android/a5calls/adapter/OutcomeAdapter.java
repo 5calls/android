@@ -34,7 +34,8 @@ public class OutcomeAdapter extends RecyclerView.Adapter<OutcomeAdapter.ViewHold
 
     @Override
     public OutcomeAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_outcome, parent, false));
+        return new ViewHolder(LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_outcome, parent, false));
     }
 
     @Override
