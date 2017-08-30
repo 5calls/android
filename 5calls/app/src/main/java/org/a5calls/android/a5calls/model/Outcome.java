@@ -6,6 +6,13 @@ import android.os.Parcelable;
 
 import org.a5calls.android.a5calls.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Models the result of a phone call with a represent or office
+ * Holds the label displayed to the user and the status reported to the backend
+ */
 public class Outcome implements Parcelable {
 
     public String label;
@@ -92,6 +99,30 @@ public class Outcome implements Parcelable {
                 break;
             default:
                 result = outcome;
+        }
+
+        return result;
+    }
+
+    public static List<Issue> filterSkipOutcomes(List<Issue> issues) {
+        List<Issue> result = new ArrayList<>();
+
+        if (issues != null) {
+            for (Issue issue : issues) {
+                if (issue.outcomeModels != null) {
+                    List<Outcome> filteredOutcomes = new ArrayList<>();
+
+                    for (Outcome outcome : issue.outcomeModels) {
+                        if (!Outcome.Status.SKIP.equals(outcome.status)) {
+                            filteredOutcomes.add(outcome);
+                        }
+                    }
+
+                    issue.outcomeModels = filteredOutcomes;
+                }
+
+                result.add(issue);
+            }
         }
 
         return result;

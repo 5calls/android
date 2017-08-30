@@ -1,5 +1,6 @@
 package org.a5calls.android.a5calls.net;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.android.volley.AuthFailureError;
@@ -9,7 +10,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import org.a5calls.android.a5calls.BuildConfig;
@@ -26,6 +29,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import okhttp3.OkHttpClient;
 
 /**
  * Class to handle server gets and posts.
@@ -66,9 +71,12 @@ public class FiveCallsApi {
     private List<CallRequestListener> mCallRequestListeners = new ArrayList<>();
     private List<IssuesRequestListener> mIssuesRequestListeners = new ArrayList<>();
 
-    public FiveCallsApi(RequestQueue requestQueue, Gson gson) {
-        mRequestQueue = requestQueue;
-        mGson = gson;
+    public FiveCallsApi(Context context) {
+        mRequestQueue = Volley.newRequestQueue(context, new OkHttpStack(new OkHttpClient()));
+        mGson = new GsonBuilder()
+                .serializeNulls()
+                .registerTypeAdapter(Outcome.Status.class, new OutcomeStatusTypeAdapter())
+                .create();
     }
 
     public void registerCallRequestListener(CallRequestListener callRequestListener) {
@@ -140,7 +148,7 @@ public class FiveCallsApi {
                     List<Issue> issues = mGson.fromJson(jsonArray.toString(),
                             listType);
 
-                    filterSkipOutcomes(issues);
+                    issues = Outcome.filterSkipOutcomes(issues);
 
                     // TODO: Sanitize contact IDs here
                     for (IssuesRequestListener listener : listeners) {
@@ -240,24 +248,6 @@ public class FiveCallsApi {
             Log.d("Error", "no message");
         } else {
             Log.d("Error", error.getMessage());
-        }
-    }
-
-    private void filterSkipOutcomes(List<Issue> issues) {
-        if (issues != null) {
-            for (Issue issue : issues) {
-                if (issue.outcomeModels != null) {
-                    List<Outcome> filteredOutcomes = new ArrayList<>();
-
-                    for (Outcome outcome : issue.outcomeModels) {
-                        if (!Outcome.Status.SKIP.equals(outcome.status)) {
-                            filteredOutcomes.add(outcome);
-                        }
-                    }
-
-                    issue.outcomeModels = filteredOutcomes;
-                }
-            }
         }
     }
 }

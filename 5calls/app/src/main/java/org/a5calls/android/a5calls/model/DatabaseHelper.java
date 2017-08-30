@@ -73,12 +73,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < 2) {
+        int currentDbVersion = oldVersion;
+
+        if (oldVersion < 2 && currentDbVersion < newVersion) {
             db.execSQL(ISSUES_TABLE_CREATE);
             db.execSQL(CONTACTS_TABLE_CREATE);
+            currentDbVersion = 2;
         }
 
-        if (oldVersion < 3) {
+        if (oldVersion < 3 && currentDbVersion < newVersion) {
             ContentValues contactContentValues = new ContentValues();
             contactContentValues.put(CallsColumns.RESULT, Outcome.Status.CONTACT.toString());
             db.update(CALLS_TABLE_NAME,
@@ -92,6 +95,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     voicemailContentValues,
                     CallsColumns.RESULT + " = ?",
                     new String[]{Outcome.Status.VM.toString()});
+            currentDbVersion = 3;
         }
     }
 
