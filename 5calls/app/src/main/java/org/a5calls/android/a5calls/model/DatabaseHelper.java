@@ -8,9 +8,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.VisibleForTesting;
 import android.support.v4.util.Pair;
 import android.text.TextUtils;
-import android.util.Log;
-
-import org.a5calls.android.a5calls.AppSingleton;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -25,7 +22,7 @@ import java.util.Set;
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
 
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     private static final String CALLS_TABLE_NAME = "UserCallsDatabase";
     private static final String ISSUES_TABLE_NAME = "UserIssuesTable";
     private static final String CONTACTS_TABLE_NAME = "UserContactsTable";
@@ -76,9 +73,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (newVersion >= 2) {
+        int currentDbVersion = oldVersion;
+
+        if (oldVersion < 2 && currentDbVersion < newVersion) {
             db.execSQL(ISSUES_TABLE_CREATE);
             db.execSQL(CONTACTS_TABLE_CREATE);
+            currentDbVersion = 2;
+        }
+
+        if (oldVersion < 3 && currentDbVersion < newVersion) {
+            ContentValues contactContentValues = new ContentValues();
+            contactContentValues.put(CallsColumns.RESULT, Outcome.Status.CONTACT.toString());
+            db.update(CALLS_TABLE_NAME,
+                    contactContentValues,
+                    CallsColumns.RESULT + " = ?",
+                    new String[]{Outcome.Status.CONTACTED.toString()});
+
+            ContentValues voicemailContentValues = new ContentValues();
+            voicemailContentValues.put(CallsColumns.RESULT, Outcome.Status.VOICEMAIL.toString());
+            db.update(CALLS_TABLE_NAME,
+                    voicemailContentValues,
+                    CallsColumns.RESULT + " = ?",
+                    new String[]{Outcome.Status.VM.toString()});
+            currentDbVersion = 3;
         }
     }
 
@@ -249,10 +266,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * Gets the list of timestamps of calls of a particular type (voicemail, unavailable, contacted)
      * that this user has made
      */
-    public List<Long> getCallTimestampsForType(String type) {
+    public List<Long> getCallTimestampsForType(Outcome.Status status) {
+        String statusName = status.toString();
+
         Cursor c = getReadableDatabase().rawQuery(
                 "SELECT " + CallsColumns.TIMESTAMP + " FROM " + CALLS_TABLE_NAME + " WHERE " +
-                CallsColumns.RESULT + " = '" + type + "'", null);
+                CallsColumns.RESULT + " = '" + statusName + "'", null);
         List<Long> result = new ArrayList<>();
         while (c.moveToNext()) {
             result.add(c.getLong(0));

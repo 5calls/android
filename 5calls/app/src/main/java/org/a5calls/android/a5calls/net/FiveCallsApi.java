@@ -1,4 +1,4 @@
-package org.a5calls.android.a5calls.model;
+package org.a5calls.android.a5calls.net;
 
 import android.content.Context;
 import android.util.Log;
@@ -12,9 +12,12 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import org.a5calls.android.a5calls.BuildConfig;
+import org.a5calls.android.a5calls.model.Issue;
+import org.a5calls.android.a5calls.model.Outcome;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,6 +29,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import okhttp3.OkHttpClient;
 
 /**
  * Class to handle server gets and posts.
@@ -43,24 +48,35 @@ public class FiveCallsApi {
 
     public interface CallRequestListener {
         void onRequestError();
+
         void onJsonError();
+
         void onCallCount(int count);
+
         void onCallReported();
     }
 
     public interface IssuesRequestListener {
         void onRequestError();
+
         void onJsonError();
+
         void onAddressError();
+
         void onIssuesReceived(String locationName, boolean splitDistrict, List<Issue> issues);
     }
 
     private RequestQueue mRequestQueue;
+    private Gson mGson;
     private List<CallRequestListener> mCallRequestListeners = new ArrayList<>();
     private List<IssuesRequestListener> mIssuesRequestListeners = new ArrayList<>();
 
     public FiveCallsApi(Context context) {
-        mRequestQueue = Volley.newRequestQueue(context);
+        mRequestQueue = Volley.newRequestQueue(context, new OkHttpStack(new OkHttpClient()));
+        mGson = new GsonBuilder()
+                .serializeNulls()
+                .registerTypeAdapter(Outcome.Status.class, new OutcomeStatusTypeAdapter())
+                .create();
     }
 
     public void registerCallRequestListener(CallRequestListener callRequestListener) {
@@ -129,8 +145,11 @@ public class FiveCallsApi {
                         return;
                     }
                     Type listType = new TypeToken<ArrayList<Issue>>(){}.getType();
-                    List<Issue> issues = new Gson().fromJson(jsonArray.toString(),
+                    List<Issue> issues = mGson.fromJson(jsonArray.toString(),
                             listType);
+
+                    issues = Outcome.filterSkipOutcomes(issues);
+
                     // TODO: Sanitize contact IDs here
                     for (IssuesRequestListener listener : listeners) {
                         listener.onIssuesReceived(locationName, splitDistrict, issues);
@@ -186,20 +205,20 @@ public class FiveCallsApi {
         String getReport = GET_REPORT;
         StringRequest request = new StringRequest(Request.Method.POST, getReport,
                 new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                for (CallRequestListener listener : mCallRequestListeners) {
-                    listener.onCallReported();
-                }
-            }
-        }, new Response.ErrorListener() {
+                    @Override
+                    public void onResponse(String response) {
+                        for (CallRequestListener listener : mCallRequestListeners) {
+                            listener.onCallReported();
+                        }
+                    }
+                }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 onRequestError(error);
             }
-        }){
+        }) {
             @Override
-            protected Map<String,String> getParams() {
+            protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("issueid", issueId);
                 params.put("result", result);
