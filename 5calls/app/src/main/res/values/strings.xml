@@ -24,18 +24,6 @@
     <!-- Prompt for explaining which contact/office to call [CHAR_LIMIT=50] -->
     <string name="call_this_office">Call this office:</string>
 
-    <!-- Call result button for when the contact was unavailable (i.e. couldn't even leave a voicemail) [CHAR_LIMIT=30] -->
-    <string name="unavailable_btn">unavailable</string>
-
-    <!-- Call result button for when the user left a voicemail [CHAR_LIMIT=30] -->
-    <string name="voicemail_btn">left voicemail</string>
-
-    <!-- Call result button for when the user made contact [CHAR_LIMIT=30] -->
-    <string name="made_contact_btn">made contact</string>
-
-    <!-- Button for the user to skip contacting a particular contact on a particular issue [CHAR_LIMIT=30] -->
-    <string name="skip_btn">skip</string>
-
     <!-- Prompt for call result buttons [CHAR_LIMIT=NONE] -->
     <string name="buttons_prompt">Enter your result:</string>
 
@@ -395,4 +383,21 @@
     <!-- Name of the intent chooser for sending emails [CHAR_LIMIT=NONE] -->
     <string name="send_email">Send Email</string>
 
+    <!-- Call result button for when the contact was unavailable (i.e. couldn't even leave a voicemail) [CHAR_LIMIT=30] -->
+    <string name="outcome_unavailable">Unavailable</string>
+
+    <!-- Call result button for when the user left a voicemail [CHAR_LIMIT=30] -->
+    <string name="outcome_voicemail">Left Voicemail</string>
+
+    <!-- Call result button for when the user made contact [CHAR_LIMIT=30] -->
+    <string name="outcome_contact">Made Contact</string>
+
+    <!-- Call result button for when the user made contact and the contact supports the issue [CHAR_LIMIT=30] -->
+    <string name="outcome_yes">Supports</string>
+
+    <!-- Call result button for when the user made contact and the contact opposes the issue [CHAR_LIMIT=30] -->
+    <string name="outcome_no">Opposes</string>
+
+    <!-- Call result button for when the user made contact and the contact has not taken a stance on the issue [CHAR_LIMIT=30] -->
+    <string name="outcome_unknown">No Stance</string>
 </resources>

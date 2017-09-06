@@ -16,7 +16,7 @@ public class OutcomeStatusTypeAdapter extends TypeAdapter<Outcome.Status> {
 
     @Override
     public Outcome.Status read(JsonReader in) throws IOException {
-        Outcome.Status result = Outcome.Status.UNKNOWN;
+        Outcome.Status result = Outcome.Status.EMPTY;
         String jsonString = in.nextString();
 
         for (Outcome.Status status : Outcome.Status.values()) {

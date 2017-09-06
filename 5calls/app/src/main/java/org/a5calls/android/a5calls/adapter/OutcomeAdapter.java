@@ -57,13 +57,13 @@ public class OutcomeAdapter extends RecyclerView.Adapter<OutcomeAdapter.ViewHold
         }
 
         public static void bind(ViewHolder holder, final Outcome outcome, boolean enabled, final Callback callback) {
-            holder.outcomeButton.setText(outcome.label);
+            holder.outcomeButton.setText(Outcome.getDisplayString(holder.itemView.getContext(), outcome.label));
             holder.outcomeButton.setEnabled(enabled);
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (callback != null) {
-                        callback.onOutcomeClicked(outcome.status.toString());
+                        callback.onOutcomeClicked(outcome);
                     }
                 }
             });
@@ -71,6 +71,6 @@ public class OutcomeAdapter extends RecyclerView.Adapter<OutcomeAdapter.ViewHold
     }
 
     public interface Callback {
-        void onOutcomeClicked(String outcome);
+        void onOutcomeClicked(Outcome outcome);
     }
 }
