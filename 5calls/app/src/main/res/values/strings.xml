@@ -384,13 +384,13 @@
     <string name="send_email">Send Email</string>
 
     <!-- Call result button for when the contact was unavailable (i.e. couldn't even leave a voicemail) [CHAR_LIMIT=30] -->
-    <string name="outcome_unavailable">Unavailable</string>
+    <string name="outcome_unavailable">unavailable</string>
 
     <!-- Call result button for when the user left a voicemail [CHAR_LIMIT=30] -->
-    <string name="outcome_voicemail">Left Voicemail</string>
+    <string name="outcome_voicemail">left voicemail</string>
 
     <!-- Call result button for when the user made contact [CHAR_LIMIT=30] -->
-    <string name="outcome_contact">Made Contact</string>
+    <string name="outcome_contact">made contact</string>
 
     <!-- Call result button for when the user made contact and the contact supports the issue [CHAR_LIMIT=30] -->
     <string name="outcome_yes">Supports</string>
