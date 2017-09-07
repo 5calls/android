@@ -166,7 +166,8 @@ public class RepCallActivity extends AppCompatActivity {
         outcomeList.setAdapter(outcomeAdapter);
 
         int gridPadding = (int) getResources().getDimension(R.dimen.grid_padding);
-        outcomeList.addItemDecoration(new GridItemDecoration(gridPadding, getSpanCount(RepCallActivity.this)));
+        outcomeList.addItemDecoration(new GridItemDecoration(gridPadding,
+                getSpanCount(RepCallActivity.this)));
 
         // We allow Analytics opt-out.
         if (accountManager.allowAnalytics(this)) {
