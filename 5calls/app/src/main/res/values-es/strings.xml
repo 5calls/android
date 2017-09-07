@@ -24,18 +24,6 @@
     <!-- Prompt for explaining which contact/office to call [CHAR_LIMIT=50] -->
     <string name="call_this_office">Llame a esta oficina:</string>
 
-    <!-- Call result button for when the contact was unavailable (i.e. couldn't even leave a voicemail) [CHAR_LIMIT=30] -->
-    <string name="unavailable_btn">indisponible</string>
-
-    <!-- Call result button for when the user left a voicemail [CHAR_LIMIT=30] -->
-    <string name="voicemail_btn">deje mensaje de voz</string>
-
-    <!-- Call result button for when the user made contact [CHAR_LIMIT=30] -->
-    <string name="made_contact_btn">contacto hecho</string>
-
-    <!-- Button for the user to skip contacting a particular contact on a particular issue [CHAR_LIMIT=30] -->
-    <string name="skip_btn">saltar</string>
-
     <!-- Prompt for call result buttons [CHAR_LIMIT=NONE] -->
     <string name="buttons_prompt">Entre su resultado:</string>
 
@@ -364,5 +352,23 @@
 
     <!-- Action for a snackbar or button which brings you to the location update screen [CHAR_LIMIT=10] -->
     <string name="update">Actualización</string>
+
+    <!-- Call result button for when the contact was unavailable (i.e. couldn't even leave a voicemail) [CHAR_LIMIT=30] -->
+    <string name="outcome_unavailable">no disponible</string>
+
+    <!-- Call result button for when the user left a voicemail [CHAR_LIMIT=30] -->
+    <string name="outcome_voicemail">dejé mensaje de voz</string>
+
+    <!-- Call result button for when the user made contact [CHAR_LIMIT=30] -->
+    <string name="outcome_contact">contacto hecho</string>
+
+    <!-- Call result button for when the user made contact and the contact supports the issue [CHAR_LIMIT=30] -->
+    <string name="outcome_yes">apoya</string>
+
+    <!-- Call result button for when the user made contact and the contact opposes the issue [CHAR_LIMIT=30] -->
+    <string name="outcome_no">opone</string>
+
+    <!-- Call result button for when the user made contact and the contact has not taken a stance on the issue [CHAR_LIMIT=30] -->
+    <string name="outcome_unknown">No Posición</string>
 
 </resources>

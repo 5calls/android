@@ -155,8 +155,8 @@ public class RepCallActivity extends AppCompatActivity {
 
         outcomeAdapter = new OutcomeAdapter(mIssue.outcomeModels, new OutcomeAdapter.Callback() {
             @Override
-            public void onOutcomeClicked(String outcome) {
-                reportEvent(outcome);
+            public void onOutcomeClicked(Outcome outcome) {
+                reportEvent(outcome.label);
                 reportCall(outcome, address);
             }
         });
@@ -210,13 +210,13 @@ public class RepCallActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void reportCall(String callType, String address) {
+    private void reportCall(Outcome outcome, String address) {
         outcomeAdapter.setEnabled(false);
         AppSingleton.getInstance(getApplicationContext()).getDatabaseHelper().addCall(mIssue.id,
                 mIssue.name, mIssue.contacts[mActiveContactIndex].id,
-                mIssue.contacts[mActiveContactIndex].name, callType, address);
+                mIssue.contacts[mActiveContactIndex].name, outcome.status.toString(), address);
         AppSingleton.getInstance(getApplicationContext()).getJsonController().reportCall(
-                mIssue.id, mIssue.contacts[mActiveContactIndex].id, callType, address);
+                mIssue.id, mIssue.contacts[mActiveContactIndex].id, outcome.label, address);
     }
 
     private void setupContactUi(int index, boolean expandLocalSection) {

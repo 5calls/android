@@ -159,13 +159,13 @@ public class StatsActivity extends AppCompatActivity {
         }
         LineGraphSeries<DataPoint> contactedSeries = makeSeries(contacts, firstTimestamp,
                 R.color.contacted_color);
-        contactedSeries.setTitle(getResources().getString(R.string.made_contact_btn));
+        contactedSeries.setTitle(getResources().getString(R.string.outcome_contact));
         LineGraphSeries<DataPoint> voicemailSeries = makeSeries(voicemails, firstTimestamp,
                 R.color.voicemail_color);
-        voicemailSeries.setTitle(getResources().getString(R.string.voicemail_btn));
+        voicemailSeries.setTitle(getResources().getString(R.string.outcome_voicemail));
         LineGraphSeries<DataPoint> unavailableSeries = makeSeries(unavailables, firstTimestamp,
                 R.color.unavailable_color);
-        unavailableSeries.setTitle(getResources().getString(R.string.unavailable_btn));
+        unavailableSeries.setTitle(getResources().getString(R.string.outcome_unavailable));
         graph.addSeries(contactedSeries);
         graph.addSeries(voicemailSeries);
         graph.addSeries(unavailableSeries);
