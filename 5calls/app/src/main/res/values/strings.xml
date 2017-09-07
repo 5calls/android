@@ -393,10 +393,10 @@
     <string name="outcome_contact">made contact</string>
 
     <!-- Call result button for when the user made contact and the contact supports the issue [CHAR_LIMIT=30] -->
-    <string name="outcome_yes">Supports</string>
+    <string name="outcome_yes">supports</string>
 
     <!-- Call result button for when the user made contact and the contact opposes the issue [CHAR_LIMIT=30] -->
-    <string name="outcome_no">Opposes</string>
+    <string name="outcome_no">opposes</string>
 
     <!-- Call result button for when the user made contact and the contact has not taken a stance on the issue [CHAR_LIMIT=30] -->
     <string name="outcome_unknown">No Stance</string>

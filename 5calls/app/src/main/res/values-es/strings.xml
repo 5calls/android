@@ -363,10 +363,10 @@
     <string name="outcome_contact">contacto hecho</string>
 
     <!-- Call result button for when the user made contact and the contact supports the issue [CHAR_LIMIT=30] -->
-    <string name="outcome_yes">Apoya</string>
+    <string name="outcome_yes">apoya</string>
 
     <!-- Call result button for when the user made contact and the contact opposes the issue [CHAR_LIMIT=30] -->
-    <string name="outcome_no">Opone</string>
+    <string name="outcome_no">opone</string>
 
     <!-- Call result button for when the user made contact and the contact has not taken a stance on the issue [CHAR_LIMIT=30] -->
     <string name="outcome_unknown">No Posición</string>
