@@ -1,11 +1,14 @@
 package org.a5calls.android.a5calls.controller;
 
+import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.support.v4.util.Pair;
@@ -251,11 +254,13 @@ public class StatsActivity extends AppCompatActivity {
                 R.string.share_subject));
         shareIntent.putExtra(Intent.EXTRA_TEXT,
                 String.format(getResources().getString(R.string.share_content), mCallCount));
-        shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
-        shareIntent.setType("image/png");
+        shareIntent.setDataAndType(imageUri, "image/png");
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            // Needed to avoid security exception on KitKat.
+            shareIntent.setClipData(ClipData.newRawUri(null, imageUri));
+        }
         shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         startActivity(Intent.createChooser(shareIntent, "send"));
-        shareIntent.setType("*/*");
 
         if (mTracker != null) {
             mTracker.send(new HitBuilders.EventBuilder()
