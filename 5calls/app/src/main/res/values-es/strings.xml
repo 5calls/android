@@ -58,8 +58,17 @@
     <!-- Prompt to click on the "Rate" button [CHAR_LIMIT=100] -->
     <string name="rate_us_prompt">Si la aplicación de 5 Calls ha sido útil, por favor dénos una reseña en el Play Store.</string>
 
+    <!-- Button linking to the 5calls.org newsletter signup page [CHAR_LIMIT=40] -->
+    <string name="sign_up_newsletter_btn">Apúntese al boletín informativo de 5 Calls</string>
+
     <!-- Button linking to the 5calls.org about page [CHAR_LIMIT=30] -->
     <string name="about_us_btn">sobre nosotros</string>
+
+    <!-- Prompt to send 5 Calls an email [CHAR_LIMIT=100] -->
+    <string name="contact_us_prompt">¿Quiere ponerse en contacto con nosotros? ¿Hay asunto que debemos cubrir?</string>
+
+    <!-- Button that allows users to send 5 Calls an email [CHAR_LIMIT=30] -->
+    <string name="contact_us_btn">contactar con nosotros</string>
 
     <!-- Button linking to the 5calls.org Play Store page to request a rating [CHAR_LIMIT=30] -->
     <string name="rate_us_btn">Reseñe 5 Calls</string>
@@ -103,6 +112,9 @@
 
     <!-- Header to a section that says why the contact is someone you might call [CHAR_LIMIT=NONE] -->
     <string name="contact_reason_prompt">Razon for llamar a estate oficina:</string>
+
+    <!-- Default text for a section that says why the contact is someone you might call [CHAR_LIMIT=NONE] -->
+    <string name="contact_reason_default">Esta organización conduce legislación sobre este asunto.</string>
 
     <!-- Shows the user how many calls remain and how many calls there are total for a particular issue [CHAR_LIMIT=50] -->
     <string name="call_count_remaining"><xliff:g id="callsLeft">%1$d</xliff:g> LLamadas para hacer(<xliff:g id="callsTotal">%2$d</xliff:g> total)</string>
@@ -353,6 +365,9 @@
     <!-- Action for a snackbar or button which brings you to the location update screen [CHAR_LIMIT=10] -->
     <string name="update">Actualización</string>
 
+    <!-- Name of the intent chooser for sending emails [CHAR_LIMIT=NONE] -->
+    <string name="send_email">Mande un email</string>
+
     <!-- Call result button for when the contact was unavailable (i.e. couldn't even leave a voicemail) [CHAR_LIMIT=30] -->
     <string name="outcome_unavailable">no disponible</string>
 
@@ -369,6 +384,6 @@
     <string name="outcome_no">opone</string>
 
     <!-- Call result button for when the user made contact and the contact has not taken a stance on the issue [CHAR_LIMIT=30] -->
-    <string name="outcome_unknown">No Posición</string>
+    <string name="outcome_unknown">no posición</string>
 
 </resources>

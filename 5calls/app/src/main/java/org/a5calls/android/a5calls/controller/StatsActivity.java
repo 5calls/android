@@ -260,7 +260,8 @@ public class StatsActivity extends AppCompatActivity {
             shareIntent.setClipData(ClipData.newRawUri(null, imageUri));
         }
         shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        startActivity(Intent.createChooser(shareIntent, "send"));
+        startActivity(Intent.createChooser(shareIntent,
+                getResources().getString(R.string.share_chooser_title)));
 
         if (mTracker != null) {
             mTracker.send(new HitBuilders.EventBuilder()

@@ -378,7 +378,7 @@
     <string name="email_address" translatable="false">make5calls@gmail.com</string>
 
     <!-- Default subject for an email sent from the about page [CHAR_LIMIT=NONE] -->
-    <string name="email_subject">Feedback from 5 Calls Android App</string>
+    <string name="email_subject" translatable="false">Feedback from 5 Calls Android App</string>
 
     <!-- Name of the intent chooser for sending emails [CHAR_LIMIT=NONE] -->
     <string name="send_email">Send Email</string>
@@ -399,5 +399,5 @@
     <string name="outcome_no">opposes</string>
 
     <!-- Call result button for when the user made contact and the contact has not taken a stance on the issue [CHAR_LIMIT=30] -->
-    <string name="outcome_unknown">No Stance</string>
+    <string name="outcome_unknown">no stance</string>
 </resources>
