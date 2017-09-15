@@ -106,7 +106,7 @@ public class FiveCallsApi {
     }
 
     public void getIssuesForLocation(String address) {
-        String url = GET_ISSUES_REQUEST + URLEncoder.encode(address);
+        String url = GET_ISSUES_REQUEST + URLEncoder.encode(address) + "&all=true";
         buildIssuesRequest(url, mIssuesRequestListeners);
     }
 

@@ -400,4 +400,18 @@
 
     <!-- Call result button for when the user made contact and the contact has not taken a stance on the issue [CHAR_LIMIT=30] -->
     <string name="outcome_unknown">no stance</string>
+
+    <!-- Label for drop-down of filters for issues [CHAR_LIMIT=20] -->
+    <string name="filter_label">Filter</string>
+
+    <!-- Filter for showing only the top issues [CHAR_LIMIT=50] -->
+    <string name="top_issues_filter">Top issues</string>
+
+    <!-- Filter for showing all issues [CHAR_LIMIT=50] -->
+    <string name="all_issues_filter">All issues</string>
+
+    <string-array name="default_filters">
+        <item>@string/top_issues_filter</item>
+        <item>@string/all_issues_filter</item>
+    </string-array>
 </resources>

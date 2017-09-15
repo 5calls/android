@@ -76,13 +76,48 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             >
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/issues_recycler_view"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
-                android:layout_marginTop="4dp"
-                />
+                >
+
+                <TextView
+                    android:layout_width="64dp"
+                    android:layout_height="@dimen/accessibility_min_size"
+                    android:text="@string/filter_label"
+                    android:labelFor="@+id/filter"
+                    android:layout_alignParentTop="true"
+                    android:id="@+id/filter_label"
+                    android:textSize="@dimen/label_text_size"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginStart="12dp"
+                    android:gravity="center"
+                    />
+
+                <android.support.v7.widget.AppCompatSpinner
+                    android:id="@id/filter"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="@dimen/accessibility_min_size"
+                    android:spinnerMode="dropdown"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_toEndOf="@id/filter_label"
+                    android:layout_toRightOf="@id/filter_label"
+                    />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/issues_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:paddingTop="4dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_below="@id/filter"
+                    />
+
+            </RelativeLayout>
 
         </android.support.v4.widget.SwipeRefreshLayout>
 

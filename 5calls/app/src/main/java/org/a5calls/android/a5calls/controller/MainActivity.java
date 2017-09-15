@@ -12,6 +12,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,9 +24,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import com.google.android.gms.analytics.HitBuilders;
@@ -35,6 +39,7 @@ import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
+import org.a5calls.android.a5calls.model.Category;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.util.CustomTabsUtil;
@@ -57,15 +62,16 @@ public class MainActivity extends AppCompatActivity {
     private static final int ISSUE_DETAIL_REQUEST = 1;
     public static final int NOTIFICATION_REQUEST = 2;
     public static final String EXTRA_FROM_NOTIFICATION = "extraFromNotification";
-    private static final String KEY_INACTIVE_ISSUES_LOADED = "inactiveIssuesLoaded";
+    private static final String KEY_FILTER_ITEM_SELECTED = "filterItemSelected";
     private final AccountManager accountManager = AccountManager.Instance;
 
+    private ArrayAdapter<String> mFilterAdapter;
+    private String mFilterText = "";
     private IssuesAdapter mIssuesAdapter;
     private FiveCallsApi.IssuesRequestListener mIssuesRequestListener;
     private String mAddress;
     private String mLatitude;
     private String mLongitude;
-    private boolean mLoadInactiveIssues = false;
 
     @BindView(R.id.swipe_container) SwipeRefreshLayout swipeContainer;
     @BindView(R.id.issues_recycler_view) RecyclerView issuesRecyclerView;
@@ -74,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.nav_view) NavigationView navigationView;
     @BindView(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsingToolbarLayout;
     @BindView(R.id.action_bar_subtitle) TextView actionBarSubtitle;
+    @BindView(R.id.filter) AppCompatSpinner filter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,10 +148,17 @@ public class MainActivity extends AppCompatActivity {
         mIssuesAdapter = new IssuesAdapter();
         issuesRecyclerView.setAdapter(mIssuesAdapter);
 
+        if (savedInstanceState != null) {
+            mFilterText = savedInstanceState.getString(KEY_FILTER_ITEM_SELECTED);
+        }
+        mFilterAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item);
+        mFilterAdapter.addAll(
+                getResources().getStringArray(R.array.default_filters));
+        mFilterText = mFilterAdapter.getItem(0);  // Default value
+        filter.setAdapter(mFilterAdapter);
+
         registerApiListener();
 
-        mLoadInactiveIssues = savedInstanceState != null &&
-                savedInstanceState.getBoolean(KEY_INACTIVE_ISSUES_LOADED, false);
         swipeContainer.setColorSchemeResources(R.color.colorPrimary);
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override public void onRefresh() {
@@ -190,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putBoolean(KEY_INACTIVE_ISSUES_LOADED, mLoadInactiveIssues);
+        outState.putString(KEY_FILTER_ITEM_SELECTED, mFilterText);
         super.onSaveInstanceState(outState);
     }
 
@@ -266,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
                 // Our only type of request in MainActivity is a GET. If it doesn't work, clear the
                 // active issues list to avoid showing a stale list.
                 mIssuesAdapter.setIssues(Collections.<Issue>emptyList(),
-                        IssuesAdapter.ERROR_REQUEST);
+                        IssuesAdapter.ERROR_REQUEST, mFilterText);
                 swipeContainer.setRefreshing(false);
             }
 
@@ -278,7 +292,7 @@ public class MainActivity extends AppCompatActivity {
                 // Our only type of request in MainActivity is a GET. If it doesn't work, clear the
                 // active issues list to avoid showing a stale list.
                 mIssuesAdapter.setIssues(Collections.<Issue>emptyList(),
-                        IssuesAdapter.ERROR_REQUEST);
+                        IssuesAdapter.ERROR_REQUEST, mFilterText);
                 swipeContainer.setRefreshing(false);
             }
 
@@ -290,7 +304,7 @@ public class MainActivity extends AppCompatActivity {
                 // Clear the issues but don't show the refresh button because this is an address
                 // problem.
                 mIssuesAdapter.setIssues(Collections.<Issue>emptyList(),
-                        IssuesAdapter.ERROR_ADDRESS);
+                        IssuesAdapter.ERROR_ADDRESS, mFilterText);
                 swipeContainer.setRefreshing(false);
             }
 
@@ -326,17 +340,56 @@ public class MainActivity extends AppCompatActivity {
                             .saveIssuesToDatabaseForUpgrade(issues);
                     AccountManager.Instance.setDatabaseSavesContacts(getApplicationContext(), true);
                 }
-                mIssuesAdapter.setIssues(issues, IssuesAdapter.NO_ERROR);
-                swipeContainer.setRefreshing(false);
 
-                if (mLoadInactiveIssues) {
-                    loadInactiveIssues();
-                }
+                populateFilterAdapterIfNeeded(issues);
+                mIssuesAdapter.setIssues(issues, IssuesAdapter.NO_ERROR, mFilterText);
+                swipeContainer.setRefreshing(false);
             }
         };
 
         AppSingleton.getInstance(getApplicationContext()).getJsonController()
                 .registerIssuesRequestListener(mIssuesRequestListener);
+    }
+
+    private void populateFilterAdapterIfNeeded(List<Issue> issues) {
+        if (mFilterAdapter.getCount() > 2) {
+            // Already populated. Don't try again.
+            // This assumes that the categories won't change much during the course of a session.
+            return;
+        }
+        List<String> topics = new ArrayList<>();
+        for (Issue issue : issues) {
+            for (Category category : issue.categories) {
+                if (!topics.contains(category.name)) {
+                    topics.add(category.name);
+                }
+            }
+        }
+        Collections.sort(topics);
+        mFilterAdapter.addAll(topics);
+        filter.setSelection(mFilterAdapter.getPosition(mFilterText));
+        // Set this listener after manually setting the selection so it isn't fired right away.
+        filter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String newFilter = mFilterAdapter.getItem(i);
+                if (TextUtils.equals(newFilter, mFilterText)) {
+                    // Already set!
+                    return;
+                }
+                mFilterText = newFilter;
+                if (swipeContainer.isRefreshing()) {
+                    // Already loading issues!
+                    return;
+                }
+                refreshIssues();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
     private void loadStats() {
@@ -363,43 +416,6 @@ public class MainActivity extends AppCompatActivity {
             String message = getString(R.string.main_activity_location_error);
             Snackbar.make(findViewById(R.id.activity_main), message, Snackbar.LENGTH_LONG).show();
         }
-    }
-
-    private void loadInactiveIssues() {
-        mLoadInactiveIssues = true;
-        String location = getLocationString();
-        AppSingleton.getInstance(getApplicationContext()).getJsonController()
-                .getInactiveIssuesForLocation(location, new FiveCallsApi.IssuesRequestListener() {
-                    @Override
-                    public void onRequestError() {
-                        Snackbar.make(findViewById(R.id.activity_main),
-                                getResources().getString(R.string.request_error),
-                                Snackbar.LENGTH_LONG).show();
-                        mIssuesAdapter.addInactiveIssuesFailed();
-                    }
-
-                    @Override
-                    public void onJsonError() {
-                        Snackbar.make(findViewById(R.id.activity_main),
-                                getResources().getString(R.string.json_error),
-                                Snackbar.LENGTH_LONG).show();
-                        mIssuesAdapter.addInactiveIssuesFailed();
-                    }
-
-                    @Override
-                    public void onAddressError() {
-                        Snackbar.make(findViewById(R.id.activity_main),
-                                getResources().getString(R.string.error_address_invalid),
-                                Snackbar.LENGTH_LONG).show();
-                        mIssuesAdapter.addInactiveIssuesFailed();
-                    }
-
-                    @Override
-                    public void onIssuesReceived(String locationName, boolean splitDistrict,
-                                                 List<Issue> issues) {
-                        mIssuesAdapter.addInactiveIssues(issues);
-                    }
-                });
     }
 
     private String getLocationString() {
@@ -431,33 +447,40 @@ public class MainActivity extends AppCompatActivity {
         private static final int VIEW_TYPE_EMPTY_REQUEST = 0;
         private static final int VIEW_TYPE_ISSUE = 1;
         private static final int VIEW_TYPE_EMPTY_ADDRESS = 2;
-        private static final int VIEW_TYPE_LOAD_MORE_BUTTON = 3;
 
         private List<Issue> mIssues = new ArrayList<>();
         private int mErrorType = NO_ISSUES_YET;
-        private boolean mInactiveIssuesLoaded = false;
-        private boolean mLoadingInactiveIssues = false;
 
         public IssuesAdapter() {
         }
 
-        public void setIssues(List<Issue> issues, int errorType) {
+        public void setIssues(List<Issue> issues, int errorType, String filterText) {
             mErrorType = errorType;
-            mIssues = issues;
+            if (TextUtils.equals(filterText,
+                    getResources().getString(R.string.all_issues_filter))) {
+                // Include everything
+                mIssues = issues;
+            } else if (TextUtils.equals(filterText,
+                    getResources().getString(R.string.top_issues_filter))) {
+                // Add only the active ones.
+                mIssues.clear();
+                for (Issue issue : issues) {
+                    if (!issue.inactive) {
+                        mIssues.add(issue);
+                    }
+                }
+            } else {
+                // Filter by the string
+                mIssues.clear();
+                for (Issue issue : issues) {
+                    for (Category category : issue.categories) {
+                        if (TextUtils.equals(filterText, category.name)) {
+                            mIssues.add(issue);
+                        }
+                    }
+                }
+            }
             notifyDataSetChanged();
-        }
-
-        public void addInactiveIssues(List<Issue> issues) {
-            mInactiveIssuesLoaded = true;
-            mLoadingInactiveIssues = false;
-            mIssues.addAll(issues);
-            notifyDataSetChanged();
-        }
-
-        public void addInactiveIssuesFailed() {
-            mInactiveIssuesLoaded = false;
-            mLoadingInactiveIssues = false;
-            notifyItemChanged(mIssues.size());
         }
 
         public void updateIssue(Issue issue) {
@@ -480,13 +503,6 @@ public class MainActivity extends AppCompatActivity {
                 View empty = LayoutInflater.from(parent.getContext()).inflate(
                         R.layout.empty_issues_address_view, parent, false);
                 return new EmptyAddressViewHolder(empty);
-            } else if (viewType == VIEW_TYPE_LOAD_MORE_BUTTON) {
-                View v = LayoutInflater.from(parent.getContext()).inflate(
-                        R.layout.load_more_view, parent, false);
-                LoadMoreViewHolder vh = new LoadMoreViewHolder(v);
-                vh.loadMoreButton.setVisibility(mLoadingInactiveIssues ? View.GONE : View.VISIBLE);
-                vh.progressBar.setVisibility(mLoadingInactiveIssues ? View.VISIBLE : View.GONE);
-                return vh;
             } else {
                 CardView v = (CardView) LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.issue_view, parent, false);
@@ -551,17 +567,6 @@ public class MainActivity extends AppCompatActivity {
                         launchLocationActivity();
                     }
                 });
-            } else if (type == VIEW_TYPE_LOAD_MORE_BUTTON) {
-                final LoadMoreViewHolder vh = (LoadMoreViewHolder) holder;
-                vh.loadMoreButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mLoadingInactiveIssues = true;
-                        vh.loadMoreButton.setVisibility(View.GONE);
-                        vh.progressBar.setVisibility(View.VISIBLE);
-                        loadInactiveIssues();
-                    }
-                });
             }
         }
 
@@ -582,10 +587,6 @@ public class MainActivity extends AppCompatActivity {
             if (mIssues.size() == 0 && mErrorType == ERROR_REQUEST || mErrorType == ERROR_ADDRESS) {
                 return 1;
             }
-            if (!mInactiveIssuesLoaded && mIssues.size() > 0) {
-                // For the load more button, only shown if some issues exist already
-                return mIssues.size() + 1;
-            }
             return mIssues.size();
         }
 
@@ -598,9 +599,6 @@ public class MainActivity extends AppCompatActivity {
                 if (mErrorType == ERROR_ADDRESS) {
                     return VIEW_TYPE_EMPTY_ADDRESS;
                 }
-            }
-            if (position == mIssues.size() && mIssues.size() > 0) {
-                return VIEW_TYPE_LOAD_MORE_BUTTON;
             }
             return VIEW_TYPE_ISSUE;
         }
@@ -643,17 +641,6 @@ public class MainActivity extends AppCompatActivity {
             locationButton.getCompoundDrawables()[0].mutate().setColorFilter(
                     locationButton.getResources().getColor(R.color.colorAccent),
                     PorterDuff.Mode.MULTIPLY);
-        }
-    }
-
-    private class LoadMoreViewHolder extends RecyclerView.ViewHolder {
-        public Button loadMoreButton;
-        public ProgressBar progressBar;
-
-        public LoadMoreViewHolder(View itemView) {
-            super(itemView);
-            loadMoreButton = (Button) itemView.findViewById(R.id.load_more_btn);
-            progressBar = (ProgressBar) itemView.findViewById(R.id.progress_bar);
         }
     }
 }

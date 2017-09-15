@@ -19,6 +19,7 @@ public class Issue implements Parcelable {
 
     public Contact[] contacts;
     public List<Outcome> outcomeModels;
+    public Category[] categories;
 
     protected Issue(Parcel in) {
         id = in.readString();
@@ -28,6 +29,7 @@ public class Issue implements Parcelable {
         inactive = in.readInt() != 0;
         contacts = in.createTypedArray(Contact.CREATOR);
         outcomeModels = in.createTypedArrayList(Outcome.CREATOR);
+        categories = in.createTypedArray(Category.CREATOR);
     }
 
     public static final Creator<Issue> CREATOR = new Creator<Issue>() {
@@ -56,5 +58,6 @@ public class Issue implements Parcelable {
         dest.writeInt(inactive ? 1 : 0);
         dest.writeTypedArray(contacts, PARCELABLE_WRITE_RETURN_VALUE);
         dest.writeTypedList(outcomeModels);
+        dest.writeTypedArray(categories, PARCELABLE_WRITE_RETURN_VALUE);
     }
 }
