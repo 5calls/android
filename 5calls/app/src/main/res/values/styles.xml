@@ -29,4 +29,8 @@
         <item name="android:textSize">@dimen/expanded_toolbar_title_size</item>
         <item name="android:singleLine">false</item>
     </style>
+
+    <style name="AppTheme.SpinnerTheme" parent="Base.Widget.AppCompat.Spinner.Underlined">
+
+    </style>
 </resources>

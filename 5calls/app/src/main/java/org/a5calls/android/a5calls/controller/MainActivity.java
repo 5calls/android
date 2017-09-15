@@ -148,14 +148,15 @@ public class MainActivity extends AppCompatActivity {
         mIssuesAdapter = new IssuesAdapter();
         issuesRecyclerView.setAdapter(mIssuesAdapter);
 
+        mFilterAdapter = new ArrayAdapter<>(this, R.layout.filter_item);
+        mFilterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mFilterAdapter.addAll(getResources().getStringArray(R.array.default_filters));
+        filter.setAdapter(mFilterAdapter);
         if (savedInstanceState != null) {
             mFilterText = savedInstanceState.getString(KEY_FILTER_ITEM_SELECTED);
+        } else {
+            mFilterText = mFilterAdapter.getItem(0);  // Default value
         }
-        mFilterAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item);
-        mFilterAdapter.addAll(
-                getResources().getStringArray(R.array.default_filters));
-        mFilterText = mFilterAdapter.getItem(0);  // Default value
-        filter.setAdapter(mFilterAdapter);
 
         registerApiListener();
 
