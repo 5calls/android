@@ -12,7 +12,9 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -71,6 +73,7 @@ public class IssueActivity extends AppCompatActivity {
     @BindView(R.id.bottom_sheet) NestedScrollView bottomSheet;
     @BindView(R.id.main_layout) ViewGroup issueTextSection;
     @BindView(R.id.expand_contacts_icon) ImageView expandContactsIcon;
+    @BindView(R.id.link) TextView linkText;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -93,6 +96,18 @@ public class IssueActivity extends AppCompatActivity {
 
         issueName.setText(mIssue.name);
         issueDescription.setText(mIssue.reason);
+        if (!TextUtils.isEmpty(mIssue.link)) {
+            linkText.setVisibility(View.VISIBLE);
+            linkText.setMovementMethod(LinkMovementMethod.getInstance());
+            if ((TextUtils.isEmpty(mIssue.linkTitle))) {
+                linkText.setText(mIssue.link);
+            } else {
+                linkText.setText(Html.fromHtml(
+                        String.format("<a href=\"%s\">%s</a>", mIssue.link, mIssue.linkTitle)));
+            }
+        } else {
+            linkText.setVisibility(View.GONE);
+        }
 
         final BottomSheetBehavior<NestedScrollView> behavior =
                 BottomSheetBehavior.from(bottomSheet);

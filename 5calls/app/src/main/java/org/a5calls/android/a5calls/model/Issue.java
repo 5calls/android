@@ -9,13 +9,13 @@ import java.util.List;
  * Represents an issue.
  */
 public class Issue implements Parcelable {
-    // TODO: We need to store local state about which issues have been modified by the user, i.e.
-    // which contacts have been called.
     public String id;
     public String name;
     public String reason;
     public String script;
     public boolean inactive;
+    public String link;
+    public String linkTitle;
 
     public Contact[] contacts;
     public List<Outcome> outcomeModels;
@@ -26,6 +26,8 @@ public class Issue implements Parcelable {
         name = in.readString();
         reason = in.readString();
         script = in.readString();
+        link = in.readString();
+        linkTitle = in.readString();
         inactive = in.readInt() != 0;
         contacts = in.createTypedArray(Contact.CREATOR);
         outcomeModels = in.createTypedArrayList(Outcome.CREATOR);
@@ -55,6 +57,8 @@ public class Issue implements Parcelable {
         dest.writeString(name);
         dest.writeString(reason);
         dest.writeString(script);
+        dest.writeString(link);
+        dest.writeString(linkTitle);
         dest.writeInt(inactive ? 1 : 0);
         dest.writeTypedArray(contacts, PARCELABLE_WRITE_RETURN_VALUE);
         dest.writeTypedList(outcomeModels);
