@@ -70,6 +70,18 @@
     <!-- Button that allows users to send 5 Calls an email [CHAR_LIMIT=30] -->
     <string name="contact_us_btn">contact us</string>
 
+    <!-- Prompt to connect with 5 Calls through social media [CHAR_LIMIT=100] -->
+    <string name="social_prompt">You can also get in touch via</string>
+
+    <!-- Button that links to 5 Calls' Twitter -->
+    <string name="twitter_btn">Twitter</string>
+
+    <!-- Button that links to 5 Calls' Facebook [CHAR_LIMIT=30] -->
+    <string name="facebook_btn">Facebook</string>
+
+    <!-- Button that links to 5 Calls' Instagram [CHAR_LIMIT=30] -->
+    <string name="instagram_btn">Instagram</string>
+
     <!-- Button linking to the 5calls.org Play Store page to request a rating [CHAR_LIMIT=30] -->
     <string name="rate_us_btn">Rate 5 Calls</string>
 
@@ -382,6 +394,15 @@
 
     <!-- Name of the intent chooser for sending emails [CHAR_LIMIT=NONE] -->
     <string name="send_email">Send Email</string>
+
+    <!-- Name of the intent chooser for opening Twitter [CHAR_LIMIT=NONE] -->
+    <string name="open_twitter">Open Twitter</string>
+
+    <!-- Name of the intent chooser for opening Facebook [CHAR_LIMIT=NONE] -->
+    <string name="open_facebook">Open Facebook</string>
+
+    <!-- Name of the intent chooser for opening Instagram [CHAR_LIMIT=NONE] -->
+    <string name="open_instagram">Open Instagram</string>
 
     <!-- Call result button for when the contact was unavailable (i.e. couldn't even leave a voicemail) [CHAR_LIMIT=30] -->
     <string name="outcome_unavailable">unavailable</string>

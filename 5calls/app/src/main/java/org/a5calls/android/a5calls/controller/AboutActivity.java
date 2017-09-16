@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -39,12 +40,20 @@ public class AboutActivity extends AppCompatActivity {
     private static final String TAG = "AboutActivity";
     private static final String EMAIL_CONTENT_TYPE = "message/rfc822";
 
+    // Links to social media accounts.
+    private static final String TWITTER_URL = "https://twitter.com/make5calls";
+    private static final String FACEBOOK_URL = "https://www.facebook.com/make5calls/";
+    private static final String INSTAGRAM_URL = "https://www.instagram.com/5calls/";
+
     private final AccountManager accountManager = AccountManager.Instance;
     private FiveCallsApi.CallRequestListener mStatusListener;
 
     @BindView(R.id.sign_up_newsletter_btn) Button signUpNewsletterButton;
     @BindView(R.id.about_us_btn) Button aboutUsButton;
     @BindView(R.id.contact_us_btn) Button contactUsButton;
+    @BindView(R.id.twitter_btn) TextView twitterButton;
+    @BindView(R.id.facebook_btn) TextView facebookButton;
+    @BindView(R.id.instagram_btn) TextView instagramButton;
     @BindView(R.id.rate_us_btn) Button rateUsButton;
     @BindView(R.id.version_info) TextView version;
     @BindView(R.id.calls_to_date) TextView callsToDate;
@@ -74,16 +83,21 @@ public class AboutActivity extends AppCompatActivity {
             }
         });
 
-        contactUsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                final Intent intentChooser = Intent.createChooser(
-                        getSendEmailIntent(getResources()),
-                        getResources().getString(R.string.send_email)
-                );
-                startActivity(intentChooser);
-            }
-        });
+        setOpenIntentOnClick(
+                contactUsButton, getSendEmailIntent(getResources()), R.string.send_email
+        );
+
+        setOpenIntentOnClick(
+                twitterButton, getActionIntent(TWITTER_URL), R.string.open_twitter
+        );
+
+        setOpenIntentOnClick(
+                facebookButton, getActionIntent(FACEBOOK_URL), R.string.open_facebook
+        );
+
+        setOpenIntentOnClick(
+                instagramButton, getActionIntent(INSTAGRAM_URL), R.string.open_instagram
+        );
 
         rateUsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -185,6 +199,24 @@ public class AboutActivity extends AppCompatActivity {
     }
 
     /**
+     * Sets the on click listener of the given {@link View} to launch the given {@link Intent}
+     * with a chooser with the given prompt.
+     */
+    private void setOpenIntentOnClick(final View view,
+                                      final Intent intent,
+                                      final @StringRes int promptRes) {
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+                final Intent intentChooser = Intent.createChooser(
+                        intent, getResources().getString(promptRes)
+                );
+                startActivity(intentChooser);
+            }
+        });
+    }
+
+    /**
      * @return an {@link Intent} that allows the user to send an email to 5 Calls
      */
     private static Intent getSendEmailIntent(final Resources resources) {
@@ -196,6 +228,15 @@ public class AboutActivity extends AppCompatActivity {
         intent.putExtra(Intent.EXTRA_SUBJECT, subject);
         intent.setType(EMAIL_CONTENT_TYPE);
 
+        return intent;
+    }
+
+    /**
+     * @return an {@link Intent} that opens the given {@code url}
+     */
+    private static Intent getActionIntent(final String url) {
+        final Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(url));
         return intent;
     }
 }

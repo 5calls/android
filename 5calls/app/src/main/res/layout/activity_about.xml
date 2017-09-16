@@ -126,6 +126,69 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="@string/social_prompt"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/text_size_paragraph"
+            android:textStyle="bold|italic"
+        />
+
+        <!-- Social media buttons. -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+        >
+            <TextView
+                android:id="@+id/twitter_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="0dp"
+                android:gravity="center"
+                android:background="@android:color/transparent"
+                android:minWidth="@dimen/accessibility_min_size"
+                android:minHeight="@dimen/accessibility_min_size"
+                android:text="@string/twitter_btn"
+                android:textColor="@color/colorAccent"
+                android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+            />
+
+            <TextView
+                android:id="@+id/facebook_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="0dp"
+                android:gravity="center"
+                android:background="@android:color/transparent"
+                android:minWidth="@dimen/accessibility_min_size"
+                android:minHeight="@dimen/accessibility_min_size"
+                android:text="@string/facebook_btn"
+                android:textColor="@color/colorAccent"
+                android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+            />
+
+            <TextView
+                android:id="@+id/instagram_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="0dp"
+                android:gravity="center"
+                android:background="@android:color/transparent"
+                android:minWidth="@dimen/accessibility_min_size"
+                android:minHeight="@dimen/accessibility_min_size"
+                android:text="@string/instagram_btn"
+                android:textColor="@color/colorAccent"
+                android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+            />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:text="@string/rate_us_prompt"
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/text_size_paragraph"
