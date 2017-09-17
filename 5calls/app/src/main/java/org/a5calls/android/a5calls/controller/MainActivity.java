@@ -14,6 +14,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -29,6 +30,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
@@ -145,6 +147,8 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         issuesRecyclerView.setLayoutManager(layoutManager);
+        DividerItemDecoration divider = new DividerItemDecoration(this, RecyclerView.VERTICAL);
+        issuesRecyclerView.addItemDecoration(divider);
         mIssuesAdapter = new IssuesAdapter();
         issuesRecyclerView.setAdapter(mIssuesAdapter);
 
@@ -505,7 +509,7 @@ public class MainActivity extends AppCompatActivity {
                         R.layout.empty_issues_address_view, parent, false);
                 return new EmptyAddressViewHolder(empty);
             } else {
-                CardView v = (CardView) LayoutInflater.from(parent.getContext())
+                RelativeLayout v = (RelativeLayout) LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.issue_view, parent, false);
                 return new IssueViewHolder(v);
             }
