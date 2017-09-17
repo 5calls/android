@@ -2,6 +2,7 @@ package org.a5calls.android.a5calls.controller;
 
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -121,6 +122,8 @@ public class AboutActivity extends AppCompatActivity {
             }
         });
 
+        underlineButtons();
+
         version.setText(String.format(getResources().getString(R.string.version_info),
                 BuildConfig.VERSION_NAME));
 
@@ -185,6 +188,24 @@ public class AboutActivity extends AppCompatActivity {
             tracker.setScreenName(TAG);
             tracker.send(new HitBuilders.ScreenViewBuilder().build());
         }
+    }
+
+    private void underlineButtons() {
+        underlineText(signUpNewsletterButton);
+        underlineText(aboutUsButton);
+        underlineText(contactUsButton);
+        underlineText(twitterButton);
+        underlineText(facebookButton);
+        underlineText(instagramButton);
+        underlineText(rateUsButton);
+        underlineText(licenseButton);
+    }
+
+    /**
+     * Underlines text in the given {@code TextView}.
+     */
+    private static void underlineText(final TextView textView) {
+        textView.setPaintFlags(textView.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
     }
 
     // Inspired by https://www.bignerdranch.com/blog/open-source-licenses-and-android/
