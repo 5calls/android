@@ -89,10 +89,13 @@ public class FiveCallsApplication extends Application {
         }
 
         // Set up OneSignal.
+        /*
+         * TODO: Put back once we are ready to launch this.
         OneSignal.startInit(this)
                 .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
                 .unsubscribeWhenNotificationsAreDisabled(true)
                 .init();
+         */
     }
 
     /**
