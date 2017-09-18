@@ -414,4 +414,26 @@
         <item>@string/top_issues_filter</item>
         <item>@string/all_issues_filter</item>
     </string-array>
+
+    <!-- Title of a section in settings about notifications [CHAR_LIMIT=50] -->
+    <string name="settings_category_notifications">Notifications</string>
+
+    <!-- Title of a setting to allow users to enable notifications when new issues are available [CHAR_LIMIT=100] -->
+    <string name="settings_notifications_enable_title">Receive notifications about new issues</string>
+
+    <!-- Option to not show notifications about new issues [CHAR_LIMIT=100] -->
+    <string name="disable_new_issues_notification">Do not show new issue notifications</string>
+
+    <string-array name="notification_options">
+        <item>@string/top_issues_filter</item>
+        <item>@string/all_issues_filter</item>
+        <item>@string/disable_new_issues_notification</item>
+    </string-array>
+
+    <!-- DO NOT TRANSLATE This is the value of the weekdays in order. Monday is 2. -->
+    <string-array name="notification_options_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
 </resources>

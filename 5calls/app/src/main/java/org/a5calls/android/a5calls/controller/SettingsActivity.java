@@ -135,6 +135,17 @@ public class SettingsActivity extends AppCompatActivity {
                 accountManager.setReminderDays(getActivity(), result);
                 updateReminderDaysSummary((MultiSelectListPreference) findPreference(
                         AccountManager.KEY_REMINDER_DAYS), result);
+            } else if (TextUtils.equals(key, AccountManager.KEY_NOTIFICATIONS)) {
+                String result = sharedPreferences.getString(key,
+                        AccountManager.DEFAULT_NOTIFICATION_SELECTION);
+                accountManager.setNotificationPreference(getActivity(), result);
+                if (TextUtils.equals("0", result)) {
+                    OneSignalNotificationController.enableTopNotifications();
+                } else if (TextUtils.equals("1", result)) {
+                    OneSignalNotificationController.enableAllNotifications();
+                } else if (TextUtils.equals("2", result)) {
+                    OneSignalNotificationController.disableNotifications();
+                }
             }
         }
 

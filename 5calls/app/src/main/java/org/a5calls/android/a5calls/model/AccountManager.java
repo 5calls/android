@@ -27,6 +27,7 @@ public enum AccountManager {
     public static final String KEY_REMINDER_DAYS = "prefsKeyReminderDays";
     public static final String KEY_ALLOW_REMINDERS = "prefsKeyEnableReminders";
     private static final String KEY_REMINDERS_INFO_SHOWN = "prefsKeyRemindersInfoShown";
+    public static final String KEY_NOTIFICATIONS = "prefsKeyNotifications";
 
     // Default to 11 am.
     public static final int DEFAULT_REMINDER_MINUTES = 60 * 11;
@@ -34,6 +35,9 @@ public enum AccountManager {
     // Default to Monday, Wednesday and Friday only.
     public static final Set<String> DEFAULT_REMINDER_DAYS =
             new HashSet<>(Arrays.asList("2", "4", "6"));
+
+    // Default to "top" notifications.
+    public static final String DEFAULT_NOTIFICATION_SELECTION = "0";
 
     public boolean hasLocation(Context context) {
         // If there's a lat/lng or an address.
@@ -108,28 +112,31 @@ public enum AccountManager {
     }
 
     public void setAllowReminders(Context context, boolean allowReminders) {
-        getSharedPrefs(context).edit().putBoolean(KEY_ALLOW_REMINDERS, allowReminders)
-                .apply();
+        getSharedPrefs(context).edit().putBoolean(KEY_ALLOW_REMINDERS, allowReminders).apply();
     }
 
     public int getReminderMinutes(Context context) {
-        return getSharedPrefs(context).getInt(KEY_REMINDER_MINUTES,
-                DEFAULT_REMINDER_MINUTES);
+        return getSharedPrefs(context).getInt(KEY_REMINDER_MINUTES, DEFAULT_REMINDER_MINUTES);
     }
 
     public void setReminderMinutes(Context context, int reminderMinutes) {
-        getSharedPrefs(context).edit().putInt(KEY_REMINDER_MINUTES, reminderMinutes)
-                .apply();
+        getSharedPrefs(context).edit().putInt(KEY_REMINDER_MINUTES, reminderMinutes).apply();
     }
 
     public Set<String> getReminderDays(Context context) {
-        return getSharedPrefs(context).getStringSet(KEY_REMINDER_DAYS,
-                DEFAULT_REMINDER_DAYS);
+        return getSharedPrefs(context).getStringSet(KEY_REMINDER_DAYS, DEFAULT_REMINDER_DAYS);
     }
 
     public void setReminderDays(Context context, Set<String> reminderDays) {
-        getSharedPrefs(context).edit().putStringSet(KEY_REMINDER_DAYS, reminderDays)
-                .apply();
+        getSharedPrefs(context).edit().putStringSet(KEY_REMINDER_DAYS, reminderDays).apply();
+    }
+
+    public void setNotificationPreference(Context context, String preference) {
+        getSharedPrefs(context).edit().putString(KEY_NOTIFICATIONS, preference).apply();
+    }
+
+    public String getNotificationPreference(Context context) {
+        return getSharedPrefs(context).getString(KEY_NOTIFICATIONS, DEFAULT_NOTIFICATION_SELECTION);
     }
 
     private SharedPreferences getSharedPrefs(Context context) {
