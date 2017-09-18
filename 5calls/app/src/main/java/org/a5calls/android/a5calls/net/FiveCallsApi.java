@@ -72,7 +72,8 @@ public class FiveCallsApi {
     private List<IssuesRequestListener> mIssuesRequestListeners = new ArrayList<>();
 
     public FiveCallsApi(Context context) {
-        mRequestQueue = Volley.newRequestQueue(context, new OkHttpStack(new OkHttpClient()));
+        //mRequestQueue = Volley.newRequestQueue(context, new OkHttpStack(new OkHttpClient()));
+        mRequestQueue = Volley.newRequestQueue(context);
         mGson = new GsonBuilder()
                 .serializeNulls()
                 .registerTypeAdapter(Outcome.Status.class, new OutcomeStatusTypeAdapter())
