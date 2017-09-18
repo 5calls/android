@@ -11,7 +11,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 26
         versionCode 30
-        versionName "1.8.3" // DO NOT RELEASE WITHOUT TRANSLATIONS!
+        versionName "1.8.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         manifestPlaceholders = [onesignal_app_id: "5fd4ca41-9f6c-4149-a312-ae3e71b35c0e",
                                 // Project number pulled from dashboard, local value is ignored.

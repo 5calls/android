@@ -25,6 +25,7 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 import com.onesignal.OneSignal;
 
+import org.a5calls.android.a5calls.controller.OneSignalNotificationController;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.NotificationUtils;
 
@@ -89,13 +90,8 @@ public class FiveCallsApplication extends Application {
         }
 
         // Set up OneSignal.
-        /*
-         * TODO: Put back once we are ready to launch this.
-        OneSignal.startInit(this)
-                .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
-                .unsubscribeWhenNotificationsAreDisabled(true)
-                .init();
-         */
+        OneSignalNotificationController.setUp(this);
+
     }
 
     /**
