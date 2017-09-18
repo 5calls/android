@@ -10,7 +10,7 @@ android {
         applicationId "org.a5calls.android.a5calls"
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 29
+        versionCode 30
         versionName "1.8.3" // DO NOT RELEASE WITHOUT TRANSLATIONS!
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         manifestPlaceholders = [onesignal_app_id: "5fd4ca41-9f6c-4149-a312-ae3e71b35c0e",
@@ -25,7 +25,7 @@ android {
     }
     lintOptions {
         // Check for errors in release builds. Change to false to force build.
-        abortOnError false // DO NOT RELEASE LIKE THIS
+        abortOnError true
     }
 }
 
