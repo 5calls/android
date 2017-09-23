@@ -30,8 +30,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import okhttp3.OkHttpClient;
-
 /**
  * Class to handle server gets and posts.
  */
@@ -72,6 +70,8 @@ public class FiveCallsApi {
     private List<IssuesRequestListener> mIssuesRequestListeners = new ArrayList<>();
 
     public FiveCallsApi(Context context) {
+        // TODO: Using OkHttpClient and OkHttpStack cause failures on multiple types of Samsung
+        // Galaxy devices.
         //mRequestQueue = Volley.newRequestQueue(context, new OkHttpStack(new OkHttpClient()));
         mRequestQueue = Volley.newRequestQueue(context);
         mGson = new GsonBuilder()

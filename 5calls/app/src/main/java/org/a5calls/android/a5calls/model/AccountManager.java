@@ -17,6 +17,7 @@ public enum AccountManager {
 
     private static final String PREFS_FILE = "fiveCallsPrefs";
 
+    // Do not change these key values. They reference SharedPreference values.
     private static final String KEY_INITIALIZED = "prefsKeyInitialized";
     public static final String KEY_ALLOW_ANALYTICS = "prefsKeyAllowAnalytics";
     private static final String KEY_USER_ADDRESS = "prefsKeyUserZip";
@@ -28,6 +29,7 @@ public enum AccountManager {
     public static final String KEY_ALLOW_REMINDERS = "prefsKeyEnableReminders";
     private static final String KEY_REMINDERS_INFO_SHOWN = "prefsKeyRemindersInfoShown";
     public static final String KEY_NOTIFICATIONS = "prefsKeyNotifications";
+    private static final String KEY_NOTIFICATION_DIALOG_SHOWN = "prefsKeyNotificationDialog";
 
     // Default to 11 am.
     public static final int DEFAULT_REMINDER_MINUTES = 60 * 11;
@@ -36,8 +38,8 @@ public enum AccountManager {
     public static final Set<String> DEFAULT_REMINDER_DAYS =
             new HashSet<>(Arrays.asList("2", "4", "6"));
 
-    // Default to "top" notifications.
-    public static final String DEFAULT_NOTIFICATION_SELECTION = "0";
+    // Default to no notifications.
+    public static final String DEFAULT_NOTIFICATION_SELECTION = "2";
 
     public boolean hasLocation(Context context) {
         // If there's a lat/lng or an address.
@@ -137,6 +139,15 @@ public enum AccountManager {
 
     public String getNotificationPreference(Context context) {
         return getSharedPrefs(context).getString(KEY_NOTIFICATIONS, DEFAULT_NOTIFICATION_SELECTION);
+    }
+
+    public boolean isNotificationDialogShown(Context context) {
+        return getSharedPrefs(context).getBoolean(KEY_NOTIFICATION_DIALOG_SHOWN,
+                /* not seen yet */ false);
+    }
+
+    public void setNotificationDialogShown(Context context, boolean shown) {
+        getSharedPrefs(context).edit().putBoolean(KEY_NOTIFICATION_DIALOG_SHOWN, shown).apply();
     }
 
     private SharedPreferences getSharedPrefs(Context context) {

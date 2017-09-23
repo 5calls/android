@@ -24,7 +24,7 @@ public class NotificationUtils {
 
     private static final int NOTIFICATION_REQUEST_CODE = 0;
 
-    public static void setNotificationTime(Context context, int minutes) {
+    public static void setReminderTime(Context context, int minutes) {
         Calendar calendar = Calendar.getInstance();
 
         calendar.set(Calendar.HOUR_OF_DAY, minutes / 60);
@@ -53,7 +53,7 @@ public class NotificationUtils {
                         pendingIntent);
     }
 
-    public static void cancelFutureNotifications(Context context) {
+    public static void cancelFutureReminders(Context context) {
         cancelPendingIntent(context);
     }
 

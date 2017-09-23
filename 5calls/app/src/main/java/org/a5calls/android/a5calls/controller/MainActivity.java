@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
         if (!accountManager.isRemindersInfoShown(this)) {
             // We haven't yet told the user that reminders exist, they probably upgraded to get here
             // instead of learning about it in the tutorial. Give a dialog explaining more.
+            // This should only happen for users upgrading from a pretty old version of the app.
             DialogFragment fragment = NewSettingsDialog.newInstance(R.string.reminders_dialog_title,
                     R.string.reminders_dialog_content);
             getSupportFragmentManager().beginTransaction().add(fragment, NewSettingsDialog.TAG)

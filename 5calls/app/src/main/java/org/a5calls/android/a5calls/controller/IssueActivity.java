@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.widget.NestedScrollView;
@@ -209,7 +210,15 @@ public class IssueActivity extends AppCompatActivity {
                 }
             });
         } else {
-            loadRepList();
+            boolean allCalled = loadRepList();
+            if (allCalled && !AccountManager.Instance.isNotificationDialogShown(this)) {
+                // TODO: Use a different dialog.
+                DialogFragment fragment = NotificationSettingsDialog.newInstance();
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .add(fragment, NotificationSettingsDialog.TAG)
+                        .commit();
+            }
         }
     }
 
@@ -272,20 +281,32 @@ public class IssueActivity extends AppCompatActivity {
                 R.string.share_chooser_title)));
     }
 
-    private void loadRepList() {
+    /**
+     * Loads the representatives-to-call list at the bottom.
+     * @return true least once.if each rep has been called at
+     */
+    private boolean loadRepList() {
         repList.removeAllViews();
+        boolean allCalled = true;
         for (int i = 0; i < mIssue.contacts.length; i++) {
             View repView = LayoutInflater.from(this).inflate(R.layout.rep_list_view, null);
-            populateRepView(repView, mIssue.contacts[i], i);
+            List<String> previousCalls = AppSingleton.getInstance(this).getDatabaseHelper()
+                    .getCallResults(mIssue.id, mIssue.contacts[i].id);
+            populateRepView(repView, mIssue.contacts[i], i, previousCalls);
             repList.addView(repView);
+            if (previousCalls.size() == 0) {
+                allCalled = false;
+            }
         }
+        return allCalled && mIssue.contacts.length > 0;
     }
 
-    private void populateRepView(View repView, Contact contact, final int index) {
-        TextView contactName = (TextView) repView.findViewById(R.id.contact_name);
-        final ImageView repImage = (ImageView) repView.findViewById(R.id.rep_image);
-        ImageView contactChecked = (ImageView) repView.findViewById(R.id.contact_done_img);
-        TextView contactReason = (TextView) repView.findViewById(R.id.contact_reason);
+    private void populateRepView(View repView, Contact contact, final int index,
+                                 List<String> previousCalls) {
+        TextView contactName = repView.findViewById(R.id.contact_name);
+        final ImageView repImage = repView.findViewById(R.id.rep_image);
+        ImageView contactChecked = repView.findViewById(R.id.contact_done_img);
+        TextView contactReason = repView.findViewById(R.id.contact_reason);
         contactName.setText(contact.name);
         if (!TextUtils.isEmpty(contact.area)) {
             contactReason.setText(contact.area);
@@ -313,8 +334,6 @@ public class IssueActivity extends AppCompatActivity {
             repImage.setVisibility(View.GONE);
         }
         // Show a bit about whether they've been contacted yet
-        final List<String> previousCalls = AppSingleton.getInstance(this).getDatabaseHelper()
-                .getCallResults(mIssue.id, contact.id);
         if (previousCalls.size() > 0) {
             contactChecked.setImageLevel(1);
             contactChecked.setContentDescription(getResources().getString(

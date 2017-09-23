@@ -83,7 +83,8 @@ public class Outcome implements Parcelable {
     public static String getDisplayString(Context context, String label) {
         String result;
 
-        int id = context.getResources().getIdentifier("outcome_" + label, "string", context.getPackageName());
+        int id = context.getResources().getIdentifier("outcome_" + label,
+                "string", context.getPackageName());
 
         if (id > 0) {
             result = context.getResources().getString(id);

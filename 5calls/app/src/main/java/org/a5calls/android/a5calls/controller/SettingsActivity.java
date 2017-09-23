@@ -3,6 +3,7 @@ package org.a5calls.android.a5calls.controller;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.ListPreference;
 import android.preference.MultiSelectListPreference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
@@ -72,9 +73,9 @@ public class SettingsActivity extends AppCompatActivity {
         // Set up the notification firing logic when the settings activity ends, so as not
         // to do the work too frequently.
         if (manager.getAllowReminders(context)) {
-            NotificationUtils.setNotificationTime(context, manager.getReminderMinutes(context));
+            NotificationUtils.setReminderTime(context, manager.getReminderMinutes(context));
         } else {
-            NotificationUtils.cancelFutureNotifications(context);
+            NotificationUtils.cancelFutureReminders(context);
         }
     }
 
@@ -83,6 +84,18 @@ public class SettingsActivity extends AppCompatActivity {
             ((FiveCallsApplication) context.getApplicationContext()).enableAnalyticsHandler();
         } else {
             ((FiveCallsApplication) context.getApplicationContext()).disableAnalyticsHandler();
+        }
+    }
+
+    public static void updateNotificationsPreference(Context context, AccountManager accountManager,
+                                                     String result) {
+        accountManager.setNotificationPreference(context, result);
+        if (TextUtils.equals("0", result)) {
+            OneSignalNotificationController.enableTopNotifications();
+        } else if (TextUtils.equals("1", result)) {
+            OneSignalNotificationController.enableAllNotifications();
+        } else if (TextUtils.equals("2", result)) {
+            OneSignalNotificationController.disableNotifications();
         }
     }
 
@@ -104,6 +117,11 @@ public class SettingsActivity extends AppCompatActivity {
                     (MultiSelectListPreference) findPreference(AccountManager.KEY_REMINDER_DAYS);
             daysPreference.setValues(reminderDays);
             updateReminderDaysSummary(daysPreference, reminderDays);
+
+            String notificationSetting = accountManager.getNotificationPreference(getActivity());
+            ListPreference notificationPref =
+                    (ListPreference) findPreference(AccountManager.KEY_NOTIFICATIONS);
+            notificationPref.setValue(notificationSetting);
         }
 
         @Override
@@ -138,14 +156,7 @@ public class SettingsActivity extends AppCompatActivity {
             } else if (TextUtils.equals(key, AccountManager.KEY_NOTIFICATIONS)) {
                 String result = sharedPreferences.getString(key,
                         AccountManager.DEFAULT_NOTIFICATION_SELECTION);
-                accountManager.setNotificationPreference(getActivity(), result);
-                if (TextUtils.equals("0", result)) {
-                    OneSignalNotificationController.enableTopNotifications();
-                } else if (TextUtils.equals("1", result)) {
-                    OneSignalNotificationController.enableAllNotifications();
-                } else if (TextUtils.equals("2", result)) {
-                    OneSignalNotificationController.disableNotifications();
-                }
+                updateNotificationsPreference(getActivity(), accountManager, result);
             }
         }
 

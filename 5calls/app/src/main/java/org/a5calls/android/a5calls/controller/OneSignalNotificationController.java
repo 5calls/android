@@ -34,6 +34,10 @@ public class OneSignalNotificationController {
                 .disableGmsMissingPrompt(true) // We won't worry about out-of-date GMS
                 .unsubscribeWhenNotificationsAreDisabled(true)
                 .init();
+        // Disable notifications if we haven't prompted the user about them yet.
+        if (!AccountManager.Instance.isNotificationDialogShown(application)) {
+            OneSignal.setSubscription(false);
+        }
     }
 
     public static void enableAllNotifications() {
