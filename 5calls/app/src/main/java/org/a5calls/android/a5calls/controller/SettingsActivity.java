@@ -87,15 +87,29 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
-    public static void updateNotificationsPreference(Context context, AccountManager accountManager,
+    public static void updateNotificationsPreference(FiveCallsApplication application,
+                                                     AccountManager accountManager,
                                                      String result) {
-        accountManager.setNotificationPreference(context, result);
+        accountManager.setNotificationPreference(application, result);
         if (TextUtils.equals("0", result)) {
             OneSignalNotificationController.enableTopNotifications();
         } else if (TextUtils.equals("1", result)) {
             OneSignalNotificationController.enableAllNotifications();
         } else if (TextUtils.equals("2", result)) {
             OneSignalNotificationController.disableNotifications();
+        }
+        // If the user changes the settings there's no need to show the dialog in the future.
+        accountManager.setNotificationDialogShown(application, true);
+        // Log this to Analytics
+        if (accountManager.allowAnalytics(application)) {
+            Tracker tracker = application.getDefaultTracker();
+            tracker.send(new HitBuilders.EventBuilder()
+                    .setCategory("NotificationSettings")
+                    .setAction("NotificationSettingsChange")
+                    .setLabel(application.getApplicationContext().getResources()
+                            .getStringArray(R.array.notification_options)[Integer.valueOf(result)])
+                    .setValue(1)
+                    .build());
         }
     }
 
@@ -156,7 +170,8 @@ public class SettingsActivity extends AppCompatActivity {
             } else if (TextUtils.equals(key, AccountManager.KEY_NOTIFICATIONS)) {
                 String result = sharedPreferences.getString(key,
                         AccountManager.DEFAULT_NOTIFICATION_SELECTION);
-                updateNotificationsPreference(getActivity(), accountManager, result);
+                updateNotificationsPreference((FiveCallsApplication) getActivity().getApplication(),
+                        accountManager, result);
             }
         }
 

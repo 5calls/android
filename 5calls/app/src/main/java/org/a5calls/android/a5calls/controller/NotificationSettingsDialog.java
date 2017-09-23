@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 
+import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
 
@@ -44,9 +45,9 @@ public class NotificationSettingsDialog extends DialogFragment {
         builder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                SettingsActivity.updateNotificationsPreference(getActivity(),
+                SettingsActivity.updateNotificationsPreference(
+                        (FiveCallsApplication) getActivity().getApplication(),
                         AccountManager.Instance, String.format("%s", mSelectedOption));
-                // TODO show a toast when done to say saved, you can change this in settings.
             }
         });
 
@@ -56,7 +57,9 @@ public class NotificationSettingsDialog extends DialogFragment {
 
     @Override
     public void onDismiss(DialogInterface dialog) {
-        super.onDismiss(dialog);
-        AccountManager.Instance.setNotificationDialogShown(getActivity(), true);
+        if (getActivity() != null) {
+            ((IssueActivity) getActivity()).onNotificationSettingsDialogDismissed();
+        }
+        super.onCancel(dialog);
     }
 }

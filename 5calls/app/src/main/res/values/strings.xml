@@ -443,4 +443,6 @@
     <!-- Save button or action [CHAR_LIMIT=20] -->
     <string name="save">Save</string>
 
+    <string name="notification_snackbar">You can edit your notification preferences in Settings.</string>
+
 </resources>
