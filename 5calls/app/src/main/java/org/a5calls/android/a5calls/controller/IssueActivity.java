@@ -12,6 +12,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.text.TextUtils;
@@ -355,8 +356,9 @@ public class IssueActivity extends AppCompatActivity {
 
     public void onNotificationSettingsDialogDismissed() {
         AccountManager.Instance.setNotificationDialogShown(IssueActivity.this, true);
-        // TODO: This isn't showing up properly.
-        Snackbar.make(issueName, getResources().getString(R.string.notification_snackbar),
-                Snackbar.LENGTH_LONG).show();
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle(R.string.notifications_dialog_title);
+        dialog.setMessage(R.string.notification_snackbar);
+        dialog.show();
     }
 }

@@ -28,6 +28,7 @@ import java.util.Set;
 /**
  * Settings for the app
  */
+// TODO: Analytics and Notification settings need a way to retry if connection was not available.
 public class SettingsActivity extends AppCompatActivity {
     String TAG = "SettingsActivity";
 
