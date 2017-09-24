@@ -1,6 +1,7 @@
 package org.a5calls.android.a5calls.controller;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.ListPreference;
@@ -8,6 +9,8 @@ import android.preference.MultiSelectListPreference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.SwitchPreference;
+import android.support.v4.app.NavUtils;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -30,6 +33,7 @@ import java.util.Set;
  */
 // TODO: Analytics and Notification settings need a way to retry if connection was not available.
 public class SettingsActivity extends AppCompatActivity {
+    public static final String EXTRA_FROM_NOTIFICATION = "fromNotification";
     String TAG = "SettingsActivity";
 
     private final AccountManager accountManager = AccountManager.Instance;
@@ -43,6 +47,18 @@ public class SettingsActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
+        if (getIntent().getBooleanExtra(EXTRA_FROM_NOTIFICATION, false)) {
+            if (accountManager.allowAnalytics(this)) {
+                FiveCallsApplication application = (FiveCallsApplication) getApplication();
+                Tracker tracker = application.getDefaultTracker();
+                tracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("Reminders")
+                        .setAction("SettingsFromReminder")
+                        .setValue(1)
+                        .build());
+            }
         }
 
         getFragmentManager().beginTransaction().replace(R.id.content, new SettingsFragment())
@@ -65,7 +81,20 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            finish();
+            Intent upIntent = NavUtils.getParentActivityIntent(this);
+            if (NavUtils.shouldUpRecreateTask(this, upIntent) || isTaskRoot()) {
+                // This activity is NOT part of this app's task, so create a new task
+                // when navigating up, with a synthesized back stack.
+                // This is probably because we opened settings from the notification.
+                TaskStackBuilder.create(this)
+                        // Add all of this activity's parents to the back stack
+                        .addNextIntentWithParentStack(upIntent)
+                        // Navigate up to the closest parent
+                        .startActivities();
+            } else {
+                NavUtils.navigateUpTo(this, upIntent);
+            }
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -105,7 +134,7 @@ public class SettingsActivity extends AppCompatActivity {
         if (accountManager.allowAnalytics(application)) {
             Tracker tracker = application.getDefaultTracker();
             tracker.send(new HitBuilders.EventBuilder()
-                    .setCategory("NotificationSettings")
+                    .setCategory("Notifications")
                     .setAction("NotificationSettingsChange")
                     .setLabel(application.getApplicationContext().getResources()
                             .getStringArray(R.array.notification_options)[Integer.valueOf(result)])

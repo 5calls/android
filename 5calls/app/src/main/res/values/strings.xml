@@ -344,8 +344,8 @@
     <!-- Content of an email or message shared from an issue detail screen sharing an issue [CHAR_LIMIT=NONE] -->
     <string name="issue_share_content">I just called my rep to <xliff:g id="issue_summary">%1$s</xliff:g> — you should too: http://5calls.org/issue/<xliff:g id="issue_id">%2$s</xliff:g></string>
 
-    <!-- Action on the reminder notification to snooze the notification for one hour [CHAR_LIMIT=15] -->
-    <string name="snooze">Remind me later</string>
+    <!-- Action on the reminder notification to snooze the notification for one hour [CHAR_LIMIT=10] -->
+    <string name="snooze">Snooze</string>
 
     <!-- Button to load more and/or inactive issues [CHAR_LIMIT=50] -->
     <string name="load_more_btn">Load more issues</string>
@@ -443,6 +443,10 @@
     <!-- Save button or action [CHAR_LIMIT=20] -->
     <string name="save">Save</string>
 
+    <!-- Message telling the user they can change their new issue notification preferences in Settings [CHAR_LIMIT=NONE] -->
     <string name="notification_snackbar">You can edit your notification preferences in Settings.</string>
+
+    <!-- Action or button to dismiss a notification [CHAR_LIMIT=10] -->
+    <string name="dismiss">Dismiss</string>
 
 </resources>

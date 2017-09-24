@@ -47,7 +47,6 @@ public class NotificationUtils {
         // We try firing the alarm every day, but will only set the notification if it is one of
         // the user's selected days.
         PendingIntent pendingIntent = cancelPendingIntent(context);
-        Log.d(TAG, "setting reminder");
         ((AlarmManager) context.getSystemService(Context.ALARM_SERVICE))
                 .setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), intervalMillis,
                         pendingIntent);
@@ -69,7 +68,6 @@ public class NotificationUtils {
                 intent, 0);
         AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         manager.cancel(pendingIntent); // Clear the old intent, if there was one.
-        Log.d(TAG, "canceling previous intent");
         return pendingIntent;
     }
 
@@ -83,7 +81,6 @@ public class NotificationUtils {
         } else {
             when.add(Calendar.MINUTE, 60);
         }
-        Log.d(TAG, "snoozing until " + when.getTime().toString());
         ((AlarmManager) context.getSystemService(Context.ALARM_SERVICE))
                 .set(AlarmManager.RTC_WAKEUP, when.getTimeInMillis(), pendingSnooze);
     }

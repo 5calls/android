@@ -10,6 +10,9 @@ import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
 import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
@@ -30,6 +33,7 @@ public class NotifyBroadcastReceiver extends BroadcastReceiver {
     public static final int NOTIFICATION_ID = 42;
     private static final int SNOOZE_REQUEST_CODE = 1;
     private static final int CANCEL_REQUEST_CODE = 2;
+    private static final int GO_TO_SETTINGS_REQUEST_CODE = 3;
 
     private static final String ACTION_DO_SNOOZE = "org.a5calls.android.a5calls.controller.snooze";
     private static final String ACTION_CANCEL_NOTIFY =
@@ -44,12 +48,32 @@ public class NotifyBroadcastReceiver extends BroadcastReceiver {
                     .cancel(NOTIFICATION_ID);
             // Do the snooze
             NotificationUtils.snoozeNotification(context);
+            if (AccountManager.Instance.allowAnalytics(context)) {
+                FiveCallsApplication application = (FiveCallsApplication)
+                        context.getApplicationContext();
+                Tracker tracker = application.getDefaultTracker();
+                tracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("Reminders")
+                        .setAction("SnoozeReminder")
+                        .setValue(1)
+                        .build());
+            }
             return;
         }
         if (TextUtils.equals(intent.getAction(), ACTION_CANCEL_NOTIFY)) {
             // Cancel the notification and do nothing else
             ((NotificationManager) context.getSystemService(NOTIFICATION_SERVICE))
                     .cancel(NOTIFICATION_ID);
+            if (AccountManager.Instance.allowAnalytics(context)) {
+                FiveCallsApplication application = (FiveCallsApplication)
+                        context.getApplicationContext();
+                Tracker tracker = application.getDefaultTracker();
+                tracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("Reminders")
+                        .setAction("CancelReminder")
+                        .setValue(1)
+                        .build());
+            }
             return;
         }
         if (((FiveCallsApplication) context.getApplicationContext()).isRunning()) {
@@ -88,6 +112,18 @@ public class NotifyBroadcastReceiver extends BroadcastReceiver {
                     pendingSnooze)
                     .build();
             builder.addAction(snoozeAction);
+            // Add a link to get to settings
+            Intent settingsIntent = new Intent(context, SettingsActivity.class);
+            settingsIntent.putExtra(SettingsActivity.EXTRA_FROM_NOTIFICATION, true);
+            settingsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            PendingIntent pendingSettings = PendingIntent.getActivity(context,
+                    GO_TO_SETTINGS_REQUEST_CODE, settingsIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+            Notification.Action settingsAction = new Notification.Action.Builder(
+                    R.drawable.ic_settings_black_24dp,
+                    context.getResources().getString(R.string.settings),
+                    pendingSettings)
+                    .build();
+            builder.addAction(settingsAction);
             // Add a cancel action too
             Intent cancelIntent = new Intent(context, NotifyBroadcastReceiver.class)
                     .setAction(ACTION_CANCEL_NOTIFY);
@@ -95,7 +131,7 @@ public class NotifyBroadcastReceiver extends BroadcastReceiver {
                     CANCEL_REQUEST_CODE, cancelIntent, PendingIntent.FLAG_CANCEL_CURRENT);
             Notification.Action cancelAction = new Notification.Action.Builder(
                     R.drawable.ic_close_white_24dp,
-                    context.getResources().getString(android.R.string.cancel),
+                    context.getResources().getString(R.string.dismiss),
                     pendingCancel)
                     .build();
             builder.addAction(cancelAction);
@@ -104,6 +140,5 @@ public class NotifyBroadcastReceiver extends BroadcastReceiver {
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
         notificationManager.notify(NOTIFICATION_ID, notification);
-        // TODO: Add a notification settings option too which goes direct to Settings
     }
 }

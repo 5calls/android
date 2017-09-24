@@ -9,6 +9,8 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.widget.NestedScrollView;
@@ -207,15 +209,18 @@ public class IssueActivity extends AppCompatActivity {
             });
         } else {
             boolean allCalled = loadRepList();
+            Fragment dialog = getSupportFragmentManager()
+                    .findFragmentByTag(NotificationSettingsDialog.TAG);
             if (allCalled && !AccountManager.Instance.isNotificationDialogShown(this)) {
-                if (getSupportFragmentManager()
-                        .findFragmentByTag(NotificationSettingsDialog.TAG) == null) {
+                if (dialog == null) {
                     NotificationSettingsDialog fragment = NotificationSettingsDialog.newInstance();
                     getSupportFragmentManager()
                             .beginTransaction()
                             .add(fragment, NotificationSettingsDialog.TAG)
                             .commit();
                 }
+            } else if (dialog != null) {
+                ((NotificationSettingsDialog) dialog).dismiss();
             }
         }
     }
