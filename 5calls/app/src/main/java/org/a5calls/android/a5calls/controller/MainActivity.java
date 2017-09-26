@@ -365,6 +365,9 @@ public class MainActivity extends AppCompatActivity {
         }
         List<String> topics = new ArrayList<>();
         for (Issue issue : issues) {
+            if (issue.categories == null) {
+                continue;
+            }
             for (Category category : issue.categories) {
                 if (!topics.contains(category.name)) {
                     topics.add(category.name);
