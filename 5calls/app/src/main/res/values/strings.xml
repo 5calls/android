@@ -424,14 +424,17 @@
     <!-- Option to not show notifications about new issues [CHAR_LIMIT=100] -->
     <string name="disable_new_issues_notification">Do not show new issue notifications</string>
 
+    <!-- Filter for only the most important issues [CHAR_LIMIT=50] -->
+    <string name="important_issues_filter">Important issues</string>
+
     <string-array name="notification_options">
-        <item>@string/top_issues_filter</item>
+        <item>@string/important_issues_filter</item>
         <item>@string/all_issues_filter</item>
         <item>@string/disable_new_issues_notification</item>
     </string-array>
 
-    <!-- DO NOT TRANSLATE This is the value of the weekdays in order. Monday is 2. -->
-    <string-array name="notification_options_values">
+    <!-- DO NOT TRANSLATE This is the value of the weekdays in order. Monday is 2.  DO NOT TRANSLATE. -->
+    <string-array name="notification_options_values" translatable="false">
         <item>0</item>
         <item>1</item>
         <item>2</item>

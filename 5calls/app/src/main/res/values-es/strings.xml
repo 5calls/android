@@ -386,4 +386,37 @@
     <!-- Call result button for when the user made contact and the contact has not taken a stance on the issue [CHAR_LIMIT=30] -->
     <string name="outcome_unknown">no posición</string>
 
+    <!-- Label for drop-down of filters for issues [CHAR_LIMIT=20] -->
+    <string name="filter_label">Filtrar</string>
+
+    <!-- Filter for showing only the top issues [CHAR_LIMIT=50] -->
+    <string name="top_issues_filter">Asuntos destacados</string>
+
+    <!-- Filter for showing all issues [CHAR_LIMIT=50] -->
+    <string name="all_issues_filter">Todos los asuntos</string>
+
+    <!-- Title of a section in settings about notifications [CHAR_LIMIT=50] -->
+    <string name="settings_category_notifications">Notificaciones</string>
+
+    <!-- Title of a setting to allow users to enable notifications when new issues are available [CHAR_LIMIT=100] -->
+    <string name="settings_notifications_enable_title">Recibir notificaciones sobre asuntos nuevos</string>
+
+    <!-- Option to not show notifications about new issues [CHAR_LIMIT=100] -->
+    <string name="disable_new_issues_notification">No mostrar notificaciones sobre asuntos nuevos</string>
+
+    <!-- Filter for only the most important issues [CHAR_LIMIT=50] -->
+    <string name="important_issues_filter">Asuntos importantes</string>
+
+    <!-- Title for a dialog where users can pick their notification frequency [CHAR_LIMIT=100] -->
+    <string name="notifications_dialog_title">Recibir notificaciones de asuntos nuevos</string>
+
+    <!-- Save button or action [CHAR_LIMIT=20] -->
+    <string name="save">Guardar</string>
+
+    <!-- Message telling the user they can change their new issue notification preferences in Settings [CHAR_LIMIT=NONE] -->
+    <string name="notification_snackbar">Puede editar sus preferencias de notificación en la configuración.</string>
+
+    <!-- Action or button to dismiss a notification [CHAR_LIMIT=10] -->
+    <string name="dismiss">Descartar</string>
+
 </resources>
