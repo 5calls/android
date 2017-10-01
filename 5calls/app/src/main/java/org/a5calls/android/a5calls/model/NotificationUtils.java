@@ -1,13 +1,16 @@
 package org.a5calls.android.a5calls.model;
 
 import android.app.AlarmManager;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 
 import org.a5calls.android.a5calls.BuildConfig;
+import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.controller.NotifyBroadcastReceiver;
 
 import java.util.Calendar;
@@ -43,6 +46,8 @@ public class NotificationUtils {
                 calendar.add(Calendar.DAY_OF_YEAR, 1);
             }
         }
+
+        createNotificationChannel(context);
 
         // We try firing the alarm every day, but will only set the notification if it is one of
         // the user's selected days.
@@ -83,5 +88,21 @@ public class NotificationUtils {
         }
         ((AlarmManager) context.getSystemService(Context.ALARM_SERVICE))
                 .set(AlarmManager.RTC_WAKEUP, when.getTimeInMillis(), pendingSnooze);
+    }
+
+    private static void createNotificationChannel(Context context) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            return;
+        }
+        // Channels needed only for API 26 and above
+        NotificationManager mNotificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        String name = context.getResources().getString(R.string.app_name);
+        NotificationChannel channel = new NotificationChannel(NotifyBroadcastReceiver.CHANNEL_ID,
+                name, NotificationManager.IMPORTANCE_LOW);
+        // TODO: Could set sounds and vibration here.
+        mNotificationManager.createNotificationChannel(channel);
+
+
     }
 }

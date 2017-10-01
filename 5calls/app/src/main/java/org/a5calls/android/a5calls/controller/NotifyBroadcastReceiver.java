@@ -30,6 +30,7 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 public class NotifyBroadcastReceiver extends BroadcastReceiver {
     private static final String TAG = "NotifyBroadcastRcvr";
 
+    public static final String CHANNEL_ID = "5calls_notification_channel";
     public static final int NOTIFICATION_ID = 42;
     private static final int SNOOZE_REQUEST_CODE = 1;
     private static final int CANCEL_REQUEST_CODE = 2;
@@ -99,6 +100,9 @@ public class NotifyBroadcastReceiver extends BroadcastReceiver {
                 .setContentIntent(pendingIntent) // Launch main activity
                 .setAutoCancel(true) // Goes away when clicked
                 .setSmallIcon(R.drawable.app_icon_bw);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            builder.setChannelId(CHANNEL_ID); // O and above require Notification Channels.
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             builder.setColor(context.getResources().getColor(R.color.colorPrimary));
             // Set up a snooze action, which when clicked notifies this same broadcast receiver
