@@ -23,7 +23,6 @@ import android.os.Bundle;
 import com.google.android.gms.analytics.ExceptionReporter;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
-import com.onesignal.OneSignal;
 
 import org.a5calls.android.a5calls.controller.OneSignalNotificationController;
 import org.a5calls.android.a5calls.model.AccountManager;
@@ -102,7 +101,7 @@ public class FiveCallsApplication extends Application {
         if (mTracker == null) {
             GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
             // To enable debug logging use: adb shell setprop log.tag.GAv4 DEBUG
-            mTracker = analytics.newTracker(R.xml.global_tracker);
+            mTracker = analytics.newTracker("BLARG");
         }
         return mTracker;
     }

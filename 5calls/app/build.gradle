@@ -51,12 +51,8 @@ dependencies {
 
     compile 'com.google.android.gms:play-services-analytics:11.2.2'
 
-    compile project(':GraphView')
-
     compile 'com.onesignal:OneSignal:[3.6.2, 3.99.99]'
 
     // If you add any other open-source libraries, make sure to update assets/licenses.html
     // with the appropriate license information.
 }
-
-apply plugin: 'com.google.gms.google-services'

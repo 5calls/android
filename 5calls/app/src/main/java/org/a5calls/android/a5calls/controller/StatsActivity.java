@@ -3,12 +3,9 @@ package org.a5calls.android.a5calls.controller;
 import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.support.v4.util.Pair;
@@ -28,10 +25,6 @@ import android.widget.TextView;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
-import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
 
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.FiveCallsApplication;
@@ -63,7 +56,7 @@ public class StatsActivity extends AppCompatActivity {
     @BindView(R.id.stats_holder) LinearLayout statsHolder;
     @BindView(R.id.your_call_count) TextView callCountHeader;
     @BindView(R.id.stats_summary) TextView statsSummary;
-    @BindView(R.id.graph) GraphView graph;
+//    @BindView(R.id.graph) GraphView graph;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -160,28 +153,28 @@ public class StatsActivity extends AppCompatActivity {
         if (unavailables.size() > 0) {
             firstTimestamp = Math.min(firstTimestamp, unavailables.get(0));
         }
-        LineGraphSeries<DataPoint> contactedSeries = makeSeries(contacts, firstTimestamp,
-                R.color.contacted_color);
-        contactedSeries.setTitle(getResources().getString(R.string.outcome_contact));
-        LineGraphSeries<DataPoint> voicemailSeries = makeSeries(voicemails, firstTimestamp,
-                R.color.voicemail_color);
-        voicemailSeries.setTitle(getResources().getString(R.string.outcome_voicemail));
-        LineGraphSeries<DataPoint> unavailableSeries = makeSeries(unavailables, firstTimestamp,
-                R.color.unavailable_color);
-        unavailableSeries.setTitle(getResources().getString(R.string.outcome_unavailable));
-        graph.addSeries(contactedSeries);
-        graph.addSeries(voicemailSeries);
-        graph.addSeries(unavailableSeries);
-
-        graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this));
-        graph.getGridLabelRenderer().setNumHorizontalLabels(getResources().getInteger(
-                R.integer.horizontal_labels_count));
-        graph.getGridLabelRenderer().setNumVerticalLabels(5);
-        graph.getGridLabelRenderer().setGridColor(getResources().getColor(android.R.color.white));
-        graph.getGridLabelRenderer().setHumanRounding(false, true);
-        graph.getViewport().setMinX(firstTimestamp - 10);
-        graph.getViewport().setMaxX(System.currentTimeMillis() + 10);
-        graph.getViewport().setXAxisBoundsManual(true);
+//        LineGraphSeries<DataPoint> contactedSeries = makeSeries(contacts, firstTimestamp,
+//                R.color.contacted_color);
+//        contactedSeries.setTitle(getResources().getString(R.string.outcome_contact));
+//        LineGraphSeries<DataPoint> voicemailSeries = makeSeries(voicemails, firstTimestamp,
+//                R.color.voicemail_color);
+//        voicemailSeries.setTitle(getResources().getString(R.string.outcome_voicemail));
+//        LineGraphSeries<DataPoint> unavailableSeries = makeSeries(unavailables, firstTimestamp,
+//                R.color.unavailable_color);
+//        unavailableSeries.setTitle(getResources().getString(R.string.outcome_unavailable));
+//        graph.addSeries(contactedSeries);
+//        graph.addSeries(voicemailSeries);
+//        graph.addSeries(unavailableSeries);
+//
+//        graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this));
+//        graph.getGridLabelRenderer().setNumHorizontalLabels(getResources().getInteger(
+//                R.integer.horizontal_labels_count));
+//        graph.getGridLabelRenderer().setNumVerticalLabels(5);
+//        graph.getGridLabelRenderer().setGridColor(getResources().getColor(android.R.color.white));
+//        graph.getGridLabelRenderer().setHumanRounding(false, true);
+//        graph.getViewport().setMinX(firstTimestamp - 10);
+//        graph.getViewport().setMaxX(System.currentTimeMillis() + 10);
+//        graph.getViewport().setXAxisBoundsManual(true);
 
         /*
         // Allow manual zoom. Need to make sure the user can't zoom in too much...
@@ -191,24 +184,24 @@ public class StatsActivity extends AppCompatActivity {
         */
     }
 
-    private LineGraphSeries<DataPoint> makeSeries(List<Long> timestamps, long firstTimestamp,
-                                                  int colorId) {
-        DataPoint[] points = new DataPoint[timestamps.size() + 2];
-        // Add a first timestamp so the graphs all start at (0, 0)
-        points[0] = new DataPoint(firstTimestamp, 0);
-        int count = 0;
-        for (int i = 0; i < timestamps.size(); i++) {
-            points[i + 1] = new DataPoint(timestamps.get(i), ++count);
-        }
-        // Add right now to the timestamps, to scale the graph as expected.
-        points[timestamps.size() + 1] = new DataPoint(System.currentTimeMillis(), count);
-
-        // Styling
-        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(points);
-        series.setColor(getResources().getColor(colorId));
-        series.setThickness(getResources().getDimensionPixelSize(R.dimen.graph_line_width));
-        return series;
-    }
+//    private LineGraphSeries<DataPoint> makeSeries(List<Long> timestamps, long firstTimestamp,
+//                                                  int colorId) {
+//        DataPoint[] points = new DataPoint[timestamps.size() + 2];
+//        // Add a first timestamp so the graphs all start at (0, 0)
+//        points[0] = new DataPoint(firstTimestamp, 0);
+//        int count = 0;
+//        for (int i = 0; i < timestamps.size(); i++) {
+//            points[i + 1] = new DataPoint(timestamps.get(i), ++count);
+//        }
+//        // Add right now to the timestamps, to scale the graph as expected.
+//        points[timestamps.size() + 1] = new DataPoint(System.currentTimeMillis(), count);
+//
+//        // Styling
+//        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(points);
+//        series.setColor(getResources().getColor(colorId));
+//        series.setThickness(getResources().getDimensionPixelSize(R.dimen.graph_line_width));
+//        return series;
+//    }
 
     @Override
     protected void onResume() {
@@ -298,26 +291,26 @@ public class StatsActivity extends AppCompatActivity {
 
     private Bitmap generateGraphBitmap() {
         // Show a title and legend for the share
-        graph.setTitle("Calls over time");
-        graph.getLegendRenderer().setVisible(true);
-
-        // From https://stackoverflow.com/questions/5536066/convert-view-to-bitmap-on-android.
-        //Define a bitmap with the same size as the view
-        Bitmap returnedBitmap = Bitmap.createBitmap(graph.getWidth(), graph.getHeight(),
-                Bitmap.Config.ARGB_8888);
-        //Bind a canvas to it
-        Canvas canvas = new Canvas(returnedBitmap);
-        // Draw a background
-        canvas.drawColor(Color.WHITE);
-        // draw the view on the canvas
-        graph.draw(canvas);
-
-        // Undo the legend and title.
-        graph.setTitle("");
-        graph.getLegendRenderer().setVisible(false);
+//        graph.setTitle("Calls over time");
+//        graph.getLegendRenderer().setVisible(true);
+//
+//        // From https://stackoverflow.com/questions/5536066/convert-view-to-bitmap-on-android.
+//        //Define a bitmap with the same size as the view
+//        Bitmap returnedBitmap = Bitmap.createBitmap(graph.getWidth(), graph.getHeight(),
+//                Bitmap.Config.ARGB_8888);
+//        //Bind a canvas to it
+//        Canvas canvas = new Canvas(returnedBitmap);
+//        // Draw a background
+//        canvas.drawColor(Color.WHITE);
+//        // draw the view on the canvas
+//        graph.draw(canvas);
+//
+//        // Undo the legend and title.
+//        graph.setTitle("");
+//        graph.getLegendRenderer().setVisible(false);
 
         //return the bitmap
-        return returnedBitmap;
+        return null;
     }
 
     private Spannable getTextForCount(int count, int resIdOne, int resIdFormat, int resIdColor) {
