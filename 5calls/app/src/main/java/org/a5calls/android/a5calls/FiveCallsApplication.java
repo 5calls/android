@@ -23,7 +23,6 @@ import android.os.Bundle;
 import com.google.android.gms.analytics.ExceptionReporter;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
-import com.onesignal.OneSignal;
 
 import org.a5calls.android.a5calls.controller.OneSignalNotificationController;
 import org.a5calls.android.a5calls.model.AccountManager;
