@@ -15,7 +15,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSpinner;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,14 +31,14 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import com.auth0.android.authentication.AuthenticationException;
+import com.auth0.android.authentication.storage.CredentialsManagerException;
 import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.result.Credentials;
+import com.auth0.android.result.UserProfile;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
@@ -171,6 +170,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         registerApiListener();
+        tryLoggingIn();
 
         swipeContainer.setColorSchemeResources(R.color.colorPrimary);
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -269,9 +269,13 @@ public class MainActivity extends AppCompatActivity {
                             startActivity(intent);
                             return true;
                         } else if (item.getItemId() == R.id.menu_faq) {
-                            CustomTabsUtil.launchUrl(MainActivity.this, Uri.parse(getString(R.string.faq_url)));
+                            CustomTabsUtil.launchUrl(MainActivity.this,
+                                    Uri.parse(getString(R.string.faq_url)));
                         } else if (item.getItemId() == R.id.menu_login) {
                             login();
+                            return true;
+                        } else if (item.getItemId() == R.id.menu_logout) {
+                            logout();
                             return true;
                         }
 
@@ -280,16 +284,27 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    private void login() {
-        // TODO: Don't even show the login icon if the access token isn't null.
+    // Try logging in in the background.
+    private void tryLoggingIn() {
         AuthenticationManager authManager = AppSingleton.getInstance(getApplicationContext())
                 .getAuthenticationManager();
-        String accessToken = authManager.getAccessToken(getApplicationContext());
-        if (accessToken != null) {
+        if (!authManager.hasSavedCredentials()) {
+            // Can't log in in the background.
+            updateUiOnLogin(false);
             return;
         }
+        authManager.loginWithSavedCredentials(getUserInfoCallback());
+    }
 
-        authManager.doAuthentication(this, new AuthCallback() {
+    private void updateUiOnLogin(boolean isLoggedIn) {
+        navigationView.getMenu().findItem(R.id.menu_login).setVisible(!isLoggedIn);
+        navigationView.getMenu().findItem(R.id.menu_logout).setVisible(isLoggedIn);
+    }
+
+    private void login() {
+        AuthenticationManager authManager = AppSingleton.getInstance(getApplicationContext())
+                .getAuthenticationManager();
+        authManager.doLogin(this, new AuthCallback() {
             @Override
             public void onFailure(@NonNull Dialog dialog) {
                 dialog.show();
@@ -305,11 +320,51 @@ public class MainActivity extends AppCompatActivity {
             public void onSuccess(@NonNull Credentials credentials) {
                 // Store credentials
                 AppSingleton.getInstance(getApplicationContext()).getAuthenticationManager()
-                        .onAuthentication(getApplicationContext(), credentials);
-                // Change the login menu button to a logout button.
-                // TODO: Show the user that they've logged in.
+                        .getUserInfo(credentials, getUserInfoCallback());
             }
         });
+    }
+
+    private AuthenticationManager.BackgroundLoginCallback getUserInfoCallback() {
+        return new AuthenticationManager.BackgroundLoginCallback() {
+            @Override
+            public void onCredentialsFailure(CredentialsManagerException error) {
+                // Logout. Show login button
+                logout();
+                runOnUiThread(new Runnable() {
+
+                    public void run() {
+                        updateUiOnLogin(false);
+                    }
+                });
+            }
+
+            @Override
+            public void onSuccess(UserProfile payload) {
+                // Show logout button
+                runOnUiThread(new Runnable() {
+
+                    public void run() {
+                        updateUiOnLogin(true);
+                    }
+                });
+            }
+
+            @Override
+            public void onLoginFailure(AuthenticationException error) {
+                // Maybe give the user a message and show the login button
+                // TODO: What to do with stats in this case?
+                Log.d("MainActivity", error.getCode() + ", " + error.getDescription());
+            }
+        };
+    }
+
+    private void logout() {
+        // TODO: Show the user a dialog that logging out (will? will not?) clear their local data.
+        AuthenticationManager authManager = AppSingleton.getInstance(getApplicationContext())
+                .getAuthenticationManager();
+        authManager.removeAccount();
+        updateUiOnLogin(false);
     }
 
     private void launchLocationActivity() {

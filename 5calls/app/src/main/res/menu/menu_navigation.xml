@@ -6,6 +6,11 @@
         android:title="@string/menu_login"
         />
     <item
+        android:id="@+id/menu_logout"
+        android:title="@string/menu_logout"
+        android:visible="false"
+        />
+    <item
         android:id="@+id/menu_stats"
         android:icon="@drawable/ic_show_chart_black_24dp"
         android:title="@string/menu_stats"
