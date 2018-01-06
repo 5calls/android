@@ -32,6 +32,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.auth0.android.result.UserProfile;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.android.gms.analytics.HitBuilders;
@@ -213,11 +214,15 @@ public class RepCallActivity extends AppCompatActivity {
 
     private void reportCall(Outcome outcome, String address) {
         outcomeAdapter.setEnabled(false);
+        UserProfile profile = AppSingleton.getInstance(getApplicationContext())
+                .getAuthenticationManager().getCachedUserProfile();
+        String userId = profile == null ? null : profile.getId();
         AppSingleton.getInstance(getApplicationContext()).getDatabaseHelper().addCall(mIssue.id,
                 mIssue.name, mIssue.contacts[mActiveContactIndex].id,
                 mIssue.contacts[mActiveContactIndex].name, outcome.status.toString(), address);
         AppSingleton.getInstance(getApplicationContext()).getJsonController().reportCall(
-                mIssue.id, mIssue.contacts[mActiveContactIndex].id, outcome.label, address);
+                mIssue.id, mIssue.contacts[mActiveContactIndex].id, outcome.label, address,
+                userId);
     }
 
     private void setupContactUi(int index, boolean expandLocalSection) {

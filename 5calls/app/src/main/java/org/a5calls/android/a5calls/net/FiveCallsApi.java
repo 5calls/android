@@ -1,6 +1,7 @@
 package org.a5calls.android.a5calls.net;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.volley.AuthFailureError;
@@ -201,8 +202,9 @@ public class FiveCallsApi {
 
     // Result is "VOICEMAIL", "unavailable", or "contacted"
     // https://github.com/5calls/5calls/blob/master/static/js/main.js#L221
+    // User ID from Auth0 is omitted if no one is logged in.
     public void reportCall(final String issueId, final String contactId, final String result,
-                           final String zip) {
+                           final String zip, final String userId) {
         String getReport = GET_REPORT;
         StringRequest request = new StringRequest(Request.Method.POST, getReport,
                 new Response.Listener<String>() {
@@ -226,6 +228,9 @@ public class FiveCallsApi {
                 params.put("contactid", contactId);
                 params.put("location", zip);
                 params.put("via", (BuildConfig.DEBUG && TESTING) ? "test" : "android");
+                if (!TextUtils.isEmpty(userId)) {
+                    params.put("userid", userId);
+                }
                 return params;
             }
 
