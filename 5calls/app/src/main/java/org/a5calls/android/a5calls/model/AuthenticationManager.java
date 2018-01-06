@@ -2,7 +2,6 @@ package org.a5calls.android.a5calls.model;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 
 import com.auth0.android.Auth0;
 import com.auth0.android.authentication.AuthenticationAPIClient;
@@ -23,10 +22,9 @@ public class AuthenticationManager {
     private final AuthenticationAPIClient mApiClient;
     private final CredentialsManager mCredentialsManager;
     private final Auth0 mAccount;
+    private UserProfile mCurrentProfile;
 
     public interface BackgroundLoginCallback {
-        void onSuccess(UserProfile payload);
-        void onLoginFailure(AuthenticationException error);
         void onCredentialsFailure(CredentialsManagerException error);
     }
 
@@ -45,12 +43,21 @@ public class AuthenticationManager {
                 .start(activity, authCallback);
     }
 
+    public void cacheUserProfile(UserProfile profile) {
+        mCurrentProfile = profile;
+    }
+
+    public UserProfile getCachedUserProfile() {
+        return mCurrentProfile;
+    }
+
     public void onLogin(Credentials credentials) {
         mCredentialsManager.saveCredentials(credentials);
     }
 
     public void removeAccount() {
         mCredentialsManager.clearCredentials();
+        mCurrentProfile = null;
     }
 
     public boolean hasSavedCredentials() {
@@ -59,7 +66,9 @@ public class AuthenticationManager {
 
     // Tries to use the existing saved account to log in. Uses the BackgroundLoginCallback
     // to inform the caller if there is no existing account, if login failed, or if it succeeded.
-    public void loginWithSavedCredentials(final BackgroundLoginCallback callback) {
+    public void loginWithSavedCredentials(
+            final BackgroundLoginCallback loginCallback,
+            final BaseCallback<UserProfile, AuthenticationException> callback) {
         mCredentialsManager.getCredentials(
                 new BaseCallback<Credentials, CredentialsManagerException>() {
             @Override
@@ -71,25 +80,13 @@ public class AuthenticationManager {
             @Override
             public void onFailure(CredentialsManagerException error) {
                 //No credentials were previously saved or they couldn't be refreshed
-                callback.onCredentialsFailure(error);
+                loginCallback.onCredentialsFailure(error);
             }
         });
     }
 
-    public void getUserInfo(Credentials credentials, final BackgroundLoginCallback callback) {
-        mApiClient.userInfo(credentials.getAccessToken()).start(
-                new BaseCallback<UserProfile, AuthenticationException>() {
-                    @Override
-                    public void onSuccess(final UserProfile payload) {
-                        callback.onSuccess(payload);
-                    }
-
-                    @Override
-                    public void onFailure(AuthenticationException error) {
-                        //Delete current credentials and try again.
-                        removeAccount();
-                        callback.onLoginFailure(error);
-                    }
-                });
+    public void getUserInfo(Credentials credentials,
+                            BaseCallback<UserProfile, AuthenticationException> callback) {
+        mApiClient.userInfo(credentials.getAccessToken()).start(callback);
     }
 }

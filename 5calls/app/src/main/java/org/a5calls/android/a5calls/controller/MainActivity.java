@@ -36,6 +36,7 @@ import android.widget.TextView;
 
 import com.auth0.android.authentication.AuthenticationException;
 import com.auth0.android.authentication.storage.CredentialsManagerException;
+import com.auth0.android.callback.BaseCallback;
 import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.result.Credentials;
 import com.auth0.android.result.UserProfile;
@@ -286,23 +287,62 @@ public class MainActivity extends AppCompatActivity {
 
     // Try logging in in the background.
     private void tryLoggingIn() {
-        AuthenticationManager authManager = AppSingleton.getInstance(getApplicationContext())
+        final AuthenticationManager authManager = AppSingleton.getInstance(getApplicationContext())
                 .getAuthenticationManager();
         if (!authManager.hasSavedCredentials()) {
-            // Can't log in in the background.
-            updateUiOnLogin(false);
+            // Can't log in in the background -- no credentials exist yet.
+            updateLoginUi(false);
             return;
         }
-        authManager.loginWithSavedCredentials(getUserInfoCallback());
+        UserProfile profile = authManager.getCachedUserProfile();
+        if (profile != null) {
+            // We've already got a cached user profile. Use this one instead of trying to login
+            // again.
+            onLoginSuccess(profile);
+            return;
+        }
+        // TODO: If this doesn't work, we shouldn't log the user back out. Instead, we should keep
+        // some state (name, email, photo, whatever) and just not update the server until connection
+        // is re-established.
+        authManager.loginWithSavedCredentials(new AuthenticationManager.BackgroundLoginCallback() {
+            @Override
+            public void onCredentialsFailure(CredentialsManagerException error) {
+                Log.d("Main::tryLoggingIn", error.toString());
+            }
+        }, new BaseCallback<UserProfile, AuthenticationException>() {
+            @Override
+            public void onSuccess(final UserProfile payload) {
+                authManager.cacheUserProfile(payload);
+                runOnUiThread(new Runnable() {
+
+                    public void run() {
+                        onLoginSuccess(payload);
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(AuthenticationException error) {
+                // TODO: Can't log out because the user has logged in before.
+                // Instead, show an error like "can't connect to the server right now to log in,
+                // data will not be backed up. And maybe a "try again" button.
+                // May need to make sure this doesn't overlap with any other "failed to connect"
+                // snackbars.
+                Log.d("Main::tryLoggingIn", error.toString());
+            }
+        });
     }
 
-    private void updateUiOnLogin(boolean isLoggedIn) {
+    // Shows/hides the login buttons
+    private void updateLoginUi(boolean isLoggedIn) {
         navigationView.getMenu().findItem(R.id.menu_login).setVisible(!isLoggedIn);
         navigationView.getMenu().findItem(R.id.menu_logout).setVisible(isLoggedIn);
     }
 
+    // Login from a totally logged out state.
+    // TODO: If this succeeds, we need to back up user stats or sync stats with the server.
     private void login() {
-        AuthenticationManager authManager = AppSingleton.getInstance(getApplicationContext())
+        final AuthenticationManager authManager = AppSingleton.getInstance(getApplicationContext())
                 .getAuthenticationManager();
         authManager.doLogin(this, new AuthCallback() {
             @Override
@@ -318,45 +358,41 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(@NonNull Credentials credentials) {
-                // Store credentials
-                AppSingleton.getInstance(getApplicationContext()).getAuthenticationManager()
-                        .getUserInfo(credentials, getUserInfoCallback());
+                // Save and then use new credentials to try logging in.
+                authManager.onLogin(credentials);
+                authManager.getUserInfo(credentials,
+                        new BaseCallback<UserProfile, AuthenticationException>() {
+
+                            @Override
+                            public void onFailure(AuthenticationException error) {
+                                // Maybe give the user a message and show the login button.
+                                // Delete current credentials and try again. Since the user
+                                // hasn't fully logged in yet, it's ok to delete before we
+                                // sync.
+                                logout();
+                                Log.d("MainActivity", error.getCode() + ", " +
+                                        error.getDescription());
+                            }
+
+                            @Override
+                            public void onSuccess(final UserProfile payload) {
+                                authManager.cacheUserProfile(payload);
+                                runOnUiThread(new Runnable() {
+
+                                    public void run() {
+                                        onLoginSuccess(payload);
+                                    }
+                                });
+                            }
+                        });
             }
         });
     }
 
-    private AuthenticationManager.BackgroundLoginCallback getUserInfoCallback() {
-        return new AuthenticationManager.BackgroundLoginCallback() {
-            @Override
-            public void onCredentialsFailure(CredentialsManagerException error) {
-                // Logout. Show login button
-                logout();
-                runOnUiThread(new Runnable() {
+    private void onLoginSuccess(UserProfile profile) {
+        // Show logout button
+        updateLoginUi(true);
 
-                    public void run() {
-                        updateUiOnLogin(false);
-                    }
-                });
-            }
-
-            @Override
-            public void onSuccess(UserProfile payload) {
-                // Show logout button
-                runOnUiThread(new Runnable() {
-
-                    public void run() {
-                        updateUiOnLogin(true);
-                    }
-                });
-            }
-
-            @Override
-            public void onLoginFailure(AuthenticationException error) {
-                // Maybe give the user a message and show the login button
-                // TODO: What to do with stats in this case?
-                Log.d("MainActivity", error.getCode() + ", " + error.getDescription());
-            }
-        };
     }
 
     private void logout() {
@@ -364,7 +400,7 @@ public class MainActivity extends AppCompatActivity {
         AuthenticationManager authManager = AppSingleton.getInstance(getApplicationContext())
                 .getAuthenticationManager();
         authManager.removeAccount();
-        updateUiOnLogin(false);
+        updateLoginUi(false);
     }
 
     private void launchLocationActivity() {
