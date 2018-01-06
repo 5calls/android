@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import com.auth0.android.result.Credentials;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,6 +32,13 @@ public enum AccountManager {
     private static final String KEY_REMINDERS_INFO_SHOWN = "prefsKeyRemindersInfoShown";
     public static final String KEY_NOTIFICATIONS = "prefsKeyNotifications";
     private static final String KEY_NOTIFICATION_DIALOG_SHOWN = "prefsKeyNotificationDialog";
+
+    // Keys for Auth0. Do not edit, they reference SharedPreference values.
+    private final static String REFRESH_TOKEN = "refresh_token";
+    private final static String ACCESS_TOKEN = "access_token";
+    private final static String ID_TOKEN = "id_token";
+    private final static String TOKEN_TYPE = "token_type";
+    private final static String EXPIRES_IN = "expires_in";
 
     // Default to 11 am.
     public static final int DEFAULT_REMINDER_MINUTES = 60 * 11;
@@ -148,6 +157,44 @@ public enum AccountManager {
 
     public void setNotificationDialogShown(Context context, boolean shown) {
         getSharedPrefs(context).edit().putBoolean(KEY_NOTIFICATION_DIALOG_SHOWN, shown).apply();
+    }
+
+    // For Auth0
+    public void saveCredentials(Context context, Credentials credentials) {
+        SharedPreferences sp = getSharedPrefs(context);
+
+        sp.edit()
+                .putString(ID_TOKEN, credentials.getIdToken())
+                .putString(REFRESH_TOKEN, credentials.getRefreshToken())
+                .putString(ACCESS_TOKEN, credentials.getAccessToken())
+                .putString(TOKEN_TYPE, credentials.getType())
+                .putLong(EXPIRES_IN, credentials.getExpiresIn())
+                .apply();
+    }
+
+    // For Auth0
+    public Credentials getCredentials(Context context) {
+        SharedPreferences sp = getSharedPrefs(context);
+
+        return new Credentials(
+                sp.getString(ID_TOKEN, null),
+                sp.getString(ACCESS_TOKEN, null),
+                sp.getString(TOKEN_TYPE, null),
+                sp.getString(REFRESH_TOKEN, null),
+                sp.getLong(EXPIRES_IN, 0));
+    }
+
+    // For Auth0
+    public void deleteCredentials(Context context) {
+        SharedPreferences sp = getSharedPrefs(context);
+
+        sp.edit()
+                .putString(ID_TOKEN, null)
+                .putString(REFRESH_TOKEN, null)
+                .putString(ACCESS_TOKEN, null)
+                .putString(TOKEN_TYPE, null)
+                .putLong(EXPIRES_IN, 0)
+                .apply();
     }
 
     private SharedPreferences getSharedPrefs(Context context) {

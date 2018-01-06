@@ -452,4 +452,10 @@
     <!-- Action or button to dismiss a notification [CHAR_LIMIT=10] -->
     <string name="dismiss">Dismiss</string>
 
+    <!-- DO NOT TRANSLATE -->
+    <string name="com_auth0_client_id">bVxfNRGD4azuJLWPDPHNNsfMElENPKjF</string>
+
+    <!-- DO NOT TRANSLATE -->
+    <string name="com_auth0_domain">5callsos.auth0.com</string>
+    <string name="menu_login">Login</string>
 </resources>

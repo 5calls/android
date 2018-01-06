@@ -1,9 +1,11 @@
 package org.a5calls.android.a5calls.controller;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -19,6 +21,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,6 +37,9 @@ import android.widget.RelativeLayout;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
+import com.auth0.android.authentication.AuthenticationException;
+import com.auth0.android.provider.AuthCallback;
+import com.auth0.android.result.Credentials;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
@@ -41,6 +47,7 @@ import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
+import org.a5calls.android.a5calls.model.AuthenticationManager;
 import org.a5calls.android.a5calls.model.Category;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
 import org.a5calls.android.a5calls.model.Issue;
@@ -263,11 +270,46 @@ public class MainActivity extends AppCompatActivity {
                             return true;
                         } else if (item.getItemId() == R.id.menu_faq) {
                             CustomTabsUtil.launchUrl(MainActivity.this, Uri.parse(getString(R.string.faq_url)));
+                        } else if (item.getItemId() == R.id.menu_login) {
+                            login();
+                            return true;
                         }
 
                         return true;
                     }
                 });
+    }
+
+    private void login() {
+        // TODO: Don't even show the login icon if the access token isn't null.
+        AuthenticationManager authManager = AppSingleton.getInstance(getApplicationContext())
+                .getAuthenticationManager();
+        String accessToken = authManager.getAccessToken(getApplicationContext());
+        if (accessToken != null) {
+            return;
+        }
+
+        authManager.doAuthentication(this, new AuthCallback() {
+            @Override
+            public void onFailure(@NonNull Dialog dialog) {
+                dialog.show();
+            }
+
+            @Override
+            public void onFailure(AuthenticationException exception) {
+                // TODO: Show exception to user.
+                Log.d("MainActivity::login", exception.toString());
+            }
+
+            @Override
+            public void onSuccess(@NonNull Credentials credentials) {
+                // Store credentials
+                AppSingleton.getInstance(getApplicationContext()).getAuthenticationManager()
+                        .onAuthentication(getApplicationContext(), credentials);
+                // Change the login menu button to a logout button.
+                // TODO: Show the user that they've logged in.
+            }
+        });
     }
 
     private void launchLocationActivity() {

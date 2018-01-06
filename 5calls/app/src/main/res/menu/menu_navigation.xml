@@ -2,6 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     >
     <item
+        android:id="@+id/menu_login"
+        android:title="@string/menu_login"
+        />
+    <item
         android:id="@+id/menu_stats"
         android:icon="@drawable/ic_show_chart_black_24dp"
         android:title="@string/menu_stats"
