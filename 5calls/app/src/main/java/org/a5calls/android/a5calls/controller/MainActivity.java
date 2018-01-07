@@ -2,6 +2,7 @@ package org.a5calls.android.a5calls.controller;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +11,8 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -21,6 +24,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -40,6 +44,8 @@ import com.auth0.android.callback.BaseCallback;
 import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.result.Credentials;
 import com.auth0.android.result.UserProfile;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
@@ -151,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (navigationView != null) {
-            setupDrawerContent(navigationView);
+            setupDrawerContent();
         }
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
@@ -251,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setupDrawerContent(NavigationView navigationView) {
+    private void setupDrawerContent() {
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -299,7 +305,7 @@ public class MainActivity extends AppCompatActivity {
         if (user != null) {
             // We've already got a cached user profile. Use this one, but still try to log in
             // again in the background in case something has changed.
-            onLoginSuccess(user);
+            displayUserProfile(user);
         }
         // Log in in the background.
         // If this doesn't work, we shouldn't log the user back out. Instead, we should keep
@@ -321,7 +327,7 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
 
                     public void run() {
-                        onLoginSuccess(user);
+                        displayUserProfile(user);
                     }
                 });
             }
@@ -341,6 +347,9 @@ public class MainActivity extends AppCompatActivity {
     private void updateLoginUi(boolean isLoggedIn) {
         navigationView.getMenu().findItem(R.id.menu_login).setVisible(!isLoggedIn);
         navigationView.getMenu().findItem(R.id.menu_logout).setVisible(isLoggedIn);
+        View header = navigationView.getHeaderView(0);
+        header.findViewById(R.id.user_overview).setVisibility(isLoggedIn ? View.VISIBLE :
+                View.GONE);
     }
 
     // Login from a totally logged out state.
@@ -385,7 +394,7 @@ public class MainActivity extends AppCompatActivity {
                                 runOnUiThread(new Runnable() {
 
                                     public void run() {
-                                        onLoginSuccess(user);
+                                        displayUserProfile(user);
                                     }
                                 });
                             }
@@ -394,10 +403,34 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void onLoginSuccess(User user) {
+    private void displayUserProfile(User user) {
         // Show logout button
         updateLoginUi(true);
-
+        View header = navigationView.getHeaderView(0);
+        final ImageView picture = header.findViewById(R.id.user_picture);
+        Glide.with(getApplicationContext())
+                .load(user.getPicture())
+                .asBitmap()
+                .centerCrop()
+                .into(new BitmapImageViewTarget(picture) {
+                    @Override
+                    protected void setResource(Bitmap resource) {
+                        RoundedBitmapDrawable drawable = RoundedBitmapDrawableFactory.create(
+                                picture.getContext().getResources(), resource);
+                        drawable.setCircular(true);
+                        drawable.setGravity(Gravity.TOP);
+                        picture.setImageDrawable(drawable);
+                    }
+                });
+        ((TextView) header.findViewById(R.id.user_name)).setText(user.getNickname());
+        ((TextView) header.findViewById(R.id.user_email)).setText(user.getEmail());
+        header.findViewById(R.id.user_overview).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Launch an edit user profile / view profile activity.
+                // This activity will need to know if we had trouble syncing with the Auth0 server
+            }
+        });
     }
 
     private void logout() {

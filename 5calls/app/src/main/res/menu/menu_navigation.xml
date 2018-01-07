@@ -3,12 +3,8 @@
     >
     <item
         android:id="@+id/menu_login"
+        android:icon="@drawable/ic_person_black_24dp"
         android:title="@string/menu_login"
-        />
-    <item
-        android:id="@+id/menu_logout"
-        android:title="@string/menu_logout"
-        android:visible="false"
         />
     <item
         android:id="@+id/menu_stats"
@@ -32,5 +28,10 @@
         android:id="@+id/menu_settings"
         android:icon="@drawable/ic_settings_black_24dp"
         android:title="@string/settings"
+        />
+    <item
+        android:id="@+id/menu_logout"
+        android:title="@string/menu_logout"
+        android:visible="false"
         />
 </menu>

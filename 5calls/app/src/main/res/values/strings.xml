@@ -463,4 +463,5 @@
 
     <!-- Menu item to sign out of the 5calls app [CHAR_LIMIT=25] -->
     <string name="menu_logout">Sign out</string>
+    <string name="user_profile_content_description">Profile photo</string>
 </resources>
