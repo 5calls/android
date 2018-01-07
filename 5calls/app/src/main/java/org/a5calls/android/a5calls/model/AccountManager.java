@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.auth0.android.result.Credentials;
+import com.auth0.android.result.UserProfile;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -32,6 +33,12 @@ public enum AccountManager {
     private static final String KEY_REMINDERS_INFO_SHOWN = "prefsKeyRemindersInfoShown";
     public static final String KEY_NOTIFICATIONS = "prefsKeyNotifications";
     private static final String KEY_NOTIFICATION_DIALOG_SHOWN = "prefsKeyNotificationDialog";
+    
+    // Keys for user caching for sign-in.
+    private static final String KEY_USER_EMAIL = "prefsKeyUserEmail";
+    private static final String KEY_USER_NICKNAME = "prefsKeyUserNickname";
+    private static final String KEY_USER_PICTURE = "prefsKeyUserPicture";
+    private static final String KEY_USER_ID = "prefsKeyUserId";
 
     // Default to 11 am.
     public static final int DEFAULT_REMINDER_MINUTES = 60 * 11;
@@ -42,6 +49,7 @@ public enum AccountManager {
 
     // Default to no notifications.
     public static final String DEFAULT_NOTIFICATION_SELECTION = "2";
+
 
     public boolean hasLocation(Context context) {
         // If there's a lat/lng or an address.
@@ -150,6 +158,33 @@ public enum AccountManager {
 
     public void setNotificationDialogShown(Context context, boolean shown) {
         getSharedPrefs(context).edit().putBoolean(KEY_NOTIFICATION_DIALOG_SHOWN, shown).apply();
+    }
+    
+    public void cacheUserProfile(Context context, User user) {
+        SharedPreferences.Editor prefs = getSharedPrefs(context).edit();
+        prefs.putString(KEY_USER_EMAIL, user.getEmail());
+        prefs.putString(KEY_USER_NICKNAME, user.getNickname());
+        prefs.putString(KEY_USER_PICTURE, user.getPicture());
+        prefs.putString(KEY_USER_ID, user.getUserId());
+        prefs.apply();
+    }
+
+    public User getCachedUserProfile(Context context) {
+        SharedPreferences prefs = getSharedPrefs(context);
+        String email = prefs.getString(KEY_USER_EMAIL, "");
+        String nickname = prefs.getString(KEY_USER_NICKNAME, "");
+        String picture = prefs.getString(KEY_USER_PICTURE, "");
+        String userId = prefs.getString(KEY_USER_ID, "");
+        return new User(email, nickname, picture, userId);
+    }
+
+    public void clearUserProfile(Context context) {
+        SharedPreferences.Editor prefs = getSharedPrefs(context).edit();
+        prefs.putString(KEY_USER_EMAIL, "");
+        prefs.putString(KEY_USER_NICKNAME, "");
+        prefs.putString(KEY_USER_PICTURE, "");
+        prefs.putString(KEY_USER_ID, "");
+        prefs.apply();
     }
 
     private SharedPreferences getSharedPrefs(Context context) {

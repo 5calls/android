@@ -46,6 +46,7 @@ import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.model.Outcome;
+import org.a5calls.android.a5calls.model.User;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
 import org.a5calls.android.a5calls.view.GridItemDecoration;
 
@@ -214,9 +215,9 @@ public class RepCallActivity extends AppCompatActivity {
 
     private void reportCall(Outcome outcome, String address) {
         outcomeAdapter.setEnabled(false);
-        UserProfile profile = AppSingleton.getInstance(getApplicationContext())
-                .getAuthenticationManager().getCachedUserProfile();
-        String userId = profile == null ? null : profile.getId();
+        User user = AppSingleton.getInstance(getApplicationContext())
+                .getAuthenticationManager().getCachedUserProfile(getApplicationContext());
+        String userId = user == null ? null : user.getUserId();
         AppSingleton.getInstance(getApplicationContext()).getDatabaseHelper().addCall(mIssue.id,
                 mIssue.name, mIssue.contacts[mActiveContactIndex].id,
                 mIssue.contacts[mActiveContactIndex].name, outcome.status.toString(), address);

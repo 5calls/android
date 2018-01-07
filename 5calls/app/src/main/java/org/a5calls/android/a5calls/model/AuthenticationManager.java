@@ -15,6 +15,8 @@ import com.auth0.android.provider.WebAuthProvider;
 import com.auth0.android.result.Credentials;
 import com.auth0.android.result.UserProfile;
 
+import org.a5calls.android.a5calls.AppSingleton;
+
 /**
  * Handles authentication and account management with Auth0.
  */
@@ -22,7 +24,6 @@ public class AuthenticationManager {
     private final AuthenticationAPIClient mApiClient;
     private final CredentialsManager mCredentialsManager;
     private final Auth0 mAccount;
-    private UserProfile mCurrentProfile;
 
     public interface BackgroundLoginCallback {
         void onCredentialsFailure(CredentialsManagerException error);
@@ -43,21 +44,21 @@ public class AuthenticationManager {
                 .start(activity, authCallback);
     }
 
-    public void cacheUserProfile(UserProfile profile) {
-        mCurrentProfile = profile;
+    public void cacheUserProfile(Context context, User user) {
+        AccountManager.Instance.cacheUserProfile(context, user);
     }
 
-    public UserProfile getCachedUserProfile() {
-        return mCurrentProfile;
+    public User getCachedUserProfile(Context context) {
+        return AccountManager.Instance.getCachedUserProfile(context);
     }
 
     public void onLogin(Credentials credentials) {
         mCredentialsManager.saveCredentials(credentials);
     }
 
-    public void removeAccount() {
+    public void removeAccount(Context context) {
         mCredentialsManager.clearCredentials();
-        mCurrentProfile = null;
+        AccountManager.Instance.clearUserProfile(context);
     }
 
     public boolean hasSavedCredentials() {

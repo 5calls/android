@@ -457,6 +457,10 @@
 
     <!-- DO NOT TRANSLATE -->
     <string name="com_auth0_domain">5callsos.auth0.com</string>
-    <string name="menu_login">Login</string>
-    <string name="menu_logout">Logout</string>
+
+    <!-- Menu item to sign in to the 5calls app [CHAR_LIMIT=25] -->
+    <string name="menu_login">Sign in</string>
+
+    <!-- Menu item to sign out of the 5calls app [CHAR_LIMIT=25] -->
+    <string name="menu_logout">Sign out</string>
 </resources>

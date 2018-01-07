@@ -49,6 +49,7 @@ import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.AuthenticationManager;
 import org.a5calls.android.a5calls.model.Category;
+import org.a5calls.android.a5calls.model.User;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.util.CustomTabsUtil;
@@ -294,38 +295,41 @@ public class MainActivity extends AppCompatActivity {
             updateLoginUi(false);
             return;
         }
-        UserProfile profile = authManager.getCachedUserProfile();
-        if (profile != null) {
-            // We've already got a cached user profile. Use this one instead of trying to login
-            // again.
-            onLoginSuccess(profile);
-            return;
+        User user = authManager.getCachedUserProfile(getApplicationContext());
+        if (user != null) {
+            // We've already got a cached user profile. Use this one, but still try to log in
+            // again in the background in case something has changed.
+            onLoginSuccess(user);
         }
-        // TODO: If this doesn't work, we shouldn't log the user back out. Instead, we should keep
-        // some state (name, email, photo, whatever) and just not update the server until connection
-        // is re-established.
+        // Log in in the background.
+        // If this doesn't work, we shouldn't log the user back out. Instead, we should keep
+        // the cached state and just not update the server until connection is re-established.
         authManager.loginWithSavedCredentials(new AuthenticationManager.BackgroundLoginCallback() {
             @Override
             public void onCredentialsFailure(CredentialsManagerException error) {
+                // Show an error like "can't connect to the server right now to log in,
+                // data will not be backed up". And maybe a "try again" button.
+                // May need to make sure this doesn't overlap with any other "failed to connect"
+                // snackbars.
                 Log.d("Main::tryLoggingIn", error.toString());
             }
         }, new BaseCallback<UserProfile, AuthenticationException>() {
             @Override
-            public void onSuccess(final UserProfile payload) {
-                authManager.cacheUserProfile(payload);
+            public void onSuccess(UserProfile payload) {
+                final User user = new User(payload);
+                authManager.cacheUserProfile(getApplicationContext(), user);
                 runOnUiThread(new Runnable() {
 
                     public void run() {
-                        onLoginSuccess(payload);
+                        onLoginSuccess(user);
                     }
                 });
             }
 
             @Override
             public void onFailure(AuthenticationException error) {
-                // TODO: Can't log out because the user has logged in before.
-                // Instead, show an error like "can't connect to the server right now to log in,
-                // data will not be backed up. And maybe a "try again" button.
+                // Show an error like "can't connect to the server right now to log in,
+                // data will not be backed up". And maybe a "try again" button.
                 // May need to make sure this doesn't overlap with any other "failed to connect"
                 // snackbars.
                 Log.d("Main::tryLoggingIn", error.toString());
@@ -375,12 +379,13 @@ public class MainActivity extends AppCompatActivity {
                             }
 
                             @Override
-                            public void onSuccess(final UserProfile payload) {
-                                authManager.cacheUserProfile(payload);
+                            public void onSuccess(UserProfile payload) {
+                                final User user = new User(payload);
+                                authManager.cacheUserProfile(getApplicationContext(), user);
                                 runOnUiThread(new Runnable() {
 
                                     public void run() {
-                                        onLoginSuccess(payload);
+                                        onLoginSuccess(user);
                                     }
                                 });
                             }
@@ -389,7 +394,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void onLoginSuccess(UserProfile profile) {
+    private void onLoginSuccess(User user) {
         // Show logout button
         updateLoginUi(true);
 
@@ -399,7 +404,7 @@ public class MainActivity extends AppCompatActivity {
         // TODO: Show the user a dialog that logging out (will? will not?) clear their local data.
         AuthenticationManager authManager = AppSingleton.getInstance(getApplicationContext())
                 .getAuthenticationManager();
-        authManager.removeAccount();
+        authManager.removeAccount(getApplicationContext());
         updateLoginUi(false);
     }
 
