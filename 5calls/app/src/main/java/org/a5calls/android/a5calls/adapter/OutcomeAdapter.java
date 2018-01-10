@@ -9,9 +9,15 @@ import android.widget.Button;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.Outcome;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class OutcomeAdapter extends RecyclerView.Adapter<OutcomeAdapter.ViewHolder> {
+
+    public static final List<Outcome> DEFAULT_OUTCOMES = Arrays.asList(
+            new Outcome(Outcome.Status.UNAVAILABLE),
+            new Outcome(Outcome.Status.VOICEMAIL),
+            new Outcome(Outcome.Status.CONTACT));
 
     private List<Outcome> outcomes;
     private boolean enabled;
