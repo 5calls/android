@@ -153,7 +153,15 @@ public class RepCallActivity extends AppCompatActivity {
         }
         setupContactUi(mActiveContactIndex, expandLocalOffices);
 
-        outcomeAdapter = new OutcomeAdapter(mIssue.outcomeModels, new OutcomeAdapter.Callback() {
+        // If the Issue's Outcome list is somehow empty, use default outcomes
+        List<Outcome> issueOutcomes;
+        if (mIssue.outcomeModels == null || mIssue.outcomeModels.isEmpty()) {
+            issueOutcomes = OutcomeAdapter.DEFAULT_OUTCOMES;
+        } else {
+            issueOutcomes = mIssue.outcomeModels;
+        }
+
+        outcomeAdapter = new OutcomeAdapter(issueOutcomes, new OutcomeAdapter.Callback() {
             @Override
             public void onOutcomeClicked(Outcome outcome) {
                 reportEvent(outcome.label);
