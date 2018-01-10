@@ -154,6 +154,7 @@ public class RepCallActivity extends AppCompatActivity {
         setupContactUi(mActiveContactIndex, expandLocalOffices);
 
         // If the Issue's Outcome list is somehow empty, use default outcomes
+        // See: https://github.com/5calls/android/issues/107
         List<Outcome> issueOutcomes;
         if (mIssue.outcomeModels == null || mIssue.outcomeModels.isEmpty()) {
             issueOutcomes = OutcomeAdapter.DEFAULT_OUTCOMES;

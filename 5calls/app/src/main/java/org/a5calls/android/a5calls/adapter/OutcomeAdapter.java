@@ -15,9 +15,9 @@ import java.util.List;
 public class OutcomeAdapter extends RecyclerView.Adapter<OutcomeAdapter.ViewHolder> {
 
     public static final List<Outcome> DEFAULT_OUTCOMES = Arrays.asList(
-            new Outcome("unavailable", Outcome.Status.UNAVAILABLE),
-            new Outcome("voicemail", Outcome.Status.VOICEMAIL),
-            new Outcome("contact", Outcome.Status.CONTACT));
+            new Outcome(Outcome.Status.UNAVAILABLE),
+            new Outcome(Outcome.Status.VOICEMAIL),
+            new Outcome(Outcome.Status.CONTACT));
 
     private List<Outcome> outcomes;
     private boolean enabled;

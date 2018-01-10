@@ -21,6 +21,10 @@ public class Outcome implements Parcelable {
         this.status = status;
     }
 
+    public Outcome(Status status) {
+        this(status.toString(), status);
+    }
+
     protected Outcome(Parcel in) {
         label = in.readString();
         status = Status.fromString(in.readString());
