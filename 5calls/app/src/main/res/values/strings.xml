@@ -171,19 +171,19 @@
     <string name="motivational_text">You\'re making a difference! Calling is the most effective way to influence your representatives, and here\'s what you\'ve achieved:</string>
 
     <!-- Tells the user how many times they've made contact [CHAR_LIMIT=50] -->
-    <string name="impact_contact">You\'ve made contact <xliff:g id="contactCallCount">"%1$d</xliff:g> times, </string>
+    <string name="impact_contact">You\'ve made contact <xliff:g id="contactCallCount">"%1$d</xliff:g> times,\n</string>
 
     <!-- Tells the user how many times they've left a voicemail [CHAR_LIMIT=50] -->
-    <string name="impact_vm">left <xliff:g id="voicemailCallCount">%1$d</xliff:g> voicemails, </string>
+    <string name="impact_vm">left <xliff:g id="voicemailCallCount">%1$d</xliff:g> voicemails,\n</string>
 
     <!-- Tells the user how many times they've called but the office was unavailable [CHAR_LIMIT=50] -->
     <string name="impact_unavailable">and <xliff:g id="unavailableCallCount">%1$d</xliff:g> times the contact was unavailable.</string>
 
     <!-- Tells the user how many times they've made contact, if the count is 1 [CHAR_LIMIT=50] -->
-    <string name="impact_contact_one">You\'ve made contact 1 time, </string>
+    <string name="impact_contact_one">You\'ve made contact 1 time,\n</string>
 
     <!-- Tells the user how many times they've left a voicemail, if the count is 1 [CHAR_LIMIT=50] -->
-    <string name="impact_vm_one">left 1 voicemail, </string>
+    <string name="impact_vm_one">left 1 voicemail,\n</string>
 
     <!-- Tells the user how many times they've called but the office was unavailable, if the count is 1 [CHAR_LIMIT=50] -->
     <string name="impact_unavailable_one">and 1 time the contact was unavailable.</string>
@@ -466,4 +466,7 @@
     <string name="user_profile_content_description">Profile photo</string>
     <string name="profile_activity">My Profile</string>
     <string name="profile_stats"><xliff:g id="callCount">%1$d</xliff:g> Total Calls</string>
+    <string name="sign_in_thanks">Thanks for signing in!</string>
+    <string name="why_sign_in">Signing in lets you save your impact across devices, join teams, and share your profile with others.</string>
+    <string name="sign_in_prompt">Want to save your stats?</string>
 </resources>

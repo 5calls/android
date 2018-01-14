@@ -1,5 +1,6 @@
 package org.a5calls.android.a5calls.controller;
 
+import android.app.Dialog;
 import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -9,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.support.v4.util.Pair;
@@ -18,14 +20,22 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.auth0.android.authentication.AuthenticationException;
+import com.auth0.android.callback.BaseCallback;
+import com.auth0.android.provider.AuthCallback;
+import com.auth0.android.result.Credentials;
+import com.auth0.android.result.UserProfile;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.jjoe64.graphview.GraphView;
@@ -37,8 +47,10 @@ import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
+import org.a5calls.android.a5calls.model.AuthenticationManager;
 import org.a5calls.android.a5calls.model.DatabaseHelper;
 import org.a5calls.android.a5calls.model.Outcome;
+import org.a5calls.android.a5calls.model.User;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -64,6 +76,8 @@ public class StatsActivity extends AppCompatActivity {
     @BindView(R.id.your_call_count) TextView callCountHeader;
     @BindView(R.id.stats_summary) TextView statsSummary;
     @BindView(R.id.graph) GraphView graph;
+    @BindView(R.id.btn_sign_in) Button signInButton;
+    @BindView(R.id.sign_in_section) ViewGroup signInSection;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,6 +88,19 @@ public class StatsActivity extends AppCompatActivity {
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
+        User user = AppSingleton.getInstance(this).getAuthenticationManager()
+                .getCachedUserProfile(getApplicationContext());
+        if (user != null) {
+            signInSection.setVisibility(View.GONE);
+        } else {
+            signInButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    login();
+                }
+            });
         }
 
         DatabaseHelper db = AppSingleton.getInstance(this).getDatabaseHelper();
@@ -331,5 +358,57 @@ public class StatsActivity extends AppCompatActivity {
     private String getStringForCount(int count, int resIdOne, int resIdFormat) {
         return count == 1 ? getResources().getString(resIdOne) :
                 String.format(getResources().getString(resIdFormat), count);
+    }
+
+    // Login from a totally logged out state.
+    // TODO: If this succeeds, we need to back up user stats or sync stats with the server.
+    // TODO: Share this code with the same in MainActivity?
+    private void login() {
+        final AuthenticationManager authManager = AppSingleton.getInstance(getApplicationContext())
+                .getAuthenticationManager();
+        authManager.doLogin(this, new AuthCallback() {
+            @Override
+            public void onFailure(@NonNull Dialog dialog) {
+                dialog.show();
+            }
+
+            @Override
+            public void onFailure(AuthenticationException exception) {
+                // TODO: Show exception to user.
+                Log.d("StatsActivity::login", exception.toString());
+            }
+
+            @Override
+            public void onSuccess(@NonNull Credentials credentials) {
+                // Save and then use new credentials to try logging in.
+                authManager.onLogin(credentials);
+                authManager.getUserInfo(credentials,
+                        new BaseCallback<UserProfile, AuthenticationException>() {
+
+                            @Override
+                            public void onFailure(AuthenticationException error) {
+                                // Maybe give the user a message and show the login button.
+                                // Delete current credentials and try again. Since the user
+                                // hasn't fully logged in yet, it's ok to delete before we
+                                // sync.
+                                authManager.removeAccount(getApplicationContext());
+                                Log.d("StatsActivity", error.getCode() + ", " +
+                                        error.getDescription());
+                            }
+
+                            @Override
+                            public void onSuccess(UserProfile payload) {
+                                final User user = new User(payload);
+                                authManager.cacheUserProfile(getApplicationContext(), user);
+                                runOnUiThread(new Runnable() {
+
+                                    public void run() {
+                                        signInSection.setVisibility(View.GONE);
+                                    }
+                                });
+                            }
+                        });
+            }
+        });
     }
 }

@@ -175,6 +175,9 @@ public enum AccountManager {
         String nickname = prefs.getString(KEY_USER_NICKNAME, "");
         String picture = prefs.getString(KEY_USER_PICTURE, "");
         String userId = prefs.getString(KEY_USER_ID, "");
+        if (TextUtils.isEmpty(userId)) {
+            return null;
+        }
         return new User(email, nickname, picture, userId);
     }
 

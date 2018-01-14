@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_color"
+    android:background="@color/issue_background_color"
     >
 
     <FrameLayout
@@ -15,14 +15,14 @@
             android:id="@+id/no_calls_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:layout_marginEnd="@dimen/activity_horizontal_margin"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:layout_marginStart="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
             android:text="@string/no_calls_impact_message"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@color/textColorDarkGrey"
             android:textSize="24sp"
             />
 
@@ -30,12 +30,12 @@
             android:id="@+id/stats_holder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:layout_marginEnd="@dimen/activity_horizontal_margin"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:layout_marginStart="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
             android:orientation="vertical"
             >
 
@@ -43,17 +43,18 @@
                 android:id="@+id/your_call_count"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/textColorDarkGrey"
                 android:textSize="@dimen/h1_text_size"
-                android:textStyle="bold"
                 />
+
+            <include layout="@layout/sign_in_prompt"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/motivational_text"
-                android:textColor="@color/colorPrimaryDark"
+                android:textColor="@color/textColorDarkGrey"
                 android:textSize="@dimen/text_size_paragraph"
                 />
 
@@ -80,9 +81,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/top_contacts"
-                android:textColor="@color/colorPrimaryDark"
-                android:textStyle="bold"
+                android:textColor="@color/textColorDarkGrey"
                 android:textSize="@dimen/text_size_paragraph"
+                android:textStyle="bold"
                 />
 
         </LinearLayout>

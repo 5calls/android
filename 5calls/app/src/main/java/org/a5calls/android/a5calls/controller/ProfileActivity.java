@@ -11,6 +11,8 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -29,7 +31,7 @@ import butterknife.ButterKnife;
  * Activity to show a user's profile.
  * TODO: Profile editing
  * TODO: "share" profile has a link to a 5calls.org page?
- * TODO: Display a user's teams
+ * TODO: Display a user's teams, let a user join teams
  */
 public class ProfileActivity extends AppCompatActivity {
     private User mUser;
@@ -38,6 +40,7 @@ public class ProfileActivity extends AppCompatActivity {
     @BindView(R.id.user_name) TextView mNickname;
     @BindView(R.id.user_email) TextView mEmail;
     @BindView(R.id.user_stats) TextView mUserStats;
+    @BindView(R.id.btn_stats_activity) Button mStatsButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,6 +86,14 @@ public class ProfileActivity extends AppCompatActivity {
         int callCount = AppSingleton.getInstance(getApplicationContext()).getDatabaseHelper()
                 .getCallsCount();
         mUserStats.setText(getResources().getString(R.string.profile_stats, callCount));
+
+        mStatsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ProfileActivity.this, StatsActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
