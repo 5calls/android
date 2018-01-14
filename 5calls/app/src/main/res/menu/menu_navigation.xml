@@ -29,9 +29,4 @@
         android:icon="@drawable/ic_settings_black_24dp"
         android:title="@string/settings"
         />
-    <item
-        android:id="@+id/menu_logout"
-        android:title="@string/menu_logout"
-        android:visible="false"
-        />
 </menu>

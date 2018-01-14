@@ -105,7 +105,7 @@
     <string name="version_info">Version <xliff:g id="versionCode">%1$s</xliff:g></string>
 
     <!-- Menu option to go to your impact page [CHAR_LIMIT=25] -->
-    <string name="menu_stats">Your impact</string>
+    <string name="menu_stats">My impact</string>
 
     <!-- Header to the script used for calling [CHAR_LIMIT=NONE] -->
     <string name="call_script_prompt">Your script:</string>
@@ -156,7 +156,7 @@
     <string name="main_activity_location_error">Sorry, we could not read your location, please try re-entering it</string>
 
     <!-- Title of the Your Impact activity showing a user their stats [CHAR_LIMIT=30] -->
-    <string name="stats_activity">Your Impact</string>
+    <string name="stats_activity">My Impact</string>
 
     <!-- Message that the user has no stats yet because they haven't made calls yet, shown on the impact page [CHAR_LIMIT=100] -->
     <string name="no_calls_impact_message">You haven\'t made any calls yet with the 5 Calls app!</string>
@@ -464,4 +464,6 @@
     <!-- Menu item to sign out of the 5calls app [CHAR_LIMIT=25] -->
     <string name="menu_logout">Sign out</string>
     <string name="user_profile_content_description">Profile photo</string>
+    <string name="profile_activity">My Profile</string>
+    <string name="profile_stats"><xliff:g id="callCount">%1$d</xliff:g> Total Calls</string>
 </resources>

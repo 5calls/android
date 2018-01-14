@@ -45,6 +45,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".controller.MainActivity" />
         </activity>
+        <activity android:name=".controller.ProfileActivity"
+            android:parentActivityName=".controller.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".controller.MainActivity" />
+        </activity>
         <activity android:name=".controller.TutorialActivity" />
         <activity android:name=".controller.SettingsActivity"
             android:parentActivityName=".controller.MainActivity">

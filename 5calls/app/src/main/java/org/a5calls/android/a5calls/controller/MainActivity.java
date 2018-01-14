@@ -69,9 +69,10 @@ import butterknife.ButterKnife;
 
 /**
  * The activity which handles zip code lookup and showing the issues list.
- * 
- * TODO: Add an email address sign-up field.
+ *
  * TODO: Sort issues based on which are "done" and which are not done or hide ones which are "done".
+ * TODO: Sign out needs a big warning that it might clear stats.
+ * TODO: Stats with sign in / sign out.
  */
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -178,7 +179,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         registerApiListener();
-        tryLoggingIn();
 
         swipeContainer.setColorSchemeResources(R.color.colorPrimary);
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -199,6 +199,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        doBackgroundLogin();
         loadStats();
 
         mAddress = accountManager.getAddress(this);
@@ -282,9 +283,6 @@ public class MainActivity extends AppCompatActivity {
                         } else if (item.getItemId() == R.id.menu_login) {
                             login();
                             return true;
-                        } else if (item.getItemId() == R.id.menu_logout) {
-                            logout();
-                            return true;
                         }
 
                         return true;
@@ -293,7 +291,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Try logging in in the background.
-    private void tryLoggingIn() {
+    private void doBackgroundLogin() {
         final AuthenticationManager authManager = AppSingleton.getInstance(getApplicationContext())
                 .getAuthenticationManager();
         if (!authManager.hasSavedCredentials()) {
@@ -346,7 +344,6 @@ public class MainActivity extends AppCompatActivity {
     // Shows/hides the login buttons
     private void updateLoginUi(boolean isLoggedIn) {
         navigationView.getMenu().findItem(R.id.menu_login).setVisible(!isLoggedIn);
-        navigationView.getMenu().findItem(R.id.menu_logout).setVisible(isLoggedIn);
         View header = navigationView.getHeaderView(0);
         header.findViewById(R.id.user_overview).setVisibility(isLoggedIn ? View.VISIBLE :
                 View.GONE);
@@ -382,7 +379,7 @@ public class MainActivity extends AppCompatActivity {
                                 // Delete current credentials and try again. Since the user
                                 // hasn't fully logged in yet, it's ok to delete before we
                                 // sync.
-                                logout();
+                                authManager.removeAccount(getApplicationContext());
                                 Log.d("MainActivity", error.getCode() + ", " +
                                         error.getDescription());
                             }
@@ -427,18 +424,13 @@ public class MainActivity extends AppCompatActivity {
         header.findViewById(R.id.user_overview).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Launch an edit user profile / view profile activity.
-                // This activity will need to know if we had trouble syncing with the Auth0 server
+                // Launch an edit / view user profile activity.
+                // TODO: This activity will need to know if we had trouble syncing with the Auth0
+                // server
+                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                startActivity(intent);
             }
         });
-    }
-
-    private void logout() {
-        // TODO: Show the user a dialog that logging out (will? will not?) clear their local data.
-        AuthenticationManager authManager = AppSingleton.getInstance(getApplicationContext())
-                .getAuthenticationManager();
-        authManager.removeAccount(getApplicationContext());
-        updateLoginUi(false);
     }
 
     private void launchLocationActivity() {
