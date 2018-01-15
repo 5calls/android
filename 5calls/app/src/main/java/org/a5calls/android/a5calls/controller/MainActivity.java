@@ -43,7 +43,6 @@ import com.auth0.android.authentication.storage.CredentialsManagerException;
 import com.auth0.android.callback.BaseCallback;
 import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.result.Credentials;
-import com.auth0.android.result.UserProfile;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.android.gms.analytics.HitBuilders;
@@ -71,7 +70,6 @@ import butterknife.ButterKnife;
  * The activity which handles zip code lookup and showing the issues list.
  *
  * TODO: Sort issues based on which are "done" and which are not done or hide ones which are "done".
- * TODO: Sign out needs a big warning that it might clear stats.
  * TODO: Stats with sign in / sign out.
  */
 public class MainActivity extends AppCompatActivity {
@@ -308,7 +306,8 @@ public class MainActivity extends AppCompatActivity {
         // Log in in the background.
         // If this doesn't work, we shouldn't log the user back out. Instead, we should keep
         // the cached state and just not update the server until connection is re-established.
-        authManager.loginWithSavedCredentials(new AuthenticationManager.BackgroundLoginCallback() {
+        authManager.loginWithSavedCredentials(getApplicationContext(),
+                new AuthenticationManager.UserCredentialsCallback() {
             @Override
             public void onCredentialsFailure(CredentialsManagerException error) {
                 // Show an error like "can't connect to the server right now to log in,
@@ -317,11 +316,9 @@ public class MainActivity extends AppCompatActivity {
                 // snackbars.
                 Log.d("Main::tryLoggingIn", error.toString());
             }
-        }, new BaseCallback<UserProfile, AuthenticationException>() {
+        }, new BaseCallback<User, AuthenticationException>() {
             @Override
-            public void onSuccess(UserProfile payload) {
-                final User user = new User(payload);
-                authManager.cacheUserProfile(getApplicationContext(), user);
+            public void onSuccess(final User user) {
                 runOnUiThread(new Runnable() {
 
                     public void run() {
@@ -370,8 +367,8 @@ public class MainActivity extends AppCompatActivity {
             public void onSuccess(@NonNull Credentials credentials) {
                 // Save and then use new credentials to try logging in.
                 authManager.onLogin(credentials);
-                authManager.getUserInfo(credentials,
-                        new BaseCallback<UserProfile, AuthenticationException>() {
+                authManager.getUserInfo(getApplicationContext(), credentials,
+                        new BaseCallback<User, AuthenticationException>() {
 
                             @Override
                             public void onFailure(AuthenticationException error) {
@@ -385,9 +382,7 @@ public class MainActivity extends AppCompatActivity {
                             }
 
                             @Override
-                            public void onSuccess(UserProfile payload) {
-                                final User user = new User(payload);
-                                authManager.cacheUserProfile(getApplicationContext(), user);
+                            public void onSuccess(final User user) {
                                 runOnUiThread(new Runnable() {
 
                                     public void run() {

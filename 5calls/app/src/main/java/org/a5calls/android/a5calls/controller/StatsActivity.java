@@ -382,8 +382,8 @@ public class StatsActivity extends AppCompatActivity {
             public void onSuccess(@NonNull Credentials credentials) {
                 // Save and then use new credentials to try logging in.
                 authManager.onLogin(credentials);
-                authManager.getUserInfo(credentials,
-                        new BaseCallback<UserProfile, AuthenticationException>() {
+                authManager.getUserInfo(getApplicationContext(), credentials,
+                        new BaseCallback<User, AuthenticationException>() {
 
                             @Override
                             public void onFailure(AuthenticationException error) {
@@ -397,9 +397,7 @@ public class StatsActivity extends AppCompatActivity {
                             }
 
                             @Override
-                            public void onSuccess(UserProfile payload) {
-                                final User user = new User(payload);
-                                authManager.cacheUserProfile(getApplicationContext(), user);
+                            public void onSuccess(User user) {
                                 runOnUiThread(new Runnable() {
 
                                     public void run() {

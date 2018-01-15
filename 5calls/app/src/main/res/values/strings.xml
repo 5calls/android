@@ -162,10 +162,10 @@
     <string name="no_calls_impact_message">You haven\'t made any calls yet with the 5 Calls app!</string>
 
     <!-- Short sentence with the user's total call count [CHAR_LIMIT=50] -->
-    <string name="your_call_count">Your impact is <xliff:g id="callCount">%1$d</xliff:g> calls!</string>
+    <string name="your_call_count">You\'ve made <xliff:g id="callCount">%1$d</xliff:g> calls!</string>
 
     <!-- Short sentence with the user's total call count when they've made just 1 call [CHAR_LIMIT=50] -->
-    <string name="your_call_count_one">Your impact is 1 call!</string>
+    <string name="your_call_count_one">You\'ve made 1 call!</string>
 
     <!-- Some motivational text about how great the user is for making calls, plus a lead into the call breakdown section of the stats page [CHAR_LIMIT=NONE] -->
     <string name="motivational_text">You\'re making a difference! Calling is the most effective way to influence your representatives, and here\'s what you\'ve achieved:</string>
@@ -469,4 +469,5 @@
     <string name="sign_in_thanks">Thanks for signing in!</string>
     <string name="why_sign_in">Signing in lets you save your impact across devices, join teams, and share your profile with others.</string>
     <string name="sign_in_prompt">Want to save your stats?</string>
+    <string name="edit">Edit</string>
 </resources>

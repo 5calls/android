@@ -1,5 +1,7 @@
 package org.a5calls.android.a5calls.model;
 
+import android.text.TextUtils;
+
 import com.auth0.android.result.UserProfile;
 
 /**
@@ -9,6 +11,7 @@ import com.auth0.android.result.UserProfile;
  * object.
  */
 public class User {
+    public static final String KEY_NICKNAME = "nickname";
     private final String mEmail;
     private final String mNickname;
     private final String mPicture;
@@ -23,7 +26,11 @@ public class User {
 
     public User(UserProfile payload) {
         mEmail = payload.getEmail();
-        mNickname = payload.getNickname();
+        if (payload.getUserMetadata().containsKey("nickname")) {
+            mNickname = (String) payload.getUserMetadata().get("nickname");
+        } else {
+            mNickname = payload.getNickname();
+        }
         mPicture = payload.getPictureURL();
         mUserId = payload.getId();
     }

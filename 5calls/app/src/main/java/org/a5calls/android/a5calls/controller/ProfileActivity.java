@@ -2,8 +2,11 @@ package org.a5calls.android.a5calls.controller;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
@@ -13,9 +16,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.auth0.android.authentication.storage.CredentialsManagerException;
+import com.auth0.android.callback.BaseCallback;
+import com.auth0.android.management.ManagementException;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
@@ -29,11 +37,13 @@ import butterknife.ButterKnife;
 
 /**
  * Activity to show a user's profile.
- * TODO: Profile editing
+ * TODO: Profile editing -- nickname and photo
  * TODO: "share" profile has a link to a 5calls.org page?
  * TODO: Display a user's teams, let a user join teams
  */
 public class ProfileActivity extends AppCompatActivity {
+    private static final String KEY_IS_EDITING = "keyIsEditing";
+    private static final String KEY_SAVED_NICKNAME = "keySavedNickname";
     private User mUser;
 
     @BindView(R.id.user_picture) ImageView mPicture;
@@ -41,11 +51,13 @@ public class ProfileActivity extends AppCompatActivity {
     @BindView(R.id.user_email) TextView mEmail;
     @BindView(R.id.user_stats) TextView mUserStats;
     @BindView(R.id.btn_stats_activity) Button mStatsButton;
+    @BindView(R.id.btn_edit_nickname) ImageButton mEditNicknameButton;
+    @BindView(R.id.btn_save_nickname) ImageButton mNicknameSaveButton;
+    @BindView(R.id.user_name_edittext) EditText mNicknameEditText;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
         final AuthenticationManager authManager = AppSingleton.getInstance(getApplicationContext())
                 .getAuthenticationManager();
@@ -54,8 +66,6 @@ public class ProfileActivity extends AppCompatActivity {
             finish();
             return;
         }
-
-        // TODO: Leave immediately if no one is logged in.
 
         setContentView(R.layout.activity_profile);
         ButterKnife.bind(this);
@@ -87,6 +97,57 @@ public class ProfileActivity extends AppCompatActivity {
                 .getCallsCount();
         mUserStats.setText(getResources().getString(R.string.profile_stats, callCount));
 
+
+        Drawable drawable = mEditNicknameButton.getDrawable().mutate();
+        drawable.setColorFilter(
+                getResources().getColor(R.color.textColorDarkGrey), PorterDuff.Mode.MULTIPLY);
+        mEditNicknameButton.setImageDrawable(drawable);
+
+        drawable = mNicknameSaveButton.getDrawable().mutate();
+        drawable.setColorFilter(
+                getResources().getColor(R.color.textColorDarkGrey), PorterDuff.Mode.MULTIPLY);
+        mNicknameSaveButton.setImageDrawable(drawable);
+        mEditNicknameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                allowEditNickname(true);
+            }
+        });
+        mNicknameSaveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // TODO: Verify that edit is appropriate with the user's current string.
+                AppSingleton
+                        .getInstance(getApplicationContext())
+                        .getAuthenticationManager()
+                        .updateUserData(getApplicationContext(), User.KEY_NICKNAME,
+                                mNicknameEditText.getText().toString(),
+                                new AuthenticationManager.UserCredentialsCallback() {
+                                    @Override
+                                    public void onCredentialsFailure(CredentialsManagerException e) {
+                                        // TODO show a toast
+                                    }
+                                }, new BaseCallback<User, ManagementException>() {
+                                    @Override
+                                    public void onSuccess(User user) {
+                                        mUser = user;
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                mNickname.setText(mUser.getNickname());
+                                                allowEditNickname(false);
+                                            }
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onFailure(ManagementException error) {
+                                        // TODO show a toast
+                                    }
+                                });
+            }
+        });
+
         mStatsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -94,6 +155,31 @@ public class ProfileActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        if (savedInstanceState != null) {
+            boolean isEditing = savedInstanceState.getBoolean(KEY_IS_EDITING, false);
+            if (isEditing) {
+                allowEditNickname(true);
+                String savedNickname = savedInstanceState.getString(KEY_SAVED_NICKNAME,
+                        mUser.getNickname());
+                mNicknameEditText.setText(savedNickname);
+            }
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(KEY_IS_EDITING, mNicknameEditText.getVisibility() == View.VISIBLE);
+        outState.putString(KEY_SAVED_NICKNAME, mNicknameEditText.getText().toString());
+    }
+
+    private void allowEditNickname(boolean isEditing) {
+        mNicknameEditText.setVisibility(isEditing ? View.VISIBLE : View.GONE);
+        mNicknameSaveButton.setVisibility(isEditing? View.VISIBLE : View.GONE);
+        mNickname.setVisibility(isEditing ? View.GONE : View.VISIBLE);
+        mEditNicknameButton.setVisibility(isEditing ? View.GONE : View.VISIBLE);
+        mNicknameEditText.setText(mUser.getNickname());
     }
 
     @Override
