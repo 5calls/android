@@ -24,6 +24,8 @@ public class User {
         mUserId = userId;
     }
 
+    // Use the auth0 generated nickname if the user hasn't set their own yet.
+    // We can only edit the userMetadata, not the nickname itself directly.
     public User(UserProfile payload) {
         mEmail = payload.getEmail();
         if (payload.getUserMetadata().containsKey("nickname")) {

@@ -60,6 +60,8 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/textColorDarkGrey"
                 android:textSize="18sp"
+                android:singleLine="true"
+                android:ellipsize="end"
                 />
 
             <TextView
@@ -69,6 +71,8 @@
                 android:layout_marginTop="4dp"
                 android:textColor="@color/textColorDarkGrey"
                 android:textSize="14sp"
+                android:singleLine="true"
+                android:ellipsize="end"
                 />
         </LinearLayout>
     </RelativeLayout>

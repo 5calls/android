@@ -95,7 +95,7 @@ public class AuthenticationManager {
                 new BaseCallback<UserProfile, AuthenticationException>() {
             @Override
             public void onSuccess(UserProfile payload) {
-                // Get the full user profile.
+                // Get the full user profile so that we can get metadata.
                 UsersAPIClient users = new UsersAPIClient(mAccount, credentials.getIdToken());
                 users.getProfile(payload.getId()).start(
                         new BaseCallback<UserProfile, ManagementException>() {

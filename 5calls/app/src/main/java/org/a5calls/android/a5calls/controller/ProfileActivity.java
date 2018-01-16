@@ -6,10 +6,14 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,6 +24,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.auth0.android.authentication.storage.CredentialsManagerException;
 import com.auth0.android.callback.BaseCallback;
@@ -37,7 +42,8 @@ import butterknife.ButterKnife;
 
 /**
  * Activity to show a user's profile.
- * TODO: Profile editing -- nickname and photo
+ * TODO: Profile editing -- photo
+ * TODO: Error handling
  * TODO: "share" profile has a link to a 5calls.org page?
  * TODO: Display a user's teams, let a user join teams
  */
@@ -75,28 +81,7 @@ public class ProfileActivity extends AppCompatActivity {
             getSupportActionBar().setTitle(getResources().getString(R.string.profile_activity));
         }
 
-
-        mNickname.setText(mUser.getNickname());
-        mEmail.setText(mUser.getEmail());
-        Glide.with(getApplicationContext())
-                .load(mUser.getPicture())
-                .asBitmap()
-                .centerCrop()
-                .into(new BitmapImageViewTarget(mPicture) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
-                        RoundedBitmapDrawable drawable = RoundedBitmapDrawableFactory.create(
-                                mPicture.getContext().getResources(), resource);
-                        drawable.setCircular(true);
-                        drawable.setGravity(Gravity.TOP);
-                        mPicture.setImageDrawable(drawable);
-                    }
-                });
-
-        int callCount = AppSingleton.getInstance(getApplicationContext()).getDatabaseHelper()
-                .getCallsCount();
-        mUserStats.setText(getResources().getString(R.string.profile_stats, callCount));
-
+        loadUserData();
 
         Drawable drawable = mEditNicknameButton.getDrawable().mutate();
         drawable.setColorFilter(
@@ -117,6 +102,16 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // TODO: Verify that edit is appropriate with the user's current string.
+                String newNickname = mNicknameEditText.getText().toString();
+                if (TextUtils.isEmpty(newNickname)) {
+                    Snackbar.make(mNicknameEditText,
+                            getResources().getString(R.string.empty_nickname_error),
+                            Snackbar.LENGTH_SHORT).show();
+                } else if (TextUtils.equals(newNickname, mUser.getNickname())) {
+                    // No change. Don't update it.
+                    allowEditNickname(false);
+                    return;
+                }
                 AppSingleton
                         .getInstance(getApplicationContext())
                         .getAuthenticationManager()
@@ -124,8 +119,9 @@ public class ProfileActivity extends AppCompatActivity {
                                 mNicknameEditText.getText().toString(),
                                 new AuthenticationManager.UserCredentialsCallback() {
                                     @Override
-                                    public void onCredentialsFailure(CredentialsManagerException e) {
-                                        // TODO show a toast
+                                    public void onCredentialsFailure(
+                                            final CredentialsManagerException error) {
+                                        showErrorOnUiThread(error.getMessage());
                                     }
                                 }, new BaseCallback<User, ManagementException>() {
                                     @Override
@@ -141,8 +137,8 @@ public class ProfileActivity extends AppCompatActivity {
                                     }
 
                                     @Override
-                                    public void onFailure(ManagementException error) {
-                                        // TODO show a toast
+                                    public void onFailure(final ManagementException error) {
+                                        showErrorOnUiThread(error.getDescription());
                                     }
                                 });
             }
@@ -202,6 +198,39 @@ public class ProfileActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (mNicknameSaveButton.getVisibility() == View.VISIBLE) {
+            // The user just wants to close out of editing mode.
+            allowEditNickname(false);
+            return;
+        }
+        super.onBackPressed();
+    }
+
+    private void loadUserData() {
+        mNickname.setText(mUser.getNickname());
+        mEmail.setText(mUser.getEmail());
+        Glide.with(getApplicationContext())
+                .load(mUser.getPicture())
+                .asBitmap()
+                .centerCrop()
+                .into(new BitmapImageViewTarget(mPicture) {
+                    @Override
+                    protected void setResource(Bitmap resource) {
+                        RoundedBitmapDrawable drawable = RoundedBitmapDrawableFactory.create(
+                                mPicture.getContext().getResources(), resource);
+                        drawable.setCircular(true);
+                        drawable.setGravity(Gravity.TOP);
+                        mPicture.setImageDrawable(drawable);
+                    }
+                });
+
+        int callCount = AppSingleton.getInstance(getApplicationContext()).getDatabaseHelper()
+                .getCallsCount();
+        mUserStats.setText(getResources().getString(R.string.profile_stats, callCount));
+    }
+
     private void logout() {
         // TODO: Show the user a dialog that logging out (will? will not?) clear their local data.
         // Don't actually log out yet.
@@ -211,5 +240,16 @@ public class ProfileActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    private void showErrorOnUiThread(final String message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Snackbar.make(findViewById(R.id.activity_profile),
+                        getResources().getString(R.string.edit_nickname_failure, message),
+                        Snackbar.LENGTH_LONG).show();
+            }
+        });
     }
 }

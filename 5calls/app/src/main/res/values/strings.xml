@@ -470,4 +470,6 @@
     <string name="why_sign_in">Signing in lets you save your impact across devices, join teams, and share your profile with others.</string>
     <string name="sign_in_prompt">Want to save your stats?</string>
     <string name="edit">Edit</string>
+    <string name="edit_nickname_failure">Failed to update: %s</string>
+    <string name="empty_nickname_error">Your name cannot be empty.</string>
 </resources>
