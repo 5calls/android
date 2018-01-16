@@ -30,6 +30,7 @@ public class AuthenticationManager {
 
     public interface UserCredentialsCallback {
         void onCredentialsFailure(CredentialsManagerException error);
+        void onAuthenticationException(AuthenticationException error);
     }
 
     public AuthenticationManager(Context context) {
@@ -72,13 +73,13 @@ public class AuthenticationManager {
     // to inform the caller if there is no existing account, if login failed, or if it succeeded.
     public void loginWithSavedCredentials(final Context context,
             final UserCredentialsCallback loginCallback,
-            final BaseCallback<User, AuthenticationException> callback) {
+            final BaseCallback<User, ManagementException> callback) {
         mCredentialsManager.getCredentials(
                 new BaseCallback<Credentials, CredentialsManagerException>() {
             @Override
             public void onSuccess(Credentials credentials) {
                 //Use credentials
-                getUserInfo(context, credentials, callback);
+                getUserInfo(context, credentials, loginCallback, callback);
             }
 
             @Override
@@ -90,7 +91,8 @@ public class AuthenticationManager {
     }
 
     public void getUserInfo(final Context context, final Credentials credentials,
-                            final BaseCallback<User, AuthenticationException> callback) {
+                            final UserCredentialsCallback loginCallback,
+                            final BaseCallback<User, ManagementException> callback) {
         mApiClient.userInfo(credentials.getAccessToken()).start(
                 new BaseCallback<UserProfile, AuthenticationException>() {
             @Override
@@ -108,8 +110,7 @@ public class AuthenticationManager {
 
                     @Override
                     public void onFailure(ManagementException error) {
-                        // TODO: Add more to this callback.
-                        //callback.onFailure(error);
+                        callback.onFailure(error);
                     }
                 });
 
@@ -117,7 +118,7 @@ public class AuthenticationManager {
 
             @Override
             public void onFailure(AuthenticationException error) {
-                callback.onFailure(error);
+                loginCallback.onAuthenticationException(error);
             }
         });
     }

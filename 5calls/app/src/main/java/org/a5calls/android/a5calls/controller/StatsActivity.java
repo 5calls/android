@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
@@ -32,7 +33,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.auth0.android.authentication.AuthenticationException;
+import com.auth0.android.authentication.storage.CredentialsManagerException;
 import com.auth0.android.callback.BaseCallback;
+import com.auth0.android.management.ManagementException;
 import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.result.Credentials;
 import com.auth0.android.result.UserProfile;
@@ -374,8 +377,7 @@ public class StatsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(AuthenticationException exception) {
-                // TODO: Show exception to user.
-                Log.d("StatsActivity::login", exception.toString());
+                cancelLoginOnError(authManager, exception.getDescription());
             }
 
             @Override
@@ -383,17 +385,21 @@ public class StatsActivity extends AppCompatActivity {
                 // Save and then use new credentials to try logging in.
                 authManager.onLogin(credentials);
                 authManager.getUserInfo(getApplicationContext(), credentials,
-                        new BaseCallback<User, AuthenticationException>() {
+                        new AuthenticationManager.UserCredentialsCallback() {
+                            @Override
+                            public void onCredentialsFailure(CredentialsManagerException error) {
+                                cancelLoginOnError(authManager, error.getMessage());
+                            }
 
                             @Override
-                            public void onFailure(AuthenticationException error) {
-                                // Maybe give the user a message and show the login button.
-                                // Delete current credentials and try again. Since the user
-                                // hasn't fully logged in yet, it's ok to delete before we
-                                // sync.
-                                authManager.removeAccount(getApplicationContext());
-                                Log.d("StatsActivity", error.getCode() + ", " +
-                                        error.getDescription());
+                            public void onAuthenticationException(AuthenticationException error) {
+                                cancelLoginOnError(authManager, error.getDescription());
+                            }
+                        }, new BaseCallback<User, ManagementException>() {
+
+                            @Override
+                            public void onFailure(ManagementException error) {
+                                cancelLoginOnError(authManager, error.getDescription());
                             }
 
                             @Override
@@ -406,6 +412,21 @@ public class StatsActivity extends AppCompatActivity {
                                 });
                             }
                         });
+            }
+        });
+    }
+
+    private void cancelLoginOnError(AuthenticationManager authManager, final String message) {
+        // Login failed. Show the user a message and set the state back to the not logged in state.
+        // Delete current credentials and try again. Since the user hasn't fully logged in yet,
+        // it's ok to delete before we sync.
+        authManager.removeAccount(getApplicationContext());
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Snackbar.make(findViewById(R.id.stats_activity),
+                        getResources().getString(R.string.login_canceled_on_error, message),
+                        Snackbar.LENGTH_LONG).show();
             }
         });
     }

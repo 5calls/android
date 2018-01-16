@@ -41,6 +41,7 @@ import android.widget.TextView;
 import com.auth0.android.authentication.AuthenticationException;
 import com.auth0.android.authentication.storage.CredentialsManagerException;
 import com.auth0.android.callback.BaseCallback;
+import com.auth0.android.management.ManagementException;
 import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.result.Credentials;
 import com.bumptech.glide.Glide;
@@ -308,27 +309,29 @@ public class MainActivity extends AppCompatActivity {
         // the cached state and just not update the server until connection is re-established.
         authManager.loginWithSavedCredentials(getApplicationContext(),
                 new AuthenticationManager.UserCredentialsCallback() {
-            @Override
-            public void onCredentialsFailure(CredentialsManagerException error) {
-                // Show an error like "can't connect to the server right now to log in,
-                // data will not be backed up". And maybe a "try again" button.
-                // May need to make sure this doesn't overlap with any other "failed to connect"
-                // snackbars.
-                Log.d("Main::tryLoggingIn", error.toString());
-            }
-        }, new BaseCallback<User, AuthenticationException>() {
-            @Override
-            public void onSuccess(final User user) {
-                runOnUiThread(new Runnable() {
-
-                    public void run() {
-                        displayUserProfile(user);
+                    @Override
+                    public void onCredentialsFailure(CredentialsManagerException error) {
+                        backgroundLoginError(error.getMessage());
                     }
-                });
-            }
+
+                    @Override
+                    public void onAuthenticationException(AuthenticationException error) {
+                        backgroundLoginError(error.getDescription());
+
+                    }
+                }, new BaseCallback<User, ManagementException>() {
+                    @Override
+                    public void onSuccess(final User user) {
+                        runOnUiThread(new Runnable() {
+
+                            public void run() {
+                                displayUserProfile(user);
+                            }
+                        });
+                    }
 
             @Override
-            public void onFailure(AuthenticationException error) {
+            public void onFailure(ManagementException error) {
                 // Show an error like "can't connect to the server right now to log in,
                 // data will not be backed up". And maybe a "try again" button.
                 // May need to make sure this doesn't overlap with any other "failed to connect"
@@ -359,8 +362,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(AuthenticationException exception) {
-                // TODO: Show exception to user.
-                Log.d("MainActivity::login", exception.toString());
+                cancelLoginOnError(authManager, exception.getDescription());
             }
 
             @Override
@@ -368,17 +370,21 @@ public class MainActivity extends AppCompatActivity {
                 // Save and then use new credentials to try logging in.
                 authManager.onLogin(credentials);
                 authManager.getUserInfo(getApplicationContext(), credentials,
-                        new BaseCallback<User, AuthenticationException>() {
+                        new AuthenticationManager.UserCredentialsCallback() {
+                            @Override
+                            public void onCredentialsFailure(CredentialsManagerException error) {
+                                cancelLoginOnError(authManager, error.getMessage());
+                            }
 
                             @Override
-                            public void onFailure(AuthenticationException error) {
-                                // Maybe give the user a message and show the login button.
-                                // Delete current credentials and try again. Since the user
-                                // hasn't fully logged in yet, it's ok to delete before we
-                                // sync.
-                                authManager.removeAccount(getApplicationContext());
-                                Log.d("MainActivity", error.getCode() + ", " +
-                                        error.getDescription());
+                            public void onAuthenticationException(AuthenticationException error) {
+                                cancelLoginOnError(authManager, error.getDescription());
+                            }
+                        }, new BaseCallback<User, ManagementException>() {
+
+                            @Override
+                            public void onFailure(ManagementException error) {
+                                cancelLoginOnError(authManager, error.getDescription());
                             }
 
                             @Override
@@ -393,6 +399,29 @@ public class MainActivity extends AppCompatActivity {
                         });
             }
         });
+    }
+
+    private void cancelLoginOnError(AuthenticationManager authManager, final String message) {
+        // Login failed. Show the user a message and set the state back to the not logged in state.
+        // Delete current credentials and try again. Since the user hasn't fully logged in yet,
+        // it's ok to delete before we sync.
+        authManager.removeAccount(getApplicationContext());
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Snackbar.make(findViewById(R.id.activity_main),
+                        getResources().getString(R.string.login_canceled_on_error, message),
+                        Snackbar.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void backgroundLoginError(final String message) {
+        // Show an error like "can't connect to the server right now to log in,
+        // data will not be backed up". And maybe a "try again" button.
+        // May need to make sure this doesn't overlap with any other "failed to
+        // connect" snackbars.
+        Log.d("Main::tryLoggingIn", message);
     }
 
     private void displayUserProfile(User user) {

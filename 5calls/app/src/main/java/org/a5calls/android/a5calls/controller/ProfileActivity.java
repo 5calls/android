@@ -26,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.auth0.android.authentication.AuthenticationException;
 import com.auth0.android.authentication.storage.CredentialsManagerException;
 import com.auth0.android.callback.BaseCallback;
 import com.auth0.android.management.ManagementException;
@@ -85,12 +86,12 @@ public class ProfileActivity extends AppCompatActivity {
 
         Drawable drawable = mEditNicknameButton.getDrawable().mutate();
         drawable.setColorFilter(
-                getResources().getColor(R.color.textColorDarkGrey), PorterDuff.Mode.MULTIPLY);
+                getResources().getColor(R.color.textColorLightGrey), PorterDuff.Mode.MULTIPLY);
         mEditNicknameButton.setImageDrawable(drawable);
 
         drawable = mNicknameSaveButton.getDrawable().mutate();
         drawable.setColorFilter(
-                getResources().getColor(R.color.textColorDarkGrey), PorterDuff.Mode.MULTIPLY);
+                getResources().getColor(R.color.textColorLightGrey), PorterDuff.Mode.MULTIPLY);
         mNicknameSaveButton.setImageDrawable(drawable);
         mEditNicknameButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,6 +122,12 @@ public class ProfileActivity extends AppCompatActivity {
                                     @Override
                                     public void onCredentialsFailure(
                                             final CredentialsManagerException error) {
+                                        showErrorOnUiThread(error.getMessage());
+                                    }
+
+                                    @Override
+                                    public void onAuthenticationException(
+                                            AuthenticationException error) {
                                         showErrorOnUiThread(error.getMessage());
                                     }
                                 }, new BaseCallback<User, ManagementException>() {
