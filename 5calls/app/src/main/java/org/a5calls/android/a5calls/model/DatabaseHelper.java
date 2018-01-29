@@ -35,13 +35,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static String LOCATION = "location";
         public static String RESULT = "result";
         public static String USER_ID = "userid";
+        public static String REPORTED = "reported";
     }
 
     private static final String CALLS_TABLE_CREATE =
             "CREATE TABLE " + CALLS_TABLE_NAME + " (" +
                 CallsColumns.TIMESTAMP + " INTEGER, " + CallsColumns.CONTACT_ID + " STRING, " +
                     CallsColumns.ISSUE_ID + " STRING, " + CallsColumns.LOCATION + " STRING, " +
-                    CallsColumns.RESULT + " STRING, " +  CallsColumns.USER_ID + " TEXT;)";
+                    CallsColumns.RESULT + " STRING, " +  CallsColumns.USER_ID + " TEXT, " +
+                    CallsColumns.REPORTED + " BOOLEAN);";
 
     private static class IssuesColumns {
         public static String ISSUE_ID = "issueid";
@@ -102,6 +104,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (oldVersion < 4 && currentDbVersion < newVersion) {
             db.execSQL("ALTER TABLE " +  CALLS_TABLE_NAME + " ADD COLUMN " + CallsColumns.USER_ID
                     + " TEXT");
+            db.execSQL("ALTER TABLE " +  CALLS_TABLE_NAME + " ADD COLUMN " + CallsColumns.REPORTED
+                    + " BOOLEAN");
             currentDbVersion = 4;
         }
     }
@@ -110,21 +114,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * Adds a successful call to the user's local database
      */
     public void addCall(String issueId, String issueName, String contactId, String contactName,
-                        String result, String location, String userId) {
-        addCall(issueId, contactId, result, location, userId);
+                        String result, String location, String userId, long timestamp) {
+        addCall(issueId, contactId, result, location, userId, timestamp);
         addIssue(issueId, issueName);
         addContact(contactId, contactName);
     }
 
     private void addCall(String issueId, String contactId, String result, String location,
-                         String userId) {
+                         String userId, long timestamp) {
         ContentValues values = new ContentValues();
-        values.put(CallsColumns.TIMESTAMP, System.currentTimeMillis());
+        values.put(CallsColumns.TIMESTAMP, timestamp);
         values.put(CallsColumns.CONTACT_ID, contactId);
         values.put(CallsColumns.ISSUE_ID, issueId);
         values.put(CallsColumns.LOCATION, location);
         values.put(CallsColumns.RESULT, result);
+        values.put(CallsColumns.USER_ID, userId);
+        values.put(CallsColumns.REPORTED, false);
         getWritableDatabase().insert(CALLS_TABLE_NAME, null, values);
+    }
+
+    public void onCallReported(String issueId, String userId, long timestamp) {
+        ContentValues values = new ContentValues();
+        values.put(CallsColumns.REPORTED, true);
+        // Timestamp, issue and user ID should be unique enough.
+        String where = CallsColumns.TIMESTAMP + "=? AND " + CallsColumns.ISSUE_ID + "=? AND " +
+                CallsColumns.USER_ID + "=?";
+        String[] whereArgs = new String[]{String.format("%s", timestamp), issueId, userId};
+        getWritableDatabase().update(CALLS_TABLE_NAME, values, where, whereArgs);
     }
 
     public void addIssue(String issueId, String issueName) {

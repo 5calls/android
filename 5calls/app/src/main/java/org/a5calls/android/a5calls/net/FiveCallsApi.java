@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.BuildConfig;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.model.Outcome;
@@ -231,7 +232,8 @@ public class FiveCallsApi {
     // https://github.com/5calls/5calls/blob/master/static/js/main.js#L221
     // User ID from Auth0 is omitted if no one is logged in.
     public void reportCall(final String issueId, final String contactId, final String result,
-                           final String zip, final String userId) {
+                           final String zip, final String userId, final long timestamp,
+                           final Context context) {
         String getReport = GET_REPORT;
         StringRequest request = new StringRequest(Request.Method.POST, getReport,
                 new Response.Listener<String>() {
@@ -239,6 +241,11 @@ public class FiveCallsApi {
                     public void onResponse(String response) {
                         for (CallRequestListener listener : mCallRequestListeners) {
                             listener.onCallReported();
+                        }
+                        if (!TextUtils.isEmpty(userId)) {
+                            // Set the call as "reported" in the database.
+                            AppSingleton.getInstance(context).getDatabaseHelper().onCallReported(
+                                    issueId, userId, timestamp);
                         }
                     }
                 }, new Response.ErrorListener() {

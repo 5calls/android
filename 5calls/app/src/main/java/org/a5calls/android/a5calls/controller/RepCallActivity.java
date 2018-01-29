@@ -137,7 +137,6 @@ public class RepCallActivity extends AppCompatActivity {
 
             @Override
             public void onCallReported() {
-                // Note: Skips are not reported.
                 Log.d(TAG, "call reported successfully!");
                 returnToIssue();
             }
@@ -218,13 +217,14 @@ public class RepCallActivity extends AppCompatActivity {
         User user = AppSingleton.getInstance(getApplicationContext())
                 .getAuthenticationManager().getCachedUserProfile(getApplicationContext());
         String userId = user == null ? null : user.getUserId();
+        long timestamp = System.currentTimeMillis();
         AppSingleton.getInstance(getApplicationContext()).getDatabaseHelper().addCall(mIssue.id,
                 mIssue.name, mIssue.contacts[mActiveContactIndex].id,
                 mIssue.contacts[mActiveContactIndex].name, outcome.status.toString(), address,
-                userId);
+                userId, timestamp);
         AppSingleton.getInstance(getApplicationContext()).getJsonController().reportCall(
                 mIssue.id, mIssue.contacts[mActiveContactIndex].id, outcome.label, address,
-                userId);
+                userId, timestamp, getApplicationContext());
     }
 
     private void setupContactUi(int index, boolean expandLocalSection) {

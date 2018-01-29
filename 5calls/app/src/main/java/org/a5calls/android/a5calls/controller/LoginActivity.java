@@ -94,6 +94,7 @@ public abstract class LoginActivity extends AppCompatActivity {
     public abstract View getSnackbarView();
 
     private void showBackupStatsDialog(String userId, String idToken) {
+
         // TODO: Show a dialog that says Login Success, and we can will now associate all the stats
         // from this device with your account. If you log out, those stats will not be displayed any
         // more. And gives a chance to cancel.
