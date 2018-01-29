@@ -73,7 +73,7 @@ import butterknife.ButterKnife;
  * TODO: Sort issues based on which are "done" and which are not done or hide ones which are "done".
  * TODO: Stats with sign in / sign out.
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends LoginActivity {
     private static final String TAG = "MainActivity";
     private static final int ISSUE_DETAIL_REQUEST = 1;
     public static final int NOTIFICATION_REQUEST = 2;
@@ -349,71 +349,14 @@ public class MainActivity extends AppCompatActivity {
                 View.GONE);
     }
 
-    // Login from a totally logged out state.
-    // TODO: If this succeeds, we need to back up user stats or sync stats with the server.
-    private void login() {
-        final AuthenticationManager authManager = AppSingleton.getInstance(getApplicationContext())
-                .getAuthenticationManager();
-        authManager.doLogin(this, new AuthCallback() {
-            @Override
-            public void onFailure(@NonNull Dialog dialog) {
-                dialog.show();
-            }
-
-            @Override
-            public void onFailure(AuthenticationException exception) {
-                cancelLoginOnError(authManager, exception.getDescription());
-            }
-
-            @Override
-            public void onSuccess(@NonNull Credentials credentials) {
-                // Save and then use new credentials to try logging in.
-                authManager.onLogin(credentials);
-                authManager.getUserInfo(getApplicationContext(), credentials,
-                        new AuthenticationManager.UserCredentialsCallback() {
-                            @Override
-                            public void onCredentialsFailure(CredentialsManagerException error) {
-                                cancelLoginOnError(authManager, error.getMessage());
-                            }
-
-                            @Override
-                            public void onAuthenticationException(AuthenticationException error) {
-                                cancelLoginOnError(authManager, error.getDescription());
-                            }
-                        }, new BaseCallback<User, ManagementException>() {
-
-                            @Override
-                            public void onFailure(ManagementException error) {
-                                cancelLoginOnError(authManager, error.getDescription());
-                            }
-
-                            @Override
-                            public void onSuccess(final User user) {
-                                runOnUiThread(new Runnable() {
-
-                                    public void run() {
-                                        displayUserProfile(user);
-                                    }
-                                });
-                            }
-                        });
-            }
-        });
+    @Override
+    public void onLoginSuccess(Credentials credentials, User user) {
+        displayUserProfile(user);
     }
 
-    private void cancelLoginOnError(AuthenticationManager authManager, final String message) {
-        // Login failed. Show the user a message and set the state back to the not logged in state.
-        // Delete current credentials and try again. Since the user hasn't fully logged in yet,
-        // it's ok to delete before we sync.
-        authManager.removeAccount(getApplicationContext());
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Snackbar.make(findViewById(R.id.activity_main),
-                        getResources().getString(R.string.login_canceled_on_error, message),
-                        Snackbar.LENGTH_LONG).show();
-            }
-        });
+    @Override
+    public View getSnackbarView() {
+        return findViewById(R.id.activity_main);
     }
 
     private void backgroundLoginError(final String message) {

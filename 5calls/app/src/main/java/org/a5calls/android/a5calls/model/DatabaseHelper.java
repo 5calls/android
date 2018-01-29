@@ -34,13 +34,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static String ISSUE_ID = "issueid";
         public static String LOCATION = "location";
         public static String RESULT = "result";
+        public static String USER_ID = "userid";
     }
 
     private static final String CALLS_TABLE_CREATE =
             "CREATE TABLE " + CALLS_TABLE_NAME + " (" +
                 CallsColumns.TIMESTAMP + " INTEGER, " + CallsColumns.CONTACT_ID + " STRING, " +
                     CallsColumns.ISSUE_ID + " STRING, " + CallsColumns.LOCATION + " STRING, " +
-                    CallsColumns.RESULT + " STRING);";
+                    CallsColumns.RESULT + " STRING, " +  CallsColumns.USER_ID + " TEXT;)";
 
     private static class IssuesColumns {
         public static String ISSUE_ID = "issueid";
@@ -97,19 +98,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     new String[]{Outcome.Status.VM.toString()});
             currentDbVersion = 3;
         }
+
+        if (oldVersion < 4 && currentDbVersion < newVersion) {
+            db.execSQL("ALTER TABLE " +  CALLS_TABLE_NAME + " ADD COLUMN " + CallsColumns.USER_ID
+                    + " TEXT");
+            currentDbVersion = 4;
+        }
     }
 
     /**
      * Adds a successful call to the user's local database
      */
     public void addCall(String issueId, String issueName, String contactId, String contactName,
-                        String result, String location) {
-        addCall(issueId, contactId, result, location);
+                        String result, String location, String userId) {
+        addCall(issueId, contactId, result, location, userId);
         addIssue(issueId, issueName);
         addContact(contactId, contactName);
     }
 
-    private void addCall(String issueId, String contactId, String result, String location) {
+    private void addCall(String issueId, String contactId, String result, String location,
+                         String userId) {
         ContentValues values = new ContentValues();
         values.put(CallsColumns.TIMESTAMP, System.currentTimeMillis());
         values.put(CallsColumns.CONTACT_ID, contactId);

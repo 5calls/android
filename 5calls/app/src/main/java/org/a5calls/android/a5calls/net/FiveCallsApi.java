@@ -19,6 +19,7 @@ import com.google.gson.reflect.TypeToken;
 import org.a5calls.android.a5calls.BuildConfig;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.model.Outcome;
+import org.a5calls.android.a5calls.model.Stat;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,6 +46,10 @@ public class FiveCallsApi {
 
     private static final String GET_REPORT = "https://5calls.org/report";
 
+    private static final String GET_STATS = "https://api.5calls.org/v1/users/stats";
+
+    private static final String POST_STATS = GET_STATS;
+
     public interface CallRequestListener {
         void onRequestError();
 
@@ -65,10 +70,22 @@ public class FiveCallsApi {
         void onIssuesReceived(String locationName, boolean splitDistrict, List<Issue> issues);
     }
 
+    public interface StatsRequestListener {
+        void onRequestError();
+
+        void onJsonError();
+
+        void onStatsReceived(List<Stat> stats);
+
+        // The stats which were updated in the server.
+        void onStatsUpdated(List<Stat> stats);
+    }
+
     private RequestQueue mRequestQueue;
     private Gson mGson;
     private List<CallRequestListener> mCallRequestListeners = new ArrayList<>();
     private List<IssuesRequestListener> mIssuesRequestListeners = new ArrayList<>();
+    private List<StatsRequestListener> mStatsRequestListeners = new ArrayList<>();
 
     public FiveCallsApi(Context context) {
         // TODO: Using OkHttpClient and OkHttpStack cause failures on multiple types of Samsung
@@ -98,6 +115,16 @@ public class FiveCallsApi {
     public void unregisterIssuesRequestListener(IssuesRequestListener issuesRequestListener) {
         if (mIssuesRequestListeners.contains(issuesRequestListener)) {
             mIssuesRequestListeners.remove(issuesRequestListener);
+        }
+    }
+
+    public void registerStatsRequestListener(StatsRequestListener statsRequestListener) {
+        mStatsRequestListeners.add(statsRequestListener);
+    }
+
+    public void unregisterStatsRequestListener(StatsRequestListener statsRequestListener) {
+        if (mStatsRequestListeners.contains(statsRequestListener)) {
+            mStatsRequestListeners.remove(statsRequestListener);
         }
     }
 
@@ -244,6 +271,104 @@ public class FiveCallsApi {
         request.setTag(TAG);
         // Add the request to the RequestQueue.
         mRequestQueue.add(request);
+    }
+
+    private void uploadUserStats(final String jwt, final List<Stat> stats) {
+        String postStats = POST_STATS;
+        StringRequest request = new StringRequest(Request.Method.POST, postStats,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        for (StatsRequestListener listener : mStatsRequestListeners) {
+                            listener.onStatsUpdated(stats);
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                for (StatsRequestListener listener : mStatsRequestListeners) {
+                    listener.onRequestError();
+                }
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("stats", Stat.toJsonString(stats)); // TODO: Can we use gson?
+                params.put("via", (BuildConfig.DEBUG && TESTING) ? "test" : "android");
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+        request.setTag(TAG);
+        // Add the request to the RequestQueue.
+        mRequestQueue.add(request);
+        /*
+
+        -H 'Content-Type: application/json; charset=utf-8' \
+     -H 'Authorization: Bearer <JWT TOKEN HERE>' \
+     -d $'[
+  {
+    "issueID": "34",
+    "contactID": "contactid",
+    "result": "contact",
+    "time": "1483841102"
+  }
+
+         */
+    }
+
+    // The jwt is credentials id_token.
+    private void getUserStats(final String jwt) {
+        String getStats = GET_STATS;
+        JsonObjectRequest statsRequest = new JsonObjectRequest(
+                Request.Method.GET, getStats, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                // TODO: Get stats properly...
+                JSONArray jsonArray = response.optJSONArray("stats");
+                if (jsonArray == null) {
+                    for (StatsRequestListener listener : mStatsRequestListeners) {
+                        listener.onJsonError();
+                    }
+                    return;
+                }
+                Type listType = new TypeToken<ArrayList<Stat>>(){}.getType();
+                List<Stat> stats = mGson.fromJson(jsonArray.toString(), listType);
+                for (StatsRequestListener listener : mStatsRequestListeners) {
+                    listener.onStatsReceived(stats);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                for (StatsRequestListener listener : mStatsRequestListeners) {
+                    listener.onRequestError();
+                }
+                if (error.getMessage() == null) {
+                    Log.d("Error", "no message");
+                } else {
+                    Log.d("Error", error.getMessage());
+                }
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Cache-Control:", "max-age=0"); // TODO: Use cached results.
+                params.put("Authorization:", "Bearer " + jwt);
+                return params;
+            }
+        };
+        statsRequest.setTag(TAG); // TODO: same tag OK?
+        // Add the request to the RequestQueue.
+        mRequestQueue.add(statsRequest);
     }
 
     private void onRequestError(VolleyError error) {

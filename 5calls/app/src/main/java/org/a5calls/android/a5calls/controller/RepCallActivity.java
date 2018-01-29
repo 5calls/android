@@ -220,7 +220,8 @@ public class RepCallActivity extends AppCompatActivity {
         String userId = user == null ? null : user.getUserId();
         AppSingleton.getInstance(getApplicationContext()).getDatabaseHelper().addCall(mIssue.id,
                 mIssue.name, mIssue.contacts[mActiveContactIndex].id,
-                mIssue.contacts[mActiveContactIndex].name, outcome.status.toString(), address);
+                mIssue.contacts[mActiveContactIndex].name, outcome.status.toString(), address,
+                userId);
         AppSingleton.getInstance(getApplicationContext()).getJsonController().reportCall(
                 mIssue.id, mIssue.contacts[mActiveContactIndex].id, outcome.label, address,
                 userId);
