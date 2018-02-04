@@ -45,6 +45,7 @@ public class AuthenticationManager {
         WebAuthProvider.init(mAccount)
                 // Request offline_access to get a token
                 .withScope("openid offline_access profile email")
+                .withAudience("https://5callsos.auth0.com/userinfo")
                 .start(activity, authCallback);
     }
 

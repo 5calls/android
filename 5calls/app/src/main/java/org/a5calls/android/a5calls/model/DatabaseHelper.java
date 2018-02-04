@@ -27,7 +27,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String ISSUES_TABLE_NAME = "UserIssuesTable";
     private static final String CONTACTS_TABLE_NAME = "UserContactsTable";
 
-
     private static class CallsColumns {
         public static String TIMESTAMP = "timestamp";
         public static String CONTACT_ID = "contactid";
@@ -273,6 +272,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         c.close();
         return result;
+    }
+
+    /**
+     * Gets a list of stats by user ID
+     * @param userId
+     * @return
+     */
+    public List<Stat> getStatsForUserId(String userId, boolean reported) {
+        /*Cursor c = getReadableDatabase().rawQuery("SELECT " + CallsColumns.RESULT + " FROM " +
+                        CALLS_TABLE_NAME + " WHERE " + CallsColumns.ISSUE_ID + " = ? AND " +
+                        CallsColumns.CONTACT_ID + " = ? GROUP BY " + CallsColumns.RESULT,
+                new String[] {issueId, contactId});
+        List<Stat> result = new ArrayList<>();
+        while (c.moveToNext()) {
+            result.add(c.getString(0));
+        }
+        c.close();
+        return result;*/
+        return new ArrayList<>();
     }
 
     /**

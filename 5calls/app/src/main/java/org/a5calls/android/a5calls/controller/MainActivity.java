@@ -55,6 +55,7 @@ import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.AuthenticationManager;
 import org.a5calls.android.a5calls.model.Category;
+import org.a5calls.android.a5calls.model.Stat;
 import org.a5calls.android.a5calls.model.User;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
 import org.a5calls.android.a5calls.model.Issue;
@@ -327,6 +328,8 @@ public class MainActivity extends LoginActivity {
 
                             public void run() {
                                 displayUserProfile(user);
+                                // Back up all stats on the device that haven't been backed up yet.
+                                //doStatBackup(user.getUserId());
                             }
                         });
                     }
@@ -399,6 +402,17 @@ public class MainActivity extends LoginActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    private void doStatBackup(Credentials credentials, String userId) {
+        List<Stat> stats = AppSingleton.getInstance(getApplicationContext()).getDatabaseHelper()
+                .getStatsForUserId(userId, /* not reported */ false);
+        if (stats.size() == 0) {
+            return;
+        }
+        // Backs up all stats not yet associated with a username.
+        //AppSingleton.getInstance(getApplicationContext()).getJsonController().uploadUserStats(
+        //        credentials.getIdToken(), stats);
     }
 
     private void launchLocationActivity() {

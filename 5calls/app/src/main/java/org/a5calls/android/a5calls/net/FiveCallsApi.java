@@ -18,6 +18,7 @@ import com.google.gson.reflect.TypeToken;
 
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.BuildConfig;
+import org.a5calls.android.a5calls.model.DatabaseHelper;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.model.Outcome;
 import org.a5calls.android.a5calls.model.Stat;
@@ -282,7 +283,8 @@ public class FiveCallsApi {
         mRequestQueue.add(request);
     }
 
-    private void uploadUserStats(final String jwt, final List<Stat> stats) {
+    public void uploadUserStats(Context context, final String jwt, final List<Stat> stats, final String userId) {
+        final DatabaseHelper db = AppSingleton.getInstance(context).getDatabaseHelper();
         String postStats = POST_STATS;
         StringRequest request = new StringRequest(Request.Method.POST, postStats,
                 new Response.Listener<String>() {
@@ -291,7 +293,12 @@ public class FiveCallsApi {
                         for (StatsRequestListener listener : mStatsRequestListeners) {
                             listener.onStatsUpdated(stats);
                         }
-
+                        for (Stat stat : stats) {
+                            // Set the call as "reported" in the database since the server received
+                            // it successfully. This will keep us from trying to back it up a second
+                            // time.
+                            db.onCallReported(stat.issueID, userId, stat.time);
+                        }
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -313,6 +320,7 @@ public class FiveCallsApi {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
                 params.put("Content-Type", "application/x-www-form-urlencoded");
+                params.put("Authorization", "Bearer " + jwt);
                 return params;
             }
         };
@@ -341,11 +349,11 @@ public class FiveCallsApi {
                 Request.Method.GET, getStats, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                // TODO: Get stats properly...
                 try {
                     JSONObject jsonObject = response.getJSONObject("stats");
                     StatSummary summary = mGson.fromJson(jsonObject.toString(),
                             new TypeToken<StatSummary>(){}.getType());
+                    // TODO: Still needs to be tested!
                     for (StatsRequestListener listener : mStatsRequestListeners) {
                         listener.onStatsReceived(summary);
                     }
