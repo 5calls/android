@@ -69,6 +69,10 @@ public class AuthenticationManager {
         return mCredentialsManager.hasValidCredentials();
     }
 
+    public void getCredentials(BaseCallback<Credentials, CredentialsManagerException> callback) {
+        mCredentialsManager.getCredentials(callback);
+    }
+
     // Tries to use the existing saved account to log in. Uses the UserCredentialsCallback
     // to inform the caller if there is no existing account, if login failed, or if it succeeded.
     public void loginWithSavedCredentials(final Context context,

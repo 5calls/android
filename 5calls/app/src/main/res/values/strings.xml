@@ -473,4 +473,5 @@
     <string name="edit_nickname_failure">Failed to update: %s</string>
     <string name="empty_nickname_error">Your name cannot be empty.</string>
     <string name="login_canceled_on_error">Login failed: %s</string>
+    <string name="view_device_stats">Stats on this device</string>
 </resources>

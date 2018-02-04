@@ -21,6 +21,7 @@ import org.a5calls.android.a5calls.BuildConfig;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.model.Outcome;
 import org.a5calls.android.a5calls.model.Stat;
+import org.a5calls.android.a5calls.model.StatSummary;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -76,7 +77,7 @@ public class FiveCallsApi {
 
         void onJsonError();
 
-        void onStatsReceived(List<Stat> stats);
+        void onStatsReceived(StatSummary summary);
 
         // The stats which were updated in the server.
         void onStatsUpdated(List<Stat> stats);
@@ -243,7 +244,8 @@ public class FiveCallsApi {
                             listener.onCallReported();
                         }
                         if (!TextUtils.isEmpty(userId)) {
-                            // Set the call as "reported" in the database.
+                            // Set the call as "reported" in the database since the server received
+                            // it successfully.
                             AppSingleton.getInstance(context).getDatabaseHelper().onCallReported(
                                     issueId, userId, timestamp);
                         }
@@ -289,6 +291,7 @@ public class FiveCallsApi {
                         for (StatsRequestListener listener : mStatsRequestListeners) {
                             listener.onStatsUpdated(stats);
                         }
+
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -332,24 +335,25 @@ public class FiveCallsApi {
     }
 
     // The jwt is credentials id_token.
-    private void getUserStats(final String jwt) {
+    public void getUserStats(final String jwt) {
         String getStats = GET_STATS;
         JsonObjectRequest statsRequest = new JsonObjectRequest(
                 Request.Method.GET, getStats, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 // TODO: Get stats properly...
-                JSONArray jsonArray = response.optJSONArray("stats");
-                if (jsonArray == null) {
+                try {
+                    JSONObject jsonObject = response.getJSONObject("stats");
+                    StatSummary summary = mGson.fromJson(jsonObject.toString(),
+                            new TypeToken<StatSummary>(){}.getType());
+                    for (StatsRequestListener listener : mStatsRequestListeners) {
+                        listener.onStatsReceived(summary);
+                    }
+                } catch (JSONException e) {
                     for (StatsRequestListener listener : mStatsRequestListeners) {
                         listener.onJsonError();
                     }
                     return;
-                }
-                Type listType = new TypeToken<ArrayList<Stat>>(){}.getType();
-                List<Stat> stats = mGson.fromJson(jsonArray.toString(), listType);
-                for (StatsRequestListener listener : mStatsRequestListeners) {
-                    listener.onStatsReceived(stats);
                 }
             }
         }, new Response.ErrorListener() {

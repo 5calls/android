@@ -65,7 +65,8 @@ public abstract class LoginActivity extends AppCompatActivity {
 
                                     public void run() {
                                         onLoginSuccess(credentials, user);
-                                        showBackupStatsDialog(user.getUserId(), credentials.getIdToken());
+                                        showBackupStatsDialog(user.getUserId(),
+                                                credentials.getIdToken());
                                     }
                                 });
                             }

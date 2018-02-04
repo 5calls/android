@@ -30,13 +30,19 @@ import com.auth0.android.authentication.AuthenticationException;
 import com.auth0.android.authentication.storage.CredentialsManagerException;
 import com.auth0.android.callback.BaseCallback;
 import com.auth0.android.management.ManagementException;
+import com.auth0.android.result.Credentials;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AuthenticationManager;
+import org.a5calls.android.a5calls.model.Stat;
+import org.a5calls.android.a5calls.model.StatSummary;
 import org.a5calls.android.a5calls.model.User;
+import org.a5calls.android.a5calls.net.FiveCallsApi;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -61,6 +67,7 @@ public class ProfileActivity extends AppCompatActivity {
     @BindView(R.id.btn_edit_nickname) ImageButton mEditNicknameButton;
     @BindView(R.id.btn_save_nickname) ImageButton mNicknameSaveButton;
     @BindView(R.id.user_name_edittext) EditText mNicknameEditText;
+    private FiveCallsApi.StatsRequestListener mStatsRequestListener;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -81,8 +88,6 @@ public class ProfileActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle(getResources().getString(R.string.profile_activity));
         }
-
-        loadUserData();
 
         Drawable drawable = mEditNicknameButton.getDrawable().mutate();
         drawable.setColorFilter(
@@ -159,6 +164,32 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+        mStatsRequestListener = new FiveCallsApi.StatsRequestListener() {
+            @Override
+            public void onRequestError() {
+                mUserStats.setText(R.string.request_error);
+            }
+
+            @Override
+            public void onJsonError() {
+                mUserStats.setText("Error loading stats from server");
+            }
+
+            @Override
+            public void onStatsReceived(StatSummary summary) {
+                mUserStats.setText(getResources().getString(R.string.profile_stats,
+                        summary.getTotalCalls()));
+            }
+
+            @Override
+            public void onStatsUpdated(List<Stat> stats) {
+                // Refresh the user data if the stats list was updated.
+                loadUserData();
+            }
+        };
+        AppSingleton.getInstance(getApplicationContext()).getJsonController()
+                .registerStatsRequestListener(mStatsRequestListener);
+
         if (savedInstanceState != null) {
             boolean isEditing = savedInstanceState.getBoolean(KEY_IS_EDITING, false);
             if (isEditing) {
@@ -168,6 +199,19 @@ public class ProfileActivity extends AppCompatActivity {
                 mNicknameEditText.setText(savedNickname);
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        AppSingleton.getInstance(getApplicationContext()).getJsonController()
+                .unregisterStatsRequestListener(mStatsRequestListener);
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadUserData();
     }
 
     @Override
@@ -232,15 +276,24 @@ public class ProfileActivity extends AppCompatActivity {
                         mPicture.setImageDrawable(drawable);
                     }
                 });
+        AppSingleton.getInstance(getApplicationContext()).getAuthenticationManager().getCredentials(
+                new BaseCallback<Credentials, CredentialsManagerException>() {
+                    @Override
+                    public void onSuccess(Credentials credentials) {
+                        AppSingleton.getInstance(getApplicationContext()).getJsonController()
+                                .getUserStats(credentials.getIdToken());
+                    }
 
-        int callCount = AppSingleton.getInstance(getApplicationContext()).getDatabaseHelper()
-                .getCallsCount();
-        mUserStats.setText(getResources().getString(R.string.profile_stats, callCount));
+                    @Override
+                    public void onFailure(CredentialsManagerException error) {
+                        mUserStats.setText(R.string.request_error);
+                    }
+        });
     }
 
     private void logout() {
         // TODO: Show the user a dialog that logging out (will? will not?) clear their local data.
-        // Don't actually log out yet.
+        // Don't actually log out until they confirm the dialog.
         AuthenticationManager authManager = AppSingleton.getInstance(getApplicationContext())
                 .getAuthenticationManager();
         authManager.removeAccount(getApplicationContext());

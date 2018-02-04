@@ -72,6 +72,7 @@ import butterknife.ButterKnife;
  *
  * TODO: Sort issues based on which are "done" and which are not done or hide ones which are "done".
  * TODO: Stats with sign in / sign out.
+ * TODO: Path to back up stats that haven't been backed up yet.
  */
 public class MainActivity extends LoginActivity {
     private static final String TAG = "MainActivity";
