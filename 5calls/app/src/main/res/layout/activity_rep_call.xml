@@ -169,13 +169,15 @@
                 android:textStyle="bold|italic"
                 />
 
-            <TextView
+            <us.feras.mdv.MarkdownView
                 android:id="@+id/call_script"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="24dp"
                 android:background="@color/script_background_color"
-                android:padding="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="16dp"
                 android:textColor="@color/textColorDarkGrey"
                 android:textSize="@dimen/text_size_paragraph"
                 android:textIsSelectable="true"

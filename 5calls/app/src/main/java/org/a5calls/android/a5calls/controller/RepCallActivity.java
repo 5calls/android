@@ -53,6 +53,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import us.feras.mdv.MarkdownView;
 
 import static org.a5calls.android.a5calls.controller.IssueActivity.KEY_ISSUE;
 
@@ -93,7 +94,7 @@ public class RepCallActivity extends AppCompatActivity {
 
     @BindView(R.id.script_section) LinearLayout scriptLayout;
     @BindView(R.id.contact_reason) TextView contactReason;
-    @BindView(R.id.call_script) TextView callScript;
+    @BindView(R.id.call_script) MarkdownView callScript;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -143,8 +144,8 @@ public class RepCallActivity extends AppCompatActivity {
         FiveCallsApi controller = AppSingleton.getInstance(getApplicationContext())
                 .getJsonController();
         controller.registerCallRequestListener(mStatusListener);
-
-        callScript.setText(mIssue.script);
+        callScript.loadMarkdown(mIssue.script,
+                "file:///android_asset/script.css");
 
         boolean expandLocalOffices = false;
         if (savedInstanceState != null) {
