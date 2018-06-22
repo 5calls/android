@@ -8,8 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
@@ -47,7 +45,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import us.feras.mdv.MarkdownView;
+import ru.noties.markwon.Markwon;
 
 /**
  * More details about an issue, including links to the phone app to call and buttons to record
@@ -65,7 +63,7 @@ public class IssueActivity extends AppCompatActivity {
 
     @BindView(R.id.scroll_view) NestedScrollView scrollView;
     @BindView(R.id.issue_name) TextView issueName;
-    @BindView(R.id.issue_description) MarkdownView issueDescription;
+    @BindView(R.id.issue_description) TextView issueDescription;
     @BindView(R.id.no_calls_left) ViewGroup noCallsLeft;
     @BindView(R.id.update_location_btn) Button updateLocationBtn;
     @BindView(R.id.rep_prompt) ViewGroup repPrompt;
@@ -95,8 +93,7 @@ public class IssueActivity extends AppCompatActivity {
         }
 
         issueName.setText(mIssue.name);
-        issueDescription.loadMarkdown(mIssue.reason,
-                "file:///android_asset/issue_reason.css");
+        Markwon.setMarkdown(issueDescription, mIssue.reason);
         if (!TextUtils.isEmpty(mIssue.link)) {
             linkText.setVisibility(View.VISIBLE);
             linkText.setMovementMethod(LinkMovementMethod.getInstance());

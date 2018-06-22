@@ -55,7 +55,7 @@ dependencies {
 
     compile 'com.onesignal:OneSignal:3.9.1'
 
-    compile 'us.feras.mdv:markdownview:1.1.0'
+    compile 'ru.noties:markwon:1.0.5'
 
     // If you add any other open-source libraries, make sure to update assets/licenses.html
     // with the appropriate license information.
