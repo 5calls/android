@@ -46,14 +46,20 @@ import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.model.Outcome;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
+import org.a5calls.android.a5calls.util.MarkdownUtil;
 import org.a5calls.android.a5calls.view.GridItemDecoration;
+import org.commonmark.node.Node;
+import org.commonmark.parser.Parser;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import me.saket.bettermovementmethod.BetterLinkMovementMethod;
 import ru.noties.markwon.Markwon;
+import ru.noties.markwon.SpannableConfiguration;
+import ru.noties.markwon.renderer.SpannableRenderer;
 
 import static org.a5calls.android.a5calls.controller.IssueActivity.KEY_ISSUE;
 
@@ -144,7 +150,12 @@ public class RepCallActivity extends AppCompatActivity {
         FiveCallsApi controller = AppSingleton.getInstance(getApplicationContext())
                 .getJsonController();
         controller.registerCallRequestListener(mStatusListener);
-        Markwon.setMarkdown(callScript, mIssue.script);
+
+        // The markdown view gets focus unless we let the scrollview take it back.
+        scrollView.setFocusableInTouchMode(true);
+        scrollView.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
+
+        MarkdownUtil.setUpScript(callScript, mIssue.script, getApplicationContext());
 
         boolean expandLocalOffices = false;
         if (savedInstanceState != null) {

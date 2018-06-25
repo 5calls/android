@@ -40,6 +40,7 @@ import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.Issue;
+import org.a5calls.android.a5calls.util.MarkdownUtil;
 
 import java.util.List;
 
@@ -93,7 +94,7 @@ public class IssueActivity extends AppCompatActivity {
         }
 
         issueName.setText(mIssue.name);
-        Markwon.setMarkdown(issueDescription, mIssue.reason);
+        MarkdownUtil.setUpScript(issueDescription, mIssue.reason, getApplicationContext());
         if (!TextUtils.isEmpty(mIssue.link)) {
             linkText.setVisibility(View.VISIBLE);
             linkText.setMovementMethod(LinkMovementMethod.getInstance());

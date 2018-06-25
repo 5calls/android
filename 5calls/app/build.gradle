@@ -10,8 +10,8 @@ android {
         applicationId "org.a5calls.android.a5calls"
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 32
-        versionName "1.9.1"
+        versionCode 34
+        versionName "1.9.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         manifestPlaceholders = [onesignal_app_id: "5fd4ca41-9f6c-4149-a312-ae3e71b35c0e",
                                 // Project number pulled from dashboard, local value is ignored.
@@ -55,7 +55,9 @@ dependencies {
 
     compile 'com.onesignal:OneSignal:3.9.1'
 
-    compile 'ru.noties:markwon:1.0.5'
+    implementation 'ru.noties:markwon:1.0.6-SNAPSHOT'
+    implementation 'me.saket:better-link-movement-method:2.2.0'
+
 
     // If you add any other open-source libraries, make sure to update assets/licenses.html
     // with the appropriate license information.
