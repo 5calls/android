@@ -55,9 +55,8 @@ dependencies {
 
     compile 'com.onesignal:OneSignal:3.9.1'
 
-    implementation 'ru.noties:markwon:1.0.6-SNAPSHOT'
+    compile 'ru.noties:markwon:1.0.6'
     implementation 'me.saket:better-link-movement-method:2.2.0'
-
 
     // If you add any other open-source libraries, make sure to update assets/licenses.html
     // with the appropriate license information.

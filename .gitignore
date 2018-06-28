@@ -12,6 +12,7 @@
 bin/
 gen/
 out/
+5calls/app/release/
 
 # Gradle files
 .gradle/
