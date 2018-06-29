@@ -28,6 +28,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -36,6 +37,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+import com.google.android.gms.common.util.Strings;
 
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.FiveCallsApplication;
@@ -65,10 +67,12 @@ public class MainActivity extends AppCompatActivity {
     public static final int NOTIFICATION_REQUEST = 2;
     public static final String EXTRA_FROM_NOTIFICATION = "extraFromNotification";
     private static final String KEY_FILTER_ITEM_SELECTED = "filterItemSelected";
+    private static final String KEY_SEARCH_TEXT = "searchText";
     private final AccountManager accountManager = AccountManager.Instance;
 
     private ArrayAdapter<String> mFilterAdapter;
     private String mFilterText = "";
+    private String mSearchText = "";
     private IssuesAdapter mIssuesAdapter;
     private FiveCallsApi.IssuesRequestListener mIssuesRequestListener;
     private String mAddress;
@@ -83,6 +87,9 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsingToolbarLayout;
     @BindView(R.id.action_bar_subtitle) TextView actionBarSubtitle;
     @BindView(R.id.filter) AppCompatSpinner filter;
+    @BindView(R.id.search_bar) ViewGroup searchBar;
+    @BindView(R.id.clear_search_button) ImageButton clearSearchButton;
+    @BindView(R.id.search_text) TextView searchTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -159,9 +166,26 @@ public class MainActivity extends AppCompatActivity {
         filter.setAdapter(mFilterAdapter);
         if (savedInstanceState != null) {
             mFilterText = savedInstanceState.getString(KEY_FILTER_ITEM_SELECTED);
+            mSearchText = savedInstanceState.getString(KEY_SEARCH_TEXT);
+            if (!TextUtils.isEmpty(mSearchText)) {
+                searchBar.setVisibility(View.VISIBLE);
+                searchTextView.setText(mSearchText);
+            }
         } else {
             mFilterText = mFilterAdapter.getItem(0);  // Default value
         }
+        searchTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchSearchDialog();
+            }
+        });
+        clearSearchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onIssueSearchCleared();
+            }
+        });
 
         registerApiListener();
 
@@ -211,6 +235,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putString(KEY_FILTER_ITEM_SELECTED, mFilterText);
+        outState.putString(KEY_SEARCH_TEXT, mSearchText);
         super.onSaveInstanceState(outState);
     }
 
@@ -235,11 +260,17 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
             return true;
-        } else if (item.getItemId() == R.id.menu_location) {
-            launchLocationActivity();
+        } else if (item.getItemId() == R.id.menu_search) {
+            launchSearchDialog();
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void launchSearchDialog() {
+        DialogFragment searchIssuesDialog = SearchIssuesDialog.newInstance(mSearchText);
+        getSupportFragmentManager().beginTransaction().add(searchIssuesDialog,
+                SearchIssuesDialog.TAG).commit();
     }
 
     private void setupDrawerContent(NavigationView navigationView) {
@@ -263,6 +294,10 @@ public class MainActivity extends AppCompatActivity {
                             return true;
                         } else if (item.getItemId() == R.id.menu_faq) {
                             CustomTabsUtil.launchUrl(MainActivity.this, Uri.parse(getString(R.string.faq_url)));
+                            return true;
+                        } else if (item.getItemId() == R.id.menu_location) {
+                            launchLocationActivity();
+                            return true;
                         }
 
                         return true;
@@ -286,7 +321,7 @@ public class MainActivity extends AppCompatActivity {
                 // Our only type of request in MainActivity is a GET. If it doesn't work, clear the
                 // active issues list to avoid showing a stale list.
                 mIssuesAdapter.setIssues(Collections.<Issue>emptyList(),
-                        IssuesAdapter.ERROR_REQUEST, mFilterText);
+                        IssuesAdapter.ERROR_REQUEST, mFilterText, mSearchText);
                 swipeContainer.setRefreshing(false);
             }
 
@@ -298,7 +333,7 @@ public class MainActivity extends AppCompatActivity {
                 // Our only type of request in MainActivity is a GET. If it doesn't work, clear the
                 // active issues list to avoid showing a stale list.
                 mIssuesAdapter.setIssues(Collections.<Issue>emptyList(),
-                        IssuesAdapter.ERROR_REQUEST, mFilterText);
+                        IssuesAdapter.ERROR_REQUEST, mFilterText, mSearchText);
                 swipeContainer.setRefreshing(false);
             }
 
@@ -310,7 +345,7 @@ public class MainActivity extends AppCompatActivity {
                 // Clear the issues but don't show the refresh button because this is an address
                 // problem.
                 mIssuesAdapter.setIssues(Collections.<Issue>emptyList(),
-                        IssuesAdapter.ERROR_ADDRESS, mFilterText);
+                        IssuesAdapter.ERROR_ADDRESS, mFilterText, mSearchText);
                 swipeContainer.setRefreshing(false);
             }
 
@@ -348,7 +383,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 populateFilterAdapterIfNeeded(issues);
-                mIssuesAdapter.setIssues(issues, IssuesAdapter.NO_ERROR, mFilterText);
+                mIssuesAdapter.setIssues(issues, IssuesAdapter.NO_ERROR, mFilterText, mSearchText);
                 swipeContainer.setRefreshing(false);
             }
         };
@@ -446,6 +481,36 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    public void onIssueSearchSet(String searchText) {
+        if (Strings.isEmptyOrWhitespace(searchText)) {
+            onIssueSearchCleared();
+            return;
+        }
+        filter.setVisibility(View.GONE);
+        searchBar.setVisibility(View.VISIBLE);
+        setSearchText(searchText);
+    }
+
+    public void onIssueSearchCleared() {
+        filter.setVisibility(View.VISIBLE);
+        searchBar.setVisibility(View.GONE);
+        setSearchText("");
+    }
+
+    private void setSearchText(String searchText) {
+        searchTextView.setText(searchText);
+        if (TextUtils.equals(mSearchText, searchText)) {
+            // Already set, no need to do work.
+            return;
+        }
+        mSearchText = searchText;
+        if (swipeContainer.isRefreshing()) {
+            // Already loading issues!
+            return;
+        }
+        refreshIssues();
+    }
+
     private class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         // TODO: Use an enum.
         public static final int NO_ERROR = 10;
@@ -463,28 +528,44 @@ public class MainActivity extends AppCompatActivity {
         public IssuesAdapter() {
         }
 
-        public void setIssues(List<Issue> issues, int errorType, String filterText) {
+        // |searchText| takes priority over |filterText|.
+        public void setIssues(List<Issue> issues, int errorType, String filterText,
+                              String searchText) {
             mErrorType = errorType;
-            if (TextUtils.equals(filterText,
-                    getResources().getString(R.string.all_issues_filter))) {
-                // Include everything
-                mIssues = issues;
-            } else if (TextUtils.equals(filterText,
-                    getResources().getString(R.string.top_issues_filter))) {
-                // Add only the active ones.
+            if (!TextUtils.isEmpty(searchText)) {
                 mIssues.clear();
+                String lowerSearchText = searchText.toLowerCase();
                 for (Issue issue : issues) {
-                    if (!issue.inactive) {
+                    // TODO: Searching full text is less straight forward, as a simple "contains"
+                    // matches things like "ice" to "avarice" or whatever.
+                    //if (issue.reason.contains(searchText) || issue.script.contains(searchText)) {
+                    if (issue.name.toLowerCase().contains(lowerSearchText)) {
                         mIssues.add(issue);
                     }
                 }
+                // TODO: If no issues, show an error message that's appropriate!
             } else {
-                // Filter by the string
-                mIssues.clear();
-                for (Issue issue : issues) {
-                    for (Category category : issue.categories) {
-                        if (TextUtils.equals(filterText, category.name)) {
+                if (TextUtils.equals(filterText,
+                        getResources().getString(R.string.all_issues_filter))) {
+                    // Include everything
+                    mIssues = issues;
+                } else if (TextUtils.equals(filterText,
+                        getResources().getString(R.string.top_issues_filter))) {
+                    // Add only the active ones.
+                    mIssues.clear();
+                    for (Issue issue : issues) {
+                        if (!issue.inactive) {
                             mIssues.add(issue);
+                        }
+                    }
+                } else {
+                    // Filter by the string
+                    mIssues.clear();
+                    for (Issue issue : issues) {
+                        for (Category category : issue.categories) {
+                            if (TextUtils.equals(filterText, category.name)) {
+                                mIssues.add(issue);
+                            }
                         }
                     }
                 }

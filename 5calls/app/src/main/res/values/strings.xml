@@ -452,4 +452,14 @@
     <!-- Action or button to dismiss a notification [CHAR_LIMIT=10] -->
     <string name="dismiss">Dismiss</string>
 
+    <!-- Menu otpion to search for text within issues [CHAR_LIMIT=25] -->
+    <string name="menu_search">search</string>
+
+    <!-- Title of a dialog to search issues [CHAR_LIMIT=25] -->
+    <string name="search_dialog_title">Search issues</string>
+
+    <!-- -->
+    <string name="search_hint">Search for...</string>
+    <string name="clear_search_btn">Clear</string>
+
 </resources>

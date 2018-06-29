@@ -3,9 +3,9 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/menu_location"
-        android:icon="@drawable/ic_gps_fixed_white_24dp"
-        android:title="@string/menu_location"
+        android:id="@+id/menu_search"
+        android:icon="@drawable/baseline_search_white_24"
+        android:title="@string/menu_search"
         app:showAsAction="ifRoom"
         />
 
