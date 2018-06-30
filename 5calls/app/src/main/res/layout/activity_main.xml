@@ -87,9 +87,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/accessibility_min_size"
                     android:background="@color/colorAccent"
+                    android:elevation="3dp"
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
                     android:spinnerMode="dropdown"
+                    tools:ignore="UnusedAttribute"
                     />
 
                 <RelativeLayout
@@ -97,7 +99,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/accessibility_min_size"
                     android:background="@color/check_color"
+                    android:elevation="3dp"
                     android:visibility="gone"
+                    tools:ignore="UnusedAttribute"
                     >
 
                     <TextView

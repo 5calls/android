@@ -12,6 +12,8 @@
         android:hint="@string/search_hint"
         android:minHeight="@dimen/accessibility_min_size"
         android:minWidth="@dimen/min_button_width"
+        android:singleLine="true"
+        android:maxLines="1"
         />
 
 </FrameLayout>

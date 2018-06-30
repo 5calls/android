@@ -6,16 +6,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.google.android.gms.common.util.Strings;
 
-import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
-import org.a5calls.android.a5calls.model.AccountManager;
 
 /**
  * Dialog for letting a user enter a search term.
@@ -40,8 +38,14 @@ public class SearchIssuesDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         String previousSearch = "";
+        final boolean clearOnCancel;
         if (getArguments() != null) {
             previousSearch = getArguments().getString(KEY_PREVIOUS_SEARCH, "");
+            // We won't clear when the user taps "cancel" if a search was pre-populated from
+            // the previous search.
+            clearOnCancel = TextUtils.isEmpty(previousSearch);
+        } else {
+            clearOnCancel = false;
         }
         if (savedInstanceState != null && savedInstanceState.containsKey(KEY_PREVIOUS_SEARCH)) {
             previousSearch = savedInstanceState.getString(KEY_PREVIOUS_SEARCH);
@@ -69,7 +73,9 @@ public class SearchIssuesDialog extends DialogFragment {
         builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                ((MainActivity) getActivity()).onIssueSearchCleared();
+                if (clearOnCancel) {
+                    ((MainActivity) getActivity()).onIssueSearchCleared();
+                }
             }
         });
 
