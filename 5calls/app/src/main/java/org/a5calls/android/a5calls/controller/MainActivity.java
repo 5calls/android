@@ -60,6 +60,7 @@ import butterknife.ButterKnife;
  * 
  * TODO: Add an email address sign-up field.
  * TODO: Sort issues based on which are "done" and which are not done or hide ones which are "done".
+ * TODO: Update GraphView library and stop importing a custom copy.
  */
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -167,8 +168,12 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState != null) {
             mFilterText = savedInstanceState.getString(KEY_FILTER_ITEM_SELECTED);
             mSearchText = savedInstanceState.getString(KEY_SEARCH_TEXT);
-            if (!TextUtils.isEmpty(mSearchText)) {
+            if (TextUtils.isEmpty(mSearchText)) {
+                searchBar.setVisibility(View.GONE);
+                filter.setVisibility(View.VISIBLE);
+            } else {
                 searchBar.setVisibility(View.VISIBLE);
+                filter.setVisibility(View.GONE);
                 searchTextView.setText(mSearchText);
             }
         } else {
@@ -517,10 +522,12 @@ public class MainActivity extends AppCompatActivity {
         public static final int ERROR_REQUEST = 11;
         public static final int ERROR_ADDRESS = 12;
         public static final int NO_ISSUES_YET = 13;
+        public static final int ERROR_SEARCH_NO_MATCH = 14;
 
         private static final int VIEW_TYPE_EMPTY_REQUEST = 0;
         private static final int VIEW_TYPE_ISSUE = 1;
         private static final int VIEW_TYPE_EMPTY_ADDRESS = 2;
+        private static final int VIEW_TYPE_NO_SEARCH_MATCH = 3;
 
         private List<Issue> mIssues = new ArrayList<>();
         private int mErrorType = NO_ISSUES_YET;
@@ -543,7 +550,10 @@ public class MainActivity extends AppCompatActivity {
                         mIssues.add(issue);
                     }
                 }
-                // TODO: If no issues, show an error message that's appropriate!
+                // If there's no other error, show a search error.
+                if (mIssues.size() == 0 && errorType == NO_ERROR) {
+                    mErrorType = ERROR_SEARCH_NO_MATCH;
+                }
             } else {
                 if (TextUtils.equals(filterText,
                         getResources().getString(R.string.all_issues_filter))) {
@@ -593,6 +603,10 @@ public class MainActivity extends AppCompatActivity {
                 View empty = LayoutInflater.from(parent.getContext()).inflate(
                         R.layout.empty_issues_address_view, parent, false);
                 return new EmptyAddressViewHolder(empty);
+            } else if (viewType == VIEW_TYPE_NO_SEARCH_MATCH) {
+                View empty = LayoutInflater.from(parent.getContext()).inflate(
+                        R.layout.empty_issues_search_view, parent, false);
+                return new EmptySearchViewHolder(empty);
             } else {
                 RelativeLayout v = (RelativeLayout) LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.issue_view, parent, false);
@@ -657,6 +671,14 @@ public class MainActivity extends AppCompatActivity {
                         launchLocationActivity();
                     }
                 });
+            } else if (type == VIEW_TYPE_NO_SEARCH_MATCH) {
+                EmptySearchViewHolder vh = (EmptySearchViewHolder) holder;
+                vh.searchButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        launchSearchDialog();
+                    }
+                });
             }
         }
 
@@ -668,13 +690,16 @@ public class MainActivity extends AppCompatActivity {
                 ((EmptyRequestViewHolder) holder).refreshButton.setOnClickListener(null);
             } else if (holder instanceof EmptyAddressViewHolder) {
                 ((EmptyAddressViewHolder) holder).locationButton.setOnClickListener(null);
+            } else if (holder instanceof EmptySearchViewHolder) {
+                ((EmptySearchViewHolder) holder).searchButton.setOnClickListener(null);
             }
             super.onViewRecycled(holder);
         }
 
         @Override
         public int getItemCount() {
-            if (mIssues.size() == 0 && mErrorType == ERROR_REQUEST || mErrorType == ERROR_ADDRESS) {
+            if (mIssues.size() == 0 && (mErrorType == ERROR_REQUEST || mErrorType == ERROR_ADDRESS
+                    || mErrorType == ERROR_SEARCH_NO_MATCH)) {
                 return 1;
             }
             return mIssues.size();
@@ -688,6 +713,9 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if (mErrorType == ERROR_ADDRESS) {
                     return VIEW_TYPE_EMPTY_ADDRESS;
+                }
+                if (mErrorType == ERROR_SEARCH_NO_MATCH) {
+                    return VIEW_TYPE_NO_SEARCH_MATCH;
                 }
             }
             return VIEW_TYPE_ISSUE;
@@ -730,6 +758,19 @@ public class MainActivity extends AppCompatActivity {
             // Tinting the compound drawable only works API 23+, so do this manually.
             locationButton.getCompoundDrawables()[0].mutate().setColorFilter(
                     locationButton.getResources().getColor(R.color.colorAccent),
+                    PorterDuff.Mode.MULTIPLY);
+        }
+    }
+
+    private class EmptySearchViewHolder extends RecyclerView.ViewHolder {
+        public Button searchButton;
+
+        public EmptySearchViewHolder(View itemView) {
+            super(itemView);
+            searchButton = (Button) itemView.findViewById(R.id.search_btn);
+            // Tinting the compound drawable only works API 23+, so do this manually.
+            searchButton.getCompoundDrawables()[0].mutate().setColorFilter(
+                    searchButton.getResources().getColor(R.color.colorAccent),
                     PorterDuff.Mode.MULTIPLY);
         }
     }

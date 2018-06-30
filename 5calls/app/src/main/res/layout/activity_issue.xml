@@ -40,16 +40,16 @@
                 />
 
             <TextView
+                android:id="@+id/link"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/link"
-                android:textColor="@color/colorAccent"
-                android:textSize="@dimen/h2_text_size"
                 android:layout_marginBottom="16dp"
+                android:clickable="true"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
+                android:textColor="@color/colorAccent"
+                android:textSize="@dimen/h2_text_size"
                 android:visibility="gone"
-                android:clickable="true"
                 />
 
             <TextView

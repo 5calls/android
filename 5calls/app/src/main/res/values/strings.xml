@@ -455,11 +455,16 @@
     <!-- Menu otpion to search for text within issues [CHAR_LIMIT=25] -->
     <string name="menu_search">search</string>
 
-    <!-- Title of a dialog to search issues [CHAR_LIMIT=25] -->
-    <string name="search_dialog_title">Search issues</string>
+    <!-- Title of a dialog to search issue titles [CHAR_LIMIT=25] -->
+    <string name="search_dialog_title">Find an issue</string>
 
-    <!-- -->
-    <string name="search_hint">Search for...</string>
+    <!-- Hint text in a dialog to search issue titles -->
+    <string name="search_hint">Search</string>
+
+    <!-- Content description for a button to clear the current search [CHAR_LIMIT=50] -->
     <string name="clear_search_btn">Clear</string>
+
+    <!-- Error shown when the issue search had no results [CHAR_LIMIT=200] -->
+    <string name="error_search_had_no_results">No matching issues found.</string>
 
 </resources>
