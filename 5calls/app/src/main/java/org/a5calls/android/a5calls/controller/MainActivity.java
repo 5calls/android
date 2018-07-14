@@ -323,7 +323,7 @@ public class MainActivity extends AppCompatActivity {
                 // Our only type of request in MainActivity is a GET. If it doesn't work, clear the
                 // active issues list to avoid showing a stale list.
                 mIssuesAdapter.setIssues(Collections.<Issue>emptyList(),
-                        IssuesAdapter.ERROR_REQUEST, mFilterText, mSearchText);
+                        IssuesAdapter.ERROR_REQUEST);
                 swipeContainer.setRefreshing(false);
             }
 
@@ -335,7 +335,7 @@ public class MainActivity extends AppCompatActivity {
                 // Our only type of request in MainActivity is a GET. If it doesn't work, clear the
                 // active issues list to avoid showing a stale list.
                 mIssuesAdapter.setIssues(Collections.<Issue>emptyList(),
-                        IssuesAdapter.ERROR_REQUEST, mFilterText, mSearchText);
+                        IssuesAdapter.ERROR_REQUEST);
                 swipeContainer.setRefreshing(false);
             }
 
@@ -347,7 +347,7 @@ public class MainActivity extends AppCompatActivity {
                 // Clear the issues but don't show the refresh button because this is an address
                 // problem.
                 mIssuesAdapter.setIssues(Collections.<Issue>emptyList(),
-                        IssuesAdapter.ERROR_ADDRESS, mFilterText, mSearchText);
+                        IssuesAdapter.ERROR_ADDRESS);
                 swipeContainer.setRefreshing(false);
             }
 
@@ -385,7 +385,8 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 populateFilterAdapterIfNeeded(issues);
-                mIssuesAdapter.setIssues(issues, IssuesAdapter.NO_ERROR, mFilterText, mSearchText);
+                mIssuesAdapter.setIssues(issues, IssuesAdapter.NO_ERROR);
+                mIssuesAdapter.setFilterAndSearch(mFilterText, mSearchText);
                 swipeContainer.setRefreshing(false);
             }
         };
@@ -428,7 +429,7 @@ public class MainActivity extends AppCompatActivity {
                     // Already loading issues!
                     return;
                 }
-                refreshIssues();
+                mIssuesAdapter.setFilterAndSearch(mFilterText, mSearchText);
             }
 
             @Override
@@ -510,7 +511,7 @@ public class MainActivity extends AppCompatActivity {
             // Already loading issues!
             return;
         }
-        refreshIssues();
+        mIssuesAdapter.setFilterAndSearch(mFilterText, mSearchText);
     }
 
     private class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -527,40 +528,51 @@ public class MainActivity extends AppCompatActivity {
         private static final int VIEW_TYPE_NO_SEARCH_MATCH = 3;
 
         private List<Issue> mIssues = new ArrayList<>();
+        private List<Issue> mAllIssues = new ArrayList<>();
         private int mErrorType = NO_ISSUES_YET;
 
         public IssuesAdapter() {
         }
 
         // |searchText| takes priority over |filterText|.
-        public void setIssues(List<Issue> issues, int errorType, String filterText,
-                              String searchText) {
+        public void setIssues(List<Issue> issues, int errorType) {
+            mAllIssues = issues;
             mErrorType = errorType;
+            mIssues.clear();
+        }
+
+        public void setFilterAndSearch(String filterText, String searchText) {
             if (!TextUtils.isEmpty(searchText)) {
                 mIssues.clear();
                 String lowerSearchText = searchText.toLowerCase();
-                for (Issue issue : issues) {
+                for (Issue issue : mAllIssues) {
+                    // Search the name and the categories for the search term.
                     // TODO: Searching full text is less straight forward, as a simple "contains"
                     // matches things like "ice" to "avarice" or whatever.
-                    //if (issue.reason.contains(searchText) || issue.script.contains(searchText)) {
                     if (issue.name.toLowerCase().contains(lowerSearchText)) {
                         mIssues.add(issue);
+                    } else {
+                        for (int i = 0; i < issue.categories.length; i++) {
+                            if (issue.categories[i].name.toLowerCase().contains(lowerSearchText)) {
+                                mIssues.add(issue);
+                            }
+                        }
                     }
                 }
                 // If there's no other error, show a search error.
-                if (mIssues.size() == 0 && errorType == NO_ERROR) {
+                if (mIssues.size() == 0 && mErrorType == NO_ERROR) {
                     mErrorType = ERROR_SEARCH_NO_MATCH;
                 }
             } else {
                 if (TextUtils.equals(filterText,
                         getResources().getString(R.string.all_issues_filter))) {
                     // Include everything
-                    mIssues = issues;
+                    mIssues = mAllIssues;
                 } else if (TextUtils.equals(filterText,
                         getResources().getString(R.string.top_issues_filter))) {
                     // Add only the active ones.
                     mIssues.clear();
-                    for (Issue issue : issues) {
+                    for (Issue issue : mAllIssues) {
                         if (!issue.inactive) {
                             mIssues.add(issue);
                         }
@@ -568,7 +580,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     // Filter by the string
                     mIssues.clear();
-                    for (Issue issue : issues) {
+                    for (Issue issue : mAllIssues) {
                         for (Category category : issue.categories) {
                             if (TextUtils.equals(filterText, category.name)) {
                                 mIssues.add(issue);

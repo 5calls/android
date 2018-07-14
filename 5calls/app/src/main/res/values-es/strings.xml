@@ -419,4 +419,19 @@
     <!-- Action or button to dismiss a notification [CHAR_LIMIT=10] -->
     <string name="dismiss">Descartar</string>
 
+    <!-- Menu option to search for text within issues [CHAR_LIMIT=25] -->
+    <string name="menu_search">Buscar</string>
+
+    <!-- Title of a dialog to search issue titles [CHAR_LIMIT=25] -->
+    <string name="search_dialog_title">Encontrar un asunto</string>
+
+    <!-- Hint text in a dialog to search issue titles -->
+    <string name="search_hint">Buscar</string>
+
+    <!-- Content description for a button to clear the current search [CHAR_LIMIT=50] -->
+    <string name="clear_search_btn">Limpiar campo</string>
+
+    <!-- Error shown when the issue search had no results [CHAR_LIMIT=200] -->
+    <string name="error_search_had_no_results">No se han encontrado asuntos correspondientes.</string>
+
 </resources>
