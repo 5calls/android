@@ -51,7 +51,7 @@ dependencies {
 
     compile 'com.google.android.gms:play-services-analytics:16.0.1'
 
-    compile project(':GraphView')
+    implementation 'com.jjoe64:graphview:4.2.2'
 
     compile 'com.onesignal:OneSignal:3.9.1'
 

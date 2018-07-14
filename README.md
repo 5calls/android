@@ -10,8 +10,6 @@ FiveCallsApi is used to request a list of issues from the server in MainActivity
 ## Development
 To run the app locally, you'll need to generate your own `google-services.json` file from the [Google website](https://developers.google.com/mobile/add).  It doesn't matter what services you enable because you won't be talking to the prod Google account, but you should include Analytics.
 
-You will also need to import [GraphView](http://www.android-graphview.org/) as a module from [github.com/dektar/graphview](https://github.com/dektar/graphview). 
-
 To test the app, set `TESTING=true` in `FiveCallsApi.java`. This makes sure that calls logged to the server are marked as test calls.
 
 ## TODOs and Issues
