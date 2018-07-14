@@ -57,7 +57,6 @@ import butterknife.ButterKnife;
  * 
  * TODO: Add an email address sign-up field.
  * TODO: Sort issues based on which are "done" and which are not done or hide ones which are "done".
- * TODO: Update GraphView library and stop importing a custom copy.
  */
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
