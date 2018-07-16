@@ -537,12 +537,13 @@ public class MainActivity extends AppCompatActivity {
         public void setIssues(List<Issue> issues, int errorType) {
             mAllIssues = issues;
             mErrorType = errorType;
-            mIssues.clear();
+            mIssues = new ArrayList<>();
         }
 
         public void setFilterAndSearch(String filterText, String searchText) {
             if (!TextUtils.isEmpty(searchText)) {
-                mIssues.clear();
+                mIssues = new ArrayList<>();
+                // Should we .trim() the whitespace?
                 String lowerSearchText = searchText.toLowerCase();
                 for (Issue issue : mAllIssues) {
                     // Search the name and the categories for the search term.
@@ -570,7 +571,7 @@ public class MainActivity extends AppCompatActivity {
                 } else if (TextUtils.equals(filterText,
                         getResources().getString(R.string.top_issues_filter))) {
                     // Add only the active ones.
-                    mIssues.clear();
+                    mIssues = new ArrayList<>();
                     for (Issue issue : mAllIssues) {
                         if (!issue.inactive) {
                             mIssues.add(issue);
@@ -578,7 +579,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 } else {
                     // Filter by the string
-                    mIssues.clear();
+                    mIssues = new ArrayList<>();
                     for (Issue issue : mAllIssues) {
                         for (Category category : issue.categories) {
                             if (TextUtils.equals(filterText, category.name)) {
