@@ -11,8 +11,6 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
-import com.google.android.gms.common.util.Strings;
-
 import org.a5calls.android.a5calls.R;
 
 /**
@@ -58,7 +56,7 @@ public class SearchIssuesDialog extends DialogFragment {
         ViewGroup layout = (ViewGroup) LayoutInflater.from(getActivity()).inflate(
                 R.layout.issue_search_box, null);
         mSearchBox = layout.findViewById(R.id.search_box);
-        if (!Strings.isEmptyOrWhitespace(previousSearch)) {
+        if (!TextUtils.isEmpty(previousSearch.trim())) {
             mSearchBox.setText(previousSearch);
             mSearchBox.selectAll();
         }

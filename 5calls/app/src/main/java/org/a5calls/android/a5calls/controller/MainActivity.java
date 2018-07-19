@@ -34,7 +34,6 @@ import android.widget.TextView;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
-import com.google.android.gms.common.util.Strings;
 
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.FiveCallsApplication;
@@ -484,7 +483,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onIssueSearchSet(String searchText) {
-        if (Strings.isEmptyOrWhitespace(searchText)) {
+        if (TextUtils.isEmpty(searchText.trim())) {
             onIssueSearchCleared();
             return;
         }
