@@ -9,15 +9,48 @@
     <dimen name="h2_text_size">28sp</dimen>
 
     <dimen name="rep_image_size">120dp</dimen>
-
     <dimen name="min_resizable_text_size">14sp</dimen>
     <dimen name="one_sp">1sp</dimen>
-
     <dimen name="graph_line_width">3sp</dimen>
-
     <integer name="horizontal_labels_count">4</integer>
-
     <dimen name="expanded_toolbar_title_size">26sp</dimen>
     <dimen name="min_button_width">220dp</dimen>
     <dimen name="grid_padding">8dp</dimen>
+    <dimen name="subheading_text_size">24sp</dimen>
+    <dimen name="splash_text_size">18sp</dimen>
+    <dimen name="text_layout_marginBottom">32dp</dimen>
+    <dimen name="text_layout_marginBottom16">16dp</dimen>
+    <dimen name="text_layout_marginTop">16dp</dimen>
+    <dimen name="margin_text">16dp</dimen>
+    <dimen name="layout_margin_button">0dp</dimen>
+    <dimen name="nested_view_margin">48dp</dimen>
+    <dimen name="main_title_start_left_margin">48dp</dimen>
+    <dimen name="main_title_end_right_margin">64dp</dimen>
+    <dimen name="issue_height_relative_layout">52dp</dimen>
+    <dimen name="issue_image_layout">36dp</dimen>
+    <dimen name="app_bar_layout_size">216dp</dimen>
+    <dimen name="spinner_elevation">3dp</dimen>
+    <dimen name="paddin_spinner">16dp</dimen>
+    <dimen name="filter_item_margin">24dp</dimen>
+    <dimen name="filter_item_padding">22dp</dimen>
+    <dimen name="margin_rigth">16dp</dimen>
+    <dimen name="margin_left">16dp</dimen>
+    <dimen name="margin_top16">16dp</dimen>
+    <dimen name="margin_bottom">8dp</dimen>
+    <dimen name="margin_top4">4dp</dimen>
+    <dimen name="margin_top8">8dp</dimen>
+    <dimen name="grap_view_height">200dp</dimen>
+    <dimen name="text_layout_margin32">32dp</dimen>
+    <dimen name="activity_horizontal_padding">16dp</dimen>
+    <dimen name="frame_padding">24dp</dimen>
+    <dimen name="max_lines">1</dimen>
+    <dimen name="text_box_dimen">36dp</dimen>
+    <dimen name="load_more_height">72dp</dimen>
+    <dimen name="linear_header_height">160dp</dimen>
+    <dimen name="img_header_height">140dp</dimen>
+    <dimen name="rep_list_dimens">8dp</dimen>
+    <dimen name="rep_list_dimens_left_right">16dp</dimen>
+    <dimen name="rep_list_img_dimens">64dp</dimen>
+    <dimen name="rep_list_linear_dimens">42dp</dimen>
+    <dimen name="layout_margin_top">32dp</dimen>
 </resources>
