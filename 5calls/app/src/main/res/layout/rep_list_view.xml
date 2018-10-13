@@ -1,72 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="72dp"
-    android:minHeight="@dimen/accessibility_min_size"
-    android:orientation="vertical"
-    android:paddingBottom="8dp"
-    android:paddingTop="8dp"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:background="@color/issue_background_color"
-    android:foreground="?android:attr/selectableItemBackground"
-    >
+    style="@style/repListRelativeStyle">
 
     <ImageView
         android:id="@+id/rep_image"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="16dp"
-        android:contentDescription="@null"
-        />
+        style="@style/repImageStyle"
+        android:layout_width="@dimen/rep_list_img_dimens"
+        android:layout_height="@dimen/rep_list_img_dimens"
+        android:layout_centerVertical="true" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignWithParentIfMissing="true"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="42dp"
+        style="@style/repListLinearStyle"
         android:layout_toEndOf="@id/rep_image"
-        android:layout_toRightOf="@id/rep_image"
-        >
+        android:layout_toRightOf="@id/rep_image">
 
         <TextView
             android:id="@+id/contact_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimary"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            />
+            style="@style/repListContactNameStyle" />
 
         <TextView
             android:id="@+id/contact_reason"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textColor="@color/textColorDarkGrey"
-            android:textSize="14sp"
-            />
+            style="@style/repListReasonStyle" />
 
     </LinearLayout>
 
     <ImageView
         android:id="@+id/contact_done_img"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:background="@android:color/transparent"
-        android:contentDescription="@null"
-        android:scaleType="fitCenter"
-        android:src="@drawable/checked"
-        />
-
+        style="@style/repListImageStyle"
+        android:src="@drawable/checked" />
 </RelativeLayout>

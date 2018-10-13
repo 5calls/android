@@ -1,90 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/background_color"
-    >
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/scrollViewStyle">
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/no_calls_message"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:layout_marginStart="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:text="@string/no_calls_impact_message"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="24sp"
-            />
+            style="@style/noCallsMsgStyle"
+            android:text="@string/no_calls_impact_message" />
 
         <LinearLayout
             android:id="@+id/stats_holder"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:layout_marginStart="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:orientation="vertical"
-            >
+            style="@style/noCallsMsgStyle"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/your_call_count"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/colorPrimary"
+                style="@style/headingStyle"
                 android:textSize="@dimen/h1_text_size"
-                android:textStyle="bold"
-                />
+                android:textStyle="bold" />
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                style="@style/topContactTextStyle"
                 android:layout_marginTop="16dp"
                 android:text="@string/motivational_text"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="@dimen/text_size_paragraph"
-                />
+                android:textStyle="normal" />
 
             <TextView
                 android:id="@+id/stats_summary"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:textColor="@color/colorPrimary"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                />
+                style="@style/repCallTextStyle"
+                android:layout_marginTop="@dimen/margin_top8"
+                android:textStyle="bold" />
 
             <com.jjoe64.graphview.GraphView
                 android:id="@+id/graph"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginTop="8dp"
-                android:padding="16dp"
-                />
+                style="@style/graphViewStyle" />
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/top_contacts"
-                android:textColor="@color/colorPrimaryDark"
-                android:textStyle="bold"
-                android:textSize="@dimen/text_size_paragraph"
-                />
-
+                style="@style/topContactTextStyle"
+                android:text="@string/top_contacts" />
         </LinearLayout>
 
     </FrameLayout>

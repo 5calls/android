@@ -1,51 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-    <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:clickable="true"
-        android:foreground="?android:attr/selectableItemBackground"
-        android:background="@color/issue_background_color"
-        >
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/viewRelativeLayoutStyle">
 
-        <TextView
-            android:id="@+id/issue_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_toEndOf="@+id/issue_done_img"
-            android:layout_toRightOf="@id/issue_done_img"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="24sp"
-            />
+    <TextView
+        android:id="@+id/issue_name"
+        style="@style/issueViewTextStyle"
+        android:layout_toEndOf="@+id/issue_done_img"
+        android:layout_toRightOf="@id/issue_done_img" />
 
-        <TextView
-            android:id="@+id/issue_call_count"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_below="@id/issue_name"
-            android:layout_toEndOf="@id/issue_done_img"
-            android:layout_toRightOf="@id/issue_done_img"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="16sp"
-            />
+    <TextView
+        android:id="@+id/issue_call_count"
+        style="@style/issueCallCountStyle"
+        android:layout_below="@id/issue_name"
+        android:layout_toEndOf="@id/issue_done_img"
+        android:layout_toRightOf="@id/issue_done_img" />
 
-        <ImageView
-            android:id="@+id/issue_done_img"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:contentDescription="@null"
-            android:scaleType="fitCenter"
-            android:src="@drawable/checked"
-            />
+    <ImageView
+        android:id="@+id/issue_done_img"
+        style="@style/issueImageStyle"
+        android:src="@drawable/checked" />
 
-    </RelativeLayout>
+</RelativeLayout>

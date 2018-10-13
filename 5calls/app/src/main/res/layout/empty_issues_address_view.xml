@@ -1,34 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/background_color"
-    >
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/scrollViewStyle">
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/emptyInvalidStyle"
         android:layout_above="@+id/location_btn"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="32dp"
-        android:layout_marginRight="32dp"
-        android:text="@string/error_address_invalid"
-        android:textAlignment="center"
-        android:textSize="18sp"
-        />
+        android:text="@string/error_address_invalid" />
 
     <Button
         android:id="@id/location_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:background="@android:color/transparent"
-        android:drawablePadding="8dp"
+        style="@style/emptyIssuesBtnStyle"
         android:drawableLeft="@drawable/ic_gps_fixed_white_24dp"
-        android:minHeight="@dimen/accessibility_min_size"
-        android:text="@string/try_again_btn"
-        android:textColor="@color/colorAccent"
-        />
+        android:text="@string/try_again_btn" />
 
 </RelativeLayout>

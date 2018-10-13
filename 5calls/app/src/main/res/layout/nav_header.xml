@@ -1,19 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="160dp"
-    android:background="@android:color/white"
-    android:gravity="bottom"
-    android:orientation="vertical"
-    >
+    style="@style/linearLayoutHeaderStyle">
 
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="140dp"
-        android:contentDescription="@null"
-        android:padding="8dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/banner_5calls"
-        />
-
+        style="@style/headerImageStyle"
+        android:src="@drawable/banner_5calls" />
 </LinearLayout>
