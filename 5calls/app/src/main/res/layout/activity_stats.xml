@@ -1,43 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_color"
-    >
+    android:background="@color/background_color">
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/no_calls_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:text="@string/no_calls_impact_message"
             android:textColor="@color/colorPrimaryDark"
-            android:textSize="24sp"
-            />
+            android:textSize="24sp" />
 
         <LinearLayout
             android:id="@+id/stats_holder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:orientation="vertical"
-            >
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/your_call_count"
@@ -45,35 +40,48 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/h1_text_size"
-                android:textStyle="bold"
-                />
+                android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/motivational_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/motivational_text"
                 android:textColor="@color/colorPrimaryDark"
-                android:textSize="@dimen/text_size_paragraph"
-                />
+                android:textSize="@dimen/text_size_paragraph" />
 
             <TextView
-                android:id="@+id/stats_summary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:textColor="@color/colorPrimary"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                />
+                android:layout_marginTop="16dp"
+                android:text="@string/menu_stats"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="@dimen/text_size_paragraph"
+                android:textStyle="bold" />
 
-            <com.jjoe64.graphview.GraphView
-                android:id="@+id/graph"
+            <com.github.mikephil.charting.charts.PieChart
+                android:id="@+id/pie_chart"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:layout_marginTop="8dp"
-                android:padding="16dp"
-                />
+                android:padding="16dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/stats_share_chart"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="@dimen/text_size_paragraph"
+                android:textStyle="bold" />
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/line_chart"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginTop="8dp"
+                android:padding="16dp" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -81,9 +89,8 @@
                 android:layout_marginTop="16dp"
                 android:text="@string/top_contacts"
                 android:textColor="@color/colorPrimaryDark"
-                android:textStyle="bold"
                 android:textSize="@dimen/text_size_paragraph"
-                />
+                android:textStyle="bold" />
 
         </LinearLayout>
 

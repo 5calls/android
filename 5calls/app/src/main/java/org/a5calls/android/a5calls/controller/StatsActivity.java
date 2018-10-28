@@ -1,23 +1,19 @@
 package org.a5calls.android.a5calls.controller;
 
-import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.ShareActionProvider;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,12 +22,26 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.DefaultValueFormatter;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.formatter.IFillFormatter;
+import com.github.mikephil.charting.interfaces.dataprovider.LineDataProvider;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
-import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
 
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.FiveCallsApplication;
@@ -43,7 +53,11 @@ import org.a5calls.android.a5calls.model.Outcome;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -54,16 +68,16 @@ import butterknife.ButterKnife;
 public class StatsActivity extends AppCompatActivity {
     private static final String TAG = "StatsActivity";
     private static final int NUM_CONTACTS_TO_SHOW = 3;
-
+    private static final SimpleDateFormat usDateFormat = new SimpleDateFormat("MM/dd/yy", Locale.US);
     private int mCallCount = 0;
-    private ShareActionProvider mShareActionProvider;
     private Tracker mTracker;
 
     @BindView(R.id.no_calls_message) TextView noCallsMessage;
     @BindView(R.id.stats_holder) LinearLayout statsHolder;
     @BindView(R.id.your_call_count) TextView callCountHeader;
-    @BindView(R.id.stats_summary) TextView statsSummary;
-    @BindView(R.id.graph) GraphView graph;
+    @BindView(R.id.pie_chart) PieChart pieChart;
+    @BindView(R.id.line_chart) LineChart lineChart;
+    @BindView(R.id.motivational_text) TextView motivationalText;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -97,15 +111,15 @@ public class StatsActivity extends AppCompatActivity {
         List<Long> contacts = db.getCallTimestampsForType(Outcome.Status.CONTACT);
         List<Long> voicemails = db.getCallTimestampsForType(Outcome.Status.VOICEMAIL);
         List<Long> unavailables = db.getCallTimestampsForType(Outcome.Status.UNAVAILABLE);
-        
+
         Spannable contactString = getTextForCount(contacts.size(),
-                R.string.impact_contact_one, R.string.impact_contact, R.color.contacted_color);
+                R.string.impact_contact_one, R.string.impact_contact, R.color.colorPrimaryDark);
         Spannable vmString = getTextForCount(voicemails.size(),
-                R.string.impact_vm_one, R.string.impact_vm, R.color.voicemail_color);
+                R.string.impact_vm_one, R.string.impact_vm, R.color.colorPrimaryDark);
         Spannable unavailableString = getTextForCount(unavailables.size(),
                 R.string.impact_unavailable_one, R.string.impact_unavailable,
-                R.color.unavailable_color);
-        statsSummary.setText(TextUtils.concat(contactString, vmString, unavailableString));
+                R.color.colorPrimaryDark);
+        motivationalText.append(" " + TextUtils.concat(contactString, vmString, unavailableString).toString());
 
         // There's probably not that many contacts because mostly the user just calls their own
         // reps. However, it'd be good to move this to a RecyclerView or ListView with an adapter
@@ -143,13 +157,15 @@ public class StatsActivity extends AppCompatActivity {
         }
         */
 
-        createGraph(contacts, voicemails, unavailables);
+        createPieChart(contacts, voicemails, unavailables);
+        createLineGraph(contacts, voicemails, unavailables);
 
         // Show the share button.
         invalidateOptionsMenu();
     }
 
-    private void createGraph(List<Long> contacts, List<Long> voicemails, List<Long> unavailables) {
+    private void createPieChart(List<Long> contacts, List<Long> voicemails, List<Long> unavailables) {
+        //find first time when user made any call
         long firstTimestamp = Long.MAX_VALUE;
         if (contacts.size() > 0) {
             firstTimestamp = Math.min(firstTimestamp, contacts.get(0));
@@ -160,54 +176,167 @@ public class StatsActivity extends AppCompatActivity {
         if (unavailables.size() > 0) {
             firstTimestamp = Math.min(firstTimestamp, unavailables.get(0));
         }
-        LineGraphSeries<DataPoint> contactedSeries = makeSeries(contacts, firstTimestamp,
-                R.color.contacted_color);
-        contactedSeries.setTitle(getResources().getString(R.string.outcome_contact));
-        LineGraphSeries<DataPoint> voicemailSeries = makeSeries(voicemails, firstTimestamp,
-                R.color.voicemail_color);
-        voicemailSeries.setTitle(getResources().getString(R.string.outcome_voicemail));
-        LineGraphSeries<DataPoint> unavailableSeries = makeSeries(unavailables, firstTimestamp,
-                R.color.unavailable_color);
-        unavailableSeries.setTitle(getResources().getString(R.string.outcome_unavailable));
-        graph.addSeries(contactedSeries);
-        graph.addSeries(voicemailSeries);
-        graph.addSeries(unavailableSeries);
+        Date date = new Date(firstTimestamp);
 
-        graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this));
-        graph.getGridLabelRenderer().setNumHorizontalLabels(getResources().getInteger(
-                R.integer.horizontal_labels_count));
-        graph.getGridLabelRenderer().setNumVerticalLabels(5);
-        graph.getGridLabelRenderer().setGridColor(getResources().getColor(android.R.color.white));
-        graph.getGridLabelRenderer().setHumanRounding(false, true);
-        graph.getViewport().setMinX(firstTimestamp - 10);
-        graph.getViewport().setMaxX(System.currentTimeMillis() + 10);
-        graph.getViewport().setXAxisBoundsManual(true);
+        ArrayList<Integer> colorsList = new ArrayList<>();
+        //Create pie pieChart data entries and add correct colors
+        ArrayList<PieEntry> entries = new ArrayList<>();
+        if (contacts.size() > 0) {
+            entries.add(new PieEntry(contacts.size(), getResources().getString(R.string.contact_n)));
+            colorsList.add(getResources().getColor(R.color.contacted_color));
+        }
+        if (voicemails.size() > 0) {
+            entries.add(new PieEntry(voicemails.size(),  getResources().getString(R.string.voicemail_n)));
+            colorsList.add(getResources().getColor(R.color.voicemail_color));
+        }
+        if (unavailables.size() > 0) {
+            entries.add(new PieEntry(unavailables.size(),  getResources().getString(R.string.unavailable_n)));
+            colorsList.add(getResources().getColor(R.color.unavailable_color));
+        }
 
-        /*
-        // Allow manual zoom. Need to make sure the user can't zoom in too much...
-        graph.getViewport().setYAxisBoundsManual(true);
-        graph.getViewport().setScalable(true);
-        graph.getViewport().setScrollable(true);
-        */
+        PieDataSet dataSet = new PieDataSet(entries, getResources().getString(R.string.menu_stats));
+
+        //Add colors and set visual properties for pie pieChart
+        dataSet.setColors(colorsList);
+        dataSet.setSliceSpace(3f);
+        dataSet.setSelectionShift(5f);
+        dataSet.setValueLinePart1OffsetPercentage(80.f);
+        dataSet.setValueLinePart1Length(.1f);
+        dataSet.setValueLinePart2Length(.5f);
+        dataSet.setValueLineColor(getResources().getColor(R.color.colorPrimaryDark));
+        dataSet.setYValuePosition(PieDataSet.ValuePosition.INSIDE_SLICE);
+        dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+
+        PieData data = new PieData(dataSet);
+        data.setValueTextSize(18f);
+        data.setValueFormatter(new DefaultValueFormatter(0));
+        data.setValueTextColor(Color.WHITE);
+
+        SpannableString insideCircleText = new SpannableString(getResources().getString(R.string.stats_summary_total)
+                +"\n"
+                + Integer.toString(voicemails.size()+contacts.size()+unavailables.size())
+                + "\n"
+                + usDateFormat.format(date)
+                + "-"
+                + usDateFormat.format(new Date(System.currentTimeMillis()))
+        );
+        insideCircleText.setSpan(new RelativeSizeSpan(2f), 0, insideCircleText.length() - 17, 0);
+
+        pieChart.setData(data);
+        pieChart.setCenterText(insideCircleText);
+        pieChart.setCenterTextColor(getResources().getColor(R.color.colorPrimaryDark));
+        pieChart.setCenterTextSize(11f);
+        pieChart.setHoleRadius(70);
+        pieChart.setEntryLabelColor(getResources().getColor(R.color.colorPrimaryDark));
+        pieChart.getLegend().setEnabled(false);
+        pieChart.setDescription(new Description());
+        pieChart.getDescription().setText("");
+        pieChart.invalidate();
     }
 
-    private LineGraphSeries<DataPoint> makeSeries(List<Long> timestamps, long firstTimestamp,
-                                                  int colorId) {
-        DataPoint[] points = new DataPoint[timestamps.size() + 2];
-        // Add a first timestamp so the graphs all start at (0, 0)
-        points[0] = new DataPoint(firstTimestamp, 0);
-        int count = 0;
-        for (int i = 0; i < timestamps.size(); i++) {
-            points[i + 1] = new DataPoint(timestamps.get(i), ++count);
+    private void createLineGraph(List<Long> contacts, List<Long> voicemails, List<Long> unavailables) {
+        int maxCallsPerCategory = 0;
+        if (contacts.size() > maxCallsPerCategory) {
+            maxCallsPerCategory = contacts.size();
         }
-        // Add right now to the timestamps, to scale the graph as expected.
-        points[timestamps.size() + 1] = new DataPoint(System.currentTimeMillis(), count);
+        if (voicemails.size() > maxCallsPerCategory) {
+            maxCallsPerCategory = voicemails.size();
+        }
+        if (unavailables.size() > maxCallsPerCategory) {
+            maxCallsPerCategory = unavailables.size();
+        }
+        lineChart.getDescription().setEnabled(false);
+        lineChart.setTouchEnabled(true);
+        lineChart.setDragDecelerationFrictionCoef(0.9f);
+        lineChart.setDragEnabled(true);
+        lineChart.setScaleEnabled(true);
+        lineChart.setDrawGridBackground(false);
+        lineChart.setHighlightPerDragEnabled(false);
+        lineChart.setBackgroundColor(Color.WHITE);
+        lineChart.setViewPortOffsets(0f, 0f, 0f, 0f);
 
-        // Styling
-        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(points);
-        series.setColor(getResources().getColor(colorId));
-        series.setThickness(getResources().getDimensionPixelSize(R.dimen.graph_line_width));
-        return series;
+        setLineChartData(contacts, voicemails, unavailables);
+        lineChart.invalidate();
+
+        Legend l = lineChart.getLegend();
+        l.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+        XAxis xAxis = lineChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.TOP_INSIDE);
+        xAxis.setTextSize(10f);
+        xAxis.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+        xAxis.setDrawAxisLine(false);
+        xAxis.setDrawGridLines(false);
+        xAxis.setCenterAxisLabels(true);
+        xAxis.setGranularity(24f); // one day
+        xAxis.setAxisMaximum(System.currentTimeMillis());
+        xAxis.setGridColor(getResources().getColor(R.color.colorPrimaryDark));
+        xAxis.setValueFormatter(new IAxisValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                return usDateFormat.format(new Date((long) value));
+            }
+        });
+        YAxis axisLeft = lineChart.getAxisLeft();
+        axisLeft.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
+        axisLeft.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+        axisLeft.setDrawGridLines(true);
+        axisLeft.setGranularityEnabled(false);
+        axisLeft.setYOffset(-5f);
+        axisLeft.setAxisMinimum(0f);
+        axisLeft.setAxisMaximum(maxCallsPerCategory + 1);
+        axisLeft.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+        axisLeft.setGridColor(getResources().getColor(R.color.colorPrimaryDark));
+        axisLeft.setDrawAxisLine(false);
+        YAxis axisRight = lineChart.getAxisRight();
+        axisRight.setEnabled(false);
+    }
+
+    private void setLineChartData(List<Long> contacts, List<Long> voicemails, List<Long> unavailables) {
+
+        LineDataSet contactsSet = createLineData(contacts,
+                getResources().getString(R.string.outcome_contact),
+                R.color.contacted_color);
+        //set fill under contacts line
+        contactsSet.setDrawFilled(true);
+        contactsSet.setFillColor(getResources().getColor(R.color.contacted_color));
+        contactsSet.setFillAlpha(150);
+        contactsSet.setFillFormatter(new IFillFormatter() {
+            @Override
+            public float getFillLinePosition(ILineDataSet dataSet, LineDataProvider dataProvider) {
+                return lineChart.getAxisLeft().getAxisMinimum();
+            }
+        });
+
+        LineDataSet voicemailsSet = createLineData(voicemails,
+                getResources().getString(R.string.outcome_voicemail),
+                R.color.voicemail_color);
+
+        LineDataSet unavailablesSet = createLineData(unavailables,
+                getResources().getString(R.string.outcome_unavailable),
+                R.color.unavailable_color);
+
+        LineData data = new LineData(contactsSet, voicemailsSet, unavailablesSet);
+        data.setDrawValues(false);
+
+        lineChart.setData(data);
+    }
+
+    private LineDataSet createLineData(List<Long> callsList, String label, int lineColor) {
+        ArrayList<Entry> linePoints = new ArrayList<>();
+        for (int i = 0; i < callsList.size(); i++) {
+            linePoints.add(new Entry(callsList.get(i), (i + 1)));
+        }
+        //add last point for current time
+        linePoints.add(new Entry(System.currentTimeMillis(), callsList.size()));
+        LineDataSet lineDataSet = new LineDataSet(linePoints, label);
+        lineDataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
+        lineDataSet.setColor(getResources().getColor(lineColor));
+        lineDataSet.setCircleColor(getResources().getColor(lineColor));
+        lineDataSet.setLineWidth(1.5f);
+        lineDataSet.setDrawCircles(false);
+        lineDataSet.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
+        lineDataSet.setValueFormatter(new DefaultValueFormatter(0));
+        return lineDataSet;
     }
 
     @Override
@@ -255,10 +384,7 @@ public class StatsActivity extends AppCompatActivity {
         shareIntent.putExtra(Intent.EXTRA_TEXT,
                 String.format(getResources().getString(R.string.share_content), mCallCount));
         shareIntent.setDataAndType(imageUri, "image/png");
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            // Needed to avoid security exception on KitKat.
-            shareIntent.setClipData(ClipData.newRawUri(null, imageUri));
-        }
+        shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
         shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         startActivity(Intent.createChooser(shareIntent,
                 getResources().getString(R.string.share_chooser_title)));
@@ -291,33 +417,12 @@ public class StatsActivity extends AppCompatActivity {
             e.printStackTrace();
             return null;
         }
-        Uri contentUri = FileProvider.getUriForFile(this,
+        return FileProvider.getUriForFile(this,
                 "org.a5calls.android.a5calls.fileprovider", sharedImage);
-        return contentUri;
     }
 
     private Bitmap generateGraphBitmap() {
-        // Show a title and legend for the share
-        graph.setTitle("Calls over time");
-        graph.getLegendRenderer().setVisible(true);
-
-        // From https://stackoverflow.com/questions/5536066/convert-view-to-bitmap-on-android.
-        //Define a bitmap with the same size as the view
-        Bitmap returnedBitmap = Bitmap.createBitmap(graph.getWidth(), graph.getHeight(),
-                Bitmap.Config.ARGB_8888);
-        //Bind a canvas to it
-        Canvas canvas = new Canvas(returnedBitmap);
-        // Draw a background
-        canvas.drawColor(Color.WHITE);
-        // draw the view on the canvas
-        graph.draw(canvas);
-
-        // Undo the legend and title.
-        graph.setTitle("");
-        graph.getLegendRenderer().setVisible(false);
-
-        //return the bitmap
-        return returnedBitmap;
+        return lineChart.getChartBitmap();
     }
 
     private Spannable getTextForCount(int count, int resIdOne, int resIdFormat, int resIdColor) {
