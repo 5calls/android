@@ -482,4 +482,7 @@
     <!-- Error shown when the issue search had no results [CHAR_LIMIT=200] -->
     <string name="error_search_had_no_results">No matching issues found.</string>
 
+    <!-- Date format used for stats -->
+    <string name="date_format">MM/dd/yy</string>
+
 </resources>

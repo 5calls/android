@@ -449,4 +449,7 @@
     <!-- Error shown when the issue search had no results [CHAR_LIMIT=200] -->
     <string name="error_search_had_no_results">No se han encontrado asuntos correspondientes.</string>
 
+    <!-- Date format used for stats -->
+    <string name="date_format">dd/MM/yy</string>
+
 </resources>

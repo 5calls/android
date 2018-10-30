@@ -9,10 +9,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
-import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -68,7 +66,7 @@ import butterknife.ButterKnife;
 public class StatsActivity extends AppCompatActivity {
     private static final String TAG = "StatsActivity";
     private static final int NUM_CONTACTS_TO_SHOW = 3;
-    private static final SimpleDateFormat usDateFormat = new SimpleDateFormat("MM/dd/yy", Locale.US);
+    private SimpleDateFormat dateFormat;
     private int mCallCount = 0;
     private Tracker mTracker;
 
@@ -77,7 +75,6 @@ public class StatsActivity extends AppCompatActivity {
     @BindView(R.id.your_call_count) TextView callCountHeader;
     @BindView(R.id.pie_chart) PieChart pieChart;
     @BindView(R.id.line_chart) LineChart lineChart;
-    @BindView(R.id.motivational_text) TextView motivationalText;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -85,6 +82,7 @@ public class StatsActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_stats);
         ButterKnife.bind(this);
+        dateFormat = new SimpleDateFormat(getResources().getString(R.string.date_format), Locale.US);
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -112,14 +110,11 @@ public class StatsActivity extends AppCompatActivity {
         List<Long> voicemails = db.getCallTimestampsForType(Outcome.Status.VOICEMAIL);
         List<Long> unavailables = db.getCallTimestampsForType(Outcome.Status.UNAVAILABLE);
 
-        Spannable contactString = getTextForCount(contacts.size(),
-                R.string.impact_contact_one, R.string.impact_contact, R.color.colorPrimaryDark);
-        Spannable vmString = getTextForCount(voicemails.size(),
-                R.string.impact_vm_one, R.string.impact_vm, R.color.colorPrimaryDark);
-        Spannable unavailableString = getTextForCount(unavailables.size(),
-                R.string.impact_unavailable_one, R.string.impact_unavailable,
-                R.color.colorPrimaryDark);
-        motivationalText.append(" " + TextUtils.concat(contactString, vmString, unavailableString).toString());
+        pieChart.setContentDescription(TextUtils.concat(
+                getStringForCount(contacts.size(), R.string.impact_contact_one, R.string.impact_contact),
+                getStringForCount(voicemails.size(), R.string.impact_vm_one, R.string.impact_vm),
+                getStringForCount(unavailables.size(), R.string.impact_unavailable_one,
+                        R.string.impact_unavailable)));
 
         // There's probably not that many contacts because mostly the user just calls their own
         // reps. However, it'd be good to move this to a RecyclerView or ListView with an adapter
@@ -165,7 +160,7 @@ public class StatsActivity extends AppCompatActivity {
     }
 
     private void createPieChart(List<Long> contacts, List<Long> voicemails, List<Long> unavailables) {
-        //find first time when user made any call
+        // Find first time when user made any call.
         long firstTimestamp = Long.MAX_VALUE;
         if (contacts.size() > 0) {
             firstTimestamp = Math.min(firstTimestamp, contacts.get(0));
@@ -179,7 +174,7 @@ public class StatsActivity extends AppCompatActivity {
         Date date = new Date(firstTimestamp);
 
         ArrayList<Integer> colorsList = new ArrayList<>();
-        //Create pie pieChart data entries and add correct colors
+        // Create pie pieChart data entries and add correct colors.
         ArrayList<PieEntry> entries = new ArrayList<>();
         if (contacts.size() > 0) {
             entries.add(new PieEntry(contacts.size(), getResources().getString(R.string.contact_n)));
@@ -196,7 +191,7 @@ public class StatsActivity extends AppCompatActivity {
 
         PieDataSet dataSet = new PieDataSet(entries, getResources().getString(R.string.menu_stats));
 
-        //Add colors and set visual properties for pie pieChart
+        // Add colors and set visual properties for pie pieChart.
         dataSet.setColors(colorsList);
         dataSet.setSliceSpace(3f);
         dataSet.setSelectionShift(5f);
@@ -216,9 +211,9 @@ public class StatsActivity extends AppCompatActivity {
                 +"\n"
                 + Integer.toString(voicemails.size()+contacts.size()+unavailables.size())
                 + "\n"
-                + usDateFormat.format(date)
+                + this.dateFormat.format(date)
                 + "-"
-                + usDateFormat.format(new Date(System.currentTimeMillis()))
+                + this.dateFormat.format(new Date(System.currentTimeMillis()))
         );
         insideCircleText.setSpan(new RelativeSizeSpan(2f), 0, insideCircleText.length() - 17, 0);
 
@@ -267,13 +262,14 @@ public class StatsActivity extends AppCompatActivity {
         xAxis.setDrawAxisLine(false);
         xAxis.setDrawGridLines(false);
         xAxis.setCenterAxisLabels(true);
-        xAxis.setGranularity(24f); // one day
+        // One day granularity.
+        xAxis.setGranularity(24f);
         xAxis.setAxisMaximum(System.currentTimeMillis());
         xAxis.setGridColor(getResources().getColor(R.color.colorPrimaryDark));
         xAxis.setValueFormatter(new IAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
-                return usDateFormat.format(new Date((long) value));
+                return dateFormat.format(new Date((long) value));
             }
         });
         YAxis axisLeft = lineChart.getAxisLeft();
@@ -296,7 +292,7 @@ public class StatsActivity extends AppCompatActivity {
         LineDataSet contactsSet = createLineData(contacts,
                 getResources().getString(R.string.outcome_contact),
                 R.color.contacted_color);
-        //set fill under contacts line
+        // Set fill color under contacts line.
         contactsSet.setDrawFilled(true);
         contactsSet.setFillColor(getResources().getColor(R.color.contacted_color));
         contactsSet.setFillAlpha(150);
@@ -326,7 +322,7 @@ public class StatsActivity extends AppCompatActivity {
         for (int i = 0; i < callsList.size(); i++) {
             linePoints.add(new Entry(callsList.get(i), (i + 1)));
         }
-        //add last point for current time
+        // Add last point for current time.
         linePoints.add(new Entry(System.currentTimeMillis(), callsList.size()));
         LineDataSet lineDataSet = new LineDataSet(linePoints, label);
         lineDataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
@@ -423,14 +419,6 @@ public class StatsActivity extends AppCompatActivity {
 
     private Bitmap generateGraphBitmap() {
         return lineChart.getChartBitmap();
-    }
-
-    private Spannable getTextForCount(int count, int resIdOne, int resIdFormat, int resIdColor) {
-        String string = getStringForCount(count, resIdOne, resIdFormat);
-        Spannable result = new SpannableString(string);
-        result.setSpan(new ForegroundColorSpan(getResources().getColor(resIdColor)), 0,
-                string.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        return result;
     }
 
     private String getStringForCount(int count, int resIdOne, int resIdFormat) {
