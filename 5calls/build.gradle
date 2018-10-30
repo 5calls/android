@@ -25,6 +25,8 @@ allprojects {
             url 'https://maven.google.com/'
             name 'Google'
         }
+        // For accessing MPAndroidChart library.
+        maven { url 'https://jitpack.io' }
     }
 }
 
