@@ -2,43 +2,53 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_location"
-    style="@style/scrollViewStyle">
+    style="@style/scrollViewStyle"
+    >
 
     <LinearLayout
         style="@style/mainLinearLayout"
-        tools:context="org.a5calls.android.a5calls.controller.LocationActivity">
+        android:orientation="vertical"
+        tools:context="org.a5calls.android.a5calls.controller.LocationActivity"
+        >
 
         <TextView
             android:id="@+id/location_prompt"
             style="@style/headingStyle"
-            android:text="@string/location_prompt" />
+            android:text="@string/location_prompt"
+            />
 
         <TextView
             android:id="@+id/gps_prompt"
             style="@style/locationGpsTextStyle"
-            android:text="@string/location_gps_prompt" />
+            android:text="@string/location_gps_prompt"
+            />
 
         <Button
             android:id="@+id/btn_gps"
             style="@style/locationGpsBtnStyle"
-            android:text="@string/btn_gps" />
+            android:text="@string/btn_gps"
+            />
 
         <TextView
             style="@style/descriptiveTextStyle"
-            android:text="@string/location_address_prompt" />
+            android:text="@string/location_address_prompt"
+            />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp">
+            android:layout_marginTop="8dp"
+            >
 
             <EditText
                 android:id="@+id/address_edit"
-                style="@style/zipEditTextStyle" />
+                style="@style/zipEditTextStyle"
+                />
 
             <Button
                 android:id="@+id/address_submit"
-                style="@style/submitBtn" />
+                style="@style/submitBtn"
+                />
         </RelativeLayout>
 
     </LinearLayout>

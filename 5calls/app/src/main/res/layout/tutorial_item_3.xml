@@ -2,31 +2,38 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/tutorialRelativeLayoutStyle">
 
-    <LinearLayout style="@style/tutorialLinearLayoutStyle">
+    <LinearLayout style="@style/tutorialLinearLayoutStyle"
+        android:orientation="vertical"
+        >
 
         <TextView
             style="@style/tutorialHeadStyle"
-            android:text="@string/about_header" />
+            android:text="@string/about_header"
+            />
 
         <TextView
             android:id="@+id/calls_to_date"
-            style="@style/subheadingTutorialStyle" />
+            style="@style/subheadingTutorialStyle"
+            />
 
         <TextView
             style="@style/splashTextStyle"
             android:layout_marginBottom="@dimen/margin_text"
-            android:text="@string/about_splash_3" />
+            android:text="@string/about_splash_3"
+            />
 
     </LinearLayout>
 
     <Button
         android:id="@+id/btn_back"
         style="@style/backBtnTutorialStyle"
-        android:text="@string/back" />
+        android:text="@string/back"
+        />
 
     <Button
         android:id="@+id/get_started_btn"
         style="@style/nextBtnTutorialStyle"
-        android:text="@string/get_started_btn" />
+        android:text="@string/get_started_btn"
+        />
 
 </RelativeLayout>

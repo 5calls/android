@@ -5,11 +5,14 @@
 
     <LinearLayout
         android:id="@+id/rep_call_root"
-        style="@style/mainLinearLayout">
+        style="@style/mainLinearLayout"
+        android:orientation="vertical"
+        >
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            >
 
             <TextView
                 android:id="@+id/call_this_office"
@@ -17,85 +20,105 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
                 android:layout_marginBottom="16dp"
-                android:text="@string/call_this_office" />
+                android:text="@string/call_this_office"
+                />
 
             <ImageButton
                 android:id="@+id/contact_done_img"
                 style="@style/ImageButtonStyle"
                 android:contentDescription="@string/contact_done_img_description"
-                android:src="@drawable/checked" />
+                android:src="@drawable/checked"
+                />
 
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/rep_info"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            >
 
             <ImageView
                 android:id="@+id/rep_image"
-                style="@style/repImageStyle" />
+                style="@style/repImageStyle"
+                android:contentDescription="@null"
+                />
 
             <TextView
                 android:id="@+id/contact_name"
                 style="@style/contactNameStyle"
                 android:layout_toEndOf="@id/rep_image"
-                android:layout_toRightOf="@id/rep_image" />
+                android:layout_toRightOf="@id/rep_image"
+                />
 
             <org.a5calls.android.a5calls.controller.SingleLineResizableTextView
                 android:id="@+id/phone_number"
-                style="@style/SingleLineResizableStyle" />
+                style="@style/SingleLineResizableStyle"
+                />
 
             <Button
                 android:id="@+id/local_office_btn"
-                style="@style/localOffBtnRepCallStyle" />
+                style="@style/localOffBtnRepCallStyle"
+                />
 
         </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/field_office_section"
             style="@style/issueLinearLayout"
-            android:layout_marginBottom="16dp">
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp"
+            >
 
             <TextView
                 android:id="@+id/field_office_prompt"
                 style="@style/repCallTextStyle"
-                android:layout_width="wrap_content" />
+                android:layout_width="wrap_content"
+                />
 
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/script_section"
-            style="@style/issueLinearLayout">
+            style="@style/issueLinearLayout"
+            android:orientation="vertical"
+
+            >
 
             <TextView
                 style="@style/repCallTextStyle"
-                android:text="@string/contact_reason_prompt" />
+                android:text="@string/contact_reason_prompt"
+                />
 
             <TextView
                 android:id="@+id/contact_reason"
                 style="@style/splashTextStyle"
                 android:layout_marginTop="@dimen/margin_top4"
-                android:textSize="@dimen/text_size_paragraph" />
+                android:textSize="@dimen/text_size_paragraph"
+                />
 
             <TextView
                 style="@style/repCallTextStyle"
                 android:layout_marginTop="@dimen/margin_top8"
-                android:text="@string/call_script_prompt" />
+                android:text="@string/call_script_prompt"
+                />
 
             <TextView
                 android:id="@+id/call_script"
-                style="@style/callScriptTextStyle" />
+                style="@style/callScriptTextStyle"
+                />
 
         </LinearLayout>
 
         <TextView
             android:id="@+id/buttons_prompt"
             style="@style/repCallTextStyle"
-            android:text="@string/buttons_prompt" />
+            android:text="@string/buttons_prompt"
+            />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/outcome_list"
-            style="@style/RecyclerViewStyle" />
+            style="@style/RecyclerViewStyle"
+            />
     </LinearLayout>
 </ScrollView>

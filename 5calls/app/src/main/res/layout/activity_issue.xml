@@ -12,6 +12,7 @@
         <LinearLayout
             android:id="@+id/main_layout"
             style="@style/issueLinearLayout"
+            android:orientation="vertical"
             android:paddingTop="@dimen/activity_vertical_margin"
             android:paddingBottom="@dimen/activity_vertical_margin">
 
@@ -39,7 +40,9 @@
         app:behavior_peekHeight="52dp"
         app:layout_behavior="@string/bottom_sheet_behavior">
 
-        <LinearLayout style="@style/issueLinearLayout">
+        <LinearLayout style="@style/issueLinearLayout"
+            android:orientation="vertical"
+            >
 
             <RelativeLayout
                 android:id="@+id/rep_prompt"
@@ -49,17 +52,21 @@
 
                 <ImageView
                     android:id="@+id/expand_contacts_icon"
-                    style="@style/issueImageView" />
+                    style="@style/issueImageView"
+                    android:contentDescription="@null"
+                    />
 
                 <TextView
                     style="@style/issueContactTextStyle"
-                    android:text="@string/rep_section_prompt" />
+                    android:text="@string/rep_section_prompt"
+                    />
 
             </RelativeLayout>
 
             <LinearLayout
                 android:id="@+id/rep_list"
                 style="@style/issueLinearLayout"
+                android:orientation="vertical"
                 android:divider="@drawable/layout_divider"
                 android:showDividers="middle" />
 

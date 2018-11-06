@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/horizontalLinearLayoutStyle">
+    style="@style/horizontalLinearLayoutStyle"
+    android:orientation="horizontal"
+    >
 
     <!-- TODO: Make the local office click target accessible -->
 
     <TextView
         android:id="@+id/field_office_number"
-        style="@style/fieldOfficeTextStyle" />
+        style="@style/fieldOfficeTextStyle"
+        />
 
     <TextView
         android:id="@+id/field_office_city"
-        style="@style/fieldCityTextStyle" />
+        style="@style/fieldCityTextStyle"
+        />
 
 </LinearLayout>

@@ -6,5 +6,6 @@
 
     <EditText
         android:id="@+id/search_box"
-        style="@style/searchBoxStyle" />
+        style="@style/searchBoxStyle"
+        />
 </FrameLayout>

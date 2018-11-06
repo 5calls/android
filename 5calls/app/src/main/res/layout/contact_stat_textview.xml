@@ -2,4 +2,6 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/splashTextStyle"
     android:paddingTop="@dimen/grid_padding"
-    android:textSize="@dimen/text_size_paragraph"></TextView>
+    android:textSize="@dimen/text_size_paragraph">
+
+</TextView>

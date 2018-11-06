@@ -52,7 +52,9 @@
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <LinearLayout style="@style/issueLinearLayout">
+            <LinearLayout style="@style/issueLinearLayout"
+                android:orientation="vertical"
+                >
 
                 <android.support.v7.widget.AppCompatSpinner
                     android:id="@+id/filter"

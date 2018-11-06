@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/scrollViewStyle">
+    style="@style/scrollViewStyle"
+    >
 
     <TextView
         style="@style/emptyInvalidStyle"
         android:layout_above="@+id/location_btn"
-        android:text="@string/error_address_invalid" />
+        android:text="@string/error_address_invalid"
+        />
 
     <Button
         android:id="@id/location_btn"
         style="@style/emptyIssuesBtnStyle"
         android:drawableLeft="@drawable/ic_gps_fixed_white_24dp"
-        android:text="@string/try_again_btn" />
+        android:text="@string/try_again_btn"
+        />
 
 </RelativeLayout>

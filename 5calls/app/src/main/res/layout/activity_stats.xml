@@ -1,46 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/scrollViewStyle">
+    style="@style/scrollViewStyle"
+    >
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        >
 
         <TextView
             android:id="@+id/no_calls_message"
             style="@style/noCallsMsgStyle"
-            android:text="@string/no_calls_impact_message" />
+            android:text="@string/no_calls_impact_message"
+            />
 
         <LinearLayout
             android:id="@+id/stats_holder"
             style="@style/noCallsMsgStyle"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            >
 
             <TextView
                 android:id="@+id/your_call_count"
                 style="@style/headingStyle"
                 android:textSize="@dimen/h1_text_size"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                />
 
             <TextView
                 style="@style/topContactTextStyle"
                 android:layout_marginTop="16dp"
                 android:text="@string/motivational_text"
-                android:textStyle="normal" />
+                android:textStyle="normal"
+                />
 
             <TextView
                 android:id="@+id/stats_summary"
                 style="@style/repCallTextStyle"
                 android:layout_marginTop="@dimen/margin_top8"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                />
 
             <com.jjoe64.graphview.GraphView
                 android:id="@+id/graph"
-                style="@style/graphViewStyle" />
+                style="@style/graphViewStyle"
+                />
 
             <TextView
                 style="@style/topContactTextStyle"
-                android:text="@string/top_contacts" />
+                android:text="@string/top_contacts"
+                />
         </LinearLayout>
 
     </FrameLayout>

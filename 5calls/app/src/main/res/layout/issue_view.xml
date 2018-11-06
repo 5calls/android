@@ -7,18 +7,22 @@
         android:id="@+id/issue_name"
         style="@style/issueViewTextStyle"
         android:layout_toEndOf="@+id/issue_done_img"
-        android:layout_toRightOf="@id/issue_done_img" />
+        android:layout_toRightOf="@id/issue_done_img"
+        />
 
     <TextView
         android:id="@+id/issue_call_count"
         style="@style/issueCallCountStyle"
         android:layout_below="@id/issue_name"
         android:layout_toEndOf="@id/issue_done_img"
-        android:layout_toRightOf="@id/issue_done_img" />
+        android:layout_toRightOf="@id/issue_done_img"
+        />
 
     <ImageView
         android:id="@+id/issue_done_img"
         style="@style/issueImageStyle"
-        android:src="@drawable/checked" />
+        android:contentDescription="@null"
+        android:src="@drawable/checked"
+        />
 
 </RelativeLayout>

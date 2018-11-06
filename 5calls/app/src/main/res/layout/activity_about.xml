@@ -2,18 +2,24 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_color">
+    android:background="@color/background_color"
+    >
 
-    <LinearLayout style="@style/mainLinearLayout">
+    <LinearLayout style="@style/mainLinearLayout"
+        android:orientation="vertical"
+        >
 
         <TextView
             style="@style/tutorialHeadStyle"
             android:layout_marginBottom="@dimen/text_layout_marginBottom16"
-            android:text="@string/about_header" />
+            android:text="@string/about_header"
+            />
 
         <TextView
             style="@style/paragraphTextStyle"
-            android:text="@string/about_p1" />
+            android:layout_marginBottom="@dimen/text_layout_marginBottom16"
+            android:text="@string/about_p1"
+            />
 
         <TextView
             style="@style/subheadingTutorialStyle"
@@ -22,6 +28,7 @@
 
         <TextView
             style="@style/paragraphTextStyle"
+            android:layout_marginBottom="@dimen/text_layout_marginBottom16"
             android:text="@string/about_p3" />
 
         <TextView
@@ -35,21 +42,25 @@
 
         <TextView
             style="@style/aboutParagraphTextStyle"
-            android:text="@string/about_us_prompt" />
+            android:text="@string/about_us_prompt"
+            />
 
         <Button
             android:id="@+id/about_us_btn"
             style="@style/transparentBtnStyle"
-            android:text="@string/about_us_btn" />
+            android:text="@string/about_us_btn"
+            />
 
         <TextView
             style="@style/aboutParagraphTextStyle"
-            android:text="@string/contact_us_prompt" />
+            android:text="@string/contact_us_prompt"
+            />
 
         <Button
             android:id="@+id/contact_us_btn"
             style="@style/transparentBtnStyle"
-            android:text="@string/contact_us_btn" />
+            android:text="@string/contact_us_btn"
+            />
 
         <TextView
             style="@style/aboutParagraphTextStyle"
@@ -58,19 +69,24 @@
         <Button
             android:id="@+id/rate_us_btn"
             style="@style/transparentBtnStyle"
-            android:text="@string/rate_us_btn" />
+            android:text="@string/rate_us_btn"
+            />
 
         <TextView
             style="@style/linksParagraphTextStyle"
-            android:text="@string/open_source_info" />
+            android:text="@string/open_source_info"
+            />
 
         <TextView
             android:id="@+id/version_info"
-            style="@style/paragraphTextStyle" />
+            style="@style/paragraphTextStyle"
+            android:layout_marginTop="@dimen/margin_top16"
+            />
 
         <Button
             android:id="@+id/license_btn"
             style="@style/licenceBtnStyle"
-            android:text="@string/license_btn" />
+            android:text="@string/license_btn"
+            />
     </LinearLayout>
 </ScrollView>

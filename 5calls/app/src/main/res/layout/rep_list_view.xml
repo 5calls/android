@@ -1,31 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/repListRelativeStyle">
+    style="@style/repListRelativeStyle"
+    android:orientation="vertical"
+    >
 
     <ImageView
         android:id="@+id/rep_image"
         style="@style/repImageStyle"
+        android:contentDescription="@null"
         android:layout_width="@dimen/rep_list_img_dimens"
         android:layout_height="@dimen/rep_list_img_dimens"
-        android:layout_centerVertical="true" />
+        android:layout_centerVertical="true"
+        />
 
     <LinearLayout
         style="@style/repListLinearStyle"
+        android:orientation="vertical"
         android:layout_toEndOf="@id/rep_image"
-        android:layout_toRightOf="@id/rep_image">
+        android:layout_toRightOf="@id/rep_image"
+        >
 
         <TextView
             android:id="@+id/contact_name"
-            style="@style/repListContactNameStyle" />
+            style="@style/repListContactNameStyle"
+            />
 
         <TextView
             android:id="@+id/contact_reason"
-            style="@style/repListReasonStyle" />
+            style="@style/repListReasonStyle"
+            />
 
     </LinearLayout>
 
     <ImageView
         android:id="@+id/contact_done_img"
         style="@style/repListImageStyle"
-        android:src="@drawable/checked" />
+        android:contentDescription="@null"
+        android:src="@drawable/checked"
+        />
 </RelativeLayout>

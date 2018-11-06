@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/linearLayoutHeaderStyle">
+    style="@style/linearLayoutHeaderStyle"
+    android:orientation="vertical"
+    >
 
     <ImageView
         style="@style/headerImageStyle"
-        android:src="@drawable/banner_5calls" />
+        android:contentDescription="@null"
+        android:src="@drawable/banner_5calls"
+        />
 </LinearLayout>

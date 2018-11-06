@@ -98,7 +98,6 @@
     <style name="mainLinearLayout">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:orientation">vertical</item>
         <item name="android:paddingBottom">@dimen/activity_vertical_margin</item>
         <item name="android:paddingLeft">@dimen/activity_horizontal_margin</item>
         <item name="android:paddingRight">@dimen/activity_horizontal_margin</item>
@@ -108,7 +107,6 @@
     <style name="issueLinearLayout">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:orientation">vertical</item>
     </style>
 
     <style name="tutorialRelativeLayoutStyle">
@@ -124,7 +122,6 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_centerVertical">true</item>
-        <item name="android:orientation">vertical</item>
     </style>
 
     <style name="tutorialHeadStyle">
@@ -190,7 +187,6 @@
     <style name="paragraphTextStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginBottom">@dimen/text_layout_marginBottom16</item>
         <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:textSize">@dimen/text_size_paragraph</item>
     </style>
@@ -291,7 +287,6 @@
         <item name="android:layout_alignParentEnd">true</item>
         <item name="android:layout_alignParentRight">true</item>
         <item name="android:layout_centerVertical">true</item>
-        <item name="android:contentDescription">@null</item>
         <item name="android:rotation">180</item>
         <item name="android:scaleType">center</item>
         <item name="android:src">@drawable/ic_expand_more_white_24dp</item>
@@ -447,7 +442,6 @@
         <item name="android:layout_alignParentStart">true</item>
         <item name="android:layout_alignParentLeft">true</item>
         <item name="android:layout_marginRight">@dimen/margin_rigth</item>
-        <item name="contentDescription">@null</item>
     </style>
 
     <style name="contactNameStyle">
@@ -552,7 +546,6 @@
     <style name="horizontalLinearLayoutStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:orientation">horizontal</item>
         <item name="android:paddingStart">@dimen/activity_horizontal_padding</item>
         <item name="android:paddingLeft">@dimen/activity_horizontal_padding</item>
     </style>
@@ -619,7 +612,6 @@
         <item name="android:layout_centerVertical">true</item>
         <item name="android:layout_marginEnd">@dimen/margin_rigth</item>
         <item name="android:layout_marginRight">@dimen/margin_rigth</item>
-        <item name="contentDescription">@null</item>
         <item name="android:scaleType">fitCenter</item>
     </style>
 
@@ -644,13 +636,11 @@
         <item name="android:layout_height">@dimen/linear_header_height</item>
         <item name="android:background">@android:color/white</item>
         <item name="android:gravity">bottom</item>
-        <item name="android:orientation">vertical</item>
     </style>
 
     <style name="headerImageStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/img_header_height</item>
-        <item name="android:contentDescription">@null</item>
         <item name="android:padding">@dimen/grid_padding</item>
         <item name="android:scaleType">fitCenter</item>
     </style>
@@ -666,7 +656,6 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/load_more_height</item>
         <item name="android:minHeight">@dimen/accessibility_min_size</item>
-        <item name="android:orientation">vertical</item>
         <item name=" android:paddingBottom">@dimen/rep_list_dimens</item>
         <item name=" android:paddingTop">@dimen/rep_list_dimens</item>
         <item name=" android:paddingLeft">@dimen/rep_list_dimens_left_right</item>
@@ -678,7 +667,6 @@
     <style name="repListLinearStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:orientation">vertical</item>
         <item name="android:layout_alignParentEnd">true</item>
         <item name="android:layout_alignParentRight">true</item>
         <item name="android:layout_alignWithParentIfMissing">true</item>
@@ -709,7 +697,6 @@
         <item name="android:layout_alignParentRight">true</item>
         <item name="android:layout_centerVertical">true</item>
         <item name="android:background">@android:color/transparent</item>
-        <item name="android:contentDescription">@null</item>
         <item name="android:scaleType">fitCenter</item>
     </style>
 </resources>
