@@ -65,7 +65,7 @@
         <TextView
             style="@style/aboutParagraphTextStyle"
             android:text="@string/rate_us_prompt" />
-        <!-- wasn't in next btn <item name="android:layout_margin">@dimen/layout_margin_button</item>-->
+
         <Button
             android:id="@+id/rate_us_btn"
             style="@style/transparentBtnStyle"
