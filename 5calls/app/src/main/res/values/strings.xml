@@ -206,6 +206,9 @@
     <!-- Description of how many calls for a given contact name, if the count is 1 [CHAR_LIMIT=50] -->
     <string name="contact_call_stat_one">1 call: <xliff:g id="repName">%1$s</xliff:g></string>
 
+    <!-- String inside pie chart showing total count of calls -->
+    <string name="stats_summary_total">Total</string>
+
     <!-- Link to expand a section about field office phone numbers [CHAR_LIMIT=30] -->
     <string name="local_office_link">Call a <u>local office</u></string>
 
@@ -344,6 +347,18 @@
     <!-- Content of an email or message shared from an issue detail screen sharing an issue [CHAR_LIMIT=NONE] -->
     <string name="issue_share_content">I just called my rep to <xliff:g id="issue_summary">%1$s</xliff:g> — you should too: http://5calls.org/issue/<xliff:g id="issue_id">%2$s</xliff:g></string>
 
+    <!-- Stats activity line chart header -->
+    <string name="stats_share_chart">Share your impact</string>
+
+    <!-- Plural string for pie chart -->
+    <string name="voicemail_n">Voicemails</string>
+
+    <!-- Plural string for pie chart -->
+    <string name="contact_n">Contacts</string>
+
+    <!-- Plural string for pie chart -->
+    <string name="unavailable_n">Unavailables</string>
+
     <!-- Action on the reminder notification to snooze the notification for one hour [CHAR_LIMIT=10] -->
     <string name="snooze">Snooze</string>
 
@@ -466,5 +481,8 @@
 
     <!-- Error shown when the issue search had no results [CHAR_LIMIT=200] -->
     <string name="error_search_had_no_results">No matching issues found.</string>
+
+    <!-- Date format used for stats -->
+    <string name="date_format">MM/dd/yy</string>
 
 </resources>

@@ -65,7 +65,7 @@ dependencies {
 
     compile 'com.google.android.gms:play-services-analytics:12.0.1'
 
-    implementation 'com.jjoe64:graphview:4.2.2'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
 
     implementation 'com.onesignal:OneSignal:[3.9.1, 3.99.99]'
 

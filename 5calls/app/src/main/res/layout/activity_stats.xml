@@ -46,6 +46,20 @@
                 style="@style/graphViewStyle"
                 />
 
+            <com.github.mikephil.charting.charts.PieChart
+                android:id="@+id/pie_chart"
+                style="@style/graphViewStyle" />
+
+            <TextView
+                style="@style/topContactTextStyle"
+                android:text="@string/stats_share_chart"
+                />
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/line_chart"
+                style="@style/graphViewStyle"
+                />
+
             <TextView
                 style="@style/topContactTextStyle"
                 android:text="@string/top_contacts"
