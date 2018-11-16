@@ -2,18 +2,10 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp"
-    >
+    android:padding="@dimen/frame_padding">
 
     <EditText
         android:id="@+id/search_box"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/search_hint"
-        android:minHeight="@dimen/accessibility_min_size"
-        android:minWidth="@dimen/min_button_width"
-        android:singleLine="true"
-        android:maxLines="1"
+        style="@style/searchBoxStyle"
         />
-
 </FrameLayout>

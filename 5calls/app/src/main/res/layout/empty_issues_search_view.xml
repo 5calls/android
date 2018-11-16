@@ -1,34 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_color"
     >
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/emptyInvalidStyle"
         android:layout_above="@+id/search_btn"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="32dp"
-        android:layout_marginRight="32dp"
         android:text="@string/error_search_had_no_results"
-        android:textAlignment="center"
-        android:textSize="18sp"
         />
 
     <Button
         android:id="@id/search_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:background="@android:color/transparent"
+        style="@style/emptyIssuesBtnStyle"
         android:drawableLeft="@drawable/baseline_search_white_24"
-        android:drawablePadding="8dp"
-        android:minHeight="@dimen/accessibility_min_size"
         android:text="@string/try_again_btn"
-        android:textColor="@color/colorAccent"
         />
 
 </RelativeLayout>

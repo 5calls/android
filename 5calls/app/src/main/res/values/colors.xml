@@ -15,4 +15,5 @@
     <color name="voicemail_color">@color/colorPrimary</color>
     <color name="unavailable_color">@color/colorPrimaryDark</color>
     <color name="graph_legend_background_color">#9EEE</color>
+    <color name="navigation_view_background_color">#EEE</color>
 </resources>

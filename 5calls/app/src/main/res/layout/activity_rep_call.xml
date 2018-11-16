@@ -1,21 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/scroll_view"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/background_color"
-    >
+    style="@style/scrollViewStyle">
 
     <LinearLayout
         android:id="@+id/rep_call_root"
+        style="@style/mainLinearLayout"
         android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
         >
 
         <RelativeLayout
@@ -25,27 +16,17 @@
 
             <TextView
                 android:id="@+id/call_this_office"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                style="@style/repCallTextStyle"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
                 android:layout_marginBottom="16dp"
                 android:text="@string/call_this_office"
-                android:textColor="@color/colorPrimary"
-                android:textSize="18sp"
-                android:textStyle="bold|italic"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
                 />
 
             <ImageButton
                 android:id="@+id/contact_done_img"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:background="@android:color/transparent"
+                style="@style/ImageButtonStyle"
                 android:contentDescription="@string/contact_done_img_description"
-                android:scaleType="fitCenter"
                 android:src="@drawable/checked"
                 />
 
@@ -59,147 +40,85 @@
 
             <ImageView
                 android:id="@+id/rep_image"
-                android:layout_width="@dimen/rep_image_size"
-                android:layout_height="@dimen/rep_image_size"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
+                style="@style/repImageStyle"
                 android:contentDescription="@null"
-                android:layout_marginRight="16dp"
                 />
 
             <TextView
                 android:id="@+id/contact_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:layout_alignWithParentIfMissing="true"
-                android:layout_marginBottom="8dp"
+                style="@style/contactNameStyle"
                 android:layout_toEndOf="@id/rep_image"
                 android:layout_toRightOf="@id/rep_image"
-                android:textColor="@color/colorPrimary"
-                android:textSize="24sp"
-                android:textStyle="bold"
                 />
 
             <org.a5calls.android.a5calls.controller.SingleLineResizableTextView
                 android:id="@+id/phone_number"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignWithParentIfMissing="true"
-                android:layout_below="@id/contact_name"
-                android:layout_toEndOf="@id/rep_image"
-                android:layout_toRightOf="@id/rep_image"
-                android:textColor="@color/colorPrimary"
-                android:textSize="32sp"
-                android:textStyle="bold"
+                style="@style/SingleLineResizableStyle"
                 />
 
             <Button
                 android:id="@+id/local_office_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignWithParentIfMissing="true"
-                android:layout_below="@id/phone_number"
-                android:layout_toEndOf="@id/rep_image"
-                android:layout_toRightOf="@id/rep_image"
-                android:background="@android:color/transparent"
-                android:text="@string/local_office_link"
-                android:textAllCaps="false"
-                android:textColor="@color/colorAccent"
-                android:textSize="16sp"
+                style="@style/localOffBtnRepCallStyle"
                 />
 
         </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/field_office_section"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            style="@style/issueLinearLayout"
             android:orientation="vertical"
+            android:layout_marginBottom="16dp"
             >
 
             <TextView
                 android:id="@+id/field_office_prompt"
+                style="@style/repCallTextStyle"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:textColor="@color/colorPrimary"
-                android:textSize="18sp"
-                android:textStyle="bold|italic"
                 />
 
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/script_section"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/issueLinearLayout"
             android:orientation="vertical"
+
             >
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                style="@style/repCallTextStyle"
                 android:text="@string/contact_reason_prompt"
-                android:textColor="@color/colorPrimary"
-                android:textSize="18sp"
-                android:textStyle="bold|italic"
                 />
 
             <TextView
                 android:id="@+id/contact_reason"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:textColor="@color/colorPrimaryDark"
+                style="@style/splashTextStyle"
+                android:layout_marginTop="@dimen/margin_top4"
                 android:textSize="@dimen/text_size_paragraph"
                 />
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                style="@style/repCallTextStyle"
+                android:layout_marginTop="@dimen/margin_top8"
                 android:text="@string/call_script_prompt"
-                android:textColor="@color/colorPrimary"
-                android:textSize="18sp"
-                android:textStyle="bold|italic"
                 />
 
             <TextView
                 android:id="@+id/call_script"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@color/script_background_color"
-                android:padding="16dp"
-                android:textColor="@color/textColorDarkGrey"
-                android:textSize="@dimen/text_size_paragraph"
-                android:textIsSelectable="true"
+                style="@style/callScriptTextStyle"
                 />
 
         </LinearLayout>
 
         <TextView
             android:id="@+id/buttons_prompt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            style="@style/repCallTextStyle"
             android:text="@string/buttons_prompt"
-            android:textColor="@color/colorPrimary"
-            android:textSize="18sp"
-            android:textStyle="bold|italic"
             />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/outcome_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            android:nestedScrollingEnabled="false"
+            style="@style/RecyclerViewStyle"
             />
     </LinearLayout>
 </ScrollView>

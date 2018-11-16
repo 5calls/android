@@ -2,66 +2,31 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:android.support.design="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/background_color">
+    style="@style/scrollViewStyle">
 
-    <android.support.v4.widget.NestedScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/scroll_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="48dp"
-        android:background="@color/background_color"
-        android:clipToPadding="false"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        >
+        style="@style/nestedScrollViewStyleTop"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:id="@+id/main_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/issueLinearLayout"
             android:orientation="vertical"
-            android:paddingBottom="16dp"
             android:paddingTop="@dimen/activity_vertical_margin"
-            >
+            android:paddingBottom="@dimen/activity_vertical_margin">
 
             <TextView
                 android:id="@+id/issue_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:textAllCaps="true"
-                android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/h1_text_size"
-                android:textStyle="bold"
-                />
+                style="@style/issueHeadStyle" />
 
             <TextView
                 android:id="@+id/link"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:clickable="true"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:textColor="@color/colorAccent"
-                android:textSize="@dimen/h2_text_size"
-                android:visibility="gone"
-                />
+                style="@style/issueNameTextStyle" />
 
             <TextView
                 android:id="@+id/issue_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/activity_horizontal_margin"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="16sp"
-                />
+                style="@style/issueDescriptionTextStyle" />
 
         </LinearLayout>
 
@@ -69,125 +34,71 @@
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/bottom_sheet"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorAccent"
-        android:elevation="16dp"
+        style="@style/nestedScrollViewStyleDown"
         android.support.design:ignore="UnusedAttribute"
         app:behavior_hideable="false"
         app:behavior_peekHeight="52dp"
-        app:layout_behavior="@string/bottom_sheet_behavior"
-        >
+        app:layout_behavior="@string/bottom_sheet_behavior">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <LinearLayout style="@style/issueLinearLayout"
             android:orientation="vertical"
             >
 
             <RelativeLayout
                 android:id="@+id/rep_prompt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                style="@style/issueRelativeLayoutStyle"
                 android:background="@color/colorAccent"
-                android:minHeight="52dp"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                >
+                android:minHeight="@dimen/issue_height_relative_layout">
 
                 <ImageView
                     android:id="@+id/expand_contacts_icon"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
+                    style="@style/issueImageView"
                     android:contentDescription="@null"
-                    android:rotation="180"
-                    android:scaleType="center"
-                    android:src="@drawable/ic_expand_more_white_24dp"
                     />
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_toLeftOf="@id/expand_contacts_icon"
-                    android:layout_toStartOf="@id/expand_contacts_icon"
-                    android:paddingBottom="16dp"
-                    android:paddingTop="16dp"
+                    style="@style/issueContactTextStyle"
                     android:text="@string/rep_section_prompt"
-                    android:textColor="@android:color/white"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
                     />
-
 
             </RelativeLayout>
 
             <LinearLayout
                 android:id="@+id/rep_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:divider="@drawable/layout_divider"
+                style="@style/issueLinearLayout"
                 android:orientation="vertical"
-                android:showDividers="middle"
-                />
+                android:divider="@drawable/layout_divider"
+                android:showDividers="middle" />
 
             <RelativeLayout
                 android:id="@+id/no_calls_left"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                style="@style/issueRelativeLayoutStyle"
                 android:background="@color/issue_background_color"
-                android:paddingBottom="16dp"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:paddingTop="16dp"
-                android:visibility="gone"
-                >
+                android:paddingTop="@dimen/activity_horizontal_margin"
+                android:paddingBottom="@dimen/activity_horizontal_margin"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/no_calls_message"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_toLeftOf="@+id/update_location_btn"
-                    android:layout_toStartOf="@id/update_location_btn"
+                    style="@style/issueTextNoCallsStyle"
                     android:text="@string/no_calls_left"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    />
+                    android:textColor="@color/colorPrimary" />
 
                 <TextView
                     android:id="@+id/split_district_warning"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
+                    style="@style/issueTextNoCallsStyle"
                     android:layout_below="@id/no_calls_message"
-                    android:layout_marginTop="8dp"
-                    android:layout_toLeftOf="@id/update_location_btn"
-                    android:layout_toStartOf="@id/update_location_btn"
+                    android:layout_marginTop="@dimen/grid_padding"
                     android:text="@string/split_district_warning"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    />
+                    android:textColor="@color/colorPrimaryDark" />
 
                 <Button
-                    android:id="@id/update_location_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/update_location_btn"
+                    style="@style/licenceBtnStyle"
                     android:layout_alignBaseline="@id/split_district_warning"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:background="@android:color/transparent"
-                    android:minHeight="@dimen/accessibility_min_size"
-                    android:text="@string/update"
-                    android:textColor="@color/colorAccent"
-                    />
+                    android:text="@string/update" />
 
             </RelativeLayout>
 
