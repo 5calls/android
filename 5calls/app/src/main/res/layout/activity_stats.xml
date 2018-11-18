@@ -41,11 +41,6 @@
                 android:textStyle="bold"
                 />
 
-            <com.jjoe64.graphview.GraphView
-                android:id="@+id/graph"
-                style="@style/graphViewStyle"
-                />
-
             <com.github.mikephil.charting.charts.PieChart
                 android:id="@+id/pie_chart"
                 style="@style/graphViewStyle" />
