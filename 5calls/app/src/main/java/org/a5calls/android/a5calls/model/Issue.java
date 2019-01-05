@@ -13,13 +13,15 @@ public class Issue implements Parcelable {
     public String name;
     public String reason;
     public String script;
-    public boolean inactive;
+    public boolean active;
     public String link;
     public String linkTitle;
 
-    public Contact[] contacts;
+    public List<Contact> contacts;
+    public List<String> contactAreas;
     public List<Outcome> outcomeModels;
     public Category[] categories;
+    public boolean isSplit;
 
     protected Issue(Parcel in) {
         id = in.readString();
@@ -28,8 +30,10 @@ public class Issue implements Parcelable {
         script = in.readString();
         link = in.readString();
         linkTitle = in.readString();
-        inactive = in.readInt() != 0;
-        contacts = in.createTypedArray(Contact.CREATOR);
+        active = in.readInt() != 0;
+        isSplit = in.readInt() != 0;
+        contacts = in.createTypedArrayList(Contact.CREATOR);
+        contactAreas = in.createStringArrayList();
         outcomeModels = in.createTypedArrayList(Outcome.CREATOR);
         categories = in.createTypedArray(Category.CREATOR);
     }
@@ -59,8 +63,10 @@ public class Issue implements Parcelable {
         dest.writeString(script);
         dest.writeString(link);
         dest.writeString(linkTitle);
-        dest.writeInt(inactive ? 1 : 0);
-        dest.writeTypedArray(contacts, PARCELABLE_WRITE_RETURN_VALUE);
+        dest.writeInt(active ? 1 : 0);
+        dest.writeInt(isSplit ? 1 : 0);
+        dest.writeTypedList(contacts);
+        dest.writeStringList(contactAreas);
         dest.writeTypedList(outcomeModels);
         dest.writeTypedArray(categories, PARCELABLE_WRITE_RETURN_VALUE);
     }

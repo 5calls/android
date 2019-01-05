@@ -197,7 +197,7 @@ public class IssueActivity extends AppCompatActivity {
             mTracker.setScreenName(TAG);
             mTracker.send(new HitBuilders.ScreenViewBuilder().build());
         }
-        if (mIssue.contacts == null || mIssue.contacts.length == 0) {
+        if (mIssue.contacts == null || mIssue.contacts.size() == 0) {
             noCallsLeft.setVisibility(View.VISIBLE);
             updateLocationBtn.setOnClickListener(new View.OnClickListener() {
 
@@ -291,17 +291,17 @@ public class IssueActivity extends AppCompatActivity {
     private boolean loadRepList() {
         repList.removeAllViews();
         boolean allCalled = true;
-        for (int i = 0; i < mIssue.contacts.length; i++) {
+        for (int i = 0; i < mIssue.contacts.size(); i++) {
             View repView = LayoutInflater.from(this).inflate(R.layout.rep_list_view, null);
             List<String> previousCalls = AppSingleton.getInstance(this).getDatabaseHelper()
-                    .getCallResults(mIssue.id, mIssue.contacts[i].id);
-            populateRepView(repView, mIssue.contacts[i], i, previousCalls);
+                    .getCallResults(mIssue.id, mIssue.contacts.get(i).id);
+            populateRepView(repView, mIssue.contacts.get(i), i, previousCalls);
             repList.addView(repView);
             if (previousCalls.size() == 0) {
                 allCalled = false;
             }
         }
-        return allCalled && mIssue.contacts.length > 0;
+        return allCalled && mIssue.contacts.size() > 0;
     }
 
     private void populateRepView(View repView, Contact contact, final int index,
@@ -310,9 +310,15 @@ public class IssueActivity extends AppCompatActivity {
         final ImageView repImage = repView.findViewById(R.id.rep_image);
         ImageView contactChecked = repView.findViewById(R.id.contact_done_img);
         TextView contactReason = repView.findViewById(R.id.contact_reason);
+        TextView contactWarning = repView.findViewById(R.id.contact_warning);
         contactName.setText(contact.name);
+        contactWarning.setVisibility(View.GONE);
         if (!TextUtils.isEmpty(contact.area)) {
             contactReason.setText(contact.area);
+            if (TextUtils.equals(contact.area, "US House") && mIssue.isSplit) {
+                contactWarning.setVisibility(View.VISIBLE);
+                contactWarning.setText(R.string.split_district_warning);
+            }
             contactReason.setVisibility(View.VISIBLE);
         } else {
             contactReason.setVisibility(View.GONE);

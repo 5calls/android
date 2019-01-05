@@ -234,14 +234,14 @@ public class RepCallActivity extends AppCompatActivity {
     private void reportCall(Outcome outcome, String address) {
         outcomeAdapter.setEnabled(false);
         AppSingleton.getInstance(getApplicationContext()).getDatabaseHelper().addCall(mIssue.id,
-                mIssue.name, mIssue.contacts[mActiveContactIndex].id,
-                mIssue.contacts[mActiveContactIndex].name, outcome.status.toString(), address);
+                mIssue.name, mIssue.contacts.get(mActiveContactIndex).id,
+                mIssue.contacts.get(mActiveContactIndex).name, outcome.status.toString(), address);
         AppSingleton.getInstance(getApplicationContext()).getJsonController().reportCall(
-                mIssue.id, mIssue.contacts[mActiveContactIndex].id, outcome.label, address);
+                mIssue.id, mIssue.contacts.get(mActiveContactIndex).id, outcome.label, address);
     }
 
     private void setupContactUi(int index, boolean expandLocalSection) {
-        final Contact contact = mIssue.contacts[index];
+        final Contact contact = mIssue.contacts.get(index);
         contactName.setText(contact.name);
 
         // Set the reason for contacting this rep, using default text if no reason is provided.
@@ -371,7 +371,7 @@ public class RepCallActivity extends AppCompatActivity {
             mTracker.send(new HitBuilders.EventBuilder()
                     .setCategory("CallAction")
                     .setAction(event)
-                    .setLabel(mIssue.id + " " + mIssue.contacts[mActiveContactIndex].id)
+                    .setLabel(mIssue.id + " " + mIssue.contacts.get(mActiveContactIndex).id)
                     .setValue(1)
                     .build());
         }

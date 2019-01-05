@@ -8,6 +8,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -16,6 +17,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import org.a5calls.android.a5calls.BuildConfig;
+import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.model.Outcome;
 import org.json.JSONArray;
@@ -25,7 +27,6 @@ import org.json.JSONObject;
 import java.lang.reflect.Type;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +41,9 @@ public class FiveCallsApi {
     // request on the server. This will only work on debug builds.
     private static final boolean TESTING = true;
 
-    private static final String GET_ISSUES_REQUEST = "https://5calls.org/issues/?address=";
+    private static final String GET_ISSUES_REQUEST = "https://api.5calls.org/v1/issues"; //"https://5calls.org/issues/?address=";
+
+    private static final String GET_CONTACTS_REQUEST = "https://api.5calls.org/v1/reps?location=";
 
     private static final String GET_REPORT = "https://5calls.org/report";
 
@@ -59,15 +62,24 @@ public class FiveCallsApi {
 
         void onJsonError();
 
+        void onIssuesReceived(List<Issue> issues);
+    }
+
+    public interface ContactsRequestListener {
+        void onRequestError();
+
+        void onJsonError();
+
         void onAddressError();
 
-        void onIssuesReceived(String locationName, boolean splitDistrict, List<Issue> issues);
+        void onContactsReceived(String locationName, List<Contact> contacts);
     }
 
     private RequestQueue mRequestQueue;
     private Gson mGson;
     private List<CallRequestListener> mCallRequestListeners = new ArrayList<>();
     private List<IssuesRequestListener> mIssuesRequestListeners = new ArrayList<>();
+    private List<ContactsRequestListener> mContactsRequestListeners = new ArrayList<>();
 
     public FiveCallsApi(Context context) {
         // TODO: Using OkHttpClient and OkHttpStack cause failures on multiple types of Samsung
@@ -100,61 +112,51 @@ public class FiveCallsApi {
         }
     }
 
+    public void registerContactsRequestListener(ContactsRequestListener contactsRequestListener) {
+        mContactsRequestListeners.add(contactsRequestListener);
+    }
+
+    public void unregisterContactsRequestListener(ContactsRequestListener contactsRequestListener) {
+        if (mContactsRequestListeners.contains(contactsRequestListener)) {
+            mContactsRequestListeners.remove(contactsRequestListener);
+        }
+    }
+
     public void onDestroy() {
         mRequestQueue.cancelAll(TAG);
         mRequestQueue.stop();
         mRequestQueue = null;
     }
 
-    public void getIssuesForLocation(String address) {
-        String url = GET_ISSUES_REQUEST + URLEncoder.encode(address) + "&all=true";
-        buildIssuesRequest(url, mIssuesRequestListeners);
+    public void getIssues() {
+        buildIssuesRequest(GET_ISSUES_REQUEST, mIssuesRequestListeners);
     }
 
-    public void getInactiveIssuesForLocation(String address, IssuesRequestListener listener) {
-        String url = GET_ISSUES_REQUEST + URLEncoder.encode(address) + "&inactive=true";
-        List<IssuesRequestListener> list = Collections.singletonList(listener);
-        buildIssuesRequest(url, list);
+    public void getContacts(String address) {
+        buildContactsRequest(GET_CONTACTS_REQUEST + URLEncoder.encode(address), mContactsRequestListeners);
     }
 
     private void buildIssuesRequest(String url, final List<IssuesRequestListener> listeners) {
         // Request a JSON Object response from the provided URL.
-        JsonObjectRequest statusRequest = new JsonObjectRequest(
-                Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+        JsonArrayRequest issuesRequest = new JsonArrayRequest(
+                Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
-            public void onResponse(JSONObject response) {
-                if (response != null) {
-                    String locationName = "";
-                    boolean splitDistrict = false;
-                    try {
-                        if (response.getBoolean("invalidAddress")) {
-                            for (IssuesRequestListener listener : listeners) {
-                                listener.onAddressError();
-                            }
-                            return;
-                        }
-                        locationName = response.getString("normalizedLocation");
-                        splitDistrict = response.getBoolean("splitDistrict");
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    JSONArray jsonArray = response.optJSONArray("issues");
-                    if (jsonArray == null) {
-                        for (IssuesRequestListener listener : listeners) {
-                            listener.onJsonError();
-                        }
-                        return;
-                    }
-                    Type listType = new TypeToken<ArrayList<Issue>>(){}.getType();
-                    List<Issue> issues = mGson.fromJson(jsonArray.toString(),
-                            listType);
-
-                    issues = Outcome.filterSkipOutcomes(issues);
-
-                    // TODO: Sanitize contact IDs here
+            public void onResponse(JSONArray response) {
+                if (response == null) {
                     for (IssuesRequestListener listener : listeners) {
-                        listener.onIssuesReceived(locationName, splitDistrict, issues);
+                        listener.onJsonError();
                     }
+                    return;
+                }
+                Type listType = new TypeToken<ArrayList<Issue>>(){}.getType();
+                List<Issue> issues = mGson.fromJson(response.toString(),
+                        listType);
+
+                issues = Outcome.filterSkipOutcomes(issues);
+
+                // TODO: Sanitize contact IDs here
+                for (IssuesRequestListener listener : listeners) {
+                    listener.onIssuesReceived(issues);
                 }
             }
         }, new Response.ErrorListener() {
@@ -165,9 +167,49 @@ public class FiveCallsApi {
                 }
             }
         });
-        statusRequest.setTag(TAG);
+        issuesRequest.setTag(TAG);
         // Add the request to the RequestQueue.
-        mRequestQueue.add(statusRequest);
+        mRequestQueue.add(issuesRequest);
+    }
+
+    private void buildContactsRequest(String url, final List<ContactsRequestListener> listeners) {
+            // Request a JSON Object response from the provided URL.
+            JsonObjectRequest contactsRequest = new JsonObjectRequest(
+                    Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    if (response != null) {
+                        String locationName = "";
+                        try {
+                            locationName = response.getString("location");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        JSONArray jsonArray = response.optJSONArray("representatives");
+                        if (jsonArray == null) {
+                            for (ContactsRequestListener listener : listeners) {
+                                listener.onJsonError();
+                            }
+                            return;
+                        }
+                        Type listType = new TypeToken<ArrayList<Contact>>(){}.getType();
+                        List<Contact> contacts = mGson.fromJson(jsonArray.toString(), listType);
+                        for (ContactsRequestListener listener : listeners) {
+                            listener.onContactsReceived(locationName, contacts);
+                        }
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    for (ContactsRequestListener listener : listeners) {
+                        listener.onRequestError();
+                    }
+                }
+            });
+            contactsRequest.setTag(TAG);
+            // Add the request to the RequestQueue.
+            mRequestQueue.add(contactsRequest);
     }
 
     public void getCallCount() {

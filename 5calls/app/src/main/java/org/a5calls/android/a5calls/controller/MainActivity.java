@@ -40,6 +40,7 @@ import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.Category;
+import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.util.CustomTabsUtil;
@@ -71,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
     private String mSearchText = "";
     private IssuesAdapter mIssuesAdapter;
     private FiveCallsApi.IssuesRequestListener mIssuesRequestListener;
+    private FiveCallsApi.ContactsRequestListener mContactsRequestListener;
     private String mAddress;
     private String mLatitude;
     private String mLongitude;
@@ -100,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        // Load the location the user last used, if any.
+        // Confirm the user has set a location.
         if (!accountManager.hasLocation(this)) {
             // No location set, go to LocationActivity!
             Intent intent = new Intent(this, LocationActivity.class);
@@ -199,8 +201,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        AppSingleton.getInstance(getApplicationContext()).getJsonController()
-                .unregisterIssuesRequestListener(mIssuesRequestListener);
+        FiveCallsApi api = AppSingleton.getInstance(getApplicationContext()).getJsonController();
+        api.unregisterIssuesRequestListener(mIssuesRequestListener);
+        api.unregisterContactsRequestListener(mContactsRequestListener);
         super.onDestroy();
     }
 
@@ -213,6 +216,12 @@ public class MainActivity extends AppCompatActivity {
         mAddress = accountManager.getAddress(this);
         mLatitude = accountManager.getLat(this);
         mLongitude = accountManager.getLng(this);
+
+        String location = getLocationString();
+        if (!TextUtils.isEmpty(location)) {
+            AppSingleton.getInstance(getApplicationContext()).getJsonController()
+                    .getContacts(location);
+        }
 
         // Refresh on resume.  The post is necessary to start the spinner animation.
         swipeContainer.post(new Runnable() {
@@ -338,6 +347,41 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
+            public void onIssuesReceived(List<Issue> issues) {
+                populateFilterAdapterIfNeeded(issues);
+                mIssuesAdapter.setIssues(issues, IssuesAdapter.NO_ERROR);
+                mIssuesAdapter.setFilterAndSearch(mFilterText, mSearchText);
+                swipeContainer.setRefreshing(false);
+            }
+        };
+
+        mContactsRequestListener = new FiveCallsApi.ContactsRequestListener() {
+
+            @Override
+            public void onRequestError() {
+                Snackbar.make(findViewById(R.id.activity_main),
+                        getResources().getString(R.string.request_error),
+                        Snackbar.LENGTH_LONG).show();
+                // Our only type of request in MainActivity is a GET. If it doesn't work, clear the
+                // active issues list to avoid showing a stale list.
+                mIssuesAdapter.setIssues(Collections.<Issue>emptyList(),
+                        IssuesAdapter.ERROR_REQUEST);
+                swipeContainer.setRefreshing(false);
+            }
+
+            @Override
+            public void onJsonError() {
+                Snackbar.make(findViewById(R.id.activity_main),
+                        getResources().getString(R.string.json_error),
+                        Snackbar.LENGTH_LONG).show();
+                // Our only type of request in MainActivity is a GET. If it doesn't work, clear the
+                // active issues list to avoid showing a stale list.
+                mIssuesAdapter.setIssues(Collections.<Issue>emptyList(),
+                        IssuesAdapter.ERROR_REQUEST);
+                swipeContainer.setRefreshing(false);
+            }
+
+            @Override
             public void onAddressError() {
                 Snackbar.make(findViewById(R.id.activity_main),
                         getResources().getString(R.string.error_address_invalid),
@@ -350,14 +394,21 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onIssuesReceived(String locationName, boolean splitDistrict,
-                                         List<Issue> issues) {
+            public void onContactsReceived(String locationName, List<Contact> contacts) {
                 locationName = TextUtils.isEmpty(locationName) ?
                         getResources().getString(R.string.unknown_location) : locationName;
                 collapsingToolbarLayout.setTitle(String.format(getResources().getString(
                         R.string.title_main), locationName));
+                mIssuesAdapter.setContacts(contacts);
 
-                if (splitDistrict) {
+                // Check if this is a split district by seeing if there are >2 reps in the house.
+                int houseCount = 0;
+                for (Contact contact : contacts) {
+                    if (TextUtils.equals(contact.area, "US House")) {
+                        houseCount++;
+                    }
+                }
+                if (houseCount > 1) {
                     Snackbar.make(swipeContainer, R.string.split_district_warning,
                             Snackbar.LENGTH_INDEFINITE)
                             .setAction(R.string.update, new View.OnClickListener() {
@@ -367,30 +418,12 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }).show();
                 }
-
-                // If this is the first time we've set issues ever, add all the contacts and
-                // issue IDs to the database to keep track of things the user has already called
-                // about. This allows upgrade from app version 0.07 without "unknown" contacts or
-                // issues in stats.
-                // Note: If the user has made calls in other locations, then we won't be saving
-                // the issues and contacts to the DB from those locations. However, that's probably
-                // OK.
-                // TODO: Remove this extra save when all users are upgraded past version 0.07.
-                if (!AccountManager.Instance.getDatabaseSavesContacts(getApplicationContext())) {
-                    AppSingleton.getInstance(getApplicationContext()).getDatabaseHelper()
-                            .saveIssuesToDatabaseForUpgrade(issues);
-                    AccountManager.Instance.setDatabaseSavesContacts(getApplicationContext(), true);
-                }
-
-                populateFilterAdapterIfNeeded(issues);
-                mIssuesAdapter.setIssues(issues, IssuesAdapter.NO_ERROR);
-                mIssuesAdapter.setFilterAndSearch(mFilterText, mSearchText);
-                swipeContainer.setRefreshing(false);
             }
         };
 
-        AppSingleton.getInstance(getApplicationContext()).getJsonController()
-                .registerIssuesRequestListener(mIssuesRequestListener);
+        FiveCallsApi api = AppSingleton.getInstance(getApplicationContext()).getJsonController();
+        api.registerIssuesRequestListener(mIssuesRequestListener);
+        api.registerContactsRequestListener(mContactsRequestListener);
     }
 
     private void populateFilterAdapterIfNeeded(List<Issue> issues) {
@@ -453,14 +486,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void refreshIssues() {
-        String location = getLocationString();
-        if (!TextUtils.isEmpty(location)) {
-            AppSingleton.getInstance(getApplicationContext()).getJsonController()
-                    .getIssuesForLocation(location);
-        } else {
-            String message = getString(R.string.main_activity_location_error);
-            Snackbar.make(findViewById(R.id.activity_main), message, Snackbar.LENGTH_LONG).show();
+        FiveCallsApi api = AppSingleton.getInstance(getApplicationContext()).getJsonController();
+
+        if (mIssuesAdapter.mContacts.size() == 0) {
+            String location = getLocationString();
+            if (!TextUtils.isEmpty(location)) {
+                api.getContacts(location);
+            }
         }
+        api.getIssues();
     }
 
     private String getLocationString() {
@@ -529,6 +563,8 @@ public class MainActivity extends AppCompatActivity {
         private List<Issue> mAllIssues = new ArrayList<>();
         private int mErrorType = NO_ISSUES_YET;
 
+        private List<Contact> mContacts = new ArrayList<>();
+
         public IssuesAdapter() {
         }
 
@@ -537,6 +573,19 @@ public class MainActivity extends AppCompatActivity {
             mAllIssues = issues;
             mErrorType = errorType;
             mIssues = new ArrayList<>();
+        }
+
+        public void setContacts(List<Contact> contacts) {
+            // Check if the contacts have returned after the issues list. If so, notify data set
+            // changed.
+            Boolean notify = false;
+            if (mAllIssues.size() > 0 && mContacts.size() == 0) {
+                notify = true;
+            }
+            mContacts = contacts;
+            if (notify) {
+                notifyDataSetChanged();
+            }
         }
 
         public void setFilterAndSearch(String filterText, String searchText) {
@@ -572,7 +621,7 @@ public class MainActivity extends AppCompatActivity {
                     // Add only the active ones.
                     mIssues = new ArrayList<>();
                     for (Issue issue : mAllIssues) {
-                        if (!issue.inactive) {
+                        if (issue.active) {
                             mIssues.add(issue);
                         }
                     }
@@ -640,7 +689,26 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-                int totalCalls = issue.contacts.length;
+                issue.contacts = new ArrayList<Contact>();
+                int houseCount = 0;  // Only add the first contact in the house for each issue.
+                for (String contactArea : issue.contactAreas) {
+                    for (Contact contact : mContacts) {
+                        if (TextUtils.equals(contact.area, contactArea) &&
+                                !issue.contacts.contains(contact)) {
+                            if (TextUtils.equals(contact.area, "US House")) {
+                                houseCount++;
+                                if (houseCount > 1) {
+                                    issue.isSplit = true;
+                                    continue;
+                                }
+                            }
+
+                            issue.contacts.add(contact);
+                        }
+                    }
+                }
+
+                int totalCalls = issue.contacts.size();
                 List<String> contacted = AppSingleton.getInstance(getApplicationContext())
                         .getDatabaseHelper().getCallsForIssueAndContacts(issue.id, issue.contacts);
                 int callsLeft = totalCalls - contacted.size();

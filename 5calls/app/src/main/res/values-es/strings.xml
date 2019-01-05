@@ -362,7 +362,7 @@
     <!-- Action on the reminder notification to snooze the notification for one hour [CHAR_LIMIT=15] -->
     <string name="snooze">Recuérdeme más tarde</string>
 
-    <!-- Button to load more and/or inactive issues [CHAR_LIMIT=50] -->
+    <!-- Button to load more and/or active issues [CHAR_LIMIT=50] -->
     <string name="load_more_btn">mostrar más asuntos</string>
 
     <!-- Stats summary shown on the home page [CHAR_LIMIT=75] -->
@@ -375,7 +375,7 @@
     <string name="rep_section_prompt">Contactos para llamar sobre asunto</string>
 
     <!-- Warning that you may be in a split district [CHAR_LIMIT=90] -->
-    <string name="split_district_warning">Se necesita una dirección más exacta para identificar a su representante</string>
+    <string name="split_district_warning">Este código postal se corresponde con múltiples representantes. Verifique que esta representante sea suya. Se necesita una dirección más exacta para identificar a su representante</string>
 
     <!-- Action for a snackbar or button which brings you to the location update screen [CHAR_LIMIT=10] -->
     <string name="update">Actualización</string>

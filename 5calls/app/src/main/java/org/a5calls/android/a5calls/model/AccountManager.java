@@ -101,7 +101,7 @@ public enum AccountManager {
     }
 
     public boolean getDatabaseSavesContacts(Context context) {
-        return getSharedPrefs(context).getBoolean(KEY_DATABASE_SAVES_CONTACTS, false);
+        return getSharedPrefs(context).getBoolean(KEY_DATABASE_SAVES_CONTACTS, true);
     }
 
     public void setDatabaseSavesContacts(Context context, boolean savesContacts) {

@@ -362,7 +362,7 @@
     <!-- Action on the reminder notification to snooze the notification for one hour [CHAR_LIMIT=10] -->
     <string name="snooze">Snooze</string>
 
-    <!-- Button to load more and/or inactive issues [CHAR_LIMIT=50] -->
+    <!-- Button to load more and/or active issues [CHAR_LIMIT=50] -->
     <string name="load_more_btn">Load more issues</string>
 
     <!-- Stats summary shown on the home page [CHAR_LIMIT=75] -->
@@ -375,7 +375,7 @@
     <string name="rep_section_prompt">Contacts to call for this issue</string>
 
     <!-- Warning that you may be in a split district [CHAR_LIMIT=90] -->
-    <string name="split_district_warning">The location you set is not specific enough to find your representative in the House.</string>
+    <string name="split_district_warning">Your zip code has multiple house representatives. This is our best guess.</string>
 
     <!-- Action for a snackbar or button which brings you to the location update screen [CHAR_LIMIT=10] -->
     <string name="update">update</string>
@@ -448,7 +448,7 @@
         <item>@string/disable_new_issues_notification</item>
     </string-array>
 
-    <!-- DO NOT TRANSLATE This is the value of the weekdays in order. Monday is 2.  DO NOT TRANSLATE. -->
+    <!-- DO NOT TRANSLATE This is the value of the weekdays in order. Monday is 2. DO NOT TRANSLATE. -->
     <string-array name="notification_options_values" translatable="false">
         <item>0</item>
         <item>1</item>

@@ -185,10 +185,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @param contacts
      * @return A list of the contact IDs contacted for this issue.
      */
-    public List<String> getCallsForIssueAndContacts(String issueId, Contact[] contacts) {
-        String[] contactIdList = new String[contacts.length];
-        for (int i = 0; i < contacts.length; i++) {
-            contactIdList[i] = "'" + sanitizeContactId(contacts[i].id) + "'";
+    public List<String> getCallsForIssueAndContacts(String issueId, List<Contact> contacts) {
+        String[] contactIdList = new String[contacts.size()];
+        for (int i = 0; i < contacts.size(); i++) {
+            contactIdList[i] = "'" + sanitizeContactId(contacts.get(i).id) + "'";
         }
         String contactIds = "(" + TextUtils.join(",", contactIdList) + ")";
         String query = "SELECT " + CallsColumns.CONTACT_ID + " FROM " +
@@ -312,21 +312,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         c.close();
         return result;
-    }
-
-    public void saveIssuesToDatabaseForUpgrade(List<Issue> issues) {
-        Set<String> addedContacts = new HashSet<>();
-        for (Issue issue : issues) {
-            addIssue(issue.id, issue.name);
-            for (int i = 0; i < issue.contacts.length; i++) {
-                // Do a little less DB work by keeping added contacts in a set. Most contacts in
-                // the issues list are repeats anyway.
-                if (!addedContacts.contains(issue.contacts[i].id)) {
-                    addContact(issue.contacts[i].id, issue.contacts[i].name);
-                    addedContacts.add(issue.contacts[i].id);
-                }
-            }
-        }
     }
 
     @VisibleForTesting

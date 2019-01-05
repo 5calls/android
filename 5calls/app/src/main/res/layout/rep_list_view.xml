@@ -30,6 +30,12 @@
             style="@style/repListReasonStyle"
             />
 
+        <TextView
+            android:id="@+id/contact_warning"
+            style="@style/repListReasonStyle"
+            android:textColor="@color/colorAccent"
+            />
+
     </LinearLayout>
 
     <ImageView
