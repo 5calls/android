@@ -341,8 +341,8 @@
         <item name="android:layout_height">@dimen/accessibility_min_size</item>
         <item name="android:background">@color/colorAccent</item>
         <item name="android:elevation">@dimen/spinner_elevation</item>
-        <item name="android:paddingLeft">@dimen/paddin_spinner</item>
-        <item name="android:paddingRight">@dimen/paddin_spinner</item>
+        <item name="android:paddingLeft">@dimen/padding_spinner</item>
+        <item name="android:paddingRight">@dimen/padding_spinner</item>
         <item name="android:spinnerMode">dropdown</item>
     </style>
 
@@ -365,7 +365,7 @@
         <item name="android:layout_marginRight">@dimen/accessibility_min_size</item>
         <item name="android:drawableStart">@drawable/baseline_search_white_24</item>
         <item name="android:drawableLeft">@drawable/baseline_search_white_24</item>
-        <item name="android:drawablePadding">@dimen/paddin_spinner</item>
+        <item name="android:drawablePadding">@dimen/padding_spinner</item>
         <item name="android:ellipsize">marquee</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:singleLine">true</item>
@@ -488,7 +488,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">@dimen/margin_top8</item>
         <item name="android:background">@color/script_background_color</item>
-        <item name="android:padding">@dimen/paddin_spinner</item>
+        <item name="android:padding">@dimen/padding_spinner</item>
         <item name="android:textColor">@color/textColorDarkGrey</item>
         <item name="android:textIsSelectable">true</item>
         <item name="android:textSize">@dimen/text_size_paragraph</item>
@@ -509,9 +509,8 @@
 
     <style name="graphViewStyle">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/grap_view_height</item>
         <item name="android:layout_marginTop">@dimen/margin_top8</item>
-        <item name="android:padding">@dimen/paddin_spinner</item>
+        <item name="android:padding">@dimen/padding_spinner</item>
     </style>
 
     <style name="topContactTextStyle">

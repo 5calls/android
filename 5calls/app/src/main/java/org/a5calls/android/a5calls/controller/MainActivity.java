@@ -88,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.search_bar) ViewGroup searchBar;
     @BindView(R.id.clear_search_button) ImageButton clearSearchButton;
     @BindView(R.id.search_text) TextView searchTextView;
+    private Snackbar mSplitSnackbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -315,6 +316,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void launchLocationActivity() {
+        // Clear it in case they change they location.
+        mIssuesAdapter.setContacts(new ArrayList<Contact>());
         Intent intent = new Intent(this, LocationActivity.class);
         intent.putExtra(LocationActivity.ALLOW_HOME_UP_KEY, true);
         startActivity(intent);
@@ -400,6 +403,12 @@ public class MainActivity extends AppCompatActivity {
                 collapsingToolbarLayout.setTitle(String.format(getResources().getString(
                         R.string.title_main), locationName));
                 mIssuesAdapter.setContacts(contacts);
+                
+                // Hide any existing snackbars.
+                if (mSplitSnackbar != null) {
+                    mSplitSnackbar.dismiss();
+                    mSplitSnackbar = null;
+                }
 
                 // Check if this is a split district by seeing if there are >2 reps in the house.
                 int houseCount = 0;
@@ -409,14 +418,15 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 if (houseCount > 1) {
-                    Snackbar.make(swipeContainer, R.string.split_district_warning,
+                    mSplitSnackbar = Snackbar.make(swipeContainer, R.string.split_district_warning,
                             Snackbar.LENGTH_INDEFINITE)
                             .setAction(R.string.update, new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
                                     launchLocationActivity();
                                 }
-                            }).show();
+                            });
+                    mSplitSnackbar.show();
                 }
             }
         };

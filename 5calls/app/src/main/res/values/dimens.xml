@@ -30,7 +30,7 @@
     <dimen name="issue_image_layout">36dp</dimen>
     <dimen name="app_bar_layout_size">216dp</dimen>
     <dimen name="spinner_elevation">3dp</dimen>
-    <dimen name="paddin_spinner">16dp</dimen>
+    <dimen name="padding_spinner">16dp</dimen>
     <dimen name="filter_item_margin">24dp</dimen>
     <dimen name="filter_item_padding">22dp</dimen>
     <dimen name="margin_rigth">16dp</dimen>
@@ -39,7 +39,8 @@
     <dimen name="margin_bottom">8dp</dimen>
     <dimen name="margin_top4">4dp</dimen>
     <dimen name="margin_top8">8dp</dimen>
-    <dimen name="grap_view_height">200dp</dimen>
+    <dimen name="graph_view_height">250dp</dimen>
+    <dimen name="pie_chart_height">200dp</dimen>
     <dimen name="text_layout_margin32">32dp</dimen>
     <dimen name="activity_horizontal_padding">16dp</dimen>
     <dimen name="frame_padding">24dp</dimen>

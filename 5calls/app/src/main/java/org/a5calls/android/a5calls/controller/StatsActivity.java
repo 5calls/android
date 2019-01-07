@@ -1,14 +1,18 @@
 package org.a5calls.android.a5calls.controller;
 
+import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.ShareActionProvider;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.RelativeSizeSpan;
@@ -22,24 +26,18 @@ import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Description;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.DefaultValueFormatter;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
-import com.github.mikephil.charting.formatter.IFillFormatter;
-import com.github.mikephil.charting.interfaces.dataprovider.LineDataProvider;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.LegendRenderer;
+import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
 
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.FiveCallsApplication;
@@ -68,13 +66,15 @@ public class StatsActivity extends AppCompatActivity {
     private static final int NUM_CONTACTS_TO_SHOW = 3;
     private SimpleDateFormat dateFormat;
     private int mCallCount = 0;
+    private ShareActionProvider mShareActionProvider;
     private Tracker mTracker;
 
     @BindView(R.id.no_calls_message) TextView noCallsMessage;
     @BindView(R.id.stats_holder) LinearLayout statsHolder;
     @BindView(R.id.your_call_count) TextView callCountHeader;
     @BindView(R.id.pie_chart) PieChart pieChart;
-    @BindView(R.id.line_chart) LineChart lineChart;
+    @BindView(R.id.line_chart) GraphView lineChart;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -152,14 +152,6 @@ public class StatsActivity extends AppCompatActivity {
         }
         */
 
-        createPieChart(contacts, voicemails, unavailables);
-        createLineGraph(contacts, voicemails, unavailables);
-
-        // Show the share button.
-        invalidateOptionsMenu();
-    }
-
-    private void createPieChart(List<Long> contacts, List<Long> voicemails, List<Long> unavailables) {
         // Find first time when user made any call.
         long firstTimestamp = Long.MAX_VALUE;
         if (contacts.size() > 0) {
@@ -171,6 +163,15 @@ public class StatsActivity extends AppCompatActivity {
         if (unavailables.size() > 0) {
             firstTimestamp = Math.min(firstTimestamp, unavailables.get(0));
         }
+
+        createPieChart(contacts, voicemails, unavailables, firstTimestamp);
+        createLineGraph(contacts, voicemails, unavailables, firstTimestamp);
+
+        // Show the share button.
+        invalidateOptionsMenu();
+    }
+
+    private void createPieChart(List<Long> contacts, List<Long> voicemails, List<Long> unavailables, long firstTimestamp) {
         Date date = new Date(firstTimestamp);
 
         ArrayList<Integer> colorsList = new ArrayList<>();
@@ -229,111 +230,71 @@ public class StatsActivity extends AppCompatActivity {
         pieChart.invalidate();
     }
 
-    private void createLineGraph(List<Long> contacts, List<Long> voicemails, List<Long> unavailables) {
-        int maxCallsPerCategory = 0;
-        if (contacts.size() > maxCallsPerCategory) {
-            maxCallsPerCategory = contacts.size();
-        }
-        if (voicemails.size() > maxCallsPerCategory) {
-            maxCallsPerCategory = voicemails.size();
-        }
-        if (unavailables.size() > maxCallsPerCategory) {
-            maxCallsPerCategory = unavailables.size();
-        }
-        lineChart.getDescription().setEnabled(false);
-        lineChart.setTouchEnabled(true);
-        lineChart.setDragDecelerationFrictionCoef(0.9f);
-        lineChart.setDragEnabled(true);
-        lineChart.setScaleEnabled(true);
-        lineChart.setDrawGridBackground(false);
-        lineChart.setHighlightPerDragEnabled(false);
-        lineChart.setBackgroundColor(Color.WHITE);
-        lineChart.setViewPortOffsets(0f, 0f, 0f, 0f);
-
-        setLineChartData(contacts, voicemails, unavailables);
-        lineChart.invalidate();
-
-        Legend l = lineChart.getLegend();
-        l.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
-        XAxis xAxis = lineChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.TOP_INSIDE);
-        xAxis.setTextSize(10f);
-        xAxis.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
-        xAxis.setDrawAxisLine(false);
-        xAxis.setDrawGridLines(false);
-        xAxis.setCenterAxisLabels(true);
-        // One day granularity.
-        xAxis.setGranularity(24f);
-        xAxis.setAxisMaximum(System.currentTimeMillis());
-        xAxis.setGridColor(getResources().getColor(R.color.colorPrimaryDark));
-        xAxis.setValueFormatter(new IAxisValueFormatter() {
-            @Override
-            public String getFormattedValue(float value, AxisBase axis) {
-                return dateFormat.format(new Date((long) value));
-            }
-        });
-        YAxis axisLeft = lineChart.getAxisLeft();
-        axisLeft.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
-        axisLeft.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
-        axisLeft.setDrawGridLines(true);
-        axisLeft.setGranularityEnabled(false);
-        axisLeft.setYOffset(-5f);
-        axisLeft.setAxisMinimum(0f);
-        axisLeft.setAxisMaximum(maxCallsPerCategory + 1);
-        axisLeft.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
-        axisLeft.setGridColor(getResources().getColor(R.color.colorPrimaryDark));
-        axisLeft.setDrawAxisLine(false);
-        YAxis axisRight = lineChart.getAxisRight();
-        axisRight.setEnabled(false);
-    }
-
-    private void setLineChartData(List<Long> contacts, List<Long> voicemails, List<Long> unavailables) {
-
-        LineDataSet contactsSet = createLineData(contacts,
-                getResources().getString(R.string.outcome_contact),
+    private void createLineGraph(List<Long> contacts, List<Long> voicemails,
+                                 List<Long> unavailables, long firstTimestamp) {
+        LineGraphSeries<DataPoint> contactedSeries = makeSeries(contacts, firstTimestamp,
                 R.color.contacted_color);
-        // Set fill color under contacts line.
-        contactsSet.setDrawFilled(true);
-        contactsSet.setFillColor(getResources().getColor(R.color.contacted_color));
-        contactsSet.setFillAlpha(150);
-        contactsSet.setFillFormatter(new IFillFormatter() {
-            @Override
-            public float getFillLinePosition(ILineDataSet dataSet, LineDataProvider dataProvider) {
-                return lineChart.getAxisLeft().getAxisMinimum();
-            }
-        });
-
-        LineDataSet voicemailsSet = createLineData(voicemails,
-                getResources().getString(R.string.outcome_voicemail),
+        contactedSeries.setTitle(getResources().getString(R.string.outcome_contact));
+        LineGraphSeries<DataPoint> voicemailSeries = makeSeries(voicemails, firstTimestamp,
                 R.color.voicemail_color);
+        voicemailSeries.setTitle(getResources().getString(R.string.outcome_voicemail));
+        LineGraphSeries<DataPoint> unavailableSeries = makeSeries(unavailables, firstTimestamp,
+            R.color.unavailable_color);
+        unavailableSeries.setTitle(getResources().getString(R.string.outcome_unavailable));
+        lineChart.addSeries(contactedSeries);
+        lineChart.addSeries(voicemailSeries);
+        lineChart.addSeries(unavailableSeries);
 
-        LineDataSet unavailablesSet = createLineData(unavailables,
-                getResources().getString(R.string.outcome_unavailable),
-                R.color.unavailable_color);
+        lineChart.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this));
+        lineChart.getGridLabelRenderer().setNumHorizontalLabels(getResources().getInteger(
+                R.integer.horizontal_labels_count));
+        lineChart.getGridLabelRenderer().setNumVerticalLabels(5);
+        lineChart.getGridLabelRenderer().setGridColor(
+                getResources().getColor(android.R.color.white));
+        lineChart.getGridLabelRenderer().setHumanRounding(false, true);
+        lineChart.getViewport().setMinX(firstTimestamp - 10);
+        lineChart.getViewport().setMaxX(System.currentTimeMillis() + 10);
+        lineChart.getViewport().setXAxisBoundsManual(true);
 
-        LineData data = new LineData(contactsSet, voicemailsSet, unavailablesSet);
-        data.setDrawValues(false);
+        // Pad the Y axis so the legend fits.
+        int max = Math.max(Math.max(contacts.size(), voicemails.size()), unavailables.size());
+        int buffer = (int) Math.ceil(max / 4.0);
+        lineChart.getViewport().setMaxY(max + buffer);
+        lineChart.getViewport().setMinY(0);
+        lineChart.getViewport().setYAxisBoundsManual(true);
 
-        lineChart.setData(data);
+        lineChart.getLegendRenderer().setVisible(true);
+        lineChart.getLegendRenderer().setBackgroundColor(
+                getResources().getColor(android.R.color.transparent));
+        lineChart.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
+
+        /*
+        // Allow manual zoom. Need to make sure the user can't zoom in too much...
+        graph.getViewport().setYAxisBoundsManual(true);
+        graph.getViewport().setScalable(true);
+        graph.getViewport().setScrollable(true);
+        */
     }
 
-    private LineDataSet createLineData(List<Long> callsList, String label, int lineColor) {
-        ArrayList<Entry> linePoints = new ArrayList<>();
-        for (int i = 0; i < callsList.size(); i++) {
-            linePoints.add(new Entry(callsList.get(i), (i + 1)));
+    private LineGraphSeries<DataPoint> makeSeries(List<Long> timestamps, long firstTimestamp,
+                                                  int colorId) {
+        DataPoint[] points = new DataPoint[timestamps.size() + 2];
+        // Add a first timestamp so the graphs all start at (0, 0)
+        points[0] = new DataPoint(firstTimestamp, 0);
+        int count = 0;
+        for (int i = 0; i < timestamps.size(); i++) {
+            points[i + 1] = new DataPoint(timestamps.get(i), ++count);
         }
-        // Add last point for current time.
-        linePoints.add(new Entry(System.currentTimeMillis(), callsList.size()));
-        LineDataSet lineDataSet = new LineDataSet(linePoints, label);
-        lineDataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
-        lineDataSet.setColor(getResources().getColor(lineColor));
-        lineDataSet.setCircleColor(getResources().getColor(lineColor));
-        lineDataSet.setLineWidth(1.5f);
-        lineDataSet.setDrawCircles(false);
-        lineDataSet.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
-        lineDataSet.setValueFormatter(new DefaultValueFormatter(0));
-        return lineDataSet;
+        // Add right now to the timestamps, to scale the graph as expected.
+        points[timestamps.size() + 1] = new DataPoint(System.currentTimeMillis(), count);
+
+        // Styling
+        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(points);
+        series.setColor(getResources().getColor(colorId));
+        series.setThickness(getResources().getDimensionPixelSize(R.dimen.graph_line_width));
+        return series;
     }
+
 
     @Override
     protected void onResume() {
@@ -380,6 +341,11 @@ public class StatsActivity extends AppCompatActivity {
         shareIntent.putExtra(Intent.EXTRA_TEXT,
                 String.format(getResources().getString(R.string.share_content), mCallCount));
         shareIntent.setDataAndType(imageUri, "image/png");
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            // Needed to avoid security exception on KitKat.
+            shareIntent.setClipData(ClipData.newRawUri(null, imageUri));
+        }
         shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
         shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         startActivity(Intent.createChooser(shareIntent,
@@ -418,7 +384,27 @@ public class StatsActivity extends AppCompatActivity {
     }
 
     private Bitmap generateGraphBitmap() {
-        return lineChart.getChartBitmap();
+        // Show a title for the share.
+        lineChart.setTitle("Calls over time");
+
+        // From https://stackoverflow.com/questions/5536066/convert-view-to-bitmap-on-android.
+        //Define a bitmap with the same size as the view
+        Bitmap returnedBitmap = Bitmap.createBitmap(lineChart.getWidth(),
+                lineChart.getHeight(),
+                Bitmap.Config.ARGB_8888);
+        //Bind a canvas to it
+        Canvas canvas = new Canvas(returnedBitmap);
+        // Draw a background
+        canvas.drawColor(Color.WHITE);
+        // draw the view on the canvas
+        lineChart.draw(canvas);
+        lineChart.getLegendRenderer().draw(canvas);
+
+        // Undo the title.
+        lineChart.setTitle("");
+
+        //return the bitmap
+        return returnedBitmap;
     }
 
     private String getStringForCount(int count, int resIdOne, int resIdFormat) {

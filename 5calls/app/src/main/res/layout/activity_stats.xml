@@ -18,6 +18,7 @@
             android:id="@+id/stats_holder"
             style="@style/noCallsMsgStyle"
             android:orientation="vertical"
+            android:clipChildren="false"
             >
 
             <TextView
@@ -43,16 +44,19 @@
 
             <com.github.mikephil.charting.charts.PieChart
                 android:id="@+id/pie_chart"
-                style="@style/graphViewStyle" />
+                style="@style/graphViewStyle"
+                android:layout_height="@dimen/pie_chart_height"
+                />
 
             <TextView
                 style="@style/topContactTextStyle"
                 android:text="@string/stats_share_chart"
                 />
 
-            <com.github.mikephil.charting.charts.LineChart
+            <com.jjoe64.graphview.GraphView
                 android:id="@+id/line_chart"
                 style="@style/graphViewStyle"
+                android:layout_height="@dimen/graph_view_height"
                 />
 
             <TextView
