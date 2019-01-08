@@ -35,13 +35,6 @@
                 android:textStyle="normal"
                 />
 
-            <TextView
-                android:id="@+id/stats_summary"
-                style="@style/repCallTextStyle"
-                android:layout_marginTop="@dimen/margin_top8"
-                android:textStyle="bold"
-                />
-
             <com.github.mikephil.charting.charts.PieChart
                 android:id="@+id/pie_chart"
                 style="@style/graphViewStyle"
@@ -50,7 +43,7 @@
 
             <TextView
                 style="@style/topContactTextStyle"
-                android:text="@string/stats_share_chart"
+                android:text="@string/line_chart_title"
                 />
 
             <com.jjoe64.graphview.GraphView

@@ -27,6 +27,7 @@ import android.widget.TextView;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
@@ -266,7 +267,7 @@ public class StatsActivity extends AppCompatActivity {
         lineChart.getLegendRenderer().setVisible(true);
         lineChart.getLegendRenderer().setBackgroundColor(
                 getResources().getColor(android.R.color.transparent));
-        lineChart.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
+        lineChart.getLegendRenderer().setFixedPosition(0, 0);
 
         /*
         // Allow manual zoom. Need to make sure the user can't zoom in too much...

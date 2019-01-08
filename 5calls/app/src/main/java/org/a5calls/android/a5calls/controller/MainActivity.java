@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -88,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.search_bar) ViewGroup searchBar;
     @BindView(R.id.clear_search_button) ImageButton clearSearchButton;
     @BindView(R.id.search_text) TextView searchTextView;
-    private Snackbar mSplitSnackbar;
+    private Snackbar mSnackbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -327,9 +328,7 @@ public class MainActivity extends AppCompatActivity {
         mIssuesRequestListener = new FiveCallsApi.IssuesRequestListener() {
             @Override
             public void onRequestError() {
-                Snackbar.make(findViewById(R.id.activity_main),
-                        getResources().getString(R.string.request_error),
-                        Snackbar.LENGTH_LONG).show();
+                showSnackbar(R.string.request_error, Snackbar.LENGTH_LONG);
                 // Our only type of request in MainActivity is a GET. If it doesn't work, clear the
                 // active issues list to avoid showing a stale list.
                 mIssuesAdapter.setIssues(Collections.<Issue>emptyList(),
@@ -339,9 +338,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onJsonError() {
-                Snackbar.make(findViewById(R.id.activity_main),
-                        getResources().getString(R.string.json_error),
-                        Snackbar.LENGTH_LONG).show();
+                showSnackbar(R.string.json_error, Snackbar.LENGTH_LONG);
                 // Our only type of request in MainActivity is a GET. If it doesn't work, clear the
                 // active issues list to avoid showing a stale list.
                 mIssuesAdapter.setIssues(Collections.<Issue>emptyList(),
@@ -362,9 +359,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onRequestError() {
-                Snackbar.make(findViewById(R.id.activity_main),
-                        getResources().getString(R.string.request_error),
-                        Snackbar.LENGTH_LONG).show();
+                showSnackbar(R.string.request_error, Snackbar.LENGTH_LONG);
                 // Our only type of request in MainActivity is a GET. If it doesn't work, clear the
                 // active issues list to avoid showing a stale list.
                 mIssuesAdapter.setIssues(Collections.<Issue>emptyList(),
@@ -374,9 +369,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onJsonError() {
-                Snackbar.make(findViewById(R.id.activity_main),
-                        getResources().getString(R.string.json_error),
-                        Snackbar.LENGTH_LONG).show();
+                showSnackbar(R.string.json_error, Snackbar.LENGTH_LONG);
                 // Our only type of request in MainActivity is a GET. If it doesn't work, clear the
                 // active issues list to avoid showing a stale list.
                 mIssuesAdapter.setIssues(Collections.<Issue>emptyList(),
@@ -386,9 +379,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onAddressError() {
-                Snackbar.make(findViewById(R.id.activity_main),
-                        getResources().getString(R.string.error_address_invalid),
-                        Snackbar.LENGTH_LONG).show();
+                hideSnackbars();
+                showSnackbar(R.string.error_address_invalid, Snackbar.LENGTH_LONG);
                 // Clear the issues but don't show the refresh button because this is an address
                 // problem.
                 mIssuesAdapter.setIssues(Collections.<Issue>emptyList(),
@@ -404,11 +396,7 @@ public class MainActivity extends AppCompatActivity {
                         R.string.title_main), locationName));
                 mIssuesAdapter.setContacts(contacts);
                 
-                // Hide any existing snackbars.
-                if (mSplitSnackbar != null) {
-                    mSplitSnackbar.dismiss();
-                    mSplitSnackbar = null;
-                }
+                hideSnackbars();
 
                 // Check if this is a split district by seeing if there are >2 reps in the house.
                 int houseCount = 0;
@@ -418,7 +406,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 if (houseCount > 1) {
-                    mSplitSnackbar = Snackbar.make(swipeContainer, R.string.split_district_warning,
+                    mSnackbar = Snackbar.make(swipeContainer, R.string.split_district_warning,
                             Snackbar.LENGTH_INDEFINITE)
                             .setAction(R.string.update, new View.OnClickListener() {
                                 @Override
@@ -426,7 +414,14 @@ public class MainActivity extends AppCompatActivity {
                                     launchLocationActivity();
                                 }
                             });
-                    mSplitSnackbar.show();
+                    mSnackbar.addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                        @Override
+                        public void onDismissed(Snackbar transientBottomBar, int event) {
+                            super.onDismissed(transientBottomBar, event);
+                            mSnackbar = null;
+                        }
+                    });
+                    mSnackbar.show();
                 }
             }
         };
@@ -554,6 +549,30 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         mIssuesAdapter.setFilterAndSearch(mFilterText, mSearchText);
+    }
+
+    private void hideSnackbars() {
+        // Hide any existing snackbars.
+        if (mSnackbar != null) {
+            mSnackbar.dismiss();
+            mSnackbar = null;
+        }
+    }
+
+    private void showSnackbar(int string, int length) {
+        if (mSnackbar == null) {
+            mSnackbar = Snackbar.make(findViewById(R.id.activity_main),
+                    getResources().getString(string),
+                    length);
+            mSnackbar.addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                @Override
+                public void onDismissed(Snackbar transientBottomBar, int event) {
+                    super.onDismissed(transientBottomBar, event);
+                    mSnackbar = null;
+                }
+            });
+            mSnackbar.show();
+        }
     }
 
     private class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {

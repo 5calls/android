@@ -348,7 +348,7 @@
     <string name="issue_share_content">Acabo de llamar a mi representante sobre este asunto: <xliff:g id="issue_summary">%1$s</xliff:g>. Debe hacer lo mismo: http://5calls.org/issue/<xliff:g id="issue_id">%2$s</xliff:g></string>
 
     <!-- Stats activity line chart header -->
-    <string name="stats_share_chart">Compártelo</string>
+    <string name="line_chart_title">Compártelo</string>
 
     <!-- Plural string for pie chart -->
     <string name="voicemail_n">Mensaje de voz</string>

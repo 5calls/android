@@ -347,16 +347,16 @@
     <!-- Content of an email or message shared from an issue detail screen sharing an issue [CHAR_LIMIT=NONE] -->
     <string name="issue_share_content">I just called my rep to <xliff:g id="issue_summary">%1$s</xliff:g> — you should too: http://5calls.org/issue/<xliff:g id="issue_id">%2$s</xliff:g></string>
 
-    <!-- Stats activity line chart header -->
-    <string name="stats_share_chart">Share your impact</string>
+    <!-- Stats activity line chart title [CHAR_LIMIT=100] -->
+    <string name="line_chart_title">Impact over time</string>
 
-    <!-- Plural string for pie chart -->
+    <!-- Plural string for pie chart [CHAR_LIMIT=25] -->
     <string name="voicemail_n">Voicemails</string>
 
-    <!-- Plural string for pie chart -->
+    <!-- Plural string for pie chart [CHAR_LIMIT=25] -->
     <string name="contact_n">Contacts</string>
 
-    <!-- Plural string for pie chart -->
+    <!-- Plural string for pie chart [CHAR_LIMIT=25] -->
     <string name="unavailable_n">Unavailables</string>
 
     <!-- Action on the reminder notification to snooze the notification for one hour [CHAR_LIMIT=10] -->
