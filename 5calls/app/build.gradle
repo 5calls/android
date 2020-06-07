@@ -11,8 +11,8 @@ android {
         applicationId "org.a5calls.android.a5calls"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 39
-        versionName "2.1.0"
+        versionCode 41
+        versionName "2.2.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         manifestPlaceholders = [onesignal_app_id: "5fd4ca41-9f6c-4149-a312-ae3e71b35c0e",
                                 // Project number pulled from dashboard, local value is ignored.
