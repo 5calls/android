@@ -11,6 +11,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -82,7 +83,7 @@ public class RepCallActivity extends AppCompatActivity {
     private Tracker mTracker = null;
     private OutcomeAdapter outcomeAdapter;
 
-    @BindView(R.id.scroll_view) ScrollView scrollView;
+    @BindView(R.id.scroll_view) NestedScrollView scrollView;
 
     @BindView(R.id.rep_info) RelativeLayout repInfoLayout;
     @BindView(R.id.rep_image) ImageView repImage;
