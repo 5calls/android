@@ -63,6 +63,51 @@
             />
 
         <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/social_prompt"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/text_size_paragraph"
+            android:textStyle="bold|italic"
+            />
+
+        <!-- Social media buttons. -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+            <Button
+                android:id="@+id/twitter_btn"
+                style="@style/transparentBtnStyle"
+                android:layout_margin="0dp"
+                android:gravity="center"
+                android:text="@string/twitter_btn"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                />
+
+            <Button
+                android:id="@+id/facebook_btn"
+                style="@style/transparentBtnStyle"
+                android:layout_margin="0dp"
+                android:gravity="center"
+                android:text="@string/facebook_btn"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                />
+
+            <Button
+                android:id="@+id/instagram_btn"
+                style="@style/transparentBtnStyle"
+                android:layout_margin="0dp"
+                android:gravity="center"
+                android:text="@string/instagram_btn"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                />
+        </LinearLayout>
+
+        <TextView
             style="@style/aboutParagraphTextStyle"
             android:text="@string/rate_us_prompt" />
 

@@ -1,10 +1,13 @@
 package org.a5calls.android.a5calls.controller;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -45,6 +48,9 @@ public class AboutActivity extends AppCompatActivity {
     @BindView(R.id.sign_up_newsletter_btn) Button signUpNewsletterButton;
     @BindView(R.id.about_us_btn) Button aboutUsButton;
     @BindView(R.id.contact_us_btn) Button contactUsButton;
+    @BindView(R.id.twitter_btn) TextView twitterButton;
+    @BindView(R.id.facebook_btn) TextView facebookButton;
+    @BindView(R.id.instagram_btn) TextView instagramButton;
     @BindView(R.id.rate_us_btn) Button rateUsButton;
     @BindView(R.id.version_info) TextView version;
     @BindView(R.id.calls_to_date) TextView callsToDate;
@@ -57,7 +63,7 @@ public class AboutActivity extends AppCompatActivity {
         setContentView(R.layout.activity_about);
         ButterKnife.bind(this);
 
-        getSupportActionBar().setTitle(getResources().getString(R.string.about_title));
+        getSupportActionBar().setTitle(getString(R.string.about_title));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         signUpNewsletterButton.setOnClickListener(new View.OnClickListener() {
@@ -74,16 +80,30 @@ public class AboutActivity extends AppCompatActivity {
             }
         });
 
-        contactUsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                final Intent intentChooser = Intent.createChooser(
-                        getSendEmailIntent(getResources()),
-                        getResources().getString(R.string.send_email)
-                );
-                startActivity(intentChooser);
-            }
-        });
+        setOpenIntentOnClick(
+                contactUsButton, getSendEmailIntent(getResources()), getString(R.string.send_email)
+        );
+
+        // Testing note: to see the Intent Chooser, install some Twitter apps other than the official Twitter
+        // app. The Intent Chooser will show browser apps and third-party Twitter apps. If the official
+        // Twitter app is installed, it will be opened directly without asking the user which app to open.
+        setOpenIntentOnClick(
+                twitterButton,
+                getActionIntent(getString(R.string.twitter_url)),
+                getString(R.string.open_social_media, getString(R.string.twitter_btn))
+        );
+
+        setOpenIntentOnClick(
+                facebookButton,
+                getActionIntent(getString(R.string.facebook_url)),
+                getString(R.string.open_social_media, getString(R.string.facebook_btn))
+        );
+
+        setOpenIntentOnClick(
+                instagramButton,
+                getActionIntent(getString(R.string.instagram_url)),
+                getString(R.string.open_social_media, getString(R.string.instagram_btn))
+        );
 
         rateUsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,6 +126,8 @@ public class AboutActivity extends AppCompatActivity {
                 showOpenSourceLicenses();
             }
         });
+
+        underlineButtons();
 
         version.setText(String.format(getResources().getString(R.string.version_info),
                 BuildConfig.VERSION_NAME));
@@ -173,8 +195,27 @@ public class AboutActivity extends AppCompatActivity {
         }
     }
 
+    private void underlineButtons() {
+        underlineText(signUpNewsletterButton);
+        underlineText(aboutUsButton);
+        underlineText(contactUsButton);
+        underlineText(twitterButton);
+        underlineText(facebookButton);
+        underlineText(instagramButton);
+        underlineText(rateUsButton);
+        underlineText(licenseButton);
+    }
+
+    /**
+     * Underlines text in the given {@code TextView}.
+     */
+    private static void underlineText(final TextView textView) {
+        textView.setPaintFlags(textView.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
+    }
+
     // Inspired by https://www.bignerdranch.com/blog/open-source-licenses-and-android/
     private void showOpenSourceLicenses() {
+        @SuppressLint("InflateParams")
         WebView view = (WebView) LayoutInflater.from(this).inflate(R.layout.licence_view, null);
         view.loadUrl("file:///android_asset/licenses.html");
         new AlertDialog.Builder(this)
@@ -182,6 +223,24 @@ public class AboutActivity extends AppCompatActivity {
                 .setView(view)
                 .setPositiveButton(android.R.string.ok, null)
                 .show();
+    }
+
+    /**
+     * Sets the on click listener of the given {@link View} to launch the given {@link Intent}
+     * with a chooser with the given prompt.
+     */
+    private void setOpenIntentOnClick(final View view,
+                                      final Intent intent,
+                                      final String prompt) {
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+                final Intent intentChooser = Intent.createChooser(
+                        intent, prompt
+                );
+                startActivity(intentChooser);
+            }
+        });
     }
 
     /**
@@ -196,6 +255,15 @@ public class AboutActivity extends AppCompatActivity {
         intent.putExtra(Intent.EXTRA_SUBJECT, subject);
         intent.setType(EMAIL_CONTENT_TYPE);
 
+        return intent;
+    }
+
+    /**
+     * @return an {@link Intent} that opens the given {@code url}
+     */
+    private static Intent getActionIntent(final String url) {
+        final Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(url));
         return intent;
     }
 }
