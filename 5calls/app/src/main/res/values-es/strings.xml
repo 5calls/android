@@ -451,5 +451,7 @@
 
     <!-- Date format used for stats -->
     <string name="date_format">dd/MM/yy</string>
+    <string name="social_prompt">Comunícate con nosotros a través de nuestras redes sociales</string>
+    <string name="open_social_media">Abre <xliff:g id="socialNetworkName">%1$s</xliff:g></string>
 
 </resources>

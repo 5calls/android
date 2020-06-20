@@ -70,6 +70,18 @@
     <!-- Button that allows users to send 5 Calls an email [CHAR_LIMIT=30] -->
     <string name="contact_us_btn">contact us</string>
 
+    <!-- Prompt to connect with 5 Calls through social media [CHAR_LIMIT=100] -->
+    <string name="social_prompt">You can also get in touch via</string>
+
+    <!-- Button that links to 5 Calls' Twitter -->
+    <string name="twitter_btn" translatable="false">Twitter</string>
+
+    <!-- Button that links to 5 Calls' Facebook [CHAR_LIMIT=30] -->
+    <string name="facebook_btn" translatable="false">Facebook</string>
+
+    <!-- Button that links to 5 Calls' Instagram [CHAR_LIMIT=30] -->
+    <string name="instagram_btn" translatable="false">Instagram</string>
+
     <!-- Button linking to the 5calls.org Play Store page to request a rating [CHAR_LIMIT=30] -->
     <string name="rate_us_btn">Rate 5 Calls</string>
 
@@ -380,6 +392,15 @@
     <!-- Action for a snackbar or button which brings you to the location update screen [CHAR_LIMIT=10] -->
     <string name="update">update</string>
 
+    <!-- URL for the 5 Calls Twitter account -->
+    <string name="twitter_url" translatable="false">https://twitter.com/make5calls</string>
+
+    <!-- URL for the 5 Calls Facebook page -->
+    <string name="facebook_url" translatable="false">https://www.facebook.com/make5calls/</string>
+
+    <!-- URL for the 5 Calls Instagram account -->
+    <string name="instagram_url" translatable="false">https://www.instagram.com/5calls/</string>
+
     <!-- URL to sign up for the 5 Calls newsletter [CHAR_LIMIT=NONE] -->
     <string name="newsletter_url" translatable="false">https://5calls.org/newsletter</string>
 
@@ -397,6 +418,11 @@
 
     <!-- Name of the intent chooser for sending emails [CHAR_LIMIT=NONE] -->
     <string name="send_email">Send Email</string>
+
+    <!-- Name of the intent chooser for opening Twitter/Facebook/Instagram [CHAR_LIMIT=NONE]
+    Instead of having three separate strings for "Open Twitter", "Open Facebook", "Open Instagram",
+    we can use one substitution string and substitute the social network name that we use in the buttons -->
+    <string name="open_social_media">Open <xliff:g id="socialNetworkName">%1$s</xliff:g></string>
 
     <!-- Call result button for when the contact was unavailable (i.e. couldn't even leave a voicemail) [CHAR_LIMIT=30] -->
     <string name="outcome_unavailable">unavailable</string>
