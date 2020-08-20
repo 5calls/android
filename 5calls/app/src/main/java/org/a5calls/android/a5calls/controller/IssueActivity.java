@@ -23,10 +23,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -37,16 +34,13 @@ import com.google.android.gms.analytics.Tracker;
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
+import org.a5calls.android.a5calls.databinding.ActivityIssueBinding;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.util.MarkdownUtil;
 
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import ru.noties.markwon.Markwon;
 
 /**
  * More details about an issue, including links to the phone app to call and buttons to record
@@ -62,17 +56,7 @@ public class IssueActivity extends AppCompatActivity {
     private Tracker mTracker = null;
     private boolean mIsAnimating = false;
 
-    @BindView(R.id.scroll_view) NestedScrollView scrollView;
-    @BindView(R.id.issue_name) TextView issueName;
-    @BindView(R.id.issue_description) TextView issueDescription;
-    @BindView(R.id.no_calls_left) ViewGroup noCallsLeft;
-    @BindView(R.id.update_location_btn) Button updateLocationBtn;
-    @BindView(R.id.rep_prompt) ViewGroup repPrompt;
-    @BindView(R.id.rep_list) LinearLayout repList;
-    @BindView(R.id.bottom_sheet) NestedScrollView bottomSheet;
-    @BindView(R.id.main_layout) ViewGroup issueTextSection;
-    @BindView(R.id.expand_contacts_icon) ImageView expandContactsIcon;
-    @BindView(R.id.link) TextView linkText;
+    private ActivityIssueBinding binding;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -85,32 +69,32 @@ public class IssueActivity extends AppCompatActivity {
             return;
         }
 
-        setContentView(R.layout.activity_issue);
-        ButterKnife.bind(this);
+        binding = ActivityIssueBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle(mIssue.name);
         }
 
-        issueName.setText(mIssue.name);
-        MarkdownUtil.setUpScript(issueDescription, mIssue.reason, getApplicationContext());
+        binding.issueNameTextView.setText(mIssue.name);
+        MarkdownUtil.setUpScript(binding.issueDescriptionTextView, mIssue.reason, getApplicationContext());
         if (!TextUtils.isEmpty(mIssue.link)) {
-            linkText.setVisibility(View.VISIBLE);
-            linkText.setMovementMethod(LinkMovementMethod.getInstance());
+            binding.linkTextView.setVisibility(View.VISIBLE);
+            binding.linkTextView.setMovementMethod(LinkMovementMethod.getInstance());
             if ((TextUtils.isEmpty(mIssue.linkTitle))) {
-                linkText.setText(mIssue.link);
+                binding.linkTextView.setText(mIssue.link);
             } else {
-                linkText.setText(Html.fromHtml(
+                binding.linkTextView.setText(Html.fromHtml(
                         String.format("<a href=\"%s\">%s</a>", mIssue.link, mIssue.linkTitle)));
             }
         } else {
-            linkText.setVisibility(View.GONE);
+            binding.linkTextView.setVisibility(View.GONE);
         }
 
         final BottomSheetBehavior<NestedScrollView> behavior =
-                BottomSheetBehavior.from(bottomSheet);
-        repPrompt.setOnClickListener(new View.OnClickListener() {
+                BottomSheetBehavior.from(binding.bottomSheet);
+        binding.repPromptViewGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (behavior.getState() == BottomSheetBehavior.STATE_COLLAPSED ||
@@ -129,13 +113,13 @@ public class IssueActivity extends AppCompatActivity {
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 if (newState == BottomSheetBehavior.STATE_SETTLING ||
                         newState == BottomSheetBehavior.STATE_DRAGGING) {
-                    wasAtBottom = scrollView.getHeight() + scrollView.getScrollY() >=
-                            issueTextSection.getMeasuredHeight();
+                    wasAtBottom = binding.scrollView.getHeight() + binding.scrollView.getScrollY() >=
+                            binding.issueViewGroup.getMeasuredHeight();
                     mIsAnimating = true;
                 } else {
                     mIsAnimating = false;
-                    expandContactsIcon.setRotation(newState == BottomSheetBehavior.STATE_EXPANDED ?
-                            0 : 180);
+                    binding.expandContactsImageView.setRotation(
+                            newState == BottomSheetBehavior.STATE_EXPANDED ? 0 : 180);
                 }
             }
 
@@ -145,20 +129,20 @@ public class IssueActivity extends AppCompatActivity {
                         behavior.getState() != BottomSheetBehavior.STATE_SETTLING) {
                     return;
                 }
-                expandContactsIcon.setRotation(180 - slideOffset * 180);
+                binding.expandContactsImageView.setRotation(180 - slideOffset * 180);
                 CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams)
-                        scrollView.getLayoutParams();
+                        binding.scrollView.getLayoutParams();
                 params.bottomMargin = collapsedSize + (int) ((bottomSheet.getMeasuredHeight() -
                         collapsedSize) * slideOffset);
-                scrollView.setLayoutParams(params);
+                binding.scrollView.setLayoutParams(params);
                 // Only auto-scroll up if we are already scrolled to the bottom.
                 if (wasAtBottom) {
-                    scrollView.fullScroll(View.FOCUS_DOWN);
+                    binding.scrollView.fullScroll(View.FOCUS_DOWN);
                 }
             }
         });
 
-        scrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+        binding.scrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY,
                                        int oldScrollX, int oldScrollY) {
@@ -166,8 +150,8 @@ public class IssueActivity extends AppCompatActivity {
                 if (mIsAnimating) {
                     return;
                 }
-                if (scrollView.getHeight() + scrollView.getScrollY() >=
-                        issueTextSection.getMeasuredHeight()) {
+                if (binding.scrollView.getHeight() + binding.scrollView.getScrollY() >=
+                        binding.issueViewGroup.getMeasuredHeight()) {
                     if (behavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
                         behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                     }
@@ -198,8 +182,8 @@ public class IssueActivity extends AppCompatActivity {
             mTracker.send(new HitBuilders.ScreenViewBuilder().build());
         }
         if (mIssue.contacts == null || mIssue.contacts.size() == 0) {
-            noCallsLeft.setVisibility(View.VISIBLE);
-            updateLocationBtn.setOnClickListener(new View.OnClickListener() {
+            binding.noCallsLeftViewGroup.setVisibility(View.VISIBLE);
+            binding.updateLocationButton.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View view) {
@@ -289,14 +273,14 @@ public class IssueActivity extends AppCompatActivity {
      * @return true least once.if each rep has been called at
      */
     private boolean loadRepList() {
-        repList.removeAllViews();
+        binding.repListViewGroup.removeAllViews();
         boolean allCalled = true;
         for (int i = 0; i < mIssue.contacts.size(); i++) {
             View repView = LayoutInflater.from(this).inflate(R.layout.rep_list_view, null);
             List<String> previousCalls = AppSingleton.getInstance(this).getDatabaseHelper()
                     .getCallResults(mIssue.id, mIssue.contacts.get(i).id);
             populateRepView(repView, mIssue.contacts.get(i), i, previousCalls);
-            repList.addView(repView);
+            binding.repListViewGroup.addView(repView);
             if (previousCalls.size() == 0) {
                 allCalled = false;
             }
@@ -306,10 +290,10 @@ public class IssueActivity extends AppCompatActivity {
 
     private void populateRepView(View repView, Contact contact, final int index,
                                  List<String> previousCalls) {
-        TextView contactName = repView.findViewById(R.id.contact_name);
-        final ImageView repImage = repView.findViewById(R.id.rep_image);
-        ImageView contactChecked = repView.findViewById(R.id.contact_done_img);
-        TextView contactReason = repView.findViewById(R.id.contact_reason);
+        TextView contactName = repView.findViewById(R.id.contactNameTextView);
+        final ImageView repImage = repView.findViewById(R.id.repImageView);
+        ImageView contactChecked = repView.findViewById(R.id.contactCheckedImageButton);
+        TextView contactReason = repView.findViewById(R.id.contactReasonTextView);
         TextView contactWarning = repView.findViewById(R.id.contact_warning);
         contactName.setText(contact.name);
         contactWarning.setVisibility(View.GONE);

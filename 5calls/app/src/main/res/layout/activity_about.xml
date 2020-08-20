@@ -2,24 +2,21 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_color"
-    >
+    android:background="@color/background_color">
 
-    <LinearLayout style="@style/mainLinearLayout"
-        android:orientation="vertical"
-        >
+    <LinearLayout
+        style="@style/mainLinearLayout"
+        android:orientation="vertical">
 
         <TextView
             style="@style/tutorialHeadStyle"
             android:layout_marginBottom="@dimen/text_layout_marginBottom16"
-            android:text="@string/about_header"
-            />
+            android:text="@string/about_header" />
 
         <TextView
             style="@style/paragraphTextStyle"
             android:layout_marginBottom="@dimen/text_layout_marginBottom16"
-            android:text="@string/about_p1"
-            />
+            android:text="@string/about_p1" />
 
         <TextView
             style="@style/subheadingTutorialStyle"
@@ -32,35 +29,31 @@
             android:text="@string/about_p3" />
 
         <TextView
-            android:id="@+id/calls_to_date"
+            android:id="@+id/callsToDateTextView"
             style="@style/aboutSubtStyle" />
 
         <Button
-            android:id="@+id/sign_up_newsletter_btn"
+            android:id="@+id/signUpNewsletterButton"
             style="@style/transparentBtnStyle"
             android:text="@string/sign_up_newsletter_btn" />
 
         <TextView
             style="@style/aboutParagraphTextStyle"
-            android:text="@string/about_us_prompt"
-            />
+            android:text="@string/about_us_prompt" />
 
         <Button
-            android:id="@+id/about_us_btn"
+            android:id="@+id/aboutUsButton"
             style="@style/transparentBtnStyle"
-            android:text="@string/about_us_btn"
-            />
+            android:text="@string/about_us_btn" />
 
         <TextView
             style="@style/aboutParagraphTextStyle"
-            android:text="@string/contact_us_prompt"
-            />
+            android:text="@string/contact_us_prompt" />
 
         <Button
-            android:id="@+id/contact_us_btn"
+            android:id="@+id/contactUsButton"
             style="@style/transparentBtnStyle"
-            android:text="@string/contact_us_btn"
-            />
+            android:text="@string/contact_us_btn" />
 
         <TextView
             android:layout_width="match_parent"
@@ -68,43 +61,40 @@
             android:text="@string/social_prompt"
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/text_size_paragraph"
-            android:textStyle="bold|italic"
-            />
+            android:textStyle="bold|italic" />
 
         <!-- Social media buttons. -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            >
-            <Button
-                android:id="@+id/twitter_btn"
-                style="@style/transparentBtnStyle"
-                android:layout_margin="0dp"
-                android:gravity="center"
-                android:text="@string/twitter_btn"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                />
+            android:orientation="horizontal">
 
             <Button
-                android:id="@+id/facebook_btn"
+                android:id="@+id/twitterButton"
                 style="@style/transparentBtnStyle"
                 android:layout_margin="0dp"
                 android:gravity="center"
-                android:text="@string/facebook_btn"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingLeft="0dp"
                 android:paddingRight="@dimen/activity_horizontal_margin"
-                />
+                android:text="@string/twitter_btn" />
 
             <Button
-                android:id="@+id/instagram_btn"
+                android:id="@+id/facebookButton"
                 style="@style/transparentBtnStyle"
                 android:layout_margin="0dp"
                 android:gravity="center"
-                android:text="@string/instagram_btn"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
-                />
+                android:text="@string/facebook_btn" />
+
+            <Button
+                android:id="@+id/instagramButton"
+                style="@style/transparentBtnStyle"
+                android:layout_margin="0dp"
+                android:gravity="center"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:text="@string/instagram_btn" />
         </LinearLayout>
 
         <TextView
@@ -112,26 +102,22 @@
             android:text="@string/rate_us_prompt" />
 
         <Button
-            android:id="@+id/rate_us_btn"
+            android:id="@+id/rateUsButton"
             style="@style/transparentBtnStyle"
-            android:text="@string/rate_us_btn"
-            />
+            android:text="@string/rate_us_btn" />
 
         <TextView
             style="@style/linksParagraphTextStyle"
-            android:text="@string/open_source_info"
-            />
+            android:text="@string/open_source_info" />
 
         <TextView
-            android:id="@+id/version_info"
+            android:id="@+id/versionInfoTextView"
             style="@style/paragraphTextStyle"
-            android:layout_marginTop="@dimen/margin_top16"
-            />
+            android:layout_marginTop="@dimen/margin_top16" />
 
         <Button
-            android:id="@+id/license_btn"
-            style="@style/licenceBtnStyle"
-            android:text="@string/license_btn"
-            />
+            android:id="@+id/licenseButton"
+            style="@style/licenseBtnStyle"
+            android:text="@string/license_btn" />
     </LinearLayout>
 </ScrollView>

@@ -4,28 +4,28 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/scrollViewStyle">
 
-    <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/scroll_view"
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scrollView"
         style="@style/nestedScrollViewStyleTop"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
-            android:id="@+id/main_layout"
-            style="@style/issueLinearLayout"
+            android:id="@+id/issueViewGroup"
+            style="@style/issueViewGroup"
             android:orientation="vertical"
             android:paddingTop="@dimen/activity_vertical_margin"
             android:paddingBottom="@dimen/activity_vertical_margin">
 
             <TextView
-                android:id="@+id/issue_name"
+                android:id="@+id/issueNameTextView"
                 style="@style/issueHeadStyle" />
 
             <TextView
-                android:id="@+id/link"
+                android:id="@+id/linkTextView"
                 style="@style/issueNameTextStyle" />
 
             <TextView
-                android:id="@+id/issue_description"
+                android:id="@+id/issueDescriptionTextView"
                 style="@style/issueDescriptionTextStyle" />
 
         </LinearLayout>
@@ -33,45 +33,45 @@
     </android.support.v4.widget.NestedScrollView>
 
     <android.support.v4.widget.NestedScrollView
-        android:id="@+id/bottom_sheet"
+        android:id="@+id/bottomSheet"
         style="@style/nestedScrollViewStyleDown"
         android.support.design:ignore="UnusedAttribute"
         app:behavior_hideable="false"
         app:behavior_peekHeight="52dp"
         app:layout_behavior="@string/bottom_sheet_behavior">
 
-        <LinearLayout style="@style/issueLinearLayout"
-            android:orientation="vertical"
-            >
+        <LinearLayout
+            style="@style/issueViewGroup"
+            android:orientation="vertical">
 
             <RelativeLayout
-                android:id="@+id/rep_prompt"
+                android:id="@+id/repPromptViewGroup"
                 style="@style/issueRelativeLayoutStyle"
                 android:background="@color/colorAccent"
                 android:minHeight="@dimen/issue_height_relative_layout">
 
                 <ImageView
-                    android:id="@+id/expand_contacts_icon"
+                    android:id="@+id/expandContactsImageView"
                     style="@style/issueImageView"
-                    android:contentDescription="@null"
-                    />
+                    android:contentDescription="@null" />
 
                 <TextView
                     style="@style/issueContactTextStyle"
-                    android:text="@string/rep_section_prompt"
-                    />
+                    android:layout_toLeftOf="@id/expandContactsImageView"
+                    android:layout_toStartOf="@id/expandContactsImageView"
+                    android:text="@string/rep_section_prompt" />
 
             </RelativeLayout>
 
             <LinearLayout
-                android:id="@+id/rep_list"
-                style="@style/issueLinearLayout"
-                android:orientation="vertical"
+                android:id="@+id/repListViewGroup"
+                style="@style/issueViewGroup"
                 android:divider="@drawable/layout_divider"
+                android:orientation="vertical"
                 android:showDividers="middle" />
 
             <RelativeLayout
-                android:id="@+id/no_calls_left"
+                android:id="@+id/noCallsLeftViewGroup"
                 style="@style/issueRelativeLayoutStyle"
                 android:background="@color/issue_background_color"
                 android:paddingTop="@dimen/activity_horizontal_margin"
@@ -79,23 +79,23 @@
                 android:visibility="gone">
 
                 <TextView
-                    android:id="@+id/no_calls_message"
+                    android:id="@+id/noCallsMessageTextView"
                     style="@style/issueTextNoCallsStyle"
                     android:text="@string/no_calls_left"
                     android:textColor="@color/colorPrimary" />
 
                 <TextView
-                    android:id="@+id/split_district_warning"
+                    android:id="@+id/splitDistrictWarningTextView"
                     style="@style/issueTextNoCallsStyle"
-                    android:layout_below="@id/no_calls_message"
+                    android:layout_below="@id/noCallsMessageTextView"
                     android:layout_marginTop="@dimen/grid_padding"
                     android:text="@string/split_district_warning"
                     android:textColor="@color/colorPrimaryDark" />
 
                 <Button
-                    android:id="@+id/update_location_btn"
-                    style="@style/licenceBtnStyle"
-                    android:layout_alignBaseline="@id/split_district_warning"
+                    android:id="@+id/updateLocationButton"
+                    style="@style/licenseBtnStyle"
+                    android:layout_alignBaseline="@id/splitDistrictWarningTextView"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:text="@string/update" />

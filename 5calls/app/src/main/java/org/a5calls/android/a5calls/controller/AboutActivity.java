@@ -7,7 +7,6 @@ import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -15,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.analytics.HitBuilders;
@@ -24,16 +22,14 @@ import com.google.android.gms.analytics.Tracker;
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.BuildConfig;
 import org.a5calls.android.a5calls.FiveCallsApplication;
+import org.a5calls.android.a5calls.R;
+import org.a5calls.android.a5calls.databinding.ActivityAboutBinding;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
-import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.util.CustomTabsUtil;
 
 import java.text.NumberFormat;
 import java.util.Locale;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * The "About" page.
@@ -45,35 +41,26 @@ public class AboutActivity extends AppCompatActivity {
     private final AccountManager accountManager = AccountManager.Instance;
     private FiveCallsApi.CallRequestListener mStatusListener;
 
-    @BindView(R.id.sign_up_newsletter_btn) Button signUpNewsletterButton;
-    @BindView(R.id.about_us_btn) Button aboutUsButton;
-    @BindView(R.id.contact_us_btn) Button contactUsButton;
-    @BindView(R.id.twitter_btn) TextView twitterButton;
-    @BindView(R.id.facebook_btn) TextView facebookButton;
-    @BindView(R.id.instagram_btn) TextView instagramButton;
-    @BindView(R.id.rate_us_btn) Button rateUsButton;
-    @BindView(R.id.version_info) TextView version;
-    @BindView(R.id.calls_to_date) TextView callsToDate;
-    @BindView(R.id.license_btn) Button licenseButton;
+    private ActivityAboutBinding binding;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_about);
-        ButterKnife.bind(this);
+        binding = ActivityAboutBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         getSupportActionBar().setTitle(getString(R.string.about_title));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        signUpNewsletterButton.setOnClickListener(new View.OnClickListener() {
+        binding.signUpNewsletterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 CustomTabsUtil.launchUrl(AboutActivity.this, Uri.parse(getString(R.string.newsletter_url)));
             }
         });
 
-        aboutUsButton.setOnClickListener(new View.OnClickListener() {
+        binding.aboutUsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 CustomTabsUtil.launchUrl(AboutActivity.this, Uri.parse(getString(R.string.about_url)));
@@ -81,31 +68,31 @@ public class AboutActivity extends AppCompatActivity {
         });
 
         setOpenIntentOnClick(
-                contactUsButton, getSendEmailIntent(getResources()), getString(R.string.send_email)
+                binding.contactUsButton, getSendEmailIntent(getResources()), getString(R.string.send_email)
         );
 
         // Testing note: to see the Intent Chooser, install some Twitter apps other than the official Twitter
         // app. The Intent Chooser will show browser apps and third-party Twitter apps. If the official
         // Twitter app is installed, it will be opened directly without asking the user which app to open.
         setOpenIntentOnClick(
-                twitterButton,
+                binding.twitterButton,
                 getActionIntent(getString(R.string.twitter_url)),
                 getString(R.string.open_social_media, getString(R.string.twitter_btn))
         );
 
         setOpenIntentOnClick(
-                facebookButton,
+                binding.facebookButton,
                 getActionIntent(getString(R.string.facebook_url)),
                 getString(R.string.open_social_media, getString(R.string.facebook_btn))
         );
 
         setOpenIntentOnClick(
-                instagramButton,
+                binding.instagramButton,
                 getActionIntent(getString(R.string.instagram_url)),
                 getString(R.string.open_social_media, getString(R.string.instagram_btn))
         );
 
-        rateUsButton.setOnClickListener(new View.OnClickListener() {
+        binding.rateUsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // From http://stackoverflow.com/questions/11753000/how-to-open-the-google-play-store-directly-from-my-android-application
@@ -120,7 +107,7 @@ public class AboutActivity extends AppCompatActivity {
             }
         });
 
-        licenseButton.setOnClickListener(new View.OnClickListener() {
+        binding.licenseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showOpenSourceLicenses();
@@ -129,27 +116,27 @@ public class AboutActivity extends AppCompatActivity {
 
         underlineButtons();
 
-        version.setText(String.format(getResources().getString(R.string.version_info),
+        binding.versionInfoTextView.setText(String.format(getResources().getString(R.string.version_info),
                 BuildConfig.VERSION_NAME));
 
         mStatusListener = new FiveCallsApi.CallRequestListener() {
             @Override
             public void onRequestError() {
-                Snackbar.make(aboutUsButton,
+                Snackbar.make(binding.aboutUsButton,
                         getResources().getString(R.string.request_error),
                         Snackbar.LENGTH_LONG).show();
             }
 
             @Override
             public void onJsonError() {
-                Snackbar.make(aboutUsButton,
+                Snackbar.make(binding.aboutUsButton,
                         getResources().getString(R.string.json_error),
                         Snackbar.LENGTH_LONG).show();
             }
 
             @Override
             public void onCallCount(int count) {
-                callsToDate.setText(String.format(
+                binding.callsToDateTextView.setText(String.format(
                         getResources().getString(R.string.calls_to_date),
                         NumberFormat.getNumberInstance(Locale.US).format(count)));
             }
@@ -196,14 +183,14 @@ public class AboutActivity extends AppCompatActivity {
     }
 
     private void underlineButtons() {
-        underlineText(signUpNewsletterButton);
-        underlineText(aboutUsButton);
-        underlineText(contactUsButton);
-        underlineText(twitterButton);
-        underlineText(facebookButton);
-        underlineText(instagramButton);
-        underlineText(rateUsButton);
-        underlineText(licenseButton);
+        underlineText(binding.signUpNewsletterButton);
+        underlineText(binding.aboutUsButton);
+        underlineText(binding.contactUsButton);
+        underlineText(binding.twitterButton);
+        underlineText(binding.facebookButton);
+        underlineText(binding.instagramButton);
+        underlineText(binding.rateUsButton);
+        underlineText(binding.licenseButton);
     }
 
     /**

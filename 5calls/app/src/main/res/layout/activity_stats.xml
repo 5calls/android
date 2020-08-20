@@ -1,61 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/scrollViewStyle"
-    >
+    style="@style/scrollViewStyle">
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/no_calls_message"
+            android:id="@+id/noCallsMessageTextView"
             style="@style/noCallsMsgStyle"
-            android:text="@string/no_calls_impact_message"
-            />
+            android:text="@string/no_calls_impact_message" />
 
         <LinearLayout
-            android:id="@+id/stats_holder"
+            android:id="@+id/statsHolderViewGroup"
             style="@style/noCallsMsgStyle"
-            android:orientation="vertical"
             android:clipChildren="false"
-            >
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/your_call_count"
+                android:id="@+id/yourCallCountTextView"
                 style="@style/headingStyle"
                 android:textSize="@dimen/h1_text_size"
-                android:textStyle="bold"
-                />
+                android:textStyle="bold" />
 
             <TextView
                 style="@style/topContactTextStyle"
                 android:layout_marginTop="16dp"
                 android:text="@string/motivational_text"
-                android:textStyle="normal"
-                />
+                android:textStyle="normal" />
 
             <com.github.mikephil.charting.charts.PieChart
-                android:id="@+id/pie_chart"
+                android:id="@+id/pieChart"
                 style="@style/graphViewStyle"
-                android:layout_height="@dimen/pie_chart_height"
-                />
+                android:layout_height="@dimen/pie_chart_height" />
 
             <TextView
                 style="@style/topContactTextStyle"
-                android:text="@string/line_chart_title"
-                />
+                android:text="@string/line_chart_title" />
 
             <com.jjoe64.graphview.GraphView
-                android:id="@+id/line_chart"
+                android:id="@+id/lineChart"
                 style="@style/graphViewStyle"
-                android:layout_height="@dimen/graph_view_height"
-                />
+                android:layout_height="@dimen/graph_view_height" />
 
             <TextView
                 style="@style/topContactTextStyle"
-                android:text="@string/top_contacts"
-                />
+                android:text="@string/top_contacts" />
         </LinearLayout>
 
     </FrameLayout>

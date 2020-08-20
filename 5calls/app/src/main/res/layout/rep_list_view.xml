@@ -5,7 +5,7 @@
     >
 
     <ImageView
-        android:id="@+id/rep_image"
+        android:id="@+id/repImageView"
         style="@style/repImageStyle"
         android:contentDescription="@null"
         android:layout_width="@dimen/rep_list_img_dimens"
@@ -16,17 +16,17 @@
     <LinearLayout
         style="@style/repListLinearStyle"
         android:orientation="vertical"
-        android:layout_toEndOf="@id/rep_image"
-        android:layout_toRightOf="@id/rep_image"
+        android:layout_toEndOf="@id/repImageView"
+        android:layout_toRightOf="@id/repImageView"
         >
 
         <TextView
-            android:id="@+id/contact_name"
+            android:id="@+id/contactNameTextView"
             style="@style/repListContactNameStyle"
             />
 
         <TextView
-            android:id="@+id/contact_reason"
+            android:id="@+id/contactReasonTextView"
             style="@style/repListReasonStyle"
             />
 
@@ -39,7 +39,7 @@
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/contact_done_img"
+        android:id="@+id/contactCheckedImageButton"
         style="@style/repListImageStyle"
         android:contentDescription="@null"
         android:src="@drawable/checked"
