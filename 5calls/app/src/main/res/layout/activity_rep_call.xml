@@ -1,124 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/scroll_view"
+    android:id="@+id/scrollView"
     style="@style/scrollViewStyle">
 
     <LinearLayout
-        android:id="@+id/rep_call_root"
+        android:id="@+id/repCallViewGroup"
         style="@style/mainLinearLayout"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
+            android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/call_this_office"
+                android:id="@+id/callThisOfficeTextView"
                 style="@style/repCallTextStyle"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
                 android:layout_marginBottom="16dp"
-                android:text="@string/call_this_office"
-                />
+                android:text="@string/call_this_office" />
 
             <ImageButton
-                android:id="@+id/contact_done_img"
+                android:id="@+id/contactCheckedImageButton"
                 style="@style/ImageButtonStyle"
                 android:contentDescription="@string/contact_done_img_description"
-                android:src="@drawable/checked"
-                />
+                android:src="@drawable/checked" />
 
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/rep_info"
+            android:id="@+id/repInfoViewGroup"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
+            android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/rep_image"
+                android:id="@+id/repImageView"
                 style="@style/repImageStyle"
-                android:contentDescription="@null"
-                />
+                android:contentDescription="@null" />
 
             <TextView
-                android:id="@+id/contact_name"
+                android:id="@+id/contactNameTextView"
                 style="@style/contactNameStyle"
-                android:layout_toEndOf="@id/rep_image"
-                android:layout_toRightOf="@id/rep_image"
-                />
+                android:layout_toEndOf="@id/repImageView"
+                android:layout_toRightOf="@id/repImageView" />
 
+            <!-- TODO: can probably replace this with TextView's Autosizing functionality -->
             <org.a5calls.android.a5calls.controller.SingleLineResizableTextView
-                android:id="@+id/phone_number"
-                style="@style/SingleLineResizableStyle"
-                />
+                android:id="@+id/phoneNumberTextView"
+                style="@style/SingleLineResizableStyle" />
 
             <Button
-                android:id="@+id/local_office_btn"
-                style="@style/localOffBtnRepCallStyle"
-                />
+                android:id="@+id/localOfficeButton"
+                style="@style/localOffBtnRepCallStyle" />
 
         </RelativeLayout>
 
         <LinearLayout
-            android:id="@+id/field_office_section"
-            style="@style/issueLinearLayout"
-            android:orientation="vertical"
+            android:id="@+id/localOfficeViewGroup"
+            style="@style/issueViewGroup"
             android:layout_marginBottom="16dp"
-            >
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/field_office_prompt"
+                android:id="@+id/localOfficePromptTextView"
                 style="@style/repCallTextStyle"
-                android:layout_width="wrap_content"
-                />
+                android:layout_width="wrap_content" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/script_section"
-            style="@style/issueLinearLayout"
-            android:orientation="vertical"
-
-            >
+            android:id="@+id/scriptViewGroup"
+            style="@style/issueViewGroup"
+            android:orientation="vertical">
 
             <TextView
                 style="@style/repCallTextStyle"
-                android:text="@string/contact_reason_prompt"
-                />
+                android:text="@string/contact_reason_prompt" />
 
             <TextView
-                android:id="@+id/contact_reason"
+                android:id="@+id/contactReasonTextView"
                 style="@style/splashTextStyle"
                 android:layout_marginTop="@dimen/margin_top4"
-                android:textSize="@dimen/text_size_paragraph"
-                />
+                android:textSize="@dimen/text_size_paragraph" />
 
             <TextView
                 style="@style/repCallTextStyle"
                 android:layout_marginTop="@dimen/margin_top8"
-                android:text="@string/call_script_prompt"
-                />
+                android:text="@string/call_script_prompt" />
 
             <TextView
-                android:id="@+id/call_script"
-                style="@style/callScriptTextStyle"
-                />
+                android:id="@+id/callScriptTextView"
+                style="@style/callScriptTextStyle" />
 
         </LinearLayout>
 
         <TextView
-            android:id="@+id/buttons_prompt"
+            android:id="@+id/buttonsPromptTextView"
             style="@style/repCallTextStyle"
-            android:text="@string/buttons_prompt"
-            />
+            android:text="@string/buttons_prompt" />
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/outcome_list"
-            style="@style/RecyclerViewStyle"
-            />
+            android:id="@+id/outcomeRecyclerView"
+            style="@style/RecyclerViewStyle" />
     </LinearLayout>
+
 </android.support.v4.widget.NestedScrollView>

@@ -2,20 +2,18 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_color"
-    >
+    android:background="@color/background_color">
 
     <TextView
         style="@style/emptyInvalidStyle"
-        android:layout_above="@+id/refresh_btn"
-        android:text="@string/request_error"
-        />
+        android:layout_above="@+id/refreshButton"
+        android:text="@string/request_error" />
 
     <Button
-        android:id="@id/refresh_btn"
+        android:id="@id/refreshButton"
         style="@style/emptyIssuesBtnStyle"
         android:drawableLeft="@drawable/ic_refresh_white_24dp"
-        android:text="@string/try_again_btn"
-        />
+        android:drawableStart="@drawable/ic_refresh_white_24dp"
+        android:text="@string/try_again_btn" />
 
 </RelativeLayout>

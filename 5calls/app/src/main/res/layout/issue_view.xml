@@ -4,25 +4,22 @@
     style="@style/viewRelativeLayoutStyle">
 
     <TextView
-        android:id="@+id/issue_name"
+        android:id="@+id/issueNameTextView"
         style="@style/issueViewTextStyle"
-        android:layout_toEndOf="@+id/issue_done_img"
-        android:layout_toRightOf="@id/issue_done_img"
-        />
+        android:layout_toEndOf="@+id/issueDoneImageView"
+        android:layout_toRightOf="@id/issueDoneImageView" />
 
     <TextView
-        android:id="@+id/issue_call_count"
+        android:id="@+id/issueCallCountTextView"
         style="@style/issueCallCountStyle"
-        android:layout_below="@id/issue_name"
-        android:layout_toEndOf="@id/issue_done_img"
-        android:layout_toRightOf="@id/issue_done_img"
-        />
+        android:layout_below="@id/issueNameTextView"
+        android:layout_toEndOf="@id/issueDoneImageView"
+        android:layout_toRightOf="@id/issueDoneImageView" />
 
     <ImageView
-        android:id="@+id/issue_done_img"
+        android:id="@+id/issueDoneImageView"
         style="@style/issueImageStyle"
         android:contentDescription="@null"
-        android:src="@drawable/checked"
-        />
+        android:src="@drawable/checked" />
 
 </RelativeLayout>

@@ -4,20 +4,17 @@ import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.BaseTransientBottomBar;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,9 +25,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.analytics.HitBuilders;
@@ -39,19 +34,22 @@ import com.google.android.gms.analytics.Tracker;
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
+import org.a5calls.android.a5calls.databinding.ActivityMainBinding;
+import org.a5calls.android.a5calls.databinding.EmptyIssuesAddressViewBinding;
+import org.a5calls.android.a5calls.databinding.EmptyIssuesSearchViewBinding;
+import org.a5calls.android.a5calls.databinding.EmptyIssuesViewBinding;
+import org.a5calls.android.a5calls.databinding.IssueViewBinding;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.Category;
 import org.a5calls.android.a5calls.model.Contact;
-import org.a5calls.android.a5calls.net.FiveCallsApi;
 import org.a5calls.android.a5calls.model.Issue;
+import org.a5calls.android.a5calls.net.FiveCallsApi;
 import org.a5calls.android.a5calls.util.CustomTabsUtil;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * The activity which handles zip code lookup and showing the issues list.
@@ -78,17 +76,8 @@ public class MainActivity extends AppCompatActivity {
     private String mLatitude;
     private String mLongitude;
 
-    @BindView(R.id.swipe_container) SwipeRefreshLayout swipeContainer;
-    @BindView(R.id.issues_recycler_view) RecyclerView issuesRecyclerView;
-    @BindView(R.id.drawer_layout) DrawerLayout drawerLayout;
-    @BindView(R.id.toolbar) Toolbar actionBar;
-    @BindView(R.id.nav_view) NavigationView navigationView;
-    @BindView(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsingToolbarLayout;
-    @BindView(R.id.action_bar_subtitle) TextView actionBarSubtitle;
-    @BindView(R.id.filter) AppCompatSpinner filter;
-    @BindView(R.id.search_bar) ViewGroup searchBar;
-    @BindView(R.id.clear_search_button) ImageButton clearSearchButton;
-    @BindView(R.id.search_text) TextView searchTextView;
+    private ActivityMainBinding binding;
+
     private Snackbar mSnackbar;
 
     @Override
@@ -140,51 +129,49 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        setSupportActionBar(actionBar);
+        setSupportActionBar(binding.actionBarToolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
         }
 
-        if (navigationView != null) {
-            setupDrawerContent(navigationView);
-        }
+        setupDrawerContent(binding.navigationView);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        issuesRecyclerView.setLayoutManager(layoutManager);
+        binding.issuesRecyclerView.setLayoutManager(layoutManager);
         DividerItemDecoration divider = new DividerItemDecoration(this, RecyclerView.VERTICAL);
-        issuesRecyclerView.addItemDecoration(divider);
+        binding.issuesRecyclerView.addItemDecoration(divider);
         mIssuesAdapter = new IssuesAdapter();
-        issuesRecyclerView.setAdapter(mIssuesAdapter);
+        binding.issuesRecyclerView.setAdapter(mIssuesAdapter);
 
         mFilterAdapter = new ArrayAdapter<>(this, R.layout.filter_item);
         mFilterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mFilterAdapter.addAll(getResources().getStringArray(R.array.default_filters));
-        filter.setAdapter(mFilterAdapter);
+        binding.filterSpinner.setAdapter(mFilterAdapter);
         if (savedInstanceState != null) {
             mFilterText = savedInstanceState.getString(KEY_FILTER_ITEM_SELECTED);
             mSearchText = savedInstanceState.getString(KEY_SEARCH_TEXT);
             if (TextUtils.isEmpty(mSearchText)) {
-                searchBar.setVisibility(View.GONE);
-                filter.setVisibility(View.VISIBLE);
+                binding.searchBarViewGroup.setVisibility(View.GONE);
+                binding.filterSpinner.setVisibility(View.VISIBLE);
             } else {
-                searchBar.setVisibility(View.VISIBLE);
-                filter.setVisibility(View.GONE);
-                searchTextView.setText(mSearchText);
+                binding.searchBarViewGroup.setVisibility(View.VISIBLE);
+                binding.filterSpinner.setVisibility(View.GONE);
+                binding.searchTextView.setText(mSearchText);
             }
         } else {
             mFilterText = mFilterAdapter.getItem(0);  // Default value
         }
-        searchTextView.setOnClickListener(new View.OnClickListener() {
+        binding.searchTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 launchSearchDialog();
             }
         });
-        clearSearchButton.setOnClickListener(new View.OnClickListener() {
+        binding.clearSearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onIssueSearchCleared();
@@ -193,8 +180,8 @@ public class MainActivity extends AppCompatActivity {
 
         registerApiListener();
 
-        swipeContainer.setColorSchemeResources(R.color.colorPrimary);
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        binding.swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
+        binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override public void onRefresh() {
                 refreshIssues();
             }
@@ -226,9 +213,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Refresh on resume.  The post is necessary to start the spinner animation.
-        swipeContainer.post(new Runnable() {
+        binding.swipeRefreshLayout.post(new Runnable() {
             @Override public void run() {
-                swipeContainer.setRefreshing(true);
+                binding.swipeRefreshLayout.setRefreshing(true);
                 refreshIssues();
             }
         });
@@ -260,13 +247,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            drawerLayout.openDrawer(GravityCompat.START);
+            binding.drawerLayout.openDrawer(GravityCompat.START);
             return true;
         }
         else if (item.getItemId() == R.id.menu_refresh) {
-            swipeContainer.post(new Runnable() {
+            binding.swipeRefreshLayout.post(new Runnable() {
                 @Override public void run() {
-                    swipeContainer.setRefreshing(true);
+                    binding.swipeRefreshLayout.setRefreshing(true);
                     refreshIssues();
                 }
             });
@@ -288,9 +275,9 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
-                    public boolean onNavigationItemSelected(MenuItem item) {
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         //menuItem.setChecked(true); // don't use this atm
-                        drawerLayout.closeDrawers();
+                        binding.drawerLayout.closeDrawers();
 
                         if (item.getItemId() == R.id.menu_about) {
                             Intent intent = new Intent(MainActivity.this, AboutActivity.class);
@@ -333,7 +320,7 @@ public class MainActivity extends AppCompatActivity {
                 // active issues list to avoid showing a stale list.
                 mIssuesAdapter.setIssues(Collections.<Issue>emptyList(),
                         IssuesAdapter.ERROR_REQUEST);
-                swipeContainer.setRefreshing(false);
+                binding.swipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
@@ -343,7 +330,7 @@ public class MainActivity extends AppCompatActivity {
                 // active issues list to avoid showing a stale list.
                 mIssuesAdapter.setIssues(Collections.<Issue>emptyList(),
                         IssuesAdapter.ERROR_REQUEST);
-                swipeContainer.setRefreshing(false);
+                binding.swipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
@@ -351,7 +338,7 @@ public class MainActivity extends AppCompatActivity {
                 populateFilterAdapterIfNeeded(issues);
                 mIssuesAdapter.setIssues(issues, IssuesAdapter.NO_ERROR);
                 mIssuesAdapter.setFilterAndSearch(mFilterText, mSearchText);
-                swipeContainer.setRefreshing(false);
+                binding.swipeRefreshLayout.setRefreshing(false);
             }
         };
 
@@ -364,7 +351,7 @@ public class MainActivity extends AppCompatActivity {
                 // active issues list to avoid showing a stale list.
                 mIssuesAdapter.setIssues(Collections.<Issue>emptyList(),
                         IssuesAdapter.ERROR_REQUEST);
-                swipeContainer.setRefreshing(false);
+                binding.swipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
@@ -374,7 +361,7 @@ public class MainActivity extends AppCompatActivity {
                 // active issues list to avoid showing a stale list.
                 mIssuesAdapter.setIssues(Collections.<Issue>emptyList(),
                         IssuesAdapter.ERROR_REQUEST);
-                swipeContainer.setRefreshing(false);
+                binding.swipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
@@ -385,14 +372,14 @@ public class MainActivity extends AppCompatActivity {
                 // problem.
                 mIssuesAdapter.setIssues(Collections.<Issue>emptyList(),
                         IssuesAdapter.ERROR_ADDRESS);
-                swipeContainer.setRefreshing(false);
+                binding.swipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
             public void onContactsReceived(String locationName, List<Contact> contacts) {
                 locationName = TextUtils.isEmpty(locationName) ?
                         getResources().getString(R.string.unknown_location) : locationName;
-                collapsingToolbarLayout.setTitle(String.format(getResources().getString(
+                binding.collapsingToolbarLayout.setTitle(String.format(getResources().getString(
                         R.string.title_main), locationName));
                 mIssuesAdapter.setContacts(contacts);
                 
@@ -406,7 +393,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 if (houseCount > 1) {
-                    mSnackbar = Snackbar.make(swipeContainer, R.string.split_district_warning,
+                    mSnackbar = Snackbar.make(binding.swipeRefreshLayout, R.string.split_district_warning,
                             Snackbar.LENGTH_INDEFINITE)
                             .setAction(R.string.update, new View.OnClickListener() {
                                 @Override
@@ -450,9 +437,9 @@ public class MainActivity extends AppCompatActivity {
         }
         Collections.sort(topics);
         mFilterAdapter.addAll(topics);
-        filter.setSelection(mFilterAdapter.getPosition(mFilterText));
+        binding.filterSpinner.setSelection(mFilterAdapter.getPosition(mFilterText));
         // Set this listener after manually setting the selection so it isn't fired right away.
-        filter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        binding.filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String newFilter = mFilterAdapter.getItem(i);
@@ -461,7 +448,7 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
                 mFilterText = newFilter;
-                if (swipeContainer.isRefreshing()) {
+                if (binding.swipeRefreshLayout.isRefreshing()) {
                     // Already loading issues!
                     return;
                 }
@@ -480,7 +467,7 @@ public class MainActivity extends AppCompatActivity {
                 .getDatabaseHelper().getCallsCount();
         if (callCount > 1) {
             // Don't bother if it is less than 1.
-            actionBarSubtitle.setText(String.format(
+            binding.actionBarSubtitleTextView.setText(String.format(
                     getResources().getString(R.string.your_call_count_summary), callCount));
         }
     }
@@ -526,25 +513,25 @@ public class MainActivity extends AppCompatActivity {
             onIssueSearchCleared();
             return;
         }
-        filter.setVisibility(View.GONE);
-        searchBar.setVisibility(View.VISIBLE);
+        binding.filterSpinner.setVisibility(View.GONE);
+        binding.searchBarViewGroup.setVisibility(View.VISIBLE);
         setSearchText(searchText);
     }
 
     public void onIssueSearchCleared() {
-        filter.setVisibility(View.VISIBLE);
-        searchBar.setVisibility(View.GONE);
+        binding.filterSpinner.setVisibility(View.VISIBLE);
+        binding.searchBarViewGroup.setVisibility(View.GONE);
         setSearchText("");
     }
 
     private void setSearchText(String searchText) {
-        searchTextView.setText(searchText);
+        binding.searchTextView.setText(searchText);
         if (TextUtils.equals(mSearchText, searchText)) {
             // Already set, no need to do work.
             return;
         }
         mSearchText = searchText;
-        if (swipeContainer.isRefreshing()) {
+        if (binding.swipeRefreshLayout.isRefreshing()) {
             // Already loading issues!
             return;
         }
@@ -561,7 +548,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void showSnackbar(int string, int length) {
         if (mSnackbar == null) {
-            mSnackbar = Snackbar.make(findViewById(R.id.activity_main),
+            mSnackbar = Snackbar.make(findViewById(R.id.activityMainViewGroup),
                     getResources().getString(string),
                     length);
             mSnackbar.addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
@@ -607,7 +594,7 @@ public class MainActivity extends AppCompatActivity {
         public void setContacts(List<Contact> contacts) {
             // Check if the contacts have returned after the issues list. If so, notify data set
             // changed.
-            Boolean notify = false;
+            boolean notify = false;
             if (mAllIssues.size() > 0 && mContacts.size() == 0) {
                 notify = true;
             }
@@ -679,29 +666,28 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        @NotNull
         @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public RecyclerView.ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
+            LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+
             if (viewType == VIEW_TYPE_EMPTY_REQUEST) {
-                View empty = LayoutInflater.from(parent.getContext()).inflate(
-                        R.layout.empty_issues_view, parent, false);
-                return new EmptyRequestViewHolder(empty);
+                EmptyIssuesViewBinding itemBinding = EmptyIssuesViewBinding.inflate(layoutInflater, parent, false);
+                return new EmptyRequestViewHolder(itemBinding);
             } else if (viewType == VIEW_TYPE_EMPTY_ADDRESS) {
-                View empty = LayoutInflater.from(parent.getContext()).inflate(
-                        R.layout.empty_issues_address_view, parent, false);
-                return new EmptyAddressViewHolder(empty);
+                EmptyIssuesAddressViewBinding itemBinding = EmptyIssuesAddressViewBinding.inflate(layoutInflater, parent, false);
+                return new EmptyAddressViewHolder(itemBinding);
             } else if (viewType == VIEW_TYPE_NO_SEARCH_MATCH) {
-                View empty = LayoutInflater.from(parent.getContext()).inflate(
-                        R.layout.empty_issues_search_view, parent, false);
-                return new EmptySearchViewHolder(empty);
+                EmptyIssuesSearchViewBinding itemBinding = EmptyIssuesSearchViewBinding.inflate(layoutInflater, parent, false);
+                return new EmptySearchViewHolder(itemBinding);
             } else {
-                RelativeLayout v = (RelativeLayout) LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.issue_view, parent, false);
-                return new IssueViewHolder(v);
+                IssueViewBinding itemBinding = IssueViewBinding.inflate(layoutInflater, parent, false);
+                return new IssueViewHolder(itemBinding);
             }
         }
 
         @Override
-        public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
+        public void onBindViewHolder(@NotNull final RecyclerView.ViewHolder holder, int position) {
             int type = getItemViewType(position);
             if (type == VIEW_TYPE_ISSUE) {
                 IssueViewHolder vh = (IssueViewHolder) holder;
@@ -718,7 +704,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-                issue.contacts = new ArrayList<Contact>();
+                issue.contacts = new ArrayList<>();
                 int houseCount = 0;  // Only add the first contact in the house for each issue.
                 for (String contactArea : issue.contactAreas) {
                     for (Contact contact : mContacts) {
@@ -788,7 +774,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onViewRecycled(RecyclerView.ViewHolder holder) {
+        public void onViewRecycled(@NotNull RecyclerView.ViewHolder holder) {
             if (holder instanceof IssueViewHolder) {
                 holder.itemView.setOnClickListener(null);
             } else if (holder instanceof EmptyRequestViewHolder) {
@@ -827,26 +813,26 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private class IssueViewHolder extends RecyclerView.ViewHolder {
+    private static class IssueViewHolder extends RecyclerView.ViewHolder {
         public TextView name;
         public TextView numCalls;
         public ImageView doneIcon;
 
-        public IssueViewHolder(View itemView) {
-            super(itemView);
-            name = (TextView) itemView.findViewById(R.id.issue_name);
-            numCalls = (TextView) itemView.findViewById(R.id.issue_call_count);
-            doneIcon = (ImageView) itemView.findViewById(R.id.issue_done_img);
+        public IssueViewHolder(IssueViewBinding itemBinding) {
+            super(itemBinding.getRoot());
+            name = itemBinding.issueNameTextView;
+            numCalls = itemBinding.issueCallCountTextView;
+            doneIcon = itemBinding.issueDoneImageView;
         }
     }
 
     // TODO: Combine EmptyRequestViewHolder and EmptyAddressViewHolder, change strings dynamically.
-    private class EmptyRequestViewHolder extends RecyclerView.ViewHolder {
+    private static class EmptyRequestViewHolder extends RecyclerView.ViewHolder {
         public Button refreshButton;
 
-        public EmptyRequestViewHolder(View itemView) {
-            super(itemView);
-            refreshButton = (Button) itemView.findViewById(R.id.refresh_btn);
+        public EmptyRequestViewHolder(EmptyIssuesViewBinding itemBinding) {
+            super(itemBinding.getRoot());
+            refreshButton = itemBinding.refreshButton;
             // Tinting the compound drawable only works API 23+, so do this manually.
             refreshButton.getCompoundDrawables()[0].mutate().setColorFilter(
                     refreshButton.getResources().getColor(R.color.colorAccent),
@@ -854,12 +840,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private class EmptyAddressViewHolder extends RecyclerView.ViewHolder {
+    private static class EmptyAddressViewHolder extends RecyclerView.ViewHolder {
         public Button locationButton;
 
-        public EmptyAddressViewHolder(View itemView) {
-            super(itemView);
-            locationButton = (Button) itemView.findViewById(R.id.location_btn);
+        public EmptyAddressViewHolder(EmptyIssuesAddressViewBinding itemBinding) {
+            super(itemBinding.getRoot());
+            locationButton = itemBinding.locationButton;
             // Tinting the compound drawable only works API 23+, so do this manually.
             locationButton.getCompoundDrawables()[0].mutate().setColorFilter(
                     locationButton.getResources().getColor(R.color.colorAccent),
@@ -867,12 +853,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private class EmptySearchViewHolder extends RecyclerView.ViewHolder {
+    private static class EmptySearchViewHolder extends RecyclerView.ViewHolder {
         public Button searchButton;
 
-        public EmptySearchViewHolder(View itemView) {
-            super(itemView);
-            searchButton = (Button) itemView.findViewById(R.id.search_btn);
+        public EmptySearchViewHolder(EmptyIssuesSearchViewBinding itemBinding) {
+            super(itemBinding.getRoot());
+            searchButton = itemBinding.searchButton;
             // Tinting the compound drawable only works API 23+, so do this manually.
             searchButton.getCompoundDrawables()[0].mutate().setColorFilter(
                     searchButton.getResources().getColor(R.color.colorAccent),

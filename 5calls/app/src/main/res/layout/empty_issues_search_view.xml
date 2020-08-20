@@ -2,20 +2,18 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_color"
-    >
+    android:background="@color/background_color">
 
     <TextView
         style="@style/emptyInvalidStyle"
-        android:layout_above="@+id/search_btn"
-        android:text="@string/error_search_had_no_results"
-        />
+        android:layout_above="@+id/searchButton"
+        android:text="@string/error_search_had_no_results" />
 
     <Button
-        android:id="@id/search_btn"
+        android:id="@+id/searchButton"
         style="@style/emptyIssuesBtnStyle"
         android:drawableLeft="@drawable/baseline_search_white_24"
-        android:text="@string/try_again_btn"
-        />
+        android:drawableStart="@drawable/baseline_search_white_24"
+        android:text="@string/try_again_btn" />
 
 </RelativeLayout>

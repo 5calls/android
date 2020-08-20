@@ -68,12 +68,12 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_alignParentStart">true</item>
-        <item name="android:layout_toStartOf">@id/address_submit</item>
+        <item name="android:layout_toStartOf">@id/addressSubmitButton</item>
         <item name="android:hint">@string/address_hint</item>
         <item name="android:imeOptions">actionDone</item>
         <item name="android:minHeight">@dimen/accessibility_min_size</item>
         <item name="android:layout_alignParentLeft">true</item>
-        <item name="android:layout_toLeftOf">@+id/address_submit</item>
+        <item name="android:layout_toLeftOf">@+id/addressSubmitButton</item>
     </style>
 
     <style name="submitBtn">
@@ -104,7 +104,7 @@
         <item name="android:paddingTop">@dimen/activity_vertical_margin</item>
     </style>
 
-    <style name="issueLinearLayout">
+    <style name="issueViewGroup">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
@@ -113,8 +113,8 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:paddingBottom">@dimen/activity_vertical_margin</item>
-        <item name="android:paddingEnd">@dimen/activity_horizontal_margin</item>
-        <item name="android:paddingStart">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingRight">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingLeft">@dimen/activity_horizontal_margin</item>
         <item name="android:paddingTop">@dimen/activity_vertical_margin</item>
     </style>
 
@@ -229,7 +229,7 @@
         <item name="android:textColor">@color/colorAccent</item>
     </style>
 
-    <style name="licenceBtnStyle">
+    <style name="licenseBtnStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@android:color/transparent</item>
@@ -297,8 +297,6 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_centerVertical">true</item>
-        <item name="android:layout_toLeftOf">@id/expand_contacts_icon</item>
-        <item name="android:layout_toStartOf">@id/expand_contacts_icon</item>
         <item name="android:paddingBottom">@dimen/activity_horizontal_margin</item>
         <item name="android:paddingTop">@dimen/activity_horizontal_margin</item>
         <item name="android:textColor">@android:color/white</item>
@@ -311,8 +309,8 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_alignParentStart">true</item>
         <item name="android:layout_alignParentLeft">true</item>
-        <item name="android:layout_toStartOf">@id/update_location_btn</item>
-        <item name="android:layout_toLeftOf">@+id/update_location_btn</item>
+        <item name="android:layout_toStartOf">@id/updateLocationButton</item>
+        <item name="android:layout_toLeftOf">@+id/updateLocationButton</item>
         <item name="android:textSize">@dimen/text_size_paragraph</item>
         <item name="android:textStyle">bold</item>
     </style>
@@ -464,18 +462,18 @@
         <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:textSize">@dimen/h1_text_size</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:layout_below">@id/contact_name</item>
-        <item name="android:layout_toEndOf">@id/rep_image</item>
-        <item name="android:layout_toRightOf">@id/rep_image</item>
+        <item name="android:layout_below">@id/contactNameTextView</item>
+        <item name="android:layout_toEndOf">@id/repImageView</item>
+        <item name="android:layout_toRightOf">@id/repImageView</item>
     </style>
 
     <style name="localOffBtnRepCallStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_alignWithParentIfMissing">true</item>
-        <item name="android:layout_below">@id/phone_number</item>
-        <item name="android:layout_toEndOf">@id/rep_image</item>
-        <item name="android:layout_toRightOf">@id/rep_image</item>
+        <item name="android:layout_below">@id/phoneNumberTextView</item>
+        <item name="android:layout_toEndOf">@id/repImageView</item>
+        <item name="android:layout_toRightOf">@id/repImageView</item>
         <item name="android:background">@android:color/transparent</item>
         <item name="android:text">@string/local_office_link</item>
         <item name="android:textAllCaps">false</item>
@@ -655,10 +653,10 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/load_more_height</item>
         <item name="android:minHeight">@dimen/accessibility_min_size</item>
-        <item name=" android:paddingBottom">@dimen/rep_list_dimens</item>
-        <item name=" android:paddingTop">@dimen/rep_list_dimens</item>
-        <item name=" android:paddingLeft">@dimen/rep_list_dimens_left_right</item>
-        <item name=" android:paddingRight">@dimen/rep_list_dimens_left_right</item>
+        <item name="android:paddingBottom">@dimen/rep_list_dimens</item>
+        <item name="android:paddingTop">@dimen/rep_list_dimens</item>
+        <item name="android:paddingLeft">@dimen/rep_list_dimens_left_right</item>
+        <item name="android:paddingRight">@dimen/rep_list_dimens_left_right</item>
         <item name="android:background">@color/issue_background_color</item>
         <item name="android:foreground">?android:attr/selectableItemBackground</item>
     </style>

@@ -3,9 +3,7 @@ package org.a5calls.android.a5calls.controller;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Address;
 import android.location.Criteria;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -19,8 +17,6 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.android.gms.analytics.HitBuilders;
@@ -28,14 +24,8 @@ import com.google.android.gms.analytics.Tracker;
 
 import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
+import org.a5calls.android.a5calls.databinding.ActivityLocationBinding;
 import org.a5calls.android.a5calls.model.AccountManager;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class LocationActivity extends AppCompatActivity {
     private static final String TAG = "LocationActivity";
@@ -55,16 +45,14 @@ public class LocationActivity extends AppCompatActivity {
     private boolean allowsHomeUp = false;
     private LocationListener mLocationListener;
 
-    @BindView(R.id.address_edit) EditText addressEdit;
-    @BindView(R.id.address_submit) Button addressButton;
-    @BindView(R.id.btn_gps) Button gpsButton;
-    @BindView(R.id.gps_prompt) TextView gpsPrompt;
+    private ActivityLocationBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_location);
-        ButterKnife.bind(this);
+
+        binding = ActivityLocationBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         // Allow home up if required
         Intent intent = getIntent();
@@ -80,32 +68,32 @@ public class LocationActivity extends AppCompatActivity {
         // Load the address the user last used, if any.
         String zip = accountManager.getAddress(this);
         if (!TextUtils.isEmpty(zip)) {
-            addressEdit.setText(zip);
+            binding.addressEditText.setText(zip);
         }
 
         // Set listeners
-        addressEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        binding.addressEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    onSubmitAddress(addressEdit.getText().toString());
+                    onSubmitAddress(binding.addressEditText.getText().toString());
                     return true;
                 }
                 return false;
             }
         });
 
-        addressButton.setOnClickListener(new View.OnClickListener() {
+        binding.addressSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onSubmitAddress(addressEdit.getText().toString());
+                onSubmitAddress(binding.addressEditText.getText().toString());
             }
         });
 
         if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_LOCATION_GPS)) {
-            gpsPrompt.setVisibility(View.VISIBLE);
-            gpsButton.setVisibility(View.VISIBLE);
-            gpsButton.setOnClickListener(new View.OnClickListener() {
+            binding.gpsPromptTextView.setVisibility(View.VISIBLE);
+            binding.gpsButton.setVisibility(View.VISIBLE);
+            binding.gpsButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     tryGettingLocation();
@@ -113,8 +101,8 @@ public class LocationActivity extends AppCompatActivity {
             });
         } else {
             // No GPS available, so don't show the GPS location section.
-            gpsPrompt.setVisibility(View.GONE);
-            gpsButton.setVisibility(View.GONE);
+            binding.gpsPromptTextView.setVisibility(View.GONE);
+            binding.gpsButton.setVisibility(View.GONE);
         }
     }
 
@@ -149,13 +137,11 @@ public class LocationActivity extends AppCompatActivity {
 
         // If we came from MainActivity and return with another Intent, it will create a deep stack
         // of activities!
-        if (allowsHomeUp) {
-            finish();
-        } else {
+        if (!allowsHomeUp) {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
-            finish();
         }
+        finish();
     }
 
     @Override
@@ -177,7 +163,7 @@ public class LocationActivity extends AppCompatActivity {
             // Try getting the location in a Runnable because it is possible that if the location
             // is cached we get it so fast that we returnToMain before we are done resuming, which
             // causes a crash.
-            gpsButton.post(new Runnable() {
+            binding.gpsButton.post(new Runnable() {
                 @Override
                 public void run() {
                     tryGettingLocation();
@@ -189,7 +175,7 @@ public class LocationActivity extends AppCompatActivity {
     }
 
     /**
-     * @return the last know best location
+     * Asks the system for the last known best location
      */
     private void tryGettingLocation() {
         if (ActivityCompat.checkSelfPermission(this,
@@ -240,7 +226,7 @@ public class LocationActivity extends AppCompatActivity {
 
     private void onSubmitAddress(String address) {
         if (TextUtils.isEmpty(address)) {
-            addressEdit.setError(getResources().getString(R.string.error_address_empty));
+            binding.addressEditText.setError(getResources().getString(R.string.error_address_empty));
             return;
         }
         // Update the UI and send the request.
