@@ -45,7 +45,7 @@ public class FiveCallsApi {
 
     private static final String GET_CONTACTS_REQUEST = "https://api.5calls.org/v1/reps?location=";
 
-    private static final String GET_REPORT = "https://5calls.org/report";
+    private static final String GET_REPORT = "https://api.5calls.org/v1/report";
 
     public interface CallRequestListener {
         void onRequestError();
