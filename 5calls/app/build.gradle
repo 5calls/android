@@ -2,7 +2,7 @@ apply plugin: 'com.onesignal.androidsdk.onesignal-gradle-plugin'
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     buildToolsVersion '28.0.3'
 
     useLibrary 'org.apache.http.legacy'
@@ -10,9 +10,9 @@ android {
     defaultConfig {
         applicationId "org.a5calls.android.a5calls"
         minSdkVersion 16
-        targetSdkVersion 28
-        versionCode 41
-        versionName "2.2.0"
+        targetSdkVersion 29
+        versionCode 42
+        versionName "2.2.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         manifestPlaceholders = [onesignal_app_id: "5fd4ca41-9f6c-4149-a312-ae3e71b35c0e",
                                 // Project number pulled from dashboard, local value is ignored.
