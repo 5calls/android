@@ -2,7 +2,7 @@ package org.a5calls.android.a5calls.model;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.text.TextUtils;
 
 import java.util.Arrays;

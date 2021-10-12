@@ -3,8 +3,8 @@ package org.a5calls.android.a5calls.util;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.net.Uri;
-import android.support.customtabs.CustomTabsIntent;
-import android.support.v4.content.ContextCompat;
+import androidx.browser.customtabs.CustomTabsIntent;
+import androidx.core.content.ContextCompat;
 import android.widget.Toast;
 
 import org.a5calls.android.a5calls.R;
