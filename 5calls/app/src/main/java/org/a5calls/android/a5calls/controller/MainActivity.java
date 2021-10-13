@@ -35,6 +35,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+import com.google.firebase.auth.FirebaseAuth;
 
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.FiveCallsApplication;
@@ -77,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
     private String mAddress;
     private String mLatitude;
     private String mLongitude;
+    private FirebaseAuth mAuth;
 
     @BindView(R.id.swipe_container) SwipeRefreshLayout swipeContainer;
     @BindView(R.id.issues_recycler_view) RecyclerView issuesRecyclerView;
@@ -95,6 +97,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         // TODO: Consider using fragments
         super.onCreate(savedInstanceState);
+
+        mAuth = FirebaseAuth.getInstance();
 
         // See if we've had this user before. If not, start them at tutorial type page.
         if (!accountManager.isTutorialSeen(this)) {
@@ -199,6 +203,13 @@ public class MainActivity extends AppCompatActivity {
                 refreshIssues();
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        mAuth.signInAnonymously();
     }
 
     @Override

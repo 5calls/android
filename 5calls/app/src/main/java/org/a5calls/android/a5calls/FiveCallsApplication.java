@@ -23,6 +23,7 @@ import android.os.Bundle;
 import com.google.android.gms.analytics.ExceptionReporter;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import org.a5calls.android.a5calls.controller.OneSignalNotificationController;
 import org.a5calls.android.a5calls.model.AccountManager;
@@ -36,6 +37,8 @@ public class FiveCallsApplication extends Application {
     private Tracker mTracker;
     private int mRunningActivities;
     private Thread.UncaughtExceptionHandler mDefaultHandler;
+    private FirebaseAnalytics mFirebaseAnalytics;
+    private FirebaseAuth mAuth;
 
     public FiveCallsApplication() {
         super();
@@ -90,7 +93,6 @@ public class FiveCallsApplication extends Application {
 
         // Set up OneSignal.
         OneSignalNotificationController.setUp(this);
-
     }
 
     /**
@@ -111,6 +113,8 @@ public class FiveCallsApplication extends Application {
     }
 
     public void enableAnalyticsHandler() {
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
         if (mDefaultHandler == null) {
             mDefaultHandler = Thread.getDefaultUncaughtExceptionHandler();
         }

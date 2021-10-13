@@ -21,10 +21,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
-
-import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
 
@@ -118,10 +114,10 @@ public class LocationActivity extends AppCompatActivity {
 
         if (accountManager.allowAnalytics(this)) {
             // Obtain the shared Tracker instance.
-            FiveCallsApplication application = (FiveCallsApplication) getApplication();
-            Tracker tracker = application.getDefaultTracker();
-            tracker.setScreenName(TAG);
-            tracker.send(new HitBuilders.ScreenViewBuilder().build());
+//            FiveCallsApplication application = (FiveCallsApplication) getApplication();
+//            Tracker tracker = application.getDefaultTracker();
+//            tracker.setScreenName(TAG);
+//            tracker.send(new HitBuilders.ScreenViewBuilder().build());
         }
     }
 
