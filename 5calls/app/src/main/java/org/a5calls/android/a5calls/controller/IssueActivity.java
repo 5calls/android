@@ -31,8 +31,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
+//import com.google.android.gms.analytics.HitBuilders;
+//import com.google.android.gms.analytics.Tracker;
 
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.FiveCallsApplication;
@@ -59,7 +59,7 @@ public class IssueActivity extends AppCompatActivity {
     private final AccountManager accountManager = AccountManager.Instance;
 
     private Issue mIssue;
-    private Tracker mTracker = null;
+//    private Tracker mTracker = null;
     private boolean mIsAnimating = false;
 
     @BindView(R.id.scroll_view) NestedScrollView scrollView;
@@ -179,8 +179,8 @@ public class IssueActivity extends AppCompatActivity {
         // We allow Analytics opt-out.
         if (accountManager.allowAnalytics(this)) {
             // Obtain the shared Tracker instance.
-            FiveCallsApplication application = (FiveCallsApplication) getApplication();
-            mTracker = application.getDefaultTracker();
+//            FiveCallsApplication application = (FiveCallsApplication) getApplication();
+//            mTracker = application.getDefaultTracker();
         }
     }
 
@@ -193,10 +193,10 @@ public class IssueActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (mTracker != null) {
-            mTracker.setScreenName(TAG);
-            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
-        }
+//        if (mTracker != null) {
+//            mTracker.setScreenName(TAG);
+//            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+//        }
         if (mIssue.contacts == null || mIssue.contacts.size() == 0) {
             noCallsLeft.setVisibility(View.VISIBLE);
             updateLocationBtn.setOnClickListener(new View.OnClickListener() {
@@ -271,14 +271,14 @@ public class IssueActivity extends AppCompatActivity {
                         mIssue.id));
         shareIntent.setType("text/plain");
 
-        if (mTracker != null) {
-            mTracker.send(new HitBuilders.EventBuilder()
-                    .setCategory("Share")
-                    .setAction("IssueShare")
-                    .setLabel(mIssue.id)
-                    .setValue(1)
-                    .build());
-        }
+//        if (mTracker != null) {
+//            mTracker.send(new HitBuilders.EventBuilder()
+//                    .setCategory("Share")
+//                    .setAction("IssueShare")
+//                    .setLabel(mIssue.id)
+//                    .setValue(1)
+//                    .build());
+//        }
 
         startActivity(Intent.createChooser(shareIntent, getResources().getString(
                 R.string.share_chooser_title)));

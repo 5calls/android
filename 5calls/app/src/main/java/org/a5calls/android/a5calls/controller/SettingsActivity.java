@@ -16,8 +16,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.MenuItem;
 
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
+//import com.google.android.gms.analytics.HitBuilders;
+//import com.google.android.gms.analytics.Tracker;
 
 import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
@@ -52,12 +52,12 @@ public class SettingsActivity extends AppCompatActivity {
         if (getIntent().getBooleanExtra(EXTRA_FROM_NOTIFICATION, false)) {
             if (accountManager.allowAnalytics(this)) {
                 FiveCallsApplication application = (FiveCallsApplication) getApplication();
-                Tracker tracker = application.getDefaultTracker();
-                tracker.send(new HitBuilders.EventBuilder()
-                        .setCategory("Reminders")
-                        .setAction("SettingsFromReminder")
-                        .setValue(1)
-                        .build());
+//                Tracker tracker = application.getDefaultTracker();
+//                tracker.send(new HitBuilders.EventBuilder()
+//                        .setCategory("Reminders")
+//                        .setAction("SettingsFromReminder")
+//                        .setValue(1)
+//                        .build());
             }
         }
 
@@ -71,10 +71,10 @@ public class SettingsActivity extends AppCompatActivity {
         // We allow Analytics opt-out.
         if (accountManager.allowAnalytics(this)) {
             // Obtain the shared Tracker instance.
-            FiveCallsApplication application = (FiveCallsApplication) getApplication();
-            Tracker tracker = application.getDefaultTracker();
-            tracker.setScreenName(TAG);
-            tracker.send(new HitBuilders.ScreenViewBuilder().build());
+//            FiveCallsApplication application = (FiveCallsApplication) getApplication();
+//            Tracker tracker = application.getDefaultTracker();
+//            tracker.setScreenName(TAG);
+//            tracker.send(new HitBuilders.ScreenViewBuilder().build());
         }
     }
 
@@ -132,14 +132,14 @@ public class SettingsActivity extends AppCompatActivity {
         accountManager.setNotificationDialogShown(application, true);
         // Log this to Analytics
         if (accountManager.allowAnalytics(application)) {
-            Tracker tracker = application.getDefaultTracker();
-            tracker.send(new HitBuilders.EventBuilder()
-                    .setCategory("Notifications")
-                    .setAction("NotificationSettingsChange")
-                    .setLabel(application.getApplicationContext().getResources()
-                            .getStringArray(R.array.notification_options)[Integer.valueOf(result)])
-                    .setValue(1)
-                    .build());
+//            Tracker tracker = application.getDefaultTracker();
+//            tracker.send(new HitBuilders.EventBuilder()
+//                    .setCategory("Notifications")
+//                    .setAction("NotificationSettingsChange")
+//                    .setLabel(application.getApplicationContext().getResources()
+//                            .getStringArray(R.array.notification_options)[Integer.valueOf(result)])
+//                    .setValue(1)
+//                    .build());
         }
     }
 

@@ -33,8 +33,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
+//import com.google.android.gms.analytics.HitBuilders;
+//import com.google.android.gms.analytics.Tracker;
 import com.google.firebase.auth.FirebaseAuth;
 
 import org.a5calls.android.a5calls.AppSingleton;
@@ -134,13 +134,13 @@ public class MainActivity extends AppCompatActivity {
                 intent.getExtras().getBoolean(EXTRA_FROM_NOTIFICATION, false)) {
             if (accountManager.allowAnalytics(this)) {
                 // Obtain the shared Tracker instance.
-                FiveCallsApplication application = (FiveCallsApplication) getApplication();
-                Tracker tracker = application.getDefaultTracker();
-                tracker.send(new HitBuilders.EventBuilder()
-                        .setCategory("Reminders")
-                        .setAction("LaunchFromReminder")
-                        .setValue(1)
-                        .build());
+//                FiveCallsApplication application = (FiveCallsApplication) getApplication();
+//                Tracker tracker = application.getDefaultTracker();
+//                tracker.send(new HitBuilders.EventBuilder()
+//                        .setCategory("Reminders")
+//                        .setAction("LaunchFromReminder")
+//                        .setValue(1)
+//                        .build());
             }
         }
 
@@ -247,10 +247,10 @@ public class MainActivity extends AppCompatActivity {
         // We allow Analytics opt-out.
         if (accountManager.allowAnalytics(this)) {
             // Obtain the shared Tracker instance.
-            FiveCallsApplication application = (FiveCallsApplication) getApplication();
-            Tracker tracker = application.getDefaultTracker();
-            tracker.setScreenName(TAG);
-            tracker.send(new HitBuilders.ScreenViewBuilder().build());
+//            FiveCallsApplication application = (FiveCallsApplication) getApplication();
+//            Tracker tracker = application.getDefaultTracker();
+//            tracker.setScreenName(TAG);
+//            tracker.send(new HitBuilders.ScreenViewBuilder().build());
         }
     }
 

@@ -1,7 +1,7 @@
 package org.a5calls.android.a5calls.controller;
 
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
+//import com.google.android.gms.analytics.HitBuilders;
+//import com.google.android.gms.analytics.Tracker;
 import com.onesignal.OSNotificationOpenResult;
 import com.onesignal.OneSignal;
 
@@ -22,12 +22,12 @@ public class OneSignalNotificationController {
                         // Check whether notifications are allowed when the item is clicked.
                         if (AccountManager.Instance.allowAnalytics(
                                 application.getApplicationContext())) {
-                            Tracker tracker = application.getDefaultTracker();
-                            tracker.send(new HitBuilders.EventBuilder()
-                                    .setCategory("Notifications")
-                                    .setAction("LaunchFromNotification")
-                                    .setValue(1)
-                                    .build());
+//                            Tracker tracker = application.getDefaultTracker();
+//                            tracker.send(new HitBuilders.EventBuilder()
+//                                    .setCategory("Notifications")
+//                                    .setAction("LaunchFromNotification")
+//                                    .setValue(1)
+//                                    .build());
                         }
                     }
                 })

@@ -30,8 +30,8 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.DefaultValueFormatter;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
+//import com.google.android.gms.analytics.HitBuilders;
+//import com.google.android.gms.analytics.Tracker;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.series.DataPoint;
@@ -65,7 +65,7 @@ public class StatsActivity extends AppCompatActivity {
     private SimpleDateFormat dateFormat;
     private int mCallCount = 0;
     private ShareActionProvider mShareActionProvider;
-    private Tracker mTracker;
+//    private Tracker mTracker;
 
     @BindView(R.id.no_calls_message) TextView noCallsMessage;
     @BindView(R.id.stats_holder) LinearLayout statsHolder;
@@ -300,10 +300,10 @@ public class StatsActivity extends AppCompatActivity {
         // We allow Analytics opt-out.
         if (AccountManager.Instance.allowAnalytics(this)) {
             // Obtain the shared Tracker instance.
-            FiveCallsApplication application = (FiveCallsApplication) getApplication();
-            mTracker = application.getDefaultTracker();
-            mTracker.setScreenName(TAG);
-            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+//            FiveCallsApplication application = (FiveCallsApplication) getApplication();
+//            mTracker = application.getDefaultTracker();
+//            mTracker.setScreenName(TAG);
+//            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
         }
     }
 
@@ -349,14 +349,14 @@ public class StatsActivity extends AppCompatActivity {
         startActivity(Intent.createChooser(shareIntent,
                 getResources().getString(R.string.share_chooser_title)));
 
-        if (mTracker != null) {
-            mTracker.send(new HitBuilders.EventBuilder()
-                    .setCategory("Share")
-                    .setAction("StatsShare")
-                    .setLabel(mCallCount + " calls")
-                    .setValue(1)
-                    .build());
-        }
+//        if (mTracker != null) {
+//            mTracker.send(new HitBuilders.EventBuilder()
+//                    .setCategory("Share")
+//                    .setAction("StatsShare")
+//                    .setLabel(mCallCount + " calls")
+//                    .setValue(1)
+//                    .build());
+//        }
 
         startActivity(Intent.createChooser(shareIntent, getResources().getString(
                 R.string.share_chooser_title)));

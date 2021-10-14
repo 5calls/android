@@ -34,8 +34,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
+//import com.google.android.gms.analytics.HitBuilders;
+//import com.google.android.gms.analytics.Tracker;
 
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.FiveCallsApplication;
@@ -73,7 +73,7 @@ public class RepCallActivity extends AppCompatActivity {
     private FiveCallsApi.CallRequestListener mStatusListener;
     private Issue mIssue;
     private int mActiveContactIndex;
-    private Tracker mTracker = null;
+//    private Tracker mTracker = null;
     private OutcomeAdapter outcomeAdapter;
 
     @BindView(R.id.scroll_view) NestedScrollView scrollView;
@@ -187,7 +187,7 @@ public class RepCallActivity extends AppCompatActivity {
         if (accountManager.allowAnalytics(this)) {
             // Obtain the shared Tracker instance.
             FiveCallsApplication application = (FiveCallsApplication) getApplication();
-            mTracker = application.getDefaultTracker();
+//            mTracker = application.getDefaultTracker();
         }
     }
 
@@ -209,10 +209,10 @@ public class RepCallActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (mTracker != null) {
-            mTracker.setScreenName(TAG);
-            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
-        }
+//        if (mTracker != null) {
+//            mTracker.setScreenName(TAG);
+//            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+//        }
     }
 
     @Override
@@ -361,14 +361,14 @@ public class RepCallActivity extends AppCompatActivity {
     }
 
     private void reportEvent(String event) {
-        if (mTracker != null) {
-            mTracker.send(new HitBuilders.EventBuilder()
-                    .setCategory("CallAction")
-                    .setAction(event)
-                    .setLabel(mIssue.id + " " + mIssue.contacts.get(mActiveContactIndex).id)
-                    .setValue(1)
-                    .build());
-        }
+//        if (mTracker != null) {
+//            mTracker.send(new HitBuilders.EventBuilder()
+//                    .setCategory("CallAction")
+//                    .setAction(event)
+//                    .setLabel(mIssue.id + " " + mIssue.contacts.get(mActiveContactIndex).id)
+//                    .setValue(1)
+//                    .build());
+//        }
     }
 
     private void returnToIssue() {
