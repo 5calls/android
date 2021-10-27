@@ -8,11 +8,11 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.content.FileProvider;
-import android.support.v4.util.Pair;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.ShareActionProvider;
+import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
+import androidx.core.util.Pair;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.ShareActionProvider;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.RelativeSizeSpan;
@@ -24,18 +24,15 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
-import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.DefaultValueFormatter;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
+//import com.google.android.gms.analytics.HitBuilders;
+//import com.google.android.gms.analytics.Tracker;
 import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.LegendRenderer;
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
@@ -68,7 +65,7 @@ public class StatsActivity extends AppCompatActivity {
     private SimpleDateFormat dateFormat;
     private int mCallCount = 0;
     private ShareActionProvider mShareActionProvider;
-    private Tracker mTracker;
+//    private Tracker mTracker;
 
     @BindView(R.id.no_calls_message) TextView noCallsMessage;
     @BindView(R.id.stats_holder) LinearLayout statsHolder;
@@ -303,10 +300,10 @@ public class StatsActivity extends AppCompatActivity {
         // We allow Analytics opt-out.
         if (AccountManager.Instance.allowAnalytics(this)) {
             // Obtain the shared Tracker instance.
-            FiveCallsApplication application = (FiveCallsApplication) getApplication();
-            mTracker = application.getDefaultTracker();
-            mTracker.setScreenName(TAG);
-            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+//            FiveCallsApplication application = (FiveCallsApplication) getApplication();
+//            mTracker = application.getDefaultTracker();
+//            mTracker.setScreenName(TAG);
+//            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
         }
     }
 
@@ -352,14 +349,14 @@ public class StatsActivity extends AppCompatActivity {
         startActivity(Intent.createChooser(shareIntent,
                 getResources().getString(R.string.share_chooser_title)));
 
-        if (mTracker != null) {
-            mTracker.send(new HitBuilders.EventBuilder()
-                    .setCategory("Share")
-                    .setAction("StatsShare")
-                    .setLabel(mCallCount + " calls")
-                    .setValue(1)
-                    .build());
-        }
+//        if (mTracker != null) {
+//            mTracker.send(new HitBuilders.EventBuilder()
+//                    .setCategory("Share")
+//                    .setAction("StatsShare")
+//                    .setLabel(mCallCount + " calls")
+//                    .setValue(1)
+//                    .build());
+//        }
 
         startActivity(Intent.createChooser(shareIntent, getResources().getString(
                 R.string.share_chooser_title)));

@@ -4,20 +4,20 @@ import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.BaseTransientBottomBar;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatSpinner;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.fragment.app.DialogFragment;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatSpinner;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,8 +33,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
+//import com.google.android.gms.analytics.HitBuilders;
+//import com.google.android.gms.analytics.Tracker;
+import com.google.firebase.auth.FirebaseAuth;
 
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.FiveCallsApplication;
@@ -77,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
     private String mAddress;
     private String mLatitude;
     private String mLongitude;
+    private FirebaseAuth mAuth;
 
     @BindView(R.id.swipe_container) SwipeRefreshLayout swipeContainer;
     @BindView(R.id.issues_recycler_view) RecyclerView issuesRecyclerView;
@@ -95,6 +97,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         // TODO: Consider using fragments
         super.onCreate(savedInstanceState);
+
+        mAuth = FirebaseAuth.getInstance();
 
         // See if we've had this user before. If not, start them at tutorial type page.
         if (!accountManager.isTutorialSeen(this)) {
@@ -130,13 +134,13 @@ public class MainActivity extends AppCompatActivity {
                 intent.getExtras().getBoolean(EXTRA_FROM_NOTIFICATION, false)) {
             if (accountManager.allowAnalytics(this)) {
                 // Obtain the shared Tracker instance.
-                FiveCallsApplication application = (FiveCallsApplication) getApplication();
-                Tracker tracker = application.getDefaultTracker();
-                tracker.send(new HitBuilders.EventBuilder()
-                        .setCategory("Reminders")
-                        .setAction("LaunchFromReminder")
-                        .setValue(1)
-                        .build());
+//                FiveCallsApplication application = (FiveCallsApplication) getApplication();
+//                Tracker tracker = application.getDefaultTracker();
+//                tracker.send(new HitBuilders.EventBuilder()
+//                        .setCategory("Reminders")
+//                        .setAction("LaunchFromReminder")
+//                        .setValue(1)
+//                        .build());
             }
         }
 
@@ -202,6 +206,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+        mAuth.signInAnonymously();
+    }
+
+    @Override
     protected void onDestroy() {
         FiveCallsApi api = AppSingleton.getInstance(getApplicationContext()).getJsonController();
         api.unregisterIssuesRequestListener(mIssuesRequestListener);
@@ -236,10 +247,10 @@ public class MainActivity extends AppCompatActivity {
         // We allow Analytics opt-out.
         if (accountManager.allowAnalytics(this)) {
             // Obtain the shared Tracker instance.
-            FiveCallsApplication application = (FiveCallsApplication) getApplication();
-            Tracker tracker = application.getDefaultTracker();
-            tracker.setScreenName(TAG);
-            tracker.send(new HitBuilders.ScreenViewBuilder().build());
+//            FiveCallsApplication application = (FiveCallsApplication) getApplication();
+//            Tracker tracker = application.getDefaultTracker();
+//            tracker.setScreenName(TAG);
+//            tracker.send(new HitBuilders.ScreenViewBuilder().build());
         }
     }
 

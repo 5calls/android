@@ -6,16 +6,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.NavUtils;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.core.app.NavUtils;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
+import androidx.core.widget.NestedScrollView;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.text.util.Linkify;
 import android.util.DisplayMetrics;
@@ -30,13 +30,12 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
+//import com.google.android.gms.analytics.HitBuilders;
+//import com.google.android.gms.analytics.Tracker;
 
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.FiveCallsApplication;
@@ -49,18 +48,12 @@ import org.a5calls.android.a5calls.model.Outcome;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
 import org.a5calls.android.a5calls.util.MarkdownUtil;
 import org.a5calls.android.a5calls.view.GridItemDecoration;
-import org.commonmark.node.Node;
-import org.commonmark.parser.Parser;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import me.saket.bettermovementmethod.BetterLinkMovementMethod;
-import ru.noties.markwon.Markwon;
-import ru.noties.markwon.SpannableConfiguration;
-import ru.noties.markwon.renderer.SpannableRenderer;
 
 import static org.a5calls.android.a5calls.controller.IssueActivity.KEY_ISSUE;
 
@@ -80,7 +73,7 @@ public class RepCallActivity extends AppCompatActivity {
     private FiveCallsApi.CallRequestListener mStatusListener;
     private Issue mIssue;
     private int mActiveContactIndex;
-    private Tracker mTracker = null;
+//    private Tracker mTracker = null;
     private OutcomeAdapter outcomeAdapter;
 
     @BindView(R.id.scroll_view) NestedScrollView scrollView;
@@ -194,7 +187,7 @@ public class RepCallActivity extends AppCompatActivity {
         if (accountManager.allowAnalytics(this)) {
             // Obtain the shared Tracker instance.
             FiveCallsApplication application = (FiveCallsApplication) getApplication();
-            mTracker = application.getDefaultTracker();
+//            mTracker = application.getDefaultTracker();
         }
     }
 
@@ -216,10 +209,10 @@ public class RepCallActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (mTracker != null) {
-            mTracker.setScreenName(TAG);
-            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
-        }
+//        if (mTracker != null) {
+//            mTracker.setScreenName(TAG);
+//            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+//        }
     }
 
     @Override
@@ -368,14 +361,14 @@ public class RepCallActivity extends AppCompatActivity {
     }
 
     private void reportEvent(String event) {
-        if (mTracker != null) {
-            mTracker.send(new HitBuilders.EventBuilder()
-                    .setCategory("CallAction")
-                    .setAction(event)
-                    .setLabel(mIssue.id + " " + mIssue.contacts.get(mActiveContactIndex).id)
-                    .setValue(1)
-                    .build());
-        }
+//        if (mTracker != null) {
+//            mTracker.send(new HitBuilders.EventBuilder()
+//                    .setCategory("CallAction")
+//                    .setAction(event)
+//                    .setLabel(mIssue.id + " " + mIssue.contacts.get(mActiveContactIndex).id)
+//                    .setValue(1)
+//                    .build());
+//        }
     }
 
     private void returnToIssue() {

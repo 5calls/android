@@ -10,8 +10,8 @@ import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
+//import com.google.android.gms.analytics.HitBuilders;
+//import com.google.android.gms.analytics.Tracker;
 
 import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
@@ -52,12 +52,12 @@ public class NotifyBroadcastReceiver extends BroadcastReceiver {
             if (AccountManager.Instance.allowAnalytics(context)) {
                 FiveCallsApplication application = (FiveCallsApplication)
                         context.getApplicationContext();
-                Tracker tracker = application.getDefaultTracker();
-                tracker.send(new HitBuilders.EventBuilder()
-                        .setCategory("Reminders")
-                        .setAction("SnoozeReminder")
-                        .setValue(1)
-                        .build());
+//                Tracker tracker = application.getDefaultTracker();
+//                tracker.send(new HitBuilders.EventBuilder()
+//                        .setCategory("Reminders")
+//                        .setAction("SnoozeReminder")
+//                        .setValue(1)
+//                        .build());
             }
             return;
         }
@@ -68,12 +68,12 @@ public class NotifyBroadcastReceiver extends BroadcastReceiver {
             if (AccountManager.Instance.allowAnalytics(context)) {
                 FiveCallsApplication application = (FiveCallsApplication)
                         context.getApplicationContext();
-                Tracker tracker = application.getDefaultTracker();
-                tracker.send(new HitBuilders.EventBuilder()
-                        .setCategory("Reminders")
-                        .setAction("CancelReminder")
-                        .setValue(1)
-                        .build());
+//                Tracker tracker = application.getDefaultTracker();
+//                tracker.send(new HitBuilders.EventBuilder()
+//                        .setCategory("Reminders")
+//                        .setAction("CancelReminder")
+//                        .setValue(1)
+//                        .build());
             }
             return;
         }

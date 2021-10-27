@@ -81,7 +81,7 @@
         </receiver>
 
         <provider
-            android:name="android.support.v4.content.FileProvider"
+            android:name="androidx.core.content.FileProvider"
             android:authorities="org.a5calls.android.a5calls.fileprovider"
             android:grantUriPermissions="true"
             android:exported="false">

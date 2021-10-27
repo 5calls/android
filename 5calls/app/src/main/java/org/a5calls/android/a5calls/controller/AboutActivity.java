@@ -6,11 +6,11 @@ import android.content.res.Resources;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,8 +18,8 @@ import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
+//import com.google.android.gms.analytics.HitBuilders;
+//import com.google.android.gms.analytics.Tracker;
 
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.BuildConfig;
@@ -188,10 +188,10 @@ public class AboutActivity extends AppCompatActivity {
         // We allow Analytics opt-out.
         if (accountManager.allowAnalytics(this)) {
             // Obtain the shared Tracker instance.
-            FiveCallsApplication application = (FiveCallsApplication) getApplication();
-            Tracker tracker = application.getDefaultTracker();
-            tracker.setScreenName(TAG);
-            tracker.send(new HitBuilders.ScreenViewBuilder().build());
+//            FiveCallsApplication application = (FiveCallsApplication) getApplication();
+//            Tracker tracker = application.getDefaultTracker();
+//            tracker.setScreenName(TAG);
+//            tracker.send(new HitBuilders.ScreenViewBuilder().build());
         }
     }
 

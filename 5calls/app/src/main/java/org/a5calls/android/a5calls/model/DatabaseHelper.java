@@ -5,14 +5,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.support.annotation.VisibleForTesting;
-import android.support.v4.util.Pair;
+import androidx.annotation.VisibleForTesting;
+import androidx.core.util.Pair;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Local database helper. I believe this is already "thread-safe" and such because SQLiteOpenHelper

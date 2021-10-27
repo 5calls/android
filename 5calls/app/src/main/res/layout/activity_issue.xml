@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/scrollViewStyle">
 
-    <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/scroll_view"
         style="@style/nestedScrollViewStyleTop"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -30,9 +30,9 @@
 
         </LinearLayout>
 
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/bottom_sheet"
         style="@style/nestedScrollViewStyleDown"
         android.support.design:ignore="UnusedAttribute"
@@ -104,6 +104,6 @@
 
         </LinearLayout>
 
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 </android.support.design.widget.CoordinatorLayout>

@@ -3,17 +3,15 @@ package org.a5calls.android.a5calls.controller;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Address;
 import android.location.Criteria;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -23,16 +21,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
-
-import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -124,10 +114,10 @@ public class LocationActivity extends AppCompatActivity {
 
         if (accountManager.allowAnalytics(this)) {
             // Obtain the shared Tracker instance.
-            FiveCallsApplication application = (FiveCallsApplication) getApplication();
-            Tracker tracker = application.getDefaultTracker();
-            tracker.setScreenName(TAG);
-            tracker.send(new HitBuilders.ScreenViewBuilder().build());
+//            FiveCallsApplication application = (FiveCallsApplication) getApplication();
+//            Tracker tracker = application.getDefaultTracker();
+//            tracker.setScreenName(TAG);
+//            tracker.send(new HitBuilders.ScreenViewBuilder().build());
         }
     }
 
