@@ -35,7 +35,7 @@ captures/
 
 # Intellij
 *.iml
-.idea/workspace.xml
+.idea/
 
 # Keystore files
 *.jks
@@ -44,3 +44,6 @@ translations.csv
 
 # Graph view module
 5calls/GraphView/
+
+# mac files
+.DS_Store

@@ -25,8 +25,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    lintOptions {
-        // Check for errors in release builds. Change to false to force build.
+    namespace 'org.a5calls.android.a5calls'
+    lint {
         abortOnError true
     }
 }
@@ -38,7 +38,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     implementation 'androidx.appcompat:appcompat:1.0.0'
-    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'com.google.android.material:material:1.4.0'
     testImplementation 'junit:junit:4.12'
     implementation 'com.android.volley:volley:1.2.1'
     implementation 'com.squareup.okhttp3:okhttp:4.7.2'
