@@ -70,7 +70,7 @@ public class NotificationUtils {
     private static PendingIntent cancelPendingIntent(Context context) {
         Intent intent = new Intent(context, NotifyBroadcastReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, NOTIFICATION_REQUEST_CODE,
-                intent, 0);
+                intent, PendingIntent.FLAG_IMMUTABLE);
         AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         manager.cancel(pendingIntent); // Clear the old intent, if there was one.
         return pendingIntent;

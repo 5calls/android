@@ -26,7 +26,8 @@ import android.os.Bundle;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 
-import org.a5calls.android.a5calls.controller.OneSignalNotificationController;
+import com.onesignal.OneSignal;
+
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.NotificationUtils;
 
@@ -39,6 +40,8 @@ public class FiveCallsApplication extends Application {
     private Thread.UncaughtExceptionHandler mDefaultHandler;
     private FirebaseAnalytics mFirebaseAnalytics;
     private FirebaseAuth mAuth;
+
+    private static final String ONESIGNAL_APP_ID = "5fd4ca41-9f6c-4149-a312-ae3e71b35c0e";
 
     public FiveCallsApplication() {
         super();
@@ -85,6 +88,7 @@ public class FiveCallsApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
         // We could automatically report all exceptions with an XML change to the configuration file
         // but that wouldn't respect the user's setting to share data with 5 calls.
         if (AccountManager.Instance.allowAnalytics(getApplicationContext())) {
@@ -92,7 +96,9 @@ public class FiveCallsApplication extends Application {
         }
 
         // Set up OneSignal.
-        OneSignalNotificationController.setUp(this);
+        OneSignal.initWithContext(this);
+        OneSignal.setAppId(ONESIGNAL_APP_ID);
+        OneSignal.unsubscribeWhenNotificationsAreDisabled(true);
     }
 
     /**

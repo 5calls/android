@@ -36,6 +36,7 @@ import android.widget.TextView;
 //import com.google.android.gms.analytics.HitBuilders;
 //import com.google.android.gms.analytics.Tracker;
 import com.google.firebase.auth.FirebaseAuth;
+import com.wbrawner.plausible.android.Plausible;
 
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.FiveCallsApplication;

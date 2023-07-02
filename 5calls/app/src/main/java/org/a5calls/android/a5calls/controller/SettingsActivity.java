@@ -19,6 +19,8 @@ import android.view.MenuItem;
 //import com.google.android.gms.analytics.HitBuilders;
 //import com.google.android.gms.analytics.Tracker;
 
+import com.onesignal.OneSignal;
+
 import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
@@ -122,11 +124,9 @@ public class SettingsActivity extends AppCompatActivity {
                                                      String result) {
         accountManager.setNotificationPreference(application, result);
         if (TextUtils.equals("0", result)) {
-            OneSignalNotificationController.enableTopNotifications();
+            OneSignal.disablePush(false);
         } else if (TextUtils.equals("1", result)) {
-            OneSignalNotificationController.enableAllNotifications();
-        } else if (TextUtils.equals("2", result)) {
-            OneSignalNotificationController.disableNotifications();
+            OneSignal.disablePush(true);
         }
         // If the user changes the settings there's no need to show the dialog in the future.
         accountManager.setNotificationDialogShown(application, true);

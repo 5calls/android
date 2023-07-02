@@ -4,6 +4,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-feature android:name="android.hardware.location.gps"
         android:required="false"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -18,6 +19,7 @@
         <activity android:name=".controller.MainActivity"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoBarTheme.MainActivity"
+            android:exported="true"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -64,7 +66,8 @@
             android:name=".controller.NotifyBroadcastReceiver" />
         <receiver
             android:name=".controller.ResetAlarmBroadcastReceiver"
-            android:enabled="true" >
+            android:enabled="true"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
@@ -81,7 +84,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="org.a5calls.android.a5calls.fileprovider"
+            android:authorities="org.a5calls.android.a5calls.file-provider"
             android:grantUriPermissions="true"
             android:exported="false">
             <meta-data

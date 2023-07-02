@@ -4,19 +4,16 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
     }
-    compileSdkVersion 29
+    compileSdkVersion 33
     useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
         applicationId "org.a5calls.android.a5calls"
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 33
         versionCode 42
         versionName "2.2.1"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
-        manifestPlaceholders = [onesignal_app_id: "5fd4ca41-9f6c-4149-a312-ae3e71b35c0e",
-                                // Project number pulled from dashboard, local value is ignored.
-                                onesignal_google_project_number: "REMOTE"]
         signingConfig signingConfigs.debug
     }
     buildTypes {
@@ -28,6 +25,12 @@ android {
     namespace 'org.a5calls.android.a5calls'
     lint {
         abortOnError true
+    }
+}
+
+repositories {
+    maven {
+        url 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
     }
 }
 
@@ -63,10 +66,12 @@ dependencies {
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
     implementation 'com.jjoe64:graphview:4.2.2'
 
-    implementation 'com.onesignal:OneSignal:[3.14.0, 3.99.99]'
+    implementation 'com.onesignal:OneSignal:[4.8.6, 4.99.99]'
 
     implementation 'ru.noties:markwon:1.0.6'
     implementation 'me.saket:better-link-movement-method:2.2.0'
+
+    implementation 'com.wbrawner.plausible:plausible-android:0.1.0-SNAPSHOT'
 
     // If you add any other open-source libraries, make sure to update assets/licenses.html
     // with the appropriate license information.
