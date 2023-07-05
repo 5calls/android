@@ -30,6 +30,7 @@ public enum AccountManager {
     private static final String KEY_REMINDERS_INFO_SHOWN = "prefsKeyRemindersInfoShown";
     public static final String KEY_NOTIFICATIONS = "prefsKeyNotifications";
     private static final String KEY_NOTIFICATION_DIALOG_SHOWN = "prefsKeyNotificationDialog";
+    private static final String KEY_CALLER_ID = "prefsKeyCallerID";
 
     // Default to 11 am.
     public static final int DEFAULT_REMINDER_MINUTES = 60 * 11;
@@ -149,6 +150,15 @@ public enum AccountManager {
     public void setNotificationDialogShown(Context context, boolean shown) {
         getSharedPrefs(context).edit().putBoolean(KEY_NOTIFICATION_DIALOG_SHOWN, shown).apply();
     }
+
+    public void setCallerID(Context context, String callerId) {
+        getSharedPrefs(context).edit().putString(KEY_CALLER_ID, callerId).apply();
+    }
+
+    public String getCallerID(Context context) {
+        return getSharedPrefs(context).getString(KEY_CALLER_ID, "");
+    }
+
 
     private SharedPreferences getSharedPrefs(Context context) {
         return context.getSharedPreferences(PREFS_FILE, Context.MODE_PRIVATE);

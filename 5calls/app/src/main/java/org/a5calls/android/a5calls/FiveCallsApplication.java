@@ -31,6 +31,8 @@ import com.onesignal.OneSignal;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.NotificationUtils;
 
+import java.util.UUID;
+
 /**
  * This is a subclass of {@link Application} used to provide shared objects for this app, such as
  * the {@link Tracker}.
@@ -99,6 +101,13 @@ public class FiveCallsApplication extends Application {
         OneSignal.initWithContext(this);
         OneSignal.setAppId(ONESIGNAL_APP_ID);
         OneSignal.unsubscribeWhenNotificationsAreDisabled(true);
+
+        String storedCID = AccountManager.Instance.getCallerID(this);
+        if (storedCID == "") {
+            String uuid = UUID.randomUUID().toString();
+            AccountManager.Instance.setCallerID(this, uuid);
+            OneSignal.setExternalUserId(uuid);
+        }
     }
 
     /**

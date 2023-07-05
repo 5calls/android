@@ -15,6 +15,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.onesignal.OneSignal;
 
 import org.a5calls.android.a5calls.BuildConfig;
 import org.a5calls.android.a5calls.model.Contact;
@@ -196,6 +197,16 @@ public class FiveCallsApi {
                         List<Contact> contacts = mGson.fromJson(jsonArray.toString(), listType);
                         for (ContactsRequestListener listener : listeners) {
                             listener.onContactsReceived(locationName, contacts);
+                        }
+
+                        try {
+                            String state = response.getString("state");
+                            String district = response.getString("district");
+                            if (state != "" && district != "") {
+                                OneSignal.sendTag("districtID", state + "-" + district);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
                 }
