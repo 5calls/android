@@ -46,6 +46,7 @@ import org.a5calls.android.a5calls.model.Category;
 import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
 import org.a5calls.android.a5calls.model.Issue;
+import org.a5calls.android.a5calls.util.AnalyticsManager;
 import org.a5calls.android.a5calls.util.CustomTabsUtil;
 
 import java.util.ArrayList;
@@ -99,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
         // TODO: Consider using fragments
         super.onCreate(savedInstanceState);
 
+        new AnalyticsManager().trackPageview("/");
         mAuth = FirebaseAuth.getInstance();
 
         // See if we've had this user before. If not, start them at tutorial type page.

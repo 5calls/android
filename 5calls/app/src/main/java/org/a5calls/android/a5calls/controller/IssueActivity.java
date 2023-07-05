@@ -40,6 +40,7 @@ import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.Issue;
+import org.a5calls.android.a5calls.util.AnalyticsManager;
 import org.a5calls.android.a5calls.util.MarkdownUtil;
 
 import java.util.List;
@@ -175,6 +176,8 @@ public class IssueActivity extends AppCompatActivity {
 
             }
         });
+
+        new AnalyticsManager().trackPageview(String.format("/issue/%s/",mIssue.slug));
 
         // We allow Analytics opt-out.
         if (accountManager.allowAnalytics(this)) {

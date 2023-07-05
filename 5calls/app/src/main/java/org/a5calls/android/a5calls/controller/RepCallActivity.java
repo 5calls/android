@@ -46,6 +46,7 @@ import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.model.Outcome;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
+import org.a5calls.android.a5calls.util.AnalyticsManager;
 import org.a5calls.android.a5calls.util.MarkdownUtil;
 import org.a5calls.android.a5calls.view.GridItemDecoration;
 
@@ -182,6 +183,9 @@ public class RepCallActivity extends AppCompatActivity {
         int gridPadding = (int) getResources().getDimension(R.dimen.grid_padding);
         outcomeList.addItemDecoration(new GridItemDecoration(gridPadding,
                 getSpanCount(RepCallActivity.this)));
+
+        Contact c = mIssue.contacts.get(mActiveContactIndex);
+        new AnalyticsManager().trackPageview(String.format("/issue/%s/%s/",mIssue.slug,c.id));
 
         // We allow Analytics opt-out.
         if (accountManager.allowAnalytics(this)) {
