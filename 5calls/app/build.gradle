@@ -57,6 +57,7 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:3.7.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.browser:browser:1.0.0'
+    implementation 'com.google.android.play:review:2.0.1'
 
     // Suppressing warning for line below, because https://github.com/JakeWharton/butterknife says
     // to use `implementation`.

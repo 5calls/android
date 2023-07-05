@@ -1,11 +1,18 @@
 package org.a5calls.android.a5calls.controller;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.appcompat.app.AlertDialog;
+
+import com.onesignal.OneSignal;
 
 import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
@@ -45,6 +52,9 @@ public class NotificationSettingsDialog extends DialogFragment {
         builder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                if (mSelectedOption == 0) {
+                    OneSignal.promptForPushNotifications();
+                }
                 SettingsActivity.updateNotificationsPreference(
                         (FiveCallsApplication) getActivity().getApplication(),
                         AccountManager.Instance, String.format("%s", mSelectedOption));

@@ -6,13 +6,14 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.core.widget.NestedScrollView;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.text.Html;
 import android.text.TextUtils;
@@ -31,11 +32,12 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
-//import com.google.android.gms.analytics.HitBuilders;
-//import com.google.android.gms.analytics.Tracker;
+import com.google.android.play.core.review.ReviewInfo;
+import com.google.android.play.core.review.ReviewManager;
+import com.google.android.play.core.review.ReviewManagerFactory;
 
 import org.a5calls.android.a5calls.AppSingleton;
-import org.a5calls.android.a5calls.FiveCallsApplication;
+import org.a5calls.android.a5calls.BuildConfig;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.Contact;
@@ -212,6 +214,8 @@ public class IssueActivity extends AppCompatActivity {
             });
         } else {
             boolean allCalled = loadRepList();
+            int callCount = AppSingleton.getInstance(this).getDatabaseHelper()
+                    .getCallsCount();
             Fragment dialog = getSupportFragmentManager()
                     .findFragmentByTag(NotificationSettingsDialog.TAG);
             if (allCalled && !AccountManager.Instance.isNotificationDialogShown(this)) {
@@ -224,6 +228,19 @@ public class IssueActivity extends AppCompatActivity {
                 }
             } else if (dialog != null) {
                 ((NotificationSettingsDialog) dialog).dismiss();
+            }
+
+            // when we're not showing the dialog and have a few calls, potentially leave a review
+            if (callCount >= 4 && !BuildConfig.DEBUG) {
+                ReviewManager reviewManager = ReviewManagerFactory.create(this);
+                Task<ReviewInfo> request = reviewManager.requestReviewFlow();
+                request.addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        // We can get the ReviewInfo object
+                        ReviewInfo reviewInfo = task.getResult();
+                        Task<Void> flow = reviewManager.launchReviewFlow(this, reviewInfo);
+                    }
+                });
             }
         }
     }
