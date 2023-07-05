@@ -18,6 +18,8 @@ import com.google.gson.reflect.TypeToken;
 import com.onesignal.OneSignal;
 
 import org.a5calls.android.a5calls.BuildConfig;
+import org.a5calls.android.a5calls.FiveCallsApplication;
+import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.model.Outcome;
@@ -81,10 +83,12 @@ public class FiveCallsApi {
     private List<CallRequestListener> mCallRequestListeners = new ArrayList<>();
     private List<IssuesRequestListener> mIssuesRequestListeners = new ArrayList<>();
     private List<ContactsRequestListener> mContactsRequestListeners = new ArrayList<>();
+    private Context mContext;
 
     public FiveCallsApi(Context context) {
         // TODO: Using OkHttpClient and OkHttpStack cause failures on multiple types of Samsung
         // Galaxy devices.
+        mContext = context;
         //mRequestQueue = Volley.newRequestQueue(context, new OkHttpStack(new OkHttpClient()));
         mRequestQueue = Volley.newRequestQueue(context);
         mGson = new GsonBuilder()
@@ -279,6 +283,7 @@ public class FiveCallsApi {
                 params.put("contactid", contactId);
                 params.put("location", zip);
                 params.put("via", (BuildConfig.DEBUG && TESTING) ? "test" : "android");
+                params.put("callerid", AccountManager.Instance.getCallerID(mContext));
                 return params;
             }
 
