@@ -54,12 +54,4 @@ public class NotificationSettingsDialog extends DialogFragment {
         // Create the AlertDialog object and return it
         return builder.create();
     }
-
-    @Override
-    public void onDismiss(DialogInterface dialog) {
-        if (getActivity() != null) {
-            ((IssueActivity) getActivity()).onNotificationSettingsDialogDismissed();
-        }
-        super.onCancel(dialog);
-    }
 }

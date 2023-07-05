@@ -367,12 +367,4 @@ public class IssueActivity extends AppCompatActivity {
             }
         });
     }
-
-    public void onNotificationSettingsDialogDismissed() {
-        AccountManager.Instance.setNotificationDialogShown(IssueActivity.this, true);
-        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setTitle(R.string.notifications_dialog_title);
-        dialog.setMessage(R.string.notification_snackbar);
-        dialog.show();
-    }
 }
