@@ -102,7 +102,7 @@
     <string name="open_source_info">La aplicación de 5 llamadas es de código abierto y hecha por voluntarios. Encuéntralo en <u>github.com/5calls/android</u>.</string>
 
     <!-- Version code shown to the user in the about page [CHAR_LIMIT=NONE] -->
-    <string name="version_info">Versión <xliff:g id="versionCode">%1$s</xliff:g></string>
+    <string name="version_info">Versión <xliff:g id="versionName">%1$s</xliff:g> (<xliff:g id="versionCode">%2$d</xliff:g>)</string>
 
     <!-- Menu option to go to your impact page [CHAR_LIMIT=25] -->
     <string name="menu_stats">Su impacto</string>

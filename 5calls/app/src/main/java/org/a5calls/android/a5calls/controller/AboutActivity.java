@@ -130,7 +130,7 @@ public class AboutActivity extends AppCompatActivity {
         underlineButtons();
 
         version.setText(String.format(getResources().getString(R.string.version_info),
-                BuildConfig.VERSION_NAME));
+                BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE));
 
         mStatusListener = new FiveCallsApi.CallRequestListener() {
             @Override
