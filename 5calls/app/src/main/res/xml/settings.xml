@@ -11,7 +11,7 @@
             android:summary="%s"
             android:entries="@array/notification_options"
             android:entryValues="@array/notification_options_values"
-            android:defaultValue="2"
+            android:defaultValue="0"
             />
 
     </PreferenceCategory>
