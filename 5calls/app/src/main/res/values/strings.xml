@@ -461,7 +461,7 @@
     <string name="settings_category_notifications">Notifications</string>
 
     <!-- Title of a setting to allow users to enable notifications when new issues are available [CHAR_LIMIT=100] -->
-    <string name="settings_notifications_enable_title">Receive notifications about important issues</string>
+    <string name="settings_notifications_enable_title">Receive notifications about important issues?</string>
 
     <!-- Option to not show notifications about new issues [CHAR_LIMIT=100] -->
     <string name="disable_new_issues_notification">No, thanks</string>
@@ -478,7 +478,6 @@
     <string-array name="notification_options_values" translatable="false">
         <item>0</item>
         <item>1</item>
-        <item>2</item>
     </string-array>
 
     <!-- Title for a dialog where users can pick their notification frequency [CHAR_LIMIT=100] -->
