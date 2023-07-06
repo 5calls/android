@@ -403,16 +403,16 @@
     <string name="instagram_url" translatable="false">https://www.instagram.com/5calls/</string>
 
     <!-- URL to sign up for the 5 Calls newsletter [CHAR_LIMIT=NONE] -->
-    <string name="newsletter_url" translatable="false">https://5calls.org/newsletter</string>
+    <string name="newsletter_url" translatable="false">https://5calls.org/</string>
 
     <!-- URL for the 5 Calls About page [CHAR_LIMIT=NONE] -->
-    <string name="about_url" translatable="false">https://5calls.org/about</string>
+    <string name="about_url" translatable="false">https://5calls.org/about-us/</string>
 
     <!-- URL for the 5 Calls FAQ page [CHAR_LIMIT=NONE] -->
-    <string name="faq_url" translatable="false">https://5calls.org/faq</string>
+    <string name="faq_url" translatable="false">https://5calls.org/troubleshooting/</string>
 
     <!-- Email address to contact 5 Calls [CHAR_LIMIT=NONE] -->
-    <string name="email_address" translatable="false">make5calls@gmail.com</string>
+    <string name="email_address" translatable="false">hello@5calls.org</string>
 
     <!-- Default subject for an email sent from the about page [CHAR_LIMIT=NONE] -->
     <string name="email_subject" translatable="false">Feedback from 5 Calls Android App</string>
