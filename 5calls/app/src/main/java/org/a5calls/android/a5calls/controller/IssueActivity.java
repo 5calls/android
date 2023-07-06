@@ -231,7 +231,7 @@ public class IssueActivity extends AppCompatActivity {
             }
 
             // when we're not showing the dialog and have a few calls, potentially leave a review
-            if (callCount >= 4 && !BuildConfig.DEBUG) {
+            if (callCount >= 4 && !BuildConfig.DEBUG && AccountManager.Instance.hasReviewDialogBeenShown(this)) {
                 ReviewManager reviewManager = ReviewManagerFactory.create(this);
                 Task<ReviewInfo> request = reviewManager.requestReviewFlow();
                 request.addOnCompleteListener(task -> {
@@ -239,6 +239,7 @@ public class IssueActivity extends AppCompatActivity {
                         // We can get the ReviewInfo object
                         ReviewInfo reviewInfo = task.getResult();
                         Task<Void> flow = reviewManager.launchReviewFlow(this, reviewInfo);
+                        AccountManager.Instance.setReviewDialogShown(this, true);
                     }
                 });
             }
