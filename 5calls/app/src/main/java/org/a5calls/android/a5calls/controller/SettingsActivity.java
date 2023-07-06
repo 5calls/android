@@ -36,7 +36,7 @@ import java.util.Set;
 // TODO: Analytics and Notification settings need a way to retry if connection was not available.
 public class SettingsActivity extends AppCompatActivity {
     public static final String EXTRA_FROM_NOTIFICATION = "fromNotification";
-    String TAG = "SettingsActivity";
+    static String TAG = "SettingsActivity";
 
     private final AccountManager accountManager = AccountManager.Instance;
 
@@ -125,6 +125,7 @@ public class SettingsActivity extends AppCompatActivity {
         accountManager.setNotificationPreference(application, result);
         if (TextUtils.equals("0", result)) {
             OneSignal.disablePush(false);
+            OneSignal.promptForPushNotifications();
         } else if (TextUtils.equals("1", result)) {
             OneSignal.disablePush(true);
         }

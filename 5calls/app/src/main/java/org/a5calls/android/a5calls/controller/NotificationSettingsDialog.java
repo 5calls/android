@@ -53,6 +53,7 @@ public class NotificationSettingsDialog extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (mSelectedOption == 0) {
+                    OneSignal.disablePush(false);
                     OneSignal.promptForPushNotifications();
                 }
                 SettingsActivity.updateNotificationsPreference(
