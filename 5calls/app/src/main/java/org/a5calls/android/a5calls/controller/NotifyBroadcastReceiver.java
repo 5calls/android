@@ -93,7 +93,7 @@ public class NotifyBroadcastReceiver extends BroadcastReceiver {
         Intent resultIntent = new Intent(context, MainActivity.class);
         resultIntent.putExtra(MainActivity.EXTRA_FROM_NOTIFICATION, true);
         PendingIntent pendingIntent = PendingIntent.getActivity(context,
-                MainActivity.NOTIFICATION_REQUEST, resultIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                MainActivity.NOTIFICATION_REQUEST, resultIntent,  PendingIntent.FLAG_IMMUTABLE);
         Notification.Builder builder = new Notification.Builder(context)
                 .setContentTitle(context.getResources().getString(R.string.notification_title))
                 .setContentText(context.getResources().getString(R.string.notification_text))
@@ -109,7 +109,7 @@ public class NotifyBroadcastReceiver extends BroadcastReceiver {
             Intent snoozeIntent = new Intent(context, NotifyBroadcastReceiver.class)
                     .setAction(ACTION_DO_SNOOZE);
             PendingIntent pendingSnooze = PendingIntent.getBroadcast(context,
-                    SNOOZE_REQUEST_CODE, snoozeIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                    SNOOZE_REQUEST_CODE, snoozeIntent,  PendingIntent.FLAG_IMMUTABLE);
             Notification.Action snoozeAction = new Notification.Action.Builder(
                     R.drawable.ic_snooze_white_24dp,
                     context.getResources().getString(R.string.snooze),
@@ -121,7 +121,7 @@ public class NotifyBroadcastReceiver extends BroadcastReceiver {
             settingsIntent.putExtra(SettingsActivity.EXTRA_FROM_NOTIFICATION, true);
             settingsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             PendingIntent pendingSettings = PendingIntent.getActivity(context,
-                    GO_TO_SETTINGS_REQUEST_CODE, settingsIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                    GO_TO_SETTINGS_REQUEST_CODE, settingsIntent,  PendingIntent.FLAG_IMMUTABLE);
             Notification.Action settingsAction = new Notification.Action.Builder(
                     R.drawable.ic_settings_black_24dp,
                     context.getResources().getString(R.string.settings),
@@ -132,7 +132,7 @@ public class NotifyBroadcastReceiver extends BroadcastReceiver {
             Intent cancelIntent = new Intent(context, NotifyBroadcastReceiver.class)
                     .setAction(ACTION_CANCEL_NOTIFY);
             PendingIntent pendingCancel = PendingIntent.getBroadcast(context,
-                    CANCEL_REQUEST_CODE, cancelIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                    CANCEL_REQUEST_CODE, cancelIntent, PendingIntent.FLAG_IMMUTABLE);
             Notification.Action cancelAction = new Notification.Action.Builder(
                     R.drawable.ic_close_white_24dp,
                     context.getResources().getString(R.string.dismiss),
