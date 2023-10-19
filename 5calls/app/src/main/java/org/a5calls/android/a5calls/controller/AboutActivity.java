@@ -52,6 +52,7 @@ public class AboutActivity extends AppCompatActivity {
     @BindView(R.id.facebook_btn) TextView facebookButton;
     @BindView(R.id.instagram_btn) TextView instagramButton;
     @BindView(R.id.rate_us_btn) Button rateUsButton;
+    @BindView(R.id.privacy_btn) Button privacyButton;
     @BindView(R.id.version_info) TextView version;
     @BindView(R.id.calls_to_date) TextView callsToDate;
     @BindView(R.id.license_btn) Button licenseButton;
@@ -117,6 +118,13 @@ public class AboutActivity extends AppCompatActivity {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(
                             "https://play.google.com/store/apps/details?id=" + appPackageName)));
                 }
+            }
+        });
+
+        privacyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://5calls.org/privacy")));
             }
         });
 
@@ -203,6 +211,7 @@ public class AboutActivity extends AppCompatActivity {
         underlineText(facebookButton);
         underlineText(instagramButton);
         underlineText(rateUsButton);
+        underlineText(privacyButton);
         underlineText(licenseButton);
     }
 

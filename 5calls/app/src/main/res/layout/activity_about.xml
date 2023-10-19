@@ -118,6 +118,16 @@
             />
 
         <TextView
+            style="@style/aboutParagraphTextStyle"
+            android:text="@string/privacy_prompt" />
+
+        <Button
+            android:id="@+id/privacy_btn"
+            style="@style/transparentBtnStyle"
+            android:text="@string/privacy_btn"
+            />
+
+        <TextView
             style="@style/linksParagraphTextStyle"
             android:text="@string/open_source_info"
             />
