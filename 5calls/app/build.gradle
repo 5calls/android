@@ -4,7 +4,7 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
     }
-    compileSdkVersion 34
+    compileSdk 35
     useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
