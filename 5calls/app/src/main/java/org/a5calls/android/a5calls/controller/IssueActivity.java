@@ -179,7 +179,7 @@ public class IssueActivity extends AppCompatActivity {
             }
         });
 
-        new AnalyticsManager().trackPageview(String.format("/issue/%s/",mIssue.slug));
+        new AnalyticsManager().trackPageview(String.format("/issue/%s/", mIssue.slug));
 
         // We allow Analytics opt-out.
         if (accountManager.allowAnalytics(this)) {
@@ -289,7 +289,7 @@ public class IssueActivity extends AppCompatActivity {
                 R.string.issue_share_subject));
         shareIntent.putExtra(Intent.EXTRA_TEXT,
                 String.format(getResources().getString(R.string.issue_share_content), mIssue.name,
-                        mIssue.id));
+                        mIssue.slug));
         shareIntent.setType("text/plain");
 
 //        if (mTracker != null) {
