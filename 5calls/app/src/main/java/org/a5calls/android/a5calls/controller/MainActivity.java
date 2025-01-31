@@ -621,7 +621,7 @@ public class MainActivity extends AppCompatActivity {
         public void setContacts(List<Contact> contacts) {
             // Check if the contacts have returned after the issues list. If so, notify data set
             // changed.
-            Boolean notify = false;
+            boolean notify = false;
             if (mAllIssues.size() > 0 && mContacts.size() == 0) {
                 notify = true;
             }
