@@ -249,11 +249,11 @@ public class RepCallActivity extends AppCompatActivity {
         contactReason.setText(contactReasonText);
 
         if (!TextUtils.isEmpty(contact.photoURL)) {
-            repImage.setVisibility(View.VISIBLE);
             Glide.with(getApplicationContext())
                     .load(contact.photoURL)
                     .asBitmap()
                     .centerCrop()
+                    .placeholder(R.drawable.baseline_person_52)
                     .into(new BitmapImageViewTarget(repImage) {
                         @Override
                         protected void setResource(Bitmap resource) {
@@ -264,8 +264,6 @@ public class RepCallActivity extends AppCompatActivity {
                             repImage.setImageDrawable(drawable);
                         }
                     });
-        } else {
-            repImage.setVisibility(View.GONE);
         }
         phoneNumber.setText(contact.phone);
         Linkify.addLinks(phoneNumber, Linkify.PHONE_NUMBERS);

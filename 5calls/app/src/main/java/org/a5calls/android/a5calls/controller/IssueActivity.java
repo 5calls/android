@@ -345,11 +345,11 @@ public class IssueActivity extends AppCompatActivity {
             contactReason.setVisibility(View.GONE);
         }
         if (!TextUtils.isEmpty(contact.photoURL)) {
-            repImage.setVisibility(View.VISIBLE);
             Glide.with(getApplicationContext())
                     .load(contact.photoURL)
                     .asBitmap()
                     .centerCrop()
+                    .placeholder(R.drawable.baseline_person_52)
                     .into(new BitmapImageViewTarget(repImage) {
                         @Override
                         protected void setResource(Bitmap resource) {
@@ -360,8 +360,6 @@ public class IssueActivity extends AppCompatActivity {
                             repImage.setImageDrawable(drawable);
                         }
                     });
-        } else {
-            repImage.setVisibility(View.GONE);
         }
         // Show a bit about whether they've been contacted yet
         if (previousCalls.size() > 0) {

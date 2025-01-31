@@ -42,6 +42,7 @@
                 android:id="@+id/rep_image"
                 style="@style/repImageStyle"
                 android:contentDescription="@null"
+                android:src="@drawable/baseline_person_52"
                 />
 
             <TextView
