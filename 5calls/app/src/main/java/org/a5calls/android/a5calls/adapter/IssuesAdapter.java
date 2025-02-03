@@ -21,6 +21,7 @@ import org.a5calls.android.a5calls.model.Issue;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -146,8 +147,9 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return !mContacts.isEmpty();
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == VIEW_TYPE_EMPTY_REQUEST) {
             View empty = LayoutInflater.from(parent.getContext()).inflate(
                     R.layout.empty_issues_view, parent, false);
@@ -168,7 +170,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, int position) {
         int type = getItemViewType(position);
         if (type == VIEW_TYPE_ISSUE) {
             IssueViewHolder vh = (IssueViewHolder) holder;
@@ -267,7 +269,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public int getItemCount() {
-        if (mIssues.size() == 0 && (mErrorType == ERROR_REQUEST || mErrorType == ERROR_ADDRESS
+        if (mIssues.isEmpty() && (mErrorType == ERROR_REQUEST || mErrorType == ERROR_ADDRESS
                 || mErrorType == ERROR_SEARCH_NO_MATCH)) {
             return 1;
         }
@@ -276,7 +278,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public int getItemViewType(int position) {
-        if (mIssues.size() == 0 && position == 0) {
+        if (mIssues.isEmpty() && position == 0) {
             if (mErrorType == ERROR_REQUEST) {
                 return VIEW_TYPE_EMPTY_REQUEST;
             }

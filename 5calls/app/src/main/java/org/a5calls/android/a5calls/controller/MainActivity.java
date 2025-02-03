@@ -9,6 +9,8 @@ import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+
+import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -235,13 +237,9 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         mLatitude = accountManager.getLat(this);
         mLongitude = accountManager.getLng(this);
 
-        String location = getLocationString();
-        if (!TextUtils.isEmpty(location)) {
-            AppSingleton.getInstance(getApplicationContext()).getJsonController()
-                    .getContacts(location);
-        }
-
-        // Refresh on resume.  The post is necessary to start the spinner animation.
+        // Refresh on resume. The post is necessary to start the spinner animation.
+        // Note that refreshing issues will also refresh the contacts list when it runs
+        // on resume.
         swipeContainer.post(new Runnable() {
             @Override public void run() {
                 swipeContainer.setRefreshing(true);
@@ -260,7 +258,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putString(KEY_FILTER_ITEM_SELECTED, mFilterText);
         outState.putString(KEY_SEARCH_TEXT, mSearchText);
         super.onSaveInstanceState(outState);
@@ -313,7 +311,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
-                    public boolean onNavigationItemSelected(MenuItem item) {
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         //menuItem.setChecked(true); // don't use this atm
                         drawerLayout.closeDrawers();
 
