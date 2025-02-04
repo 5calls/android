@@ -61,11 +61,20 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         mCallback = callback;
     }
 
-    // |searchText| takes priority over |filterText|.
-    public void setIssues(List<Issue> issues, int errorType) {
+    /**
+     * Sets the full list of available issues. Does not update the visible list unless there
+     * is an error; {@code #setFilterAndSearch} should be called separately to update the
+     * visible list.
+     * @param issues The full list of available issues.
+     * @param errorType The error, if there is one.
+     */
+    public void setAllIssues(List<Issue> issues, int errorType) {
         mAllIssues = issues;
         mErrorType = errorType;
-        mIssues = new ArrayList<>();
+        if (mErrorType != NO_ERROR) {
+            mIssues.clear();
+            notifyDataSetChanged();
+        }
     }
 
     public void setContacts(List<Contact> contacts) {
@@ -83,54 +92,70 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     public void setFilterAndSearch(String filterText, String searchText) {
         if (!TextUtils.isEmpty(searchText)) {
-            mIssues = new ArrayList<>();
-            // Should we .trim() the whitespace?
-            String lowerSearchText = searchText.toLowerCase();
-            for (Issue issue : mAllIssues) {
-                // Search the name and the categories for the search term.
-                // TODO: Searching full text is less straight forward, as a simple "contains"
-                // matches things like "ice" to "avarice" or whatever.
-                if (issue.name.toLowerCase().contains(lowerSearchText)) {
-                    mIssues.add(issue);
-                } else {
-                    for (int i = 0; i < issue.categories.length; i++) {
-                        if (issue.categories[i].name.toLowerCase().contains(lowerSearchText)) {
-                            mIssues.add(issue);
-                        }
-                    }
-                }
-            }
+            mIssues = filterIssuesBySearchText(searchText);
             // If there's no other error, show a search error.
-            if (mIssues.size() == 0 && mErrorType == NO_ERROR) {
+            if (mIssues.isEmpty() && mErrorType == NO_ERROR) {
                 mErrorType = ERROR_SEARCH_NO_MATCH;
             }
         } else {
+            // Search text is empty.
             if (TextUtils.equals(filterText,
                     mActivity.getResources().getString(R.string.all_issues_filter))) {
                 // Include everything
                 mIssues = mAllIssues;
             } else if (TextUtils.equals(filterText,
                     mActivity.getResources().getString(R.string.top_issues_filter))) {
-                // Add only the active ones.
-                mIssues = new ArrayList<>();
-                for (Issue issue : mAllIssues) {
-                    if (issue.active) {
-                        mIssues.add(issue);
-                    }
-                }
+                mIssues = filterActiveIssues();
             } else {
-                // Filter by the string
-                mIssues = new ArrayList<>();
-                for (Issue issue : mAllIssues) {
-                    for (Category category : issue.categories) {
-                        if (TextUtils.equals(filterText, category.name)) {
-                            mIssues.add(issue);
-                        }
+                // Filter by the category string.
+                mIssues = filterIssuesByCategory(filterText);
+            }
+        }
+        notifyDataSetChanged();
+    }
+
+    private ArrayList<Issue> filterIssuesBySearchText(String searchText) {
+        ArrayList<Issue> tempIssues = new ArrayList<>();
+        // Should we .trim() the whitespace?
+        String lowerSearchText = searchText.toLowerCase();
+        for (Issue issue : mAllIssues) {
+            // Search the name and the categories for the search term.
+            // TODO: Searching full text is less straight forward, as a simple "contains"
+            // matches things like "ice" to "avarice" or whatever.
+            if (issue.name.toLowerCase().contains(lowerSearchText)) {
+                tempIssues.add(issue);
+            } else {
+                for (int i = 0; i < issue.categories.length; i++) {
+                    if (issue.categories[i].name.toLowerCase().contains(lowerSearchText)) {
+                        tempIssues.add(issue);
                     }
                 }
             }
         }
-        notifyDataSetChanged();
+        return tempIssues;
+    }
+
+    private ArrayList<Issue> filterActiveIssues() {
+        // Add only the active ones.
+        ArrayList<Issue> tempIssues = new ArrayList<>();
+        for (Issue issue : mAllIssues) {
+            if (issue.active) {
+                tempIssues.add(issue);
+            }
+        }
+        return tempIssues;
+    }
+
+    private ArrayList<Issue> filterIssuesByCategory(String activeCategory) {
+        ArrayList<Issue> tempIssues = new ArrayList<>();
+        for (Issue issue : mAllIssues) {
+            for (Category category : issue.categories) {
+                if (TextUtils.equals(activeCategory, category.name)) {
+                    tempIssues.add(issue);
+                }
+            }
+        }
+        return tempIssues;
     }
 
     public void updateIssue(Issue issue) {
@@ -269,8 +294,9 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public int getItemCount() {
-        if (mIssues.isEmpty() && (mErrorType == ERROR_REQUEST || mErrorType == ERROR_ADDRESS
-                || mErrorType == ERROR_SEARCH_NO_MATCH)) {
+        if (mErrorType == ERROR_REQUEST || mErrorType == ERROR_ADDRESS ||
+                mErrorType == ERROR_SEARCH_NO_MATCH) {
+            // For these special types of errors, we will hide the issues.
             return 1;
         }
         return mIssues.size();

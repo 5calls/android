@@ -355,7 +355,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 showSnackbar(R.string.request_error, Snackbar.LENGTH_LONG);
                 // Our only type of request in MainActivity is a GET. If it doesn't work, clear the
                 // active issues list to avoid showing a stale list.
-                mIssuesAdapter.setIssues(Collections.<Issue>emptyList(),
+                mIssuesAdapter.setAllIssues(Collections.<Issue>emptyList(),
                         IssuesAdapter.ERROR_REQUEST);
                 swipeContainer.setRefreshing(false);
             }
@@ -365,7 +365,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 showSnackbar(R.string.json_error, Snackbar.LENGTH_LONG);
                 // Our only type of request in MainActivity is a GET. If it doesn't work, clear the
                 // active issues list to avoid showing a stale list.
-                mIssuesAdapter.setIssues(Collections.<Issue>emptyList(),
+                mIssuesAdapter.setAllIssues(Collections.<Issue>emptyList(),
                         IssuesAdapter.ERROR_REQUEST);
                 swipeContainer.setRefreshing(false);
             }
@@ -373,7 +373,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             @Override
             public void onIssuesReceived(List<Issue> issues) {
                 populateFilterAdapterIfNeeded(issues);
-                mIssuesAdapter.setIssues(issues, IssuesAdapter.NO_ERROR);
+                mIssuesAdapter.setAllIssues(issues, IssuesAdapter.NO_ERROR);
                 mIssuesAdapter.setFilterAndSearch(mFilterText, mSearchText);
                 swipeContainer.setRefreshing(false);
             }
@@ -386,7 +386,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 showSnackbar(R.string.request_error, Snackbar.LENGTH_LONG);
                 // Our only type of request in MainActivity is a GET. If it doesn't work, clear the
                 // active issues list to avoid showing a stale list.
-                mIssuesAdapter.setIssues(Collections.<Issue>emptyList(),
+                mIssuesAdapter.setAllIssues(Collections.<Issue>emptyList(),
                         IssuesAdapter.ERROR_REQUEST);
                 swipeContainer.setRefreshing(false);
             }
@@ -396,7 +396,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 showSnackbar(R.string.json_error, Snackbar.LENGTH_LONG);
                 // Our only type of request in MainActivity is a GET. If it doesn't work, clear the
                 // active issues list to avoid showing a stale list.
-                mIssuesAdapter.setIssues(Collections.<Issue>emptyList(),
+                mIssuesAdapter.setAllIssues(Collections.<Issue>emptyList(),
                         IssuesAdapter.ERROR_REQUEST);
                 swipeContainer.setRefreshing(false);
             }
@@ -407,7 +407,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 showSnackbar(R.string.error_address_invalid, Snackbar.LENGTH_LONG);
                 // Clear the issues but don't show the refresh button because this is an address
                 // problem.
-                mIssuesAdapter.setIssues(Collections.<Issue>emptyList(),
+                mIssuesAdapter.setAllIssues(Collections.<Issue>emptyList(),
                         IssuesAdapter.ERROR_ADDRESS);
                 swipeContainer.setRefreshing(false);
             }

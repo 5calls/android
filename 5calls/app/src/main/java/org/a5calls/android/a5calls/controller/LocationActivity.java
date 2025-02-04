@@ -229,14 +229,24 @@ public class LocationActivity extends AppCompatActivity {
     }
 
     private void onSubmitAddress(String address) {
+        address = address.trim();
         if (TextUtils.isEmpty(address)) {
+            addressEdit.setError(getResources().getString(R.string.error_address_empty));
+            return;
+        }
+        // Super simple check for valid address: If it's less than 5 characters it isn't valid.
+        // If it is 5 characters and they aren't digits, it isn't valid.
+        // To do more comprehensive checking we'd need to use an API or await the response
+        // from `FiveCallsApi`.
+        if (address.length() < 5 ||
+                (address.length() == 5 && !TextUtils.isDigitsOnly(address))) {
             addressEdit.setError(getResources().getString(R.string.error_address_empty));
             return;
         }
         // Update the UI and send the request.
         accountManager.setAddress(this, address);
 
-        // Delete latlng, because the user specifically requested an address and we default to
+        // Delete lat/lng, because the user specifically requested an address and we default to
         // lat/long.
         accountManager.setLat(this, null);
         accountManager.setLng(this, null);
