@@ -400,10 +400,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
 
             @Override
             public void onAddressError() {
-                hideSnackbars();
-                showSnackbar(R.string.error_address_invalid, Snackbar.LENGTH_LONG);
-                // Clear the issues but don't show the refresh button because this is an address
-                // problem.
+                showAddressErrorSnackbar();
                 mIssuesAdapter.setAddressError(IssuesAdapter.ERROR_ADDRESS);
                 swipeContainer.setRefreshing(false);
             }
@@ -580,19 +577,35 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         }
     }
 
-    private void showSnackbar(int string, int length) {
+    private void showSnackbar(int message, int length) {
         if (mSnackbar == null) {
-            mSnackbar = Snackbar.make(findViewById(R.id.activity_main),
-                    getResources().getString(string),
-                    length);
-            mSnackbar.addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
-                @Override
-                public void onDismissed(Snackbar transientBottomBar, int event) {
-                    super.onDismissed(transientBottomBar, event);
-                    mSnackbar = null;
-                }
-            });
+            constructSnackbar(message, length);
             mSnackbar.show();
         }
+    }
+
+    private void showAddressErrorSnackbar() {
+        hideSnackbars();
+        constructSnackbar(R.string.error_address_invalid, Snackbar.LENGTH_LONG);
+        mSnackbar.setAction(R.string.update, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchLocationActivity();
+            }
+        });
+        mSnackbar.show();
+    }
+
+    private void constructSnackbar(int message, int length) {
+        mSnackbar = Snackbar.make(findViewById(R.id.activity_main),
+                getResources().getString(message),
+                length);
+        mSnackbar.addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+            @Override
+            public void onDismissed(Snackbar transientBottomBar, int event) {
+                super.onDismissed(transientBottomBar, event);
+                mSnackbar = null;
+            }
+        });
     }
 }

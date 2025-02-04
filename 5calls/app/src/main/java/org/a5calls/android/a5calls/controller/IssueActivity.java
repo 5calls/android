@@ -202,7 +202,7 @@ public class IssueActivity extends AppCompatActivity {
 //            mTracker.setScreenName(TAG);
 //            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
 //        }
-        if (mIssue.contacts == null || mIssue.contacts.size() == 0) {
+        if (mIssue.contacts == null || mIssue.contacts.isEmpty()) {
             noCallsLeft.setVisibility(View.VISIBLE);
             updateLocationBtn.setOnClickListener(new View.OnClickListener() {
 
