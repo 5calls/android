@@ -40,6 +40,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private List<Issue> mIssues = new ArrayList<>();
     private List<Issue> mAllIssues = new ArrayList<>();
     private int mErrorType = NO_ISSUES_YET;
+    private int mAddressErrorType = NO_ISSUES_YET;
 
     private List<Contact> mContacts = new ArrayList<>();
     private final Activity mActivity;
@@ -77,9 +78,18 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
-    public void setContacts(List<Contact> contacts) {
+    public void setAddressError(int error) {
+        mAddressErrorType = error;
+        mContacts.clear();
+        if (!mAllIssues.isEmpty()) {
+            notifyDataSetChanged();
+        }
+    }
+
+    public void setContacts(List<Contact> contacts, int error) {
         // Check if the contacts have returned after the issues list. If so, notify data set
         // changed.
+        mAddressErrorType = error;
         boolean notify = false;
         if (!mAllIssues.isEmpty() && mContacts.isEmpty()) {
             notify = true;
@@ -208,6 +218,13 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 }
             });
 
+            if (mAddressErrorType != NO_ERROR) {
+                // If there was an address error, clear the number of calls to make.
+                vh.numCalls.setText("");
+                vh.doneIcon.setImageLevel(0);
+                return;
+            }
+
             issue.contacts = new ArrayList<Contact>();
             int houseCount = 0;  // Only add the first contact in the house for each issue.
             for (String contactArea : issue.contactAreas) {
@@ -294,8 +311,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public int getItemCount() {
-        if (mErrorType == ERROR_REQUEST || mErrorType == ERROR_ADDRESS ||
-                mErrorType == ERROR_SEARCH_NO_MATCH) {
+        if (mErrorType == ERROR_REQUEST || mErrorType == ERROR_SEARCH_NO_MATCH) {
             // For these special types of errors, we will hide the issues.
             return 1;
         }
@@ -307,9 +323,6 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         if (mIssues.isEmpty() && position == 0) {
             if (mErrorType == ERROR_REQUEST) {
                 return VIEW_TYPE_EMPTY_REQUEST;
-            }
-            if (mErrorType == ERROR_ADDRESS) {
-                return VIEW_TYPE_EMPTY_ADDRESS;
             }
             if (mErrorType == ERROR_SEARCH_NO_MATCH) {
                 return VIEW_TYPE_NO_SEARCH_MATCH;

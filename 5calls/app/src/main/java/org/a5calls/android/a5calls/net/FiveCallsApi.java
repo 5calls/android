@@ -217,6 +217,13 @@ public class FiveCallsApi {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
+                    if (error.networkResponse != null && error.networkResponse.statusCode == 400) {
+                        // Address error. We reached the server but it couldn't create a response.
+                        for (ContactsRequestListener listener : listeners) {
+                            listener.onAddressError();
+                        }
+                        return;
+                    }
                     for (ContactsRequestListener listener : listeners) {
                         listener.onRequestError();
                     }

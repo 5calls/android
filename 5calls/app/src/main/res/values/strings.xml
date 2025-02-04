@@ -344,7 +344,7 @@
     <string name="address_hint">Address or zip code</string>
 
     <!-- Error message for when an address is invalid according to the API [CHAR_LIMIT=150] -->
-    <string name="error_address_invalid">The address is invalid. Please update your location and try again.</string>
+    <string name="error_address_invalid">The address you entered was not found. Please update your location and try again.</string>
 
     <!-- Error message shown on the address text field when a user tries to submit an empty address [CHAR_LIMIT=50] -->
     <string name="error_address_empty">Enter an address or zip code</string>

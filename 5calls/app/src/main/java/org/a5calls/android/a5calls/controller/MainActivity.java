@@ -342,7 +342,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     @Override
     public void launchLocationActivity() {
         // Clear it in case they change they location.
-        mIssuesAdapter.setContacts(new ArrayList<Contact>());
+        mIssuesAdapter.setContacts(new ArrayList<Contact>(), IssuesAdapter.NO_ERROR);
         Intent intent = new Intent(this, LocationActivity.class);
         intent.putExtra(LocationActivity.ALLOW_HOME_UP_KEY, true);
         startActivity(intent);
@@ -380,14 +380,12 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         };
 
         mContactsRequestListener = new FiveCallsApi.ContactsRequestListener() {
-
             @Override
             public void onRequestError() {
                 showSnackbar(R.string.request_error, Snackbar.LENGTH_LONG);
                 // Our only type of request in MainActivity is a GET. If it doesn't work, clear the
                 // active issues list to avoid showing a stale list.
-                mIssuesAdapter.setAllIssues(Collections.<Issue>emptyList(),
-                        IssuesAdapter.ERROR_REQUEST);
+                mIssuesAdapter.setAddressError(IssuesAdapter.ERROR_REQUEST);
                 swipeContainer.setRefreshing(false);
             }
 
@@ -396,8 +394,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 showSnackbar(R.string.json_error, Snackbar.LENGTH_LONG);
                 // Our only type of request in MainActivity is a GET. If it doesn't work, clear the
                 // active issues list to avoid showing a stale list.
-                mIssuesAdapter.setAllIssues(Collections.<Issue>emptyList(),
-                        IssuesAdapter.ERROR_REQUEST);
+                mIssuesAdapter.setAddressError(IssuesAdapter.ERROR_REQUEST);
                 swipeContainer.setRefreshing(false);
             }
 
@@ -407,8 +404,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 showSnackbar(R.string.error_address_invalid, Snackbar.LENGTH_LONG);
                 // Clear the issues but don't show the refresh button because this is an address
                 // problem.
-                mIssuesAdapter.setAllIssues(Collections.<Issue>emptyList(),
-                        IssuesAdapter.ERROR_ADDRESS);
+                mIssuesAdapter.setAddressError(IssuesAdapter.ERROR_ADDRESS);
                 swipeContainer.setRefreshing(false);
             }
 
@@ -418,7 +414,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                         getResources().getString(R.string.unknown_location) : locationName;
                 collapsingToolbarLayout.setTitle(String.format(getResources().getString(
                         R.string.title_main), locationName));
-                mIssuesAdapter.setContacts(contacts);
+                mIssuesAdapter.setContacts(contacts, IssuesAdapter.NO_ERROR);
                 
                 hideSnackbars();
 
