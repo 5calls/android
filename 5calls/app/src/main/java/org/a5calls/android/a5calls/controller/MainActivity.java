@@ -2,7 +2,6 @@ package org.a5calls.android.a5calls.controller;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
@@ -24,6 +23,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -31,19 +31,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-//import com.google.android.gms.analytics.HitBuilders;
-//import com.google.android.gms.analytics.Tracker;
 import com.google.firebase.auth.FirebaseAuth;
-import com.wbrawner.plausible.android.Plausible;
 
 import org.a5calls.android.a5calls.AppSingleton;
-import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.adapter.IssuesAdapter;
 import org.a5calls.android.a5calls.model.AccountManager;
@@ -60,6 +53,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static android.view.View.VISIBLE;
 
 /**
  * The activity which handles zip code lookup and showing the issues list.
@@ -98,6 +93,8 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     @BindView(R.id.search_bar) ViewGroup searchBar;
     @BindView(R.id.clear_search_button) ImageButton clearSearchButton;
     @BindView(R.id.search_text) TextView searchTextView;
+    @BindView(R.id.newsletter_signup_view) View newsletterHolder;
+
     private Snackbar mSnackbar;
 
     @Override
@@ -160,6 +157,11 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        swipeContainer.getLayoutParams().height = (int) (getResources().getConfiguration().screenHeightDp *
+                displayMetrics.density);
+
         setSupportActionBar(actionBar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -168,6 +170,11 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
 
         if (navigationView != null) {
             setupDrawerContent(navigationView);
+        }
+
+        //if (!accountManager.newsletterDecisionMade(this)) {
+        if (true) {  // DO NOT SUBMIT
+            newsletterHolder.setVisibility(VISIBLE);
         }
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
@@ -186,9 +193,9 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             mSearchText = savedInstanceState.getString(KEY_SEARCH_TEXT);
             if (TextUtils.isEmpty(mSearchText)) {
                 searchBar.setVisibility(View.GONE);
-                filter.setVisibility(View.VISIBLE);
+                filter.setVisibility(VISIBLE);
             } else {
-                searchBar.setVisibility(View.VISIBLE);
+                searchBar.setVisibility(VISIBLE);
                 filter.setVisibility(View.GONE);
                 searchTextView.setText(mSearchText);
             }
@@ -553,12 +560,12 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             return;
         }
         filter.setVisibility(View.GONE);
-        searchBar.setVisibility(View.VISIBLE);
+        searchBar.setVisibility(VISIBLE);
         setSearchText(searchText);
     }
 
     public void onIssueSearchCleared() {
-        filter.setVisibility(View.VISIBLE);
+        filter.setVisibility(VISIBLE);
         searchBar.setVisibility(View.GONE);
         setSearchText("");
     }
@@ -594,7 +601,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
 
     private void showAddressErrorSnackbar() {
         hideSnackbars();
-        constructSnackbar(R.string.error_address_invalid, Snackbar.LENGTH_LONG);
+        constructSnackbar(R.string.error_address_invalid, Snackbar.LENGTH_INDEFINITE);
         mSnackbar.setAction(R.string.update, new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/newsletter_signup_view"
+    style="@style/newsletterWrapperStyle"
+    android:layout_alignParentTop="true"
+    >
+
+        <LinearLayout
+            android:id="@+id/newsletterHolderStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/newsletterCardStyle"
+            android:orientation="vertical"
+            >
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/newsletter_signup_title"
+            style="@style/newsletterTitleStyle"
+            />
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/newsletter_signup_description"
+            style="@style/newsletterDescriptionStyle"
+            />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints="emailAddress"
+            android:hint="@string/newsletter_signup_hint"
+            android:inputType="textEmailAddress"
+            android:id="@+id/newsletter_email"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <Button
+                style="@style/newsletterButtonStyle"
+                android:text="@string/newsletter_no_thanks"
+                android:id="@+id/newletter_no_thanks"
+                />
+
+            <Button
+                style="@style/newsletterButtonStyle"
+                android:text="@string/newsletter_sign_up"
+                android:id="@+id/newletter_sign_up"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

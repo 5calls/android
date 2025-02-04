@@ -517,4 +517,19 @@
     <!-- Date format used for stats -->
     <string name="date_format">MM/dd/yy</string>
 
+    <!-- Title of the section inviting users to sign up for the newsletter. -->
+    <string name="newsletter_signup_title">The easy way to keep up with Congress</string>
+
+    <!-- Description of the newsletter. -->
+    <string name="newsletter_signup_description">Sign up for our newletter, just one email a week</string>
+
+    <!-- Placeholder text in newsletter signup form box for a user to enter their email. -->
+    <string name="newsletter_signup_hint">Enter your email</string>
+
+    <!-- Button to not sign up for the newsletter (also hides newsletter signup form from main page) -->
+    <string name="newsletter_no_thanks">No thanks</string>
+
+    <!-- Button to sign up for the newsletter -->
+    <string name="newsletter_sign_up">Sign me up</string>
+
 </resources>
