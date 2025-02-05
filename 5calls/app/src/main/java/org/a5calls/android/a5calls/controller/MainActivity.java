@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -84,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     private String mAddress;
     private String mLatitude;
     private String mLongitude;
-    private FirebaseAuth mAuth;
+    private FirebaseAuth mAuth = null;
 
     @BindView(R.id.swipe_container) SwipeRefreshLayout swipeContainer;
     @BindView(R.id.issues_recycler_view) RecyclerView issuesRecyclerView;
@@ -105,7 +106,12 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         super.onCreate(savedInstanceState);
 
         new AnalyticsManager().trackPageview("/");
-        mAuth = FirebaseAuth.getInstance();
+        try {
+            mAuth = FirebaseAuth.getInstance();
+        } catch (RuntimeException ex) {
+            Log.e(TAG, ex.getMessage());
+            mAuth = null;
+        }
 
         // See if we've had this user before. If not, start them at tutorial type page.
         if (!accountManager.isTutorialSeen(this)) {
@@ -216,7 +222,9 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     protected void onStart() {
         super.onStart();
 
-        mAuth.signInAnonymously();
+        if (mAuth != null) {
+            mAuth.signInAnonymously();
+        }
     }
 
     @Override
