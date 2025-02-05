@@ -24,6 +24,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.util.DisplayMetrics;
+import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -31,6 +32,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -59,7 +62,6 @@ import static android.view.View.VISIBLE;
 /**
  * The activity which handles zip code lookup and showing the issues list.
  * 
- * TODO: Add an email address sign-up field.
  * TODO: Sort issues based on which are "done" and which are not done or hide ones which are "done".
  */
 public class MainActivity extends AppCompatActivity implements IssuesAdapter.Callback {
@@ -93,7 +95,10 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     @BindView(R.id.search_bar) ViewGroup searchBar;
     @BindView(R.id.clear_search_button) ImageButton clearSearchButton;
     @BindView(R.id.search_text) TextView searchTextView;
-    @BindView(R.id.newsletter_signup_view) View newsletterHolder;
+    @BindView(R.id.newsletter_signup_view) View newsletterWrapper;
+    @BindView(R.id.newsletter_email) EditText newsletterEmail;
+    @BindView(R.id.newsletter_signup_btn) Button newsletterSignupBtn;
+    @BindView(R.id.newsletter_decline_btn) Button newsletterDeclineBtn;
 
     private Snackbar mSnackbar;
 
@@ -127,6 +132,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             return;
         }
 
+        // TODO: Remove this as probably no one is running the old version of the app any more.
         if (!accountManager.isRemindersInfoShown(this)) {
             // We haven't yet told the user that reminders exist, they probably upgraded to get here
             // instead of learning about it in the tutorial. Give a dialog explaining more.
@@ -159,8 +165,8 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        swipeContainer.getLayoutParams().height = (int) (getResources().getConfiguration().screenHeightDp *
-                displayMetrics.density);
+        swipeContainer.getLayoutParams().height =
+                (int) (getResources().getConfiguration().screenHeightDp * displayMetrics.density);
 
         setSupportActionBar(actionBar);
         if (getSupportActionBar() != null) {
@@ -172,9 +178,47 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             setupDrawerContent(navigationView);
         }
 
-        //if (!accountManager.newsletterDecisionMade(this)) {
-        if (true) {  // DO NOT SUBMIT
-            newsletterHolder.setVisibility(VISIBLE);
+        if (!accountManager.isNewsletterPromptDone(this)) {
+            newsletterWrapper.setVisibility(View.VISIBLE);
+            newsletterDeclineBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    accountManager.setNewsletterPromptDone(v.getContext(), true);
+                    findViewById(R.id.newsletter_card).setVisibility(View.GONE);
+                    findViewById(R.id.newsletter_card_result_decline).setVisibility(VISIBLE);
+                }
+            });
+            newsletterSignupBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String email = newsletterEmail.getText().toString();
+                    if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                        newsletterEmail.setError(
+                                getResources().getString(R.string.error_email_format));
+                        return;
+                    }
+                    newsletterSignupBtn.setEnabled(false);
+                    newsletterDeclineBtn.setEnabled(false);
+                    FiveCallsApi api =
+                            AppSingleton.getInstance(getApplicationContext()).getJsonController();
+                    api.newsletterSubscribe(email, new FiveCallsApi.NewsletterSubscribeCallback() {
+                        @Override
+                        public void onSuccess() {
+                            accountManager.setNewsletterPromptDone(v.getContext(), true);
+                            accountManager.setNewsletterSignUpCompleted(v.getContext(), true);
+                            findViewById(R.id.newsletter_card).setVisibility(View.GONE);
+                            findViewById(R.id.newsletter_card_result_success).setVisibility(VISIBLE);
+                        }
+
+                        @Override
+                        public void onError() {
+                            newsletterSignupBtn.setEnabled(true);
+                            newsletterDeclineBtn.setEnabled(true);
+                            showSnackbar(R.string.newsletter_signup_error, Snackbar.LENGTH_LONG);
+                        }
+                    });
+                }
+            });
         }
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
@@ -251,6 +295,11 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         mAddress = accountManager.getAddress(this);
         mLatitude = accountManager.getLat(this);
         mLongitude = accountManager.getLng(this);
+
+        if (accountManager.isNewsletterPromptDone(this) ||
+                accountManager.isNewsletterSignUpCompleted(this)) {
+            newsletterWrapper.setVisibility(View.GONE);
+        }
 
         // Refresh on resume. The post is necessary to start the spinner animation.
         // Note that refreshing issues will also refresh the contacts list when it runs

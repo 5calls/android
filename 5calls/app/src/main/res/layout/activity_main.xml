@@ -57,7 +57,17 @@
                 android:layout_height="match_parent"
                 >
 
-                <include layout="@layout/newsletter_signup_view"/>
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/newsletterWrapperStyle"
+                    android:layout_alignParentTop="true"
+                    android:id="@+id/newsletter_signup_view"
+                    >
+
+                    <include layout="@layout/newsletter_signup_view"/>
+
+                </FrameLayout>
 
                 <androidx.appcompat.widget.AppCompatSpinner
                     android:id="@+id/filter"
@@ -84,22 +94,22 @@
 
                 </RelativeLayout>
 
-        <!-- The size will be set programmatically to match the window size, which makes
-             the view fill the screen properly. -->
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/swipe_container"
-            android:layout_width="match_parent"
-            android:layout_height="800dp"
-            android:layout_alignParentBottom="true"
-            android:layout_below="@id/search_bar"
-            >
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/issues_recycler_view"
+                <!-- The size will be set programmatically to match the window size, which makes
+                     the view fill the screen properly. -->
+                <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                    android:id="@+id/swipe_container"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="800dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_below="@id/search_bar"
+                    >
 
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/issues_recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
             </RelativeLayout>
 

@@ -41,7 +41,7 @@
     <string name="about_header">MAKE YOUR VOICE HEARD</string>
 
     <!-- First paragraph of About screen text [CHAR_LIMIT=NONE] -->
-    <string name="about_p1">Turn your passive participation into active resistance. Facebook likes and Twitter retweets can\’t create the change you want to see. Calling your Government on the phone can.</string>
+    <string name="about_p1">Turn your passive participation into active resistance. 5 Calls is the easiest and most effective way for U.S. constituents to make a political impact.</string>
 
     <!-- Call to action, 'Spend 5 minutes, make 5 calls' [CHAR_LIMIT=] -->
     <string name="about_p2">Spend 5 minutes, make 5 calls.</string>
@@ -86,6 +86,9 @@
 
     <!-- Button that links to 5 Calls' Instagram [CHAR_LIMIT=30] -->
     <string name="instagram_btn" translatable="false">Instagram</string>
+
+    <!-- Button that links to 5 Calls' Bluesky [CHAR_LIMIT=30] -->
+    <string name="bluesky_btn" translatable="false">Bluesky</string>
 
     <!-- Button linking to the 5calls.org Play Store page to request a rating [CHAR_LIMIT=30] -->
     <string name="rate_us_btn">Rate 5 Calls</string>
@@ -409,6 +412,9 @@
     <!-- URL for the 5 Calls Instagram account -->
     <string name="instagram_url" translatable="false">https://www.instagram.com/5calls/</string>
 
+    <!-- URL for the 5 Calls Bluesky account -->
+    <string name="bluesky_url" translatable="false">https://bsky.app/profile/5calls.org</string>
+
     <!-- URL to sign up for the 5 Calls newsletter [CHAR_LIMIT=NONE] -->
     <string name="newsletter_url" translatable="false">https://5calls.org/</string>
 
@@ -518,18 +524,33 @@
     <string name="date_format">MM/dd/yy</string>
 
     <!-- Title of the section inviting users to sign up for the newsletter. -->
-    <string name="newsletter_signup_title">The easy way to keep up with Congress</string>
+    <string name="newsletter_signup_title">Get updates on the latest issues</string>
 
     <!-- Description of the newsletter. -->
-    <string name="newsletter_signup_description">Sign up for our newletter, just one email a week</string>
+    <string name="newsletter_signup_description">Sign up for our newsletter, just one email a week</string>
 
     <!-- Placeholder text in newsletter signup form box for a user to enter their email. -->
     <string name="newsletter_signup_hint">Enter your email</string>
 
-    <!-- Button to not sign up for the newsletter (also hides newsletter signup form from main page) -->
+    <!-- Button to not sign up for the newsletter (also hides newsletter signup form from main page). -->
     <string name="newsletter_no_thanks">No thanks</string>
 
-    <!-- Button to sign up for the newsletter -->
+    <!-- Button to sign up for the newsletter. -->
     <string name="newsletter_sign_up">Sign me up</string>
+
+    <!-- Error text shown when email format is invalid in newsletter signup form. -->
+    <string name="error_email_format">Invalid email</string>
+
+    <!-- Section title shown after the user has successfully signed up for the newsletter. -->
+    <string name="newsletter_success_title">Subscribed to 5 Calls Newsletter</string>
+
+    <!-- Section description shown after the user has successfully signed up for the newsletter. -->
+    <string name="newsletter_success_description">You\'ve successfully subscribed. The next issue will be delivered to your inbox.</string>
+
+    <!-- Section description shown after the user has declined to sign up for the newsletter now, informing them they still can later. -->
+    <string name="newsletter_decline_description">If you change your mind, you can sign up in the About page.</string>
+
+    <!-- Snackbar error shown when the newsletter subscription request failed. -->
+    <string name="newsletter_signup_error">There was an error subscribing you to the newsletter. Please try again later.</string>
 
 </resources>
