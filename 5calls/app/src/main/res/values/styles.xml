@@ -338,7 +338,8 @@
 
     <style name="spinnerStyle">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/accessibility_min_size</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">@dimen/accessibility_min_size</item>
         <item name="android:background">@color/colorAccent</item>
         <item name="android:elevation">@dimen/spinner_elevation</item>
         <item name="android:paddingLeft">@dimen/padding_spinner</item>
@@ -348,7 +349,8 @@
 
     <style name="mainSearchBarStyle">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/accessibility_min_size</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">@dimen/accessibility_min_size</item>
         <item name="android:background">@color/check_color</item>
         <item name="android:elevation">@dimen/spinner_elevation</item>
         <item name="android:visibility">gone</item>
@@ -356,7 +358,8 @@
 
     <style name="searchTextStyle">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/accessibility_min_size</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">@dimen/accessibility_min_size</item>
         <item name="android:layout_alignParentStart">true</item>
         <item name="android:layout_alignParentLeft">true</item>
         <item name="android:layout_marginStart">@dimen/text_layout_marginBottom16</item>

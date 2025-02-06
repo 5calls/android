@@ -98,7 +98,8 @@
 
                     <EditText
                         android:layout_width="wrap_content"
-                        android:layout_height="@dimen/accessibility_min_size"
+                        android:layout_height="wrap_content"
+                        android:minHeight="@dimen/accessibility_min_size"
                         android:autofillHints="emailAddress"
                         android:hint="@string/newsletter_signup_hint"
                         android:inputType="textEmailAddress"
@@ -108,7 +109,8 @@
 
                     <Button
                         android:layout_width="wrap_content"
-                        android:layout_height="@dimen/accessibility_min_size"
+                        android:layout_height="wrap_content"
+                        android:minHeight="@dimen/accessibility_min_size"
                         android:text="@string/newsletter_sign_up"
                         android:id="@+id/newsletter_signup_btn"
                         />
