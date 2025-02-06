@@ -120,14 +120,12 @@ public class RepCallActivity extends AppCompatActivity {
         mStatusListener = new FiveCallsApi.CallRequestListener() {
             @Override
             public void onRequestError() {
-                outcomeAdapter.setEnabled(true);
-                showError(R.string.request_error_db_recorded_anyway);
+                returnToIssueWithServerError();
             }
 
             @Override
             public void onJsonError() {
-                outcomeAdapter.setEnabled(true);
-                showError(R.string.json_error_db_recorded_anyway);
+                returnToIssueWithServerError();
             }
 
             @Override
@@ -138,7 +136,6 @@ public class RepCallActivity extends AppCompatActivity {
             @Override
             public void onCallReported() {
                 // Note: Skips are not reported.
-                Log.d(TAG, "call reported successfully!");
                 returnToIssue();
             }
         };
@@ -378,8 +375,25 @@ public class RepCallActivity extends AppCompatActivity {
             return;
         }
         Intent upIntent = NavUtils.getParentActivityIntent(this);
+        if (upIntent == null) {
+            return;
+        }
         upIntent.putExtra(IssueActivity.KEY_ISSUE, mIssue);
-        NavUtils.navigateUpTo(this, upIntent);
+        setResult(IssueActivity.RESULT_OK, upIntent);
+        finish();
+    }
+
+    private void returnToIssueWithServerError() {
+        if (isFinishing()) {
+            return;
+        }
+        Intent upIntent = NavUtils.getParentActivityIntent(this);
+        if (upIntent == null) {
+            return;
+        }
+        upIntent.putExtra(IssueActivity.KEY_ISSUE, mIssue);
+        setResult(IssueActivity.RESULT_SERVER_ERROR, upIntent);
+        finish();
     }
 
     private int getSpanCount(Activity activity) {

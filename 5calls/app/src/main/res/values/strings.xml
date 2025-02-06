@@ -148,11 +148,8 @@
     <!-- Menu option to refresh the issues list [CHAR_LIMIT=25] -->
     <string name="refresh">Refresh issues</string>
 
-    <!-- Message shown when a call state was recorded locally but there was an issue communicating the result to the server. [CHAR_LIMIT=150] -->
-    <string name="request_error_db_recorded_anyway">Call recorded, but there was a problem communicating with the server. Is your device online?</string>
-
-    <!-- Message shown when a call state was recorded locally but there was an issue parsing the JSON response from the server. [CHAR_LIMIT=150] -->
-    <string name="json_error_db_recorded_anyway">Call recorded, but we had some issues contacting the server.</string>
+    <!-- Message shown when a call state was recorded locally but there was an issue communicating a result or parsing the JSON response from the server. [CHAR_LIMIT=150] -->
+    <string name="call_error_db_recorded_anyway">Call recorded for you, but we had some issues contacting the server.</string>
 
     <!-- Menu option to go to a settings page [CHAR_LIMIT=25] -->
     <string name="settings">Settings</string>

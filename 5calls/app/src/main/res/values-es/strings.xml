@@ -125,11 +125,8 @@
     <!-- Menu option to refresh the issues list [CHAR_LIMIT=25] -->
     <string name="refresh">Reactualizar asuntos</string>
 
-    <!-- Message shown when a call state was recorded locally but there was an issue communicating the result to the server. [CHAR_LIMIT=150] -->
-    <string name="request_error_db_recorded_anyway">Llamada registrada, pero hubo un problema al comunicarse con el servidor. ¿Está en línea su aparato?</string>
-
     <!-- Message shown when a call state was recorded locally but there was an issue parsing the JSON response from the server. [CHAR_LIMIT=150] -->
-    <string name="json_error_db_recorded_anyway">Llamada grabada, pero tuvimos algunos problemas al contactar al servidor.</string>
+    <string name="call_error_db_recorded_anyway">Llamada grabada, pero tuvimos algunos problemas al contactar al servidor.</string>
 
     <!-- Menu option to go to a settings page [CHAR_LIMIT=25] -->
     <string name="settings">Configuración</string>
