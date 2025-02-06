@@ -7,7 +7,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.util.Log;
 
 import org.a5calls.android.a5calls.BuildConfig;
 import org.a5calls.android.a5calls.R;
@@ -15,7 +14,7 @@ import org.a5calls.android.a5calls.controller.NotifyBroadcastReceiver;
 
 import java.util.Calendar;
 
-import static android.app.PendingIntent.FLAG_IMMUTABLE;
+import static android.app.PendingIntent.FLAG_MUTABLE;
 
 /**
  * Manages scheduling notifications
@@ -54,9 +53,9 @@ public class NotificationUtils {
         // We try firing the alarm every day, but will only set the notification if it is one of
         // the user's selected days.
         PendingIntent pendingIntent = cancelPendingIntent(context);
-        ((AlarmManager) context.getSystemService(Context.ALARM_SERVICE))
-                .setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), intervalMillis,
-                        pendingIntent);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                intervalMillis, pendingIntent);
     }
 
     public static void cancelFutureReminders(Context context) {
@@ -72,7 +71,7 @@ public class NotificationUtils {
     private static PendingIntent cancelPendingIntent(Context context) {
         Intent intent = new Intent(context, NotifyBroadcastReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, NOTIFICATION_REQUEST_CODE,
-                intent, FLAG_IMMUTABLE);
+                intent, FLAG_MUTABLE);
         AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         manager.cancel(pendingIntent); // Clear the old intent, if there was one.
         return pendingIntent;
@@ -81,7 +80,7 @@ public class NotificationUtils {
     public static void snoozeNotification(Context context) {
         Intent snoozeIntent = new Intent(context, NotifyBroadcastReceiver.class);
         PendingIntent pendingSnooze = PendingIntent.getBroadcast(context, NOTIFICATION_REQUEST_CODE,
-                snoozeIntent, FLAG_IMMUTABLE);
+                snoozeIntent, FLAG_MUTABLE);
         Calendar when = Calendar.getInstance();
         if (BuildConfig.DEBUG && FREQUENT_NOTIFICATION_DEBUG_MODE) {
             when.add(Calendar.SECOND, 30);
