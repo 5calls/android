@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
+
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.core.app.NavUtils;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
@@ -248,19 +250,10 @@ public class RepCallActivity extends AppCompatActivity {
         if (!TextUtils.isEmpty(contact.photoURL)) {
             Glide.with(getApplicationContext())
                     .load(contact.photoURL)
-                    .asBitmap()
                     .centerCrop()
+                    .transform(new CircleCrop())
                     .placeholder(R.drawable.baseline_person_52)
-                    .into(new BitmapImageViewTarget(repImage) {
-                        @Override
-                        protected void setResource(Bitmap resource) {
-                            RoundedBitmapDrawable drawable = RoundedBitmapDrawableFactory.create(
-                                    repImage.getContext().getResources(), resource);
-                            drawable.setCircular(true);
-                            drawable.setGravity(Gravity.TOP);
-                            repImage.setImageDrawable(drawable);
-                        }
-                    });
+                    .into(repImage);
         }
         phoneNumber.setText(contact.phone);
         Linkify.addLinks(phoneNumber, Linkify.PHONE_NUMBERS);

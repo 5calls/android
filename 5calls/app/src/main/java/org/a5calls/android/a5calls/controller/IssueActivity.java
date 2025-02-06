@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -360,22 +361,13 @@ public class IssueActivity extends AppCompatActivity {
         if (!TextUtils.isEmpty(contact.photoURL)) {
             Glide.with(getApplicationContext())
                     .load(contact.photoURL)
-                    .asBitmap()
                     .centerCrop()
+                    .transform(new CircleCrop())
                     .placeholder(R.drawable.baseline_person_52)
-                    .into(new BitmapImageViewTarget(repImage) {
-                        @Override
-                        protected void setResource(Bitmap resource) {
-                            RoundedBitmapDrawable drawable = RoundedBitmapDrawableFactory.create(
-                                    repImage.getContext().getResources(), resource);
-                            drawable.setCircular(true);
-                            drawable.setGravity(Gravity.TOP);
-                            repImage.setImageDrawable(drawable);
-                        }
-                    });
+                    .into(repImage);
         }
         // Show a bit about whether they've been contacted yet
-        if (previousCalls.size() > 0) {
+        if (!previousCalls.isEmpty()) {
             contactChecked.setImageLevel(1);
             contactChecked.setContentDescription(getResources().getString(
                     R.string.contact_done_img_description));
