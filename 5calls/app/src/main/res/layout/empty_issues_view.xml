@@ -7,15 +7,16 @@
 
     <TextView
         style="@style/emptyInvalidStyle"
-        android:layout_above="@+id/refresh_btn"
         android:text="@string/request_error"
+        android:id="@+id/error_text"
         />
 
     <Button
-        android:id="@id/refresh_btn"
+        android:id="@+id/refresh_btn"
         style="@style/emptyIssuesBtnStyle"
-        android:drawableLeft="@drawable/ic_refresh_white_24dp"
+        android:drawableStart="@drawable/ic_refresh_white_24dp"
         android:text="@string/try_again_btn"
+        android:layout_below="@id/error_text"
         />
 
 </RelativeLayout>

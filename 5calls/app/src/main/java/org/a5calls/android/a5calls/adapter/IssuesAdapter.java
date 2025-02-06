@@ -352,7 +352,7 @@ private static class EmptyRequestViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
         refreshButton = (Button) itemView.findViewById(R.id.refresh_btn);
         // Tinting the compound drawable only works API 23+, so do this manually.
-        refreshButton.getCompoundDrawables()[0].mutate().setColorFilter(
+        refreshButton.getCompoundDrawablesRelative()[0].mutate().setColorFilter(
                 refreshButton.getResources().getColor(R.color.colorAccent),
                 PorterDuff.Mode.MULTIPLY);
     }
@@ -365,7 +365,7 @@ private static class EmptyAddressViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
         locationButton = (Button) itemView.findViewById(R.id.location_btn);
         // Tinting the compound drawable only works API 23+, so do this manually.
-        locationButton.getCompoundDrawables()[0].mutate().setColorFilter(
+        locationButton.getCompoundDrawablesRelative()[0].mutate().setColorFilter(
                 locationButton.getResources().getColor(R.color.colorAccent),
                 PorterDuff.Mode.MULTIPLY);
     }
@@ -378,7 +378,7 @@ private static class EmptySearchViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
         searchButton = (Button) itemView.findViewById(R.id.search_btn);
         // Tinting the compound drawable only works API 23+, so do this manually.
-        searchButton.getCompoundDrawables()[0].mutate().setColorFilter(
+        searchButton.getCompoundDrawablesRelative()[0].mutate().setColorFilter(
                 searchButton.getResources().getColor(R.color.colorAccent),
                 PorterDuff.Mode.MULTIPLY);
     }

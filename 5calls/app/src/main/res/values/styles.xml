@@ -528,9 +528,11 @@
     <style name="emptyInvalidStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_centerHorizontal">true</item>\
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_alignParentTop">true</item>
         <item name="android:layout_marginLeft">@dimen/text_layout_margin32</item>
         <item name="android:layout_marginRight">@dimen/text_layout_margin32</item>
+        <item name="android:layout_marginTop">@dimen/layout_margin_top</item>
         <item name="android:textSize">@dimen/splash_text_size</item>
         <item name="android:textAlignment">center</item>
     </style>
@@ -541,7 +543,7 @@
         <item name="android:background">@android:color/transparent</item>
         <item name="android:minHeight">@dimen/accessibility_min_size</item>
         <item name="android:textColor">@color/colorAccent</item>
-        <item name="android:layout_centerInParent">true</item>
+        <item name="android:layout_centerHorizontal">true</item>
         <item name="android:drawablePadding">@dimen/grid_padding</item>
     </style>
 

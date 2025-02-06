@@ -30,6 +30,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -163,11 +164,6 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        swipeContainer.getLayoutParams().height =
-                (int) (getResources().getConfiguration().screenHeightDp * displayMetrics.density);
-
         setSupportActionBar(actionBar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -289,6 +285,22 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     @Override
     protected void onResume() {
         super.onResume();
+
+        drawerLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                DisplayMetrics displayMetrics = new DisplayMetrics();
+                getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+                int supportActionBarHeight =
+                        getSupportActionBar() != null ? getSupportActionBar().getHeight() : 0;
+                int searchHeight = searchBar.getHeight();
+                int filterHeight = filter.getHeight();
+                swipeContainer.getLayoutParams().height = (int)
+                        (getResources().getConfiguration().screenHeightDp * displayMetrics.density -
+                                searchHeight - filterHeight - supportActionBarHeight);
+                filter.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
 
         loadStats();
 
