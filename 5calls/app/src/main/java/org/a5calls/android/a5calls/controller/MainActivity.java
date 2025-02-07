@@ -417,6 +417,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             public void onContactsReceived(String locationName, List<Contact> contacts) {
                 locationName = TextUtils.isEmpty(locationName) ?
                         getResources().getString(R.string.unknown_location) : locationName;
+                AccountManager.Instance.setLocationName(MainActivity.this, locationName);
                 collapsingToolbarLayout.setTitle(String.format(getResources().getString(
                         R.string.title_main), locationName));
                 mIssuesAdapter.setContacts(contacts, IssuesAdapter.NO_ERROR);
