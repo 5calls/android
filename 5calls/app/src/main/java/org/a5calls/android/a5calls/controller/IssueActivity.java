@@ -187,14 +187,7 @@ public class IssueActivity extends AppCompatActivity {
             }
         });
 
-        new AnalyticsManager().trackPageview(String.format("/issue/%s/", mIssue.slug));
-
-        // We allow Analytics opt-out.
-        if (accountManager.allowAnalytics(this)) {
-            // Obtain the shared Tracker instance.
-//            FiveCallsApplication application = (FiveCallsApplication) getApplication();
-//            mTracker = application.getDefaultTracker();
-        }
+        new AnalyticsManager().trackPageview(String.format("/issue/%s/", mIssue.slug), this);
     }
 
     @Override

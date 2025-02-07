@@ -10,9 +10,6 @@ import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 
-//import com.google.android.gms.analytics.HitBuilders;
-//import com.google.android.gms.analytics.Tracker;
-
 import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
@@ -49,32 +46,14 @@ public class NotifyBroadcastReceiver extends BroadcastReceiver {
                     .cancel(NOTIFICATION_ID);
             // Do the snooze
             NotificationUtils.snoozeNotification(context);
-            if (AccountManager.Instance.allowAnalytics(context)) {
-                FiveCallsApplication application = (FiveCallsApplication)
-                        context.getApplicationContext();
-//                Tracker tracker = application.getDefaultTracker();
-//                tracker.send(new HitBuilders.EventBuilder()
-//                        .setCategory("Reminders")
-//                        .setAction("SnoozeReminder")
-//                        .setValue(1)
-//                        .build());
-            }
+            // Could log analytics here.
             return;
         }
         if (TextUtils.equals(intent.getAction(), ACTION_CANCEL_NOTIFY)) {
             // Cancel the notification and do nothing else
             ((NotificationManager) context.getSystemService(NOTIFICATION_SERVICE))
                     .cancel(NOTIFICATION_ID);
-            if (AccountManager.Instance.allowAnalytics(context)) {
-                FiveCallsApplication application = (FiveCallsApplication)
-                        context.getApplicationContext();
-//                Tracker tracker = application.getDefaultTracker();
-//                tracker.send(new HitBuilders.EventBuilder()
-//                        .setCategory("Reminders")
-//                        .setAction("CancelReminder")
-//                        .setValue(1)
-//                        .build());
-            }
+            // Could log analytics here.
             return;
         }
         if (((FiveCallsApplication) context.getApplicationContext()).isRunning()) {

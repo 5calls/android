@@ -109,7 +109,6 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         // TODO: Consider using fragments
         super.onCreate(savedInstanceState);
 
-        new AnalyticsManager().trackPageview("/");
         try {
             mAuth = FirebaseAuth.getInstance();
         } catch (RuntimeException ex) {
@@ -150,16 +149,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         Intent intent = getIntent();
         if (intent != null && intent.getExtras() != null &&
                 intent.getExtras().getBoolean(EXTRA_FROM_NOTIFICATION, false)) {
-            if (accountManager.allowAnalytics(this)) {
-                // Obtain the shared Tracker instance.
-//                FiveCallsApplication application = (FiveCallsApplication) getApplication();
-//                Tracker tracker = application.getDefaultTracker();
-//                tracker.send(new HitBuilders.EventBuilder()
-//                        .setCategory("Reminders")
-//                        .setAction("LaunchFromReminder")
-//                        .setValue(1)
-//                        .build());
-            }
+            new AnalyticsManager().trackPageview("/", this);
         }
 
         setContentView(R.layout.activity_main);
@@ -323,15 +313,6 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 refreshIssues();
             }
         });
-
-        // We allow Analytics opt-out.
-        if (accountManager.allowAnalytics(this)) {
-            // Obtain the shared Tracker instance.
-//            FiveCallsApplication application = (FiveCallsApplication) getApplication();
-//            Tracker tracker = application.getDefaultTracker();
-//            tracker.setScreenName(TAG);
-//            tracker.send(new HitBuilders.ScreenViewBuilder().build());
-        }
     }
 
     @Override

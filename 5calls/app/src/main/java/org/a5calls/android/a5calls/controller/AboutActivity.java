@@ -7,7 +7,6 @@ import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,15 +20,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-//import com.google.android.gms.analytics.HitBuilders;
-//import com.google.android.gms.analytics.Tracker;
-
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.BuildConfig;
-import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
 import org.a5calls.android.a5calls.R;
+import org.a5calls.android.a5calls.util.AnalyticsManager;
 import org.a5calls.android.a5calls.util.CustomTabsUtil;
 
 import java.text.NumberFormat;
@@ -212,6 +208,8 @@ public class AboutActivity extends AppCompatActivity {
                 .getJsonController();
         controller.registerCallRequestListener(mStatusListener);
         controller.getCallCount();
+
+        new AnalyticsManager().trackPageview("/about", this);
     }
 
     @Override
@@ -237,15 +235,6 @@ public class AboutActivity extends AppCompatActivity {
 
         if (accountManager.isNewsletterSignUpCompleted(this)) {
             newsletterWrapper.setVisibility(View.GONE);
-        }
-
-        // We allow Analytics opt-out.
-        if (accountManager.allowAnalytics(this)) {
-            // Obtain the shared Tracker instance.
-//            FiveCallsApplication application = (FiveCallsApplication) getApplication();
-//            Tracker tracker = application.getDefaultTracker();
-//            tracker.setScreenName(TAG);
-//            tracker.send(new HitBuilders.ScreenViewBuilder().build());
         }
     }
 

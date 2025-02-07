@@ -14,14 +14,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-//import com.google.android.gms.analytics.HitBuilders;
-//import com.google.android.gms.analytics.Tracker;
-
 import org.a5calls.android.a5calls.AppSingleton;
-import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
+import org.a5calls.android.a5calls.util.AnalyticsManager;
 
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -45,6 +42,8 @@ public class TutorialActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         viewPager.setAdapter(new TutorialPagerAdapter(getSupportFragmentManager()));
+
+        new AnalyticsManager().trackPageview("/tutorial", this);
     }
 
     @Override
@@ -61,19 +60,6 @@ public class TutorialActivity extends AppCompatActivity {
 
     public void onNextPressed() {
         viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // We allow Analytics opt-out.
-        if (AccountManager.Instance.allowAnalytics(this)) {
-            // Obtain the shared Tracker instance.
-            FiveCallsApplication application = (FiveCallsApplication) getApplication();
-//            Tracker tracker = application.getDefaultTracker();
-//            tracker.setScreenName(TAG);
-//            tracker.send(new HitBuilders.ScreenViewBuilder().build());
-        }
     }
 
     private class TutorialPagerAdapter extends FragmentPagerAdapter {

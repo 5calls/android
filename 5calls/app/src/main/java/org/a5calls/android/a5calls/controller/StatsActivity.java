@@ -30,19 +30,16 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.DefaultValueFormatter;
-//import com.google.android.gms.analytics.HitBuilders;
-//import com.google.android.gms.analytics.Tracker;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
 import org.a5calls.android.a5calls.AppSingleton;
-import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
-import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.DatabaseHelper;
 import org.a5calls.android.a5calls.model.Outcome;
+import org.a5calls.android.a5calls.util.AnalyticsManager;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -65,7 +62,6 @@ public class StatsActivity extends AppCompatActivity {
     private SimpleDateFormat dateFormat;
     private int mCallCount = 0;
     private ShareActionProvider mShareActionProvider;
-//    private Tracker mTracker;
 
     @BindView(R.id.no_calls_message) TextView noCallsMessage;
     @BindView(R.id.stats_holder) LinearLayout statsHolder;
@@ -88,6 +84,8 @@ public class StatsActivity extends AppCompatActivity {
 
         DatabaseHelper db = AppSingleton.getInstance(this).getDatabaseHelper();
         initializeUI(db);
+
+        new AnalyticsManager().trackPageview("/stats", this);
     }
 
     private void initializeUI(DatabaseHelper db) {
@@ -291,20 +289,6 @@ public class StatsActivity extends AppCompatActivity {
         series.setColor(getResources().getColor(colorId));
         series.setThickness(getResources().getDimensionPixelSize(R.dimen.graph_line_width));
         return series;
-    }
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // We allow Analytics opt-out.
-        if (AccountManager.Instance.allowAnalytics(this)) {
-            // Obtain the shared Tracker instance.
-//            FiveCallsApplication application = (FiveCallsApplication) getApplication();
-//            mTracker = application.getDefaultTracker();
-//            mTracker.setScreenName(TAG);
-//            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
-        }
     }
 
     @Override

@@ -4,15 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.core.app.NavUtils;
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.core.widget.NestedScrollView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,8 +18,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.text.util.Linkify;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,15 +30,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
-//import com.google.android.gms.analytics.HitBuilders;
-//import com.google.android.gms.analytics.Tracker;
 
 import org.a5calls.android.a5calls.AppSingleton;
-import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.adapter.OutcomeAdapter;
-import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.model.Outcome;
@@ -73,12 +63,9 @@ public class RepCallActivity extends AppCompatActivity {
     public static final String KEY_ACTIVE_CONTACT_INDEX = "active_contact_index";
     private static final String KEY_LOCAL_OFFICES_EXPANDED = "local_offices_expanded";
 
-    private final AccountManager accountManager = AccountManager.Instance;
-
     private FiveCallsApi.CallRequestListener mStatusListener;
     private Issue mIssue;
     private int mActiveContactIndex;
-//    private Tracker mTracker = null;
     private OutcomeAdapter outcomeAdapter;
 
     @BindView(R.id.scroll_view) NestedScrollView scrollView;
@@ -187,14 +174,7 @@ public class RepCallActivity extends AppCompatActivity {
         outcomeList.addItemDecoration(new GridItemDecoration(gridPadding,
                 getSpanCount(RepCallActivity.this)));
 
-        new AnalyticsManager().trackPageview(String.format("/issue/%s/%s/",mIssue.slug,c.id));
-
-        // We allow Analytics opt-out.
-        if (accountManager.allowAnalytics(this)) {
-            // Obtain the shared Tracker instance.
-            FiveCallsApplication application = (FiveCallsApplication) getApplication();
-//            mTracker = application.getDefaultTracker();
-        }
+        new AnalyticsManager().trackPageview(String.format("/issue/%s/%s/", mIssue.slug,c.id), this);
     }
 
     @Override
@@ -210,15 +190,6 @@ public class RepCallActivity extends AppCompatActivity {
         outState.putParcelable(KEY_ISSUE, mIssue);
         outState.putBoolean(KEY_LOCAL_OFFICES_EXPANDED,
                 localOfficeSection.getVisibility() == View.VISIBLE);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-//        if (mTracker != null) {
-//            mTracker.setScreenName(TAG);
-//            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
-//        }
     }
 
     @Override
@@ -356,14 +327,7 @@ public class RepCallActivity extends AppCompatActivity {
     }
 
     private void reportEvent(String event) {
-//        if (mTracker != null) {
-//            mTracker.send(new HitBuilders.EventBuilder()
-//                    .setCategory("CallAction")
-//                    .setAction(event)
-//                    .setLabel(mIssue.id + " " + mIssue.contacts.get(mActiveContactIndex).id)
-//                    .setValue(1)
-//                    .build());
-//        }
+        // Could add analytics here.
     }
 
     private void returnToIssue() {

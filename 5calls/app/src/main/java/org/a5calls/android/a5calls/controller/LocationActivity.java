@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
+import org.a5calls.android.a5calls.util.AnalyticsManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -106,19 +107,13 @@ public class LocationActivity extends AppCompatActivity {
             gpsPrompt.setVisibility(View.GONE);
             gpsButton.setVisibility(View.GONE);
         }
+
+        new AnalyticsManager().trackPageview("/location", this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        if (accountManager.allowAnalytics(this)) {
-            // Obtain the shared Tracker instance.
-//            FiveCallsApplication application = (FiveCallsApplication) getApplication();
-//            Tracker tracker = application.getDefaultTracker();
-//            tracker.setScreenName(TAG);
-//            tracker.send(new HitBuilders.ScreenViewBuilder().build());
-        }
     }
 
     @Override

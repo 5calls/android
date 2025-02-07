@@ -16,15 +16,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.MenuItem;
 
-//import com.google.android.gms.analytics.HitBuilders;
-//import com.google.android.gms.analytics.Tracker;
-
 import com.onesignal.OneSignal;
 
 import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.NotificationUtils;
+import org.a5calls.android.a5calls.util.AnalyticsManager;
 
 import java.util.Arrays;
 import java.util.List;
@@ -52,32 +50,11 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         if (getIntent().getBooleanExtra(EXTRA_FROM_NOTIFICATION, false)) {
-            if (accountManager.allowAnalytics(this)) {
-                FiveCallsApplication application = (FiveCallsApplication) getApplication();
-//                Tracker tracker = application.getDefaultTracker();
-//                tracker.send(new HitBuilders.EventBuilder()
-//                        .setCategory("Reminders")
-//                        .setAction("SettingsFromReminder")
-//                        .setValue(1)
-//                        .build());
-            }
+            new AnalyticsManager().trackPageview("/settings", this);
         }
 
         getFragmentManager().beginTransaction().replace(R.id.content, new SettingsFragment())
                 .commit();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // We allow Analytics opt-out.
-        if (accountManager.allowAnalytics(this)) {
-            // Obtain the shared Tracker instance.
-//            FiveCallsApplication application = (FiveCallsApplication) getApplication();
-//            Tracker tracker = application.getDefaultTracker();
-//            tracker.setScreenName(TAG);
-//            tracker.send(new HitBuilders.ScreenViewBuilder().build());
-        }
     }
 
     @Override
