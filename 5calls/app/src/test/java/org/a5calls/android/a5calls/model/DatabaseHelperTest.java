@@ -1,6 +1,5 @@
-package org.a5calls.android.a5calls;
+package org.a5calls.android.a5calls.model;
 
-import org.a5calls.android.a5calls.model.DatabaseHelper;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

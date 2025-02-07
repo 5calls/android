@@ -2,6 +2,9 @@ package org.a5calls.android.a5calls;
 
 import android.content.Context;
 
+import com.android.volley.toolbox.Volley;
+
+import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.DatabaseHelper;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
 
@@ -35,7 +38,9 @@ public class AppSingleton {
 
     public FiveCallsApi getJsonController() {
         if (mFiveCallsApi == null) {
-            mFiveCallsApi = new FiveCallsApi(mContext);
+            mFiveCallsApi = new FiveCallsApi(
+                    AccountManager.Instance.getCallerID(mContext),
+                    Volley.newRequestQueue(mContext));
         }
         return mFiveCallsApi;
     }
