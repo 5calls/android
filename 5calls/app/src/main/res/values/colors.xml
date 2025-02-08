@@ -10,7 +10,7 @@
     <color name="check_color">#0f9d58</color>
     <color name="textColorDarkGrey">#333333</color>
     <color name="textColorLightGrey">#666</color>
-    <color name="check_circle_outside_color">#CCC</color>
+    <color name="check_circle_outside_color">#AAA</color>
     <color name="contacted_color">@color/colorAccent</color>
     <color name="voicemail_color">@color/colorPrimary</color>
     <color name="unavailable_color">@color/colorPrimaryDark</color>

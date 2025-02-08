@@ -2,7 +2,6 @@ package org.a5calls.android.a5calls.controller;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
@@ -24,26 +23,24 @@ import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.util.DisplayMetrics;
+import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-//import com.google.android.gms.analytics.HitBuilders;
-//import com.google.android.gms.analytics.Tracker;
 import com.google.firebase.auth.FirebaseAuth;
-import com.wbrawner.plausible.android.Plausible;
 
 import org.a5calls.android.a5calls.AppSingleton;
-import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.adapter.IssuesAdapter;
 import org.a5calls.android.a5calls.model.AccountManager;
@@ -61,10 +58,11 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.view.View.VISIBLE;
+
 /**
  * The activity which handles zip code lookup and showing the issues list.
  * 
- * TODO: Add an email address sign-up field.
  * TODO: Sort issues based on which are "done" and which are not done or hide ones which are "done".
  */
 public class MainActivity extends AppCompatActivity implements IssuesAdapter.Callback {
@@ -99,6 +97,11 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     @BindView(R.id.search_bar) ViewGroup searchBar;
     @BindView(R.id.clear_search_button) ImageButton clearSearchButton;
     @BindView(R.id.search_text) TextView searchTextView;
+    @BindView(R.id.newsletter_signup_view) View newsletterWrapper;
+    @BindView(R.id.newsletter_email) EditText newsletterEmail;
+    @BindView(R.id.newsletter_signup_btn) Button newsletterSignupBtn;
+    @BindView(R.id.newsletter_decline_btn) Button newsletterDeclineBtn;
+
     private Snackbar mSnackbar;
 
     @Override
@@ -131,6 +134,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             return;
         }
 
+        // TODO: Remove this as probably no one is running the old version of the app any more.
         if (!accountManager.isRemindersInfoShown(this)) {
             // We haven't yet told the user that reminders exist, they probably upgraded to get here
             // instead of learning about it in the tutorial. Give a dialog explaining more.
@@ -171,6 +175,49 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             setupDrawerContent(navigationView);
         }
 
+        if (!accountManager.isNewsletterPromptDone(this)) {
+            newsletterWrapper.setVisibility(View.VISIBLE);
+            newsletterDeclineBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    accountManager.setNewsletterPromptDone(v.getContext(), true);
+                    findViewById(R.id.newsletter_card).setVisibility(View.GONE);
+                    findViewById(R.id.newsletter_card_result_decline).setVisibility(VISIBLE);
+                }
+            });
+            newsletterSignupBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String email = newsletterEmail.getText().toString();
+                    if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                        newsletterEmail.setError(
+                                getResources().getString(R.string.error_email_format));
+                        return;
+                    }
+                    newsletterSignupBtn.setEnabled(false);
+                    newsletterDeclineBtn.setEnabled(false);
+                    FiveCallsApi api =
+                            AppSingleton.getInstance(getApplicationContext()).getJsonController();
+                    api.newsletterSubscribe(email, new FiveCallsApi.NewsletterSubscribeCallback() {
+                        @Override
+                        public void onSuccess() {
+                            accountManager.setNewsletterPromptDone(v.getContext(), true);
+                            accountManager.setNewsletterSignUpCompleted(v.getContext(), true);
+                            findViewById(R.id.newsletter_card).setVisibility(View.GONE);
+                            findViewById(R.id.newsletter_card_result_success).setVisibility(VISIBLE);
+                        }
+
+                        @Override
+                        public void onError() {
+                            newsletterSignupBtn.setEnabled(true);
+                            newsletterDeclineBtn.setEnabled(true);
+                            showSnackbar(R.string.newsletter_signup_error, Snackbar.LENGTH_LONG);
+                        }
+                    });
+                }
+            });
+        }
+
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         issuesRecyclerView.setLayoutManager(layoutManager);
         DividerItemDecoration divider = new DividerItemDecoration(this, RecyclerView.VERTICAL);
@@ -187,9 +234,9 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             mSearchText = savedInstanceState.getString(KEY_SEARCH_TEXT);
             if (TextUtils.isEmpty(mSearchText)) {
                 searchBar.setVisibility(View.GONE);
-                filter.setVisibility(View.VISIBLE);
+                filter.setVisibility(VISIBLE);
             } else {
-                searchBar.setVisibility(View.VISIBLE);
+                searchBar.setVisibility(VISIBLE);
                 filter.setVisibility(View.GONE);
                 searchTextView.setText(mSearchText);
             }
@@ -240,11 +287,32 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     protected void onResume() {
         super.onResume();
 
+        drawerLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                DisplayMetrics displayMetrics = new DisplayMetrics();
+                getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+                int supportActionBarHeight =
+                        getSupportActionBar() != null ? getSupportActionBar().getHeight() : 0;
+                int searchHeight = searchBar.getHeight();
+                int filterHeight = filter.getHeight();
+                swipeContainer.getLayoutParams().height = (int)
+                        (getResources().getConfiguration().screenHeightDp * displayMetrics.density -
+                                searchHeight - filterHeight - supportActionBarHeight);
+                filter.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
+
         loadStats();
 
         mAddress = accountManager.getAddress(this);
         mLatitude = accountManager.getLat(this);
         mLongitude = accountManager.getLng(this);
+
+        if (accountManager.isNewsletterPromptDone(this) ||
+                accountManager.isNewsletterSignUpCompleted(this)) {
+            newsletterWrapper.setVisibility(View.GONE);
+        }
 
         // Refresh on resume. The post is necessary to start the spinner animation.
         // Note that refreshing issues will also refresh the contacts list when it runs
@@ -555,12 +623,12 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             return;
         }
         filter.setVisibility(View.GONE);
-        searchBar.setVisibility(View.VISIBLE);
+        searchBar.setVisibility(VISIBLE);
         setSearchText(searchText);
     }
 
     public void onIssueSearchCleared() {
-        filter.setVisibility(View.VISIBLE);
+        filter.setVisibility(VISIBLE);
         searchBar.setVisibility(View.GONE);
         setSearchText("");
     }
@@ -596,7 +664,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
 
     private void showAddressErrorSnackbar() {
         hideSnackbars();
-        constructSnackbar(R.string.error_address_invalid, Snackbar.LENGTH_LONG);
+        constructSnackbar(R.string.error_address_invalid, Snackbar.LENGTH_INDEFINITE);
         mSnackbar.setAction(R.string.update, new View.OnClickListener() {
             @Override
             public void onClick(View v) {

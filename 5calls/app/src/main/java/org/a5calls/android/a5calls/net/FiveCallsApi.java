@@ -44,11 +44,13 @@ public class FiveCallsApi {
     // request on the server. This will only work on debug builds.
     private static final boolean TESTING = true;
 
-    private static final String GET_ISSUES_REQUEST = "https://api.5calls.org/v1/issues"; //"https://5calls.org/issues/?address=";
+    private static final String GET_ISSUES_REQUEST = "https://api.5calls.org/v1/issues";
 
     private static final String GET_CONTACTS_REQUEST = "https://api.5calls.org/v1/reps?location=";
 
     private static final String GET_REPORT = "https://api.5calls.org/v1/report";
+
+    private static final String NEWSLETTER_SUBSCRIBE = "https://buttondown.com/api/emails/embed-subscribe/5calls";
 
     public interface CallRequestListener {
         void onRequestError();
@@ -78,19 +80,25 @@ public class FiveCallsApi {
         void onContactsReceived(String locationName, List<Contact> contacts);
     }
 
+    public interface NewsletterSubscribeCallback {
+        void onSuccess();
+        void onError();
+    }
+
     private RequestQueue mRequestQueue;
     private Gson mGson;
     private List<CallRequestListener> mCallRequestListeners = new ArrayList<>();
     private List<IssuesRequestListener> mIssuesRequestListeners = new ArrayList<>();
     private List<ContactsRequestListener> mContactsRequestListeners = new ArrayList<>();
-    private Context mContext;
 
-    public FiveCallsApi(Context context) {
+    private final String mCallerId;
+
+    public FiveCallsApi(String callerId, RequestQueue requestQueue) {
         // TODO: Using OkHttpClient and OkHttpStack cause failures on multiple types of Samsung
         // Galaxy devices.
-        mContext = context;
+        mCallerId = callerId;
         //mRequestQueue = Volley.newRequestQueue(context, new OkHttpStack(new OkHttpClient()));
-        mRequestQueue = Volley.newRequestQueue(context);
+        mRequestQueue = requestQueue;
         mGson = new GsonBuilder()
                 .serializeNulls()
                 .registerTypeAdapter(Outcome.Status.class, new OutcomeStatusTypeAdapter())
@@ -102,9 +110,7 @@ public class FiveCallsApi {
     }
 
     public void unregisterCallRequestListener(CallRequestListener callRequestListener) {
-        if (mCallRequestListeners.contains(callRequestListener)) {
-            mCallRequestListeners.remove(callRequestListener);
-        }
+        mCallRequestListeners.remove(callRequestListener);
     }
 
     public void registerIssuesRequestListener(IssuesRequestListener issuesRequestListener) {
@@ -112,9 +118,7 @@ public class FiveCallsApi {
     }
 
     public void unregisterIssuesRequestListener(IssuesRequestListener issuesRequestListener) {
-        if (mIssuesRequestListeners.contains(issuesRequestListener)) {
-            mIssuesRequestListeners.remove(issuesRequestListener);
-        }
+        mIssuesRequestListeners.remove(issuesRequestListener);
     }
 
     public void registerContactsRequestListener(ContactsRequestListener contactsRequestListener) {
@@ -122,9 +126,7 @@ public class FiveCallsApi {
     }
 
     public void unregisterContactsRequestListener(ContactsRequestListener contactsRequestListener) {
-        if (mContactsRequestListeners.contains(contactsRequestListener)) {
-            mContactsRequestListeners.remove(contactsRequestListener);
-        }
+        mContactsRequestListeners.remove(contactsRequestListener);
     }
 
     public void onDestroy() {
@@ -290,7 +292,40 @@ public class FiveCallsApi {
                 params.put("contactid", contactId);
                 params.put("location", zip);
                 params.put("via", (BuildConfig.DEBUG && TESTING) ? "test" : "android");
-                params.put("callerid", AccountManager.Instance.getCallerID(mContext));
+                params.put("callerid", mCallerId);
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+        request.setTag(TAG);
+        // Add the request to the RequestQueue.
+        mRequestQueue.add(request);
+    }
+
+    public void newsletterSubscribe(String email, NewsletterSubscribeCallback callback) {
+        StringRequest request = new StringRequest(Request.Method.POST, NEWSLETTER_SUBSCRIBE,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        callback.onSuccess();
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                callback.onError();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("email", email);
+                params.put("tag", "android");
                 return params;
             }
 

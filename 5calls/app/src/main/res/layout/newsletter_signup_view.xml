@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    >
+
+    <LinearLayout
+        android:id="@+id/newsletter_card_result_decline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        style="@style/newsletterCardStyle"
+        android:visibility="gone"
+        >
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/newsletter_signup_title"
+            style="@style/newsletterTitleStyle"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/newsletter_decline_description"
+            style="@style/newsletterDescriptionStyle"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/newsletter_card_result_success"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        style="@style/newsletterCardStyle"
+        android:visibility="gone"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/newsletter_success_title"
+            style="@style/newsletterTitleStyle"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/newsletter_success_description"
+            style="@style/newsletterDescriptionStyle"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/newsletter_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/newsletterCardStyle"
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/newsletter_signup_title"
+            style="@style/newsletterTitleStyle"
+            />
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/newsletter_signup_description"
+            style="@style/newsletterDescriptionStyle"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/horizontalInPortraitStyle"
+            >
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/accessibility_min_size"
+                android:autofillHints="emailAddress"
+                android:hint="@string/newsletter_signup_hint"
+                android:inputType="textEmailAddress"
+                android:id="@+id/newsletter_email"
+                android:layout_weight="1"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_weight="1"
+                >
+
+                <Button
+                    style="@style/newsletterButtonStyle"
+                    android:text="@string/newsletter_no_thanks"
+                    android:id="@+id/newsletter_decline_btn"
+                    />
+
+                <Button
+                    style="@style/newsletterButtonStyle"
+                    android:text="@string/newsletter_sign_up"
+                    android:id="@+id/newsletter_signup_btn"
+                    />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

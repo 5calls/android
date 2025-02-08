@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -32,6 +33,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.play.core.review.ReviewInfo;
 import com.google.android.play.core.review.ReviewManager;
 import com.google.android.play.core.review.ReviewManagerFactory;
@@ -58,6 +60,12 @@ import ru.noties.markwon.Markwon;
 public class IssueActivity extends AppCompatActivity {
     private static final String TAG = "IssueActivity";
     public static final String KEY_ISSUE = "key_issue";
+
+    public static final int RESULT_OK = 1;
+    public static final int RESULT_SERVER_ERROR = 2;
+
+    private static final int REP_CALL_REQUEST_CODE = 1;
+    private boolean mShowServerError = false;
 
     private final AccountManager accountManager = AccountManager.Instance;
 
@@ -202,6 +210,12 @@ public class IssueActivity extends AppCompatActivity {
 //            mTracker.setScreenName(TAG);
 //            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
 //        }
+        if (mShowServerError) {
+            Snackbar.make(getWindow().getDecorView(),
+                    getResources().getString(R.string.call_error_db_recorded_anyway),
+                    Snackbar.LENGTH_LONG).show();
+            mShowServerError = false;
+        }
         if (mIssue.contacts == null || mIssue.contacts.isEmpty()) {
             noCallsLeft.setVisibility(View.VISIBLE);
             updateLocationBtn.setOnClickListener(new View.OnClickListener() {
@@ -347,22 +361,13 @@ public class IssueActivity extends AppCompatActivity {
         if (!TextUtils.isEmpty(contact.photoURL)) {
             Glide.with(getApplicationContext())
                     .load(contact.photoURL)
-                    .asBitmap()
                     .centerCrop()
+                    .transform(new CircleCrop())
                     .placeholder(R.drawable.baseline_person_52)
-                    .into(new BitmapImageViewTarget(repImage) {
-                        @Override
-                        protected void setResource(Bitmap resource) {
-                            RoundedBitmapDrawable drawable = RoundedBitmapDrawableFactory.create(
-                                    repImage.getContext().getResources(), resource);
-                            drawable.setCircular(true);
-                            drawable.setGravity(Gravity.TOP);
-                            repImage.setImageDrawable(drawable);
-                        }
-                    });
+                    .into(repImage);
         }
         // Show a bit about whether they've been contacted yet
-        if (previousCalls.size() > 0) {
+        if (!previousCalls.isEmpty()) {
             contactChecked.setImageLevel(1);
             contactChecked.setContentDescription(getResources().getString(
                     R.string.contact_done_img_description));
@@ -381,8 +386,16 @@ public class IssueActivity extends AppCompatActivity {
                 intent.putExtra(RepCallActivity.KEY_LOCATION_NAME,
                         getIntent().getStringExtra(RepCallActivity.KEY_LOCATION_NAME));
                 intent.putExtra(RepCallActivity.KEY_ACTIVE_CONTACT_INDEX, index);
-                startActivity(intent);
+                startActivityForResult(intent, REP_CALL_REQUEST_CODE);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_SERVER_ERROR) {
+            mShowServerError = true;
+        }
     }
 }

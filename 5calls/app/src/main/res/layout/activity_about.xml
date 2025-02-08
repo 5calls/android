@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_color"
+    android:id="@+id/activity_about"
     >
 
     <LinearLayout style="@style/mainLinearLayout"
@@ -33,12 +34,92 @@
 
         <TextView
             android:id="@+id/calls_to_date"
-            style="@style/aboutSubtStyle" />
+            style="@style/aboutSubtStyle"
+            />
 
-        <Button
-            android:id="@+id/sign_up_newsletter_btn"
-            style="@style/transparentBtnStyle"
-            android:text="@string/sign_up_newsletter_btn" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/newsletter_signup_view"
+            android:layout_marginBottom="@dimen/margin_bottom"
+            >
+
+            <LinearLayout
+                android:id="@+id/newsletter_card_result_success"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/newsletter_success_title"
+                    style="@style/aboutParagraphTextStyle"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/newsletter_success_description"
+                    style="@style/paragraphTextStyle"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/newsletter_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:text="@string/newsletter_signup_title"
+                    style="@style/aboutParagraphTextStyle"
+                    />
+
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:text="@string/newsletter_signup_description"
+                    style="@style/paragraphTextStyle"
+                    />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    >
+
+                    <EditText
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="@dimen/accessibility_min_size"
+                        android:autofillHints="emailAddress"
+                        android:hint="@string/newsletter_signup_hint"
+                        android:inputType="textEmailAddress"
+                        android:id="@+id/newsletter_email"
+                        android:layout_weight="1"
+                        />
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="@dimen/accessibility_min_size"
+                        android:text="@string/newsletter_sign_up"
+                        android:id="@+id/newsletter_signup_btn"
+                        />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
 
         <TextView
             style="@style/aboutParagraphTextStyle"
@@ -78,32 +159,31 @@
             android:orientation="horizontal"
             >
             <Button
+                style="@style/transparentBtnStyle"
+                android:layout_margin="0dp"
+                android:id="@+id/bluesky_btn"
+                android:text="@string/bluesky_btn"
+                />
+
+            <Button
                 android:id="@+id/twitter_btn"
                 style="@style/transparentBtnStyle"
                 android:layout_margin="0dp"
-                android:gravity="center"
                 android:text="@string/twitter_btn"
-                android:paddingRight="@dimen/activity_horizontal_margin"
                 />
 
             <Button
                 android:id="@+id/facebook_btn"
                 style="@style/transparentBtnStyle"
                 android:layout_margin="0dp"
-                android:gravity="center"
                 android:text="@string/facebook_btn"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
                 />
 
             <Button
                 android:id="@+id/instagram_btn"
                 style="@style/transparentBtnStyle"
                 android:layout_margin="0dp"
-                android:gravity="center"
                 android:text="@string/instagram_btn"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
                 />
         </LinearLayout>
 

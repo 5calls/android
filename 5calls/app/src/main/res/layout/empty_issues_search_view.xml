@@ -7,14 +7,15 @@
 
     <TextView
         style="@style/emptyInvalidStyle"
-        android:layout_above="@+id/search_btn"
         android:text="@string/error_search_had_no_results"
+        android:id="@+id/error_text"
         />
 
     <Button
-        android:id="@id/search_btn"
+        android:id="@+id/search_btn"
         style="@style/emptyIssuesBtnStyle"
-        android:drawableLeft="@drawable/baseline_search_white_24"
+        android:layout_below="@id/error_text"
+        android:drawableStart="@drawable/baseline_search_white_24"
         android:text="@string/try_again_btn"
         />
 

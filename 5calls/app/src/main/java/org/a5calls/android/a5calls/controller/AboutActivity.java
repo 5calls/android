@@ -11,11 +11,14 @@ import androidx.annotation.StringRes;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 //import com.google.android.gms.analytics.HitBuilders;
@@ -35,6 +38,8 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.view.View.VISIBLE;
+
 /**
  * The "About" page.
  */
@@ -45,17 +50,20 @@ public class AboutActivity extends AppCompatActivity {
     private final AccountManager accountManager = AccountManager.Instance;
     private FiveCallsApi.CallRequestListener mStatusListener;
 
-    @BindView(R.id.sign_up_newsletter_btn) Button signUpNewsletterButton;
     @BindView(R.id.about_us_btn) Button aboutUsButton;
     @BindView(R.id.contact_us_btn) Button contactUsButton;
     @BindView(R.id.twitter_btn) TextView twitterButton;
     @BindView(R.id.facebook_btn) TextView facebookButton;
     @BindView(R.id.instagram_btn) TextView instagramButton;
+    @BindView(R.id.bluesky_btn) TextView blueskyButton;
     @BindView(R.id.rate_us_btn) Button rateUsButton;
     @BindView(R.id.privacy_btn) Button privacyButton;
     @BindView(R.id.version_info) TextView version;
     @BindView(R.id.calls_to_date) TextView callsToDate;
     @BindView(R.id.license_btn) Button licenseButton;
+    @BindView(R.id.newsletter_signup_view) View newsletterWrapper;
+    @BindView(R.id.newsletter_email) EditText newsletterEmail;
+    @BindView(R.id.newsletter_signup_btn) Button newsletterSignupBtn;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,13 +74,6 @@ public class AboutActivity extends AppCompatActivity {
 
         getSupportActionBar().setTitle(getString(R.string.about_title));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        signUpNewsletterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CustomTabsUtil.launchUrl(AboutActivity.this, Uri.parse(getString(R.string.newsletter_url)));
-            }
-        });
 
         aboutUsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,6 +107,12 @@ public class AboutActivity extends AppCompatActivity {
                 getString(R.string.open_social_media, getString(R.string.instagram_btn))
         );
 
+        setOpenIntentOnClick(
+                blueskyButton,
+                getActionIntent(getString(R.string.bluesky_url)),
+                getString(R.string.open_social_media, getString(R.string.bluesky_btn))
+        );
+
         rateUsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -134,6 +141,40 @@ public class AboutActivity extends AppCompatActivity {
                 showOpenSourceLicenses();
             }
         });
+
+        if (!accountManager.isNewsletterSignUpCompleted(this)) {
+            newsletterWrapper.setVisibility(View.VISIBLE);
+            newsletterSignupBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String email = newsletterEmail.getText().toString();
+                    if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                        newsletterEmail.setError(
+                                getResources().getString(R.string.error_email_format));
+                        return;
+                    }
+                    newsletterSignupBtn.setEnabled(false);
+                    FiveCallsApi api =
+                            AppSingleton.getInstance(getApplicationContext()).getJsonController();
+                    api.newsletterSubscribe(email, new FiveCallsApi.NewsletterSubscribeCallback() {
+                        @Override
+                        public void onSuccess() {
+                            accountManager.setNewsletterSignUpCompleted(v.getContext(), true);
+                            findViewById(R.id.newsletter_card).setVisibility(View.GONE);
+                            findViewById(R.id.newsletter_card_result_success).setVisibility(VISIBLE);
+                        }
+
+                        @Override
+                        public void onError() {
+                            newsletterSignupBtn.setEnabled(true);
+                            Snackbar.make(findViewById(R.id.activity_about),
+                                    getResources().getString(R.string.newsletter_signup_error),
+                                    Snackbar.LENGTH_LONG).show();
+                        }
+                    });
+                }
+            });
+        }
 
         underlineButtons();
 
@@ -193,6 +234,11 @@ public class AboutActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        if (accountManager.isNewsletterSignUpCompleted(this)) {
+            newsletterWrapper.setVisibility(View.GONE);
+        }
+
         // We allow Analytics opt-out.
         if (accountManager.allowAnalytics(this)) {
             // Obtain the shared Tracker instance.
@@ -204,12 +250,12 @@ public class AboutActivity extends AppCompatActivity {
     }
 
     private void underlineButtons() {
-        underlineText(signUpNewsletterButton);
         underlineText(aboutUsButton);
         underlineText(contactUsButton);
         underlineText(twitterButton);
         underlineText(facebookButton);
         underlineText(instagramButton);
+        underlineText(blueskyButton);
         underlineText(rateUsButton);
         underlineText(privacyButton);
         underlineText(licenseButton);

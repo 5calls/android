@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import androidx.annotation.Nullable;
 import android.text.TextUtils;
 
+import org.a5calls.android.a5calls.controller.MainActivity;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -33,6 +35,8 @@ public enum AccountManager {
     private static final String KEY_CALLER_ID = "prefsKeyCallerID";
     private static final String KEY_REVIEW_DIALOG_SHOWN = "prefsKeyReviewDialog";
     private static final String KEY_LOCATION_NAME = "prefsKeyLocationName";
+    private static final String KEY_NEWSLETTER_PROMPT_DONE = "prefsKeyNewsletterPrompt";
+    private static final String KEY_NEWSLETTER_SIGNUP_DONE = "prefsKeyNewsletterSignup";
 
     // Default to 11 am.
     public static final int DEFAULT_REMINDER_MINUTES = 60 * 11;
@@ -151,6 +155,22 @@ public enum AccountManager {
 
     public void setNotificationDialogShown(Context context, boolean shown) {
         getSharedPrefs(context).edit().putBoolean(KEY_NOTIFICATION_DIALOG_SHOWN, shown).apply();
+    }
+
+    public boolean isNewsletterPromptDone(Context context) {
+        return getSharedPrefs(context).getBoolean(KEY_NEWSLETTER_PROMPT_DONE, /* not seen yet */ false);
+    }
+
+    public void setNewsletterPromptDone(Context context, boolean done) {
+        getSharedPrefs(context).edit().putBoolean(KEY_NEWSLETTER_PROMPT_DONE, done).apply();
+    }
+
+    public boolean isNewsletterSignUpCompleted(Context context) {
+        return getSharedPrefs(context).getBoolean(KEY_NEWSLETTER_SIGNUP_DONE, /* not done yet */ false);
+    }
+
+    public void setNewsletterSignUpCompleted(Context context, boolean done) {
+        getSharedPrefs(context).edit().putBoolean(KEY_NEWSLETTER_SIGNUP_DONE, done).apply();
     }
 
     public void setCallerID(Context context, String callerId) {

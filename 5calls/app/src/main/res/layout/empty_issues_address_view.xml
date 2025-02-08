@@ -5,14 +5,15 @@
 
     <TextView
         style="@style/emptyInvalidStyle"
-        android:layout_above="@+id/location_btn"
         android:text="@string/error_address_invalid"
+        android:id="@+id/error_text"
         />
 
     <Button
-        android:id="@id/location_btn"
+        android:id="@+id/location_btn"
         style="@style/emptyIssuesBtnStyle"
-        android:drawableLeft="@drawable/ic_gps_fixed_white_24dp"
+        android:layout_below="@id/error_text"
+        android:drawableStart="@drawable/ic_gps_fixed_white_24dp"
         android:text="@string/try_again_btn"
         />
 
