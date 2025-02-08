@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     private String mAddress;
     private String mLatitude;
     private String mLongitude;
+    private String mLocationName;
     private FirebaseAuth mAuth = null;
 
     @BindView(R.id.swipe_container) SwipeRefreshLayout swipeContainer;
@@ -380,6 +381,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         Intent issueIntent = new Intent(context, IssueActivity.class);
         issueIntent.putExtra(IssueActivity.KEY_ISSUE, issue);
         issueIntent.putExtra(RepCallActivity.KEY_ADDRESS, getLocationString());
+        issueIntent.putExtra(RepCallActivity.KEY_LOCATION_NAME, mLocationName);
         startActivityForResult(issueIntent, ISSUE_DETAIL_REQUEST);
     }
 
@@ -483,10 +485,10 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
 
             @Override
             public void onContactsReceived(String locationName, List<Contact> contacts) {
-                locationName = TextUtils.isEmpty(locationName) ?
+                mLocationName = TextUtils.isEmpty(locationName) ?
                         getResources().getString(R.string.unknown_location) : locationName;
                 collapsingToolbarLayout.setTitle(String.format(getResources().getString(
-                        R.string.title_main), locationName));
+                        R.string.title_main), mLocationName));
                 mIssuesAdapter.setContacts(contacts, IssuesAdapter.NO_ERROR);
                 
                 hideSnackbars();

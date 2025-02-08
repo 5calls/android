@@ -34,6 +34,7 @@ public enum AccountManager {
     private static final String KEY_NOTIFICATION_DIALOG_SHOWN = "prefsKeyNotificationDialog";
     private static final String KEY_CALLER_ID = "prefsKeyCallerID";
     private static final String KEY_REVIEW_DIALOG_SHOWN = "prefsKeyReviewDialog";
+    private static final String KEY_LOCATION_NAME = "prefsKeyLocationName";
     private static final String KEY_NEWSLETTER_PROMPT_DONE = "prefsKeyNewsletterPrompt";
     private static final String KEY_NEWSLETTER_SIGNUP_DONE = "prefsKeyNewsletterSignup";
 

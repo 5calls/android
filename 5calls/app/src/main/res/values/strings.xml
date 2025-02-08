@@ -520,7 +520,15 @@
     <!-- Date format used for stats -->
     <string name="date_format">MM/dd/yy</string>
 
-    <!-- Title of the section inviting users to sign up for the newsletter. -->
+    <!-- Office titles -->
+    <string name="title_us_house">Representative</string>
+    <string name="title_us_senate">Senator</string>
+    <string name="title_state_rep">Legislator</string>
+    <string name="title_governor">Governor</string>
+    <string name="title_attorney_general">Attorney General</string>
+    <string name="title_secretary_of_state">Secretary of State</string>
+
+  <!-- Title of the section inviting users to sign up for the newsletter. -->
     <string name="newsletter_signup_title">Get updates on the latest issues</string>
 
     <!-- Description of the newsletter. -->

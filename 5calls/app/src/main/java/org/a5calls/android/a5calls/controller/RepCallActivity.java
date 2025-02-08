@@ -49,6 +49,7 @@ import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.model.Outcome;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
 import org.a5calls.android.a5calls.util.AnalyticsManager;
+import org.a5calls.android.a5calls.util.ScriptReplacements;
 import org.a5calls.android.a5calls.util.MarkdownUtil;
 import org.a5calls.android.a5calls.view.GridItemDecoration;
 
@@ -67,6 +68,7 @@ public class RepCallActivity extends AppCompatActivity {
     private static final String TAG = "RepCallActivity";
 
     public static final String KEY_ADDRESS = "key_address";
+    public static final String KEY_LOCATION_NAME = "key_location_name";
 
     public static final String KEY_ACTIVE_CONTACT_INDEX = "active_contact_index";
     private static final String KEY_LOCAL_OFFICES_EXPANDED = "local_offices_expanded";
@@ -149,7 +151,9 @@ public class RepCallActivity extends AppCompatActivity {
         scrollView.setFocusableInTouchMode(true);
         scrollView.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
 
-        MarkdownUtil.setUpScript(callScript, mIssue.script, getApplicationContext());
+        Contact c = mIssue.contacts.get(mActiveContactIndex);
+        String script = ScriptReplacements.replacing(this, mIssue.script, c, getIntent().getStringExtra(KEY_LOCATION_NAME));
+        MarkdownUtil.setUpScript(callScript, script, getApplicationContext());
 
         boolean expandLocalOffices = false;
         if (savedInstanceState != null) {
@@ -183,7 +187,6 @@ public class RepCallActivity extends AppCompatActivity {
         outcomeList.addItemDecoration(new GridItemDecoration(gridPadding,
                 getSpanCount(RepCallActivity.this)));
 
-        Contact c = mIssue.contacts.get(mActiveContactIndex);
         new AnalyticsManager().trackPageview(String.format("/issue/%s/%s/",mIssue.slug,c.id));
 
         // We allow Analytics opt-out.
