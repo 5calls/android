@@ -66,6 +66,7 @@ public class RepCallActivity extends AppCompatActivity {
     private static final String TAG = "RepCallActivity";
 
     public static final String KEY_ADDRESS = "key_address";
+    public static final String KEY_LOCATION_NAME = "key_location_name";
 
     public static final String KEY_ACTIVE_CONTACT_INDEX = "active_contact_index";
     private static final String KEY_LOCAL_OFFICES_EXPANDED = "local_offices_expanded";
@@ -152,7 +153,7 @@ public class RepCallActivity extends AppCompatActivity {
         scrollView.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
 
         Contact c = mIssue.contacts.get(mActiveContactIndex);
-        String script = ScriptReplacements.replacing(this, mIssue.script, c, AccountManager.Instance.getLocationName(this));
+        String script = ScriptReplacements.replacing(this, mIssue.script, c, getIntent().getStringExtra(KEY_LOCATION_NAME));
         MarkdownUtil.setUpScript(callScript, script, getApplicationContext());
 
         boolean expandLocalOffices = false;

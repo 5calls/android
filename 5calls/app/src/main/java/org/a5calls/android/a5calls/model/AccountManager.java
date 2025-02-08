@@ -170,14 +170,6 @@ public enum AccountManager {
         getSharedPrefs(context).edit().putBoolean(KEY_REVIEW_DIALOG_SHOWN, shown).apply();
     }
 
-    public String getLocationName(Context context) {
-        return getSharedPrefs(context).getString(KEY_LOCATION_NAME, null);
-    }
-
-    public void setLocationName(Context context, String locationName) {
-        getSharedPrefs(context).edit().putString(KEY_LOCATION_NAME, locationName).apply();
-    }
-
     private SharedPreferences getSharedPrefs(Context context) {
         return context.getSharedPreferences(PREFS_FILE, Context.MODE_PRIVATE);
     }

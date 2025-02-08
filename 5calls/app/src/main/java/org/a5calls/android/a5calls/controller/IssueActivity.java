@@ -378,6 +378,8 @@ public class IssueActivity extends AppCompatActivity {
                 intent.putExtra(KEY_ISSUE, mIssue);
                 intent.putExtra(RepCallActivity.KEY_ADDRESS,
                         getIntent().getStringExtra(RepCallActivity.KEY_ADDRESS));
+                intent.putExtra(RepCallActivity.KEY_LOCATION_NAME,
+                        getIntent().getStringExtra(RepCallActivity.KEY_LOCATION_NAME));
                 intent.putExtra(RepCallActivity.KEY_ACTIVE_CONTACT_INDEX, index);
                 startActivity(intent);
             }
