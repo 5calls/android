@@ -523,15 +523,15 @@
     <!-- Date format used for stats -->
     <string name="date_format">MM/dd/yy</string>
 
-    <!-- Office titles -->
-    <string name="title_us_house">Representative</string>
-    <string name="title_us_senate">Senator</string>
-    <string name="title_state_rep">Legislator</string>
-    <string name="title_governor">Governor</string>
-    <string name="title_attorney_general">Attorney General</string>
-    <string name="title_secretary_of_state">Secretary of State</string>
+    <!-- Office titles, used in the script. As the script is in English, these should not be translated.. -->
+    <string name="title_us_house" translatable="false">Representative</string>
+    <string name="title_us_senate" translatable="false">Senator</string>
+    <string name="title_state_rep" translatable="false">Legislator</string>
+    <string name="title_governor" translatable="false">Governor</string>
+    <string name="title_attorney_general" translatable="false">Attorney General</string>
+    <string name="title_secretary_of_state" translatable="false">Secretary of State</string>
 
-  <!-- Title of the section inviting users to sign up for the newsletter. -->
+    <!-- Title of the section inviting users to sign up for the newsletter. -->
     <string name="newsletter_signup_title">Get updates on the latest issues</string>
 
     <!-- Description of the newsletter. -->
