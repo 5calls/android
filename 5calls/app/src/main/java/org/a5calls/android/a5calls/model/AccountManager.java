@@ -37,6 +37,7 @@ public enum AccountManager {
     private static final String KEY_LOCATION_NAME = "prefsKeyLocationName";
     private static final String KEY_NEWSLETTER_PROMPT_DONE = "prefsKeyNewsletterPrompt";
     private static final String KEY_NEWSLETTER_SIGNUP_DONE = "prefsKeyNewsletterSignup";
+    public static final String KEY_USER_NAME = "prefsKeyUserName";
 
     // Default to 11 am.
     public static final int DEFAULT_REMINDER_MINUTES = 60 * 11;
@@ -188,6 +189,14 @@ public enum AccountManager {
 
     public void setReviewDialogShown(Context context, boolean shown) {
         getSharedPrefs(context).edit().putBoolean(KEY_REVIEW_DIALOG_SHOWN, shown).apply();
+    }
+
+    public String getUserName(Context context) {
+        return getSharedPrefs(context).getString(KEY_USER_NAME, null);
+    }
+
+    public void setUserName(Context context, String userName) {
+        getSharedPrefs(context).edit().putString(KEY_USER_NAME, userName).apply();
     }
 
     private SharedPreferences getSharedPrefs(Context context) {

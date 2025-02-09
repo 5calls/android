@@ -34,6 +34,7 @@ import com.bumptech.glide.Glide;
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.adapter.OutcomeAdapter;
+import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.model.Outcome;
@@ -139,7 +140,13 @@ public class RepCallActivity extends AppCompatActivity {
         scrollView.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
 
         Contact c = mIssue.contacts.get(mActiveContactIndex);
-        String script = ScriptReplacements.replacing(this, mIssue.script, c, getIntent().getStringExtra(KEY_LOCATION_NAME));
+        String script = ScriptReplacements.replacing(
+                this,
+                mIssue.script,
+                c,
+                getIntent().getStringExtra(KEY_LOCATION_NAME),
+                AccountManager.Instance.getUserName(this)
+        );
         MarkdownUtil.setUpScript(callScript, script, getApplicationContext());
 
         boolean expandLocalOffices = false;
