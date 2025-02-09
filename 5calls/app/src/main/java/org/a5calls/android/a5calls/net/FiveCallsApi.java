@@ -1,6 +1,5 @@
 package org.a5calls.android.a5calls.net;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.android.volley.AuthFailureError;
@@ -11,15 +10,12 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.onesignal.OneSignal;
 
 import org.a5calls.android.a5calls.BuildConfig;
-import org.a5calls.android.a5calls.FiveCallsApplication;
-import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.model.Outcome;
@@ -42,7 +38,7 @@ public class FiveCallsApi {
 
     // Set TESTING "true" to set a parameter to the count call request which marks it as a test
     // request on the server. This will only work on debug builds.
-    private static final boolean TESTING = true;
+    protected static final boolean TESTING = true;
 
     private static final String GET_ISSUES_REQUEST = "https://api.5calls.org/v1/issues";
 
