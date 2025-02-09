@@ -70,7 +70,7 @@ public class ScriptReplacements {
         return Pattern.compile(
                 introPattern +
                 "[^\\n]+" + // One or more non-newline characters
-                "\\R+" // One or more newline sequences
+                "\\r+" // One or more newline sequences
         );
     }
 
