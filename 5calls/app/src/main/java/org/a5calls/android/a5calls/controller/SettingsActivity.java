@@ -180,6 +180,14 @@ public class SettingsActivity extends AppCompatActivity {
                         AccountManager.DEFAULT_NOTIFICATION_SELECTION);
                 updateNotificationsPreference((FiveCallsApplication) getActivity().getApplication(),
                         accountManager, result);
+            } else if (TextUtils.equals(key, AccountManager.KEY_USER_NAME)) {
+                String result = sharedPreferences.getString(key, null);
+                if (result != null) {
+                    result = result.trim();
+                    AccountManager.Instance.setUserName(getActivity(), result);
+                } else {
+                    AccountManager.Instance.setUserName(getActivity(), null);
+                }
             }
         }
 

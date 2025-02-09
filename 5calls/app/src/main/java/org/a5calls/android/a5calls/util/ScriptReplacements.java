@@ -15,6 +15,7 @@ public class ScriptReplacements {
     private static final Pattern SENATE_INTRO_PATTERN = Pattern.compile("\\*{2}WHEN CALLING SENATE:\\*{2}\\n");
     private static final Pattern CONTACT_NAME_PATTERN = Pattern.compile("\\[REP/SEN NAME]|\\[SENATOR/REP NAME]|\\[SENATOR NAME]|\\[REPRESENTATIVE NAME]");
     private static final Pattern LOCATION_PATTERN = Pattern.compile("\\[CITY,\\s?ZIP]|\\[CITY,\\s?STATE]");
+    private static final Pattern NAME_PATTERN = Pattern.compile("\\[NAME]");
 
     private static final String US_HOUSE = "US House";
     private static final String HOUSE = "House";
@@ -26,12 +27,16 @@ public class ScriptReplacements {
     private static final String ATTORNEY_GENERAL = "AttorneyGeneral";
     private static final String SECRETARY_OF_STATE = "SecretaryOfState";
 
-    public static String replacing(Context context, String script, Contact contact, @Nullable String location) {
+    public static String replacing(Context context, String script, Contact contact, @Nullable String location, @Nullable String userName) {
         String replacedScript = chooseSubscript(script, contact);
         replacedScript = replacingContact(context, script, contact);
 
         if (!TextUtils.isEmpty(location)) {
             replacedScript = replacingLocation(replacedScript, location);
+        }
+
+        if (!TextUtils.isEmpty(userName)) {
+            replacedScript = replacingUserName(replacedScript, userName);
         }
 
         return replacedScript;
@@ -60,6 +65,10 @@ public class ScriptReplacements {
 
     private static String replacingLocation(String script, String location) {
         return LOCATION_PATTERN.matcher(script).replaceAll(location);
+    }
+
+    private static String replacingUserName(String script, String userName) {
+        return NAME_PATTERN.matcher(script).replaceAll(userName);
     }
 
     private static Pattern wholeRegex(Pattern introPattern) {

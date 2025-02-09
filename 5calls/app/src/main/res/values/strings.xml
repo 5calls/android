@@ -561,4 +561,9 @@
     <!-- Snackbar error shown when the newsletter subscription request failed. -->
     <string name="newsletter_signup_error">There was an error subscribing you to the newsletter. Please try again later.</string>
 
+    <!-- Title for user's name preference -->
+    <string name="settings_name">Name</string>
+
+    <!-- Description for the name preference -->
+    <string name="settings_name_description">Set your name for auto-formatting call scripts.</string>
 </resources>
