@@ -11,10 +11,14 @@ import org.a5calls.android.a5calls.model.Contact;
 import java.util.regex.Pattern;
 
 public class ScriptReplacements {
-    private static final Pattern HOUSE_INTRO_PATTERN = Pattern.compile("\\*{2}WHEN CALLING HOUSE:\\*{2}\\n");
-    private static final Pattern SENATE_INTRO_PATTERN = Pattern.compile("\\*{2}WHEN CALLING SENATE:\\*{2}\\n");
-    private static final Pattern CONTACT_NAME_PATTERN = Pattern.compile("\\[REP/SEN NAME]|\\[SENATOR/REP NAME]|\\[SENATOR NAME]|\\[REPRESENTATIVE NAME]");
-    private static final Pattern LOCATION_PATTERN = Pattern.compile("\\[CITY,\\s?ZIP]|\\[CITY,\\s?STATE]");
+    private static final Pattern HOUSE_INTRO_PATTERN =
+            Pattern.compile("\\*{2}WHEN CALLING HOUSE:\\*{2}\\n", Pattern.CASE_INSENSITIVE);
+    private static final Pattern SENATE_INTRO_PATTERN =
+            Pattern.compile("\\*{2}WHEN CALLING SENATE:\\*{2}\\n", Pattern.CASE_INSENSITIVE);
+    private static final Pattern CONTACT_NAME_PATTERN =
+            Pattern.compile("\\[\\s?REP/SEN NAME\\s?]|\\[\\s?SENATOR/REP NAME\\s?]|\\[\\s?SENATOR NAME]|\\[\\s?REPRESENTATIVE NAME\\s?]", Pattern.CASE_INSENSITIVE);
+    private static final Pattern LOCATION_PATTERN =
+            Pattern.compile("\\[\\s?CITY[,/]\\s?ZIP\\s?]|\\[\\s?CITY[,/]\\s?STATE\\s?]", Pattern.CASE_INSENSITIVE);
 
     private static final String US_HOUSE = "US House";
     private static final String HOUSE = "House";
