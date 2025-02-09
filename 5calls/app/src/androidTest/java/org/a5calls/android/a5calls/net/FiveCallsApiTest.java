@@ -17,6 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -26,21 +27,6 @@ import static org.junit.Assert.*;
 
 @RunWith(AndroidJUnit4.class)
 public class FiveCallsApiTest {
-
-    public static class FakeRequestQueue extends RequestQueue {
-        protected Request mRequest = null;
-
-        public FakeRequestQueue(BasicNetwork network) {
-            super(new NoCache(), network);
-        }
-
-        @Override
-        public Request add(Request request) {
-            mRequest = request;
-            super.add(request);
-            return request;
-        }
-    }
 
     public static class TestCallListener implements FiveCallsApi.CallRequestListener {
         protected int mCallError = 0;
@@ -108,7 +94,46 @@ public class FiveCallsApiTest {
         assertEquals(4627301, testCallListener.mCallCount);
     }
 
-    // TODO: Add tests for potential ways getting call counts can have an error.
+    @Test
+    public void testGetCallCount_ServerError() {
+        mHttpStack.setExceptionToThrow(new IOException("HTTP Stack exception"));
 
+        TestCallListener testCallListener = new TestCallListener();
+        mApi.registerCallRequestListener(testCallListener);
+        mApi.getCallCount();
+        assertNotNull(mRequestQueue.mRequest);
+        mRequestQueue.start();
+
+        // Wait for the async stuff.
+        SystemClock.sleep(200);
+
+        assertEquals(1, testCallListener.mCallError);
+        assertEquals(0, testCallListener.mCallJsonError);
+        assertEquals(0, testCallListener.mCallReported);
+        assertEquals(0, testCallListener.mCallCount);
+    }
+
+    @Test
+    public void testGetCallCount_malformedJson() {
+        byte[] bytes = "{null}".getBytes(); // Break the JSON.
+        ArrayList<Header> headers = new ArrayList<>();
+        headers.add(new Header("Content-Type", "text/json"));
+        HttpResponse response = new HttpResponse(200, headers, bytes);
+        mHttpStack.setResponseToReturn(response);
+
+        TestCallListener testCallListener = new TestCallListener();
+        mApi.registerCallRequestListener(testCallListener);
+        mApi.getCallCount();
+        assertNotNull(mRequestQueue.mRequest);
+        mRequestQueue.start();
+
+        // Wait for the async stuff.
+        SystemClock.sleep(200);
+
+        assertEquals(1, testCallListener.mCallError);
+        assertEquals(0, testCallListener.mCallReported);
+        assertEquals(0, testCallListener.mCallCount);
+    }
+    
     // TODO: Add tests for other API calls.
 }
