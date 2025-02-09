@@ -451,4 +451,46 @@
     <string name="social_prompt">Comunícate con nosotros a través de nuestras redes sociales</string>
     <string name="open_social_media">Abre <xliff:g id="socialNetworkName">%1$s</xliff:g></string>
 
+    <!-- Prompt to click on the privacy policy button [CHAR_LIMIT=100] -->
+    <string name="privacy_prompt">Privacidad</string>
+
+    <!-- Button linking to the privacy policy [CHAR_LIMIT=30] -->
+    <string name="privacy_btn">Política de privacidad</string>
+
+    <!-- Title of the section inviting users to sign up for the newsletter. -->
+    <string name="newsletter_signup_title">Obtenga actualizaciones sobre asuntos más recientes</string>
+
+    <!-- Description of the newsletter. -->
+    <string name="newsletter_signup_description">Inscríbase en nuestro boletín informativo, solo un email cada semana</string>
+
+    <!-- Placeholder text in newsletter signup form box for a user to enter their email. -->
+    <string name="newsletter_signup_hint">Entre su email</string>
+
+    <!-- Button to not sign up for the newsletter (also hides newsletter signup form from main page). -->
+    <string name="newsletter_no_thanks">No, gracias </string>
+
+    <!-- Button to sign up for the newsletter. -->
+    <string name="newsletter_sign_up">Inscríbame</string>
+
+    <!-- Error text shown when email format is invalid in newsletter signup form. -->
+    <string name="error_email_format">Email no válido</string>
+
+    <!-- Section title shown after the user has successfully signed up for the newsletter. -->
+    <string name="newsletter_success_title">Suscrito al boletín informativo de 5 Calls</string>
+
+    <!-- Section description shown after the user has successfully signed up for the newsletter. -->
+    <string name="newsletter_success_description">Ha suscrito con éxito. La edición próxima se entregará a su bandeja de entrada. </string>
+
+    <!-- Section description shown after the user has declined to sign up for the newsletter now, informing them they still can later. -->
+    <string name="newsletter_decline_description"> Si cambia su mente, puede inscribirse en la página Sobre nosotros.</string>
+
+    <!-- Snackbar error shown when the newsletter subscription request failed. -->
+    <string name="newsletter_signup_error">Fue un error con inscribirse en el boletín informativo. Por favor intente otra vez más tarde.</string>
+
+    <!-- Title for user's name preference -->
+    <string name="settings_name">Su nombre</string>
+
+    <!-- Description for the name preference -->
+    <string name="settings_name_description">Seleccione el nombre para auto-poblar en el texto.</string>
+
 </resources>
