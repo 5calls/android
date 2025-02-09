@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     private String mLatitude;
     private String mLongitude;
     private String mLocationName;
+    private boolean mIsLowAccuracy;
     private FirebaseAuth mAuth = null;
 
     @BindView(R.id.swipe_container) SwipeRefreshLayout swipeContainer;
@@ -363,6 +364,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         issueIntent.putExtra(IssueActivity.KEY_ISSUE, issue);
         issueIntent.putExtra(RepCallActivity.KEY_ADDRESS, getLocationString());
         issueIntent.putExtra(RepCallActivity.KEY_LOCATION_NAME, mLocationName);
+        issueIntent.putExtra(IssueActivity.KEY_IS_LOW_ACCURACY, mIsLowAccuracy);
         startActivityForResult(issueIntent, ISSUE_DETAIL_REQUEST);
     }
 
@@ -465,13 +467,15 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             }
 
             @Override
-            public void onContactsReceived(String locationName, List<Contact> contacts) {
+            public void onContactsReceived(String locationName, boolean isLowAccuracy,
+                                           List<Contact> contacts) {
                 mLocationName = TextUtils.isEmpty(locationName) ?
                         getResources().getString(R.string.unknown_location) : locationName;
                 collapsingToolbarLayout.setTitle(String.format(getResources().getString(
                         R.string.title_main), mLocationName));
                 mIssuesAdapter.setContacts(contacts, IssuesAdapter.NO_ERROR);
-                
+                mIsLowAccuracy = isLowAccuracy;
+
                 hideSnackbars();
 
                 // Check if this is a split district by seeing if there are >2 reps in the house.
@@ -481,8 +485,10 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                         houseCount++;
                     }
                 }
-                if (houseCount > 1) {
-                    mSnackbar = Snackbar.make(swipeContainer, R.string.split_district_warning,
+                if (houseCount > 1 || mIsLowAccuracy) {
+                    int warning = houseCount > 1 ? R.string.split_district_warning :
+                            R.string.low_accuracy_warning;
+                    mSnackbar = Snackbar.make(swipeContainer, warning,
                             Snackbar.LENGTH_INDEFINITE)
                             .setAction(R.string.update, new View.OnClickListener() {
                                 @Override

@@ -77,7 +77,7 @@ public class FiveCallsApi {
 
         void onAddressError();
 
-        void onContactsReceived(String locationName, List<Contact> contacts);
+        void onContactsReceived(String locationName, boolean isLowAccuracy, List<Contact> contacts);
     }
 
     public interface NewsletterSubscribeCallback {
@@ -192,6 +192,12 @@ public class FiveCallsApi {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                        Boolean lowAccuracy = false;
+                        try {
+                            lowAccuracy = response.getBoolean("lowAccuracy");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                         JSONArray jsonArray = response.optJSONArray("representatives");
                         if (jsonArray == null) {
                             for (ContactsRequestListener listener : listeners) {
@@ -202,7 +208,7 @@ public class FiveCallsApi {
                         Type listType = new TypeToken<ArrayList<Contact>>(){}.getType();
                         List<Contact> contacts = mGson.fromJson(jsonArray.toString(), listType);
                         for (ContactsRequestListener listener : listeners) {
-                            listener.onContactsReceived(locationName, contacts);
+                            listener.onContactsReceived(locationName, lowAccuracy, contacts);
                         }
 
                         try {

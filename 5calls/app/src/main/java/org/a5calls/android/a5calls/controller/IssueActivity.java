@@ -60,6 +60,7 @@ import ru.noties.markwon.Markwon;
 public class IssueActivity extends AppCompatActivity {
     private static final String TAG = "IssueActivity";
     public static final String KEY_ISSUE = "key_issue";
+    public static final String KEY_IS_LOW_ACCURACY = "key_is_low_accuracy";
 
     public static final int RESULT_OK = 1;
     public static final int RESULT_SERVER_ERROR = 2;
@@ -67,10 +68,8 @@ public class IssueActivity extends AppCompatActivity {
     private static final int REP_CALL_REQUEST_CODE = 1;
     private boolean mShowServerError = false;
 
-    private final AccountManager accountManager = AccountManager.Instance;
-
     private Issue mIssue;
-//    private Tracker mTracker = null;
+    private boolean mIsLowAccuracy = false;
     private boolean mIsAnimating = false;
 
     @BindView(R.id.scroll_view) NestedScrollView scrollView;
@@ -95,6 +94,7 @@ public class IssueActivity extends AppCompatActivity {
             finish();
             return;
         }
+        mIsLowAccuracy = getIntent().getBooleanExtra(KEY_IS_LOW_ACCURACY, false);
 
         setContentView(R.layout.activity_issue);
         ButterKnife.bind(this);
@@ -194,15 +194,12 @@ public class IssueActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(KEY_ISSUE, mIssue);
+        outState.putBoolean(KEY_IS_LOW_ACCURACY, mIsLowAccuracy);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-//        if (mTracker != null) {
-//            mTracker.setScreenName(TAG);
-//            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
-//        }
         if (mShowServerError) {
             Snackbar.make(getWindow().getDecorView(),
                     getResources().getString(R.string.call_error_db_recorded_anyway),
@@ -299,14 +296,7 @@ public class IssueActivity extends AppCompatActivity {
                         mIssue.slug));
         shareIntent.setType("text/plain");
 
-//        if (mTracker != null) {
-//            mTracker.send(new HitBuilders.EventBuilder()
-//                    .setCategory("Share")
-//                    .setAction("IssueShare")
-//                    .setLabel(mIssue.id)
-//                    .setValue(1)
-//                    .build());
-//        }
+        // Could send analytics on share event.
 
         startActivity(Intent.createChooser(shareIntent, getResources().getString(
                 R.string.share_chooser_title)));
@@ -343,9 +333,9 @@ public class IssueActivity extends AppCompatActivity {
         contactWarning.setVisibility(View.GONE);
         if (!TextUtils.isEmpty(contact.area)) {
             contactReason.setText(contact.area);
-            if (TextUtils.equals(contact.area, "US House") && mIssue.isSplit) {
+            if (TextUtils.equals(contact.area, "US House") && mIsLowAccuracy) {
                 contactWarning.setVisibility(View.VISIBLE);
-                contactWarning.setText(R.string.split_district_warning);
+                contactWarning.setText(R.string.low_accuracy_warning);
             }
             contactReason.setVisibility(View.VISIBLE);
         } else {

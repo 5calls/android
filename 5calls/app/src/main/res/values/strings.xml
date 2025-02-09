@@ -338,7 +338,7 @@
 
     <!-- Prompt to enter an address or zip code instead of using the phone's GPS location [CHAR_LIMIT=NONE] -->
     <string name="location_address_prompt">Enter your address or zip code.
-        \nA 5 digit zip code may not return all your representatives in split districts.</string>
+        \nA 5 digit zip code may be specific enough to return your correct representatives in some districts.</string>
 
     <!-- Hint text for edittext to enter an address or zip code for the user's location [CHAR_LIMIT=50] -->
     <string name="address_hint">Address or zip code</string>
@@ -396,6 +396,9 @@
 
     <!-- Warning that you may be in a split district [CHAR_LIMIT=90] -->
     <string name="split_district_warning">Your zip code has multiple house representatives. This is our best guess.</string>
+
+    <!-- Warning that you have a low accuracy location [CHAR_LIMIT=90] -->
+    <string name="low_accuracy_warning">Your location is not precise enough to ensure we\'ve got the right House representative.</string>
 
     <!-- Action for a snackbar or button which brings you to the location update screen [CHAR_LIMIT=10] -->
     <string name="update">update</string>
