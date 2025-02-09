@@ -15,7 +15,7 @@ public class ScriptReplacements {
     private static final Pattern SENATE_INTRO_PATTERN = Pattern.compile("\\*{2}WHEN CALLING SENATE:\\*{2}\\n");
     private static final Pattern CONTACT_NAME_PATTERN = Pattern.compile("\\[REP/SEN NAME]|\\[SENATOR/REP NAME]|\\[SENATOR NAME]|\\[REPRESENTATIVE NAME]");
     private static final Pattern LOCATION_PATTERN = Pattern.compile("\\[CITY,\\s?ZIP]|\\[CITY,\\s?STATE]");
-    private static final Pattern NAME_PATTERN = Pattern.compile("\\[NAME]");
+    private static final Pattern NAME_PATTERN = Pattern.compile("\\[\\s*NAME\\s*]", Pattern.CASE_INSENSITIVE);
 
     private static final String US_HOUSE = "US House";
     private static final String HOUSE = "House";
