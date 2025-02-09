@@ -52,7 +52,8 @@
             android:key="prefsKeyUserName"
             android:singleLine="true"
             android:summary="@string/settings_name_description"
-            android:title="@string/settings_name" />
+            android:title="@string/settings_name"
+            />
 
         <SwitchPreference
             android:title="@string/setting_usage_title"
