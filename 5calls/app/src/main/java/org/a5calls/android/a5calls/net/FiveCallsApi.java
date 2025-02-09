@@ -192,12 +192,13 @@ public class FiveCallsApi {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        Boolean lowAccuracy = false;
-                        try {
-                            lowAccuracy = response.getBoolean("lowAccuracy");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        boolean lowAccuracy = false;
+                        // TODO: Use lowAccuracy field once it's not just assigned to all zip codes.
+//                        try {
+//                            lowAccuracy = response.getBoolean("lowAccuracy");
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
                         JSONArray jsonArray = response.optJSONArray("representatives");
                         if (jsonArray == null) {
                             for (ContactsRequestListener listener : listeners) {
