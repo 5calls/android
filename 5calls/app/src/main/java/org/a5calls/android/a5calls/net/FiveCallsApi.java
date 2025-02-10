@@ -247,6 +247,8 @@ public class FiveCallsApi {
             public void onResponse(JSONObject response) {
                 try {
                     int count = response.getInt("count");
+                    // TODO: Send donation on information to Issue activity.
+                    boolean donateOn = response.getBoolean("donateOn");
                     for (CallRequestListener listener : mCallRequestListeners) {
                         listener.onCallCount(count);
                     }

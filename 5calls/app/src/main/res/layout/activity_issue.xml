@@ -25,11 +25,11 @@
                 android:id="@+id/link"
                 style="@style/issueNameTextStyle" />
 
+            <include layout="@layout/issue_done_view" />
+
             <TextView
                 android:id="@+id/issue_description"
                 style="@style/issueDescriptionTextStyle" />
-
-            <include layout="@layout/issue_done_view" />
 
         </LinearLayout>
 

@@ -2,6 +2,7 @@ package org.a5calls.android.a5calls.controller;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -44,6 +45,7 @@ import org.a5calls.android.a5calls.util.AnalyticsManager;
 import org.a5calls.android.a5calls.util.MarkdownUtil;
 
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -61,6 +63,9 @@ public class IssueActivity extends AppCompatActivity {
     public static final int RESULT_SERVER_ERROR = 2;
 
     private static final int REP_CALL_REQUEST_CODE = 1;
+
+    private static final String DONATE_URL = "https://secure.actblue.com/donate/5calls-donate?refcode=android&refcode2=";
+
     private boolean mShowServerError = false;
 
     private Issue mIssue;
@@ -303,6 +308,13 @@ public class IssueActivity extends AppCompatActivity {
                 R.string.share_chooser_title)));
     }
 
+    private void launchDonate() {
+        // Could send analytics on donate event.
+
+        String donateUrl = DONATE_URL + AccountManager.Instance.getCallerID(this);
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(donateUrl)));
+    }
+
     /**
      * Loads the representatives-to-call list at the bottom.
      * @return true if each rep has been called at least once.
@@ -376,7 +388,7 @@ public class IssueActivity extends AppCompatActivity {
     }
 
     private void maybeShowIssueDone() {
-        DatabaseHelper dbHelper = AppSingleton.getInstance(this).getDatabaseHelper();
+        final DatabaseHelper dbHelper = AppSingleton.getInstance(this).getDatabaseHelper();
         for (Contact contact : mIssue.contacts) {
             if (!dbHelper.hasCalledToday(mIssue.id, contact.id)) {
                 issueDoneSection.setVisibility(View.GONE);
@@ -385,8 +397,14 @@ public class IssueActivity extends AppCompatActivity {
         }
         // At this point, all the contacts have been contacted today.
         issueDoneSection.setVisibility(View.VISIBLE);
-        // Format like a nice number with commas.
-        ((TextView) findViewById(R.id.issue_call_count)).setText(mIssue.stats.calls + "");
+        scrollView.scrollTo(0, 0);
+
+        // Format call stats like a nice number with commas.
+        ((TextView) findViewById(R.id.issue_call_count)).setText(
+                String.format(Locale.getDefault(), "%,d", mIssue.stats.calls));
+
+        findViewById(R.id.share_btn).setOnClickListener(v -> sendShare());
+        findViewById(R.id.donate_btn).setOnClickListener(v -> launchDonate());
     }
 
     @Override

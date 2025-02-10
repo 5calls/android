@@ -2,24 +2,31 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:id="@+id/issue_done_section"
-    android:paddingStart="@dimen/activity_horizontal_margin"
-    android:paddingEnd="@dimen/activity_horizontal_margin"
+    android:layout_marginStart="@dimen/activity_horizontal_margin"
+    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+    android:layout_marginBottom="@dimen/activity_vertical_margin"
+    android:padding="@dimen/activity_horizontal_padding"
+    android:background="@color/script_background_color"
     >
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Great work!"
-        style="@style/subheadingTutorialStyle"
+        android:textColor="@color/colorAccent"
+        android:textSize="@dimen/subheading_text_size"
+        android:textStyle="bold"
         />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="You've called all your representives about this issue today. Call them again tomrrow!"
+        android:text="You've called all your representives about this issue today. Call them again tomorrow!"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="@dimen/text_size_paragraph"
+        android:layout_marginTop="@dimen/margin_text"
+        android:layout_marginBottom="@dimen/margin_text"
         />
     <RelativeLayout
         android:layout_width="match_parent"
@@ -43,8 +50,8 @@
             android:id="@id/issue_call_count"
             android:layout_centerVertical="true"
             android:textColor="@color/colorAccent"
+            android:textSize="@dimen/subheading_text_size"
             android:textStyle="bold"
-            android:textSize="@dimen/text_size_paragraph"
             />
     </RelativeLayout>
     <TextView
@@ -52,6 +59,8 @@
         android:layout_height="wrap_content"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="@dimen/text_size_paragraph"
+        android:layout_marginTop="@dimen/margin_text"
+        android:layout_marginBottom="@dimen/margin_text"
         android:text="Your calls help your representatives decide what issues are most important to their constituents and can help direct their positions on policy that makes a difference in the lives of all Americans."
         />
     <RelativeLayout
@@ -63,14 +72,14 @@
             android:layout_height="wrap_content"
             android:text="Share this call"
             android:layout_alignParentStart="true"
-            android:layout_toStartOf="@+id/donate_btn"
+            android:layout_toStartOf="@+id/share_btn"
             android:layout_centerVertical="true"
             android:textColor="@color/colorAccent"
             android:textStyle="bold"
             android:textSize="@dimen/text_size_paragraph"
             />
         <Button
-            android:id="@id/donate_btn"
+            android:id="@id/share_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minHeight="@dimen/accessibility_min_size"
@@ -78,38 +87,46 @@
             android:layout_alignParentEnd="true"
             />
     </RelativeLayout>
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="@dimen/text_size_paragraph"
-        android:text="5 Calls is a grassroots supported non-profit organization"
-        />
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/donate_section"
         >
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Help keep 5 Calls free and up-to-date"
-            android:layout_alignParentStart="true"
-            android:layout_toStartOf="@+id/donate_btn"
-            android:layout_centerVertical="true"
-            android:textColor="@color/colorAccent"
-            android:textStyle="bold"
+            android:textColor="@color/colorPrimaryDark"
             android:textSize="@dimen/text_size_paragraph"
+            android:layout_marginTop="@dimen/margin_text"
+            android:layout_marginBottom="@dimen/margin_text"
+            android:text="5 Calls is a grassroots supported non-profit organization"
             />
-        <Button
-            android:id="@id/donate_btn"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="@dimen/accessibility_min_size"
-            android:text="Donate"
-            android:layout_alignParentEnd="true"
-            />
-    </RelativeLayout>
-
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Help keep 5 Calls free and up-to-date"
+                android:layout_alignParentStart="true"
+                android:layout_toStartOf="@+id/donate_btn"
+                android:layout_centerVertical="true"
+                android:textColor="@color/colorAccent"
+                android:textStyle="bold"
+                android:textSize="@dimen/text_size_paragraph"
+                />
+            <Button
+                android:id="@id/donate_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/accessibility_min_size"
+                android:text="Donate"
+                android:layout_alignParentEnd="true"
+                />
+        </RelativeLayout>
+    </LinearLayout>
 
 
 </LinearLayout>
