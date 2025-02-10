@@ -20,6 +20,7 @@ import com.onesignal.OneSignal;
 
 import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
+import org.a5calls.android.a5calls.databinding.ActivitySettingsBinding;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.NotificationUtils;
 import org.a5calls.android.a5calls.util.AnalyticsManager;
@@ -38,11 +39,13 @@ public class SettingsActivity extends AppCompatActivity {
 
     private final AccountManager accountManager = AccountManager.Instance;
 
+    private ActivitySettingsBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.activity_settings);
+        binding = ActivitySettingsBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
