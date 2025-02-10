@@ -65,7 +65,10 @@
                     android:id="@+id/newsletter_signup_view"
                     >
 
-                    <include layout="@layout/newsletter_signup_view"/>
+                    <include
+                        android:id="@+id/newsletter"
+                        layout="@layout/newsletter_signup_view"
+                        />
 
                 </FrameLayout>
 

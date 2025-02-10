@@ -34,7 +34,6 @@ import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.adapter.IssuesAdapter;
 import org.a5calls.android.a5calls.databinding.ActivityMainBinding;
-import org.a5calls.android.a5calls.databinding.NewsletterSignupViewBinding;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.Category;
 import org.a5calls.android.a5calls.model.Contact;
@@ -77,7 +76,6 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     private FirebaseAuth mAuth = null;
 
     private ActivityMainBinding binding;
-    private NewsletterSignupViewBinding newsletterBinding;
 
     private Snackbar mSnackbar;
 
@@ -86,7 +84,6 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         // TODO: Consider using fragments
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
-        newsletterBinding = NewsletterSignupViewBinding.inflate(getLayoutInflater());
 
         try {
             mAuth = FirebaseAuth.getInstance();
@@ -143,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
 
         if (!accountManager.isNewsletterPromptDone(this)) {
             binding.newsletterSignupView.setVisibility(View.VISIBLE);
-            newsletterBinding.newsletterDeclineButton.setOnClickListener(new View.OnClickListener() {
+            binding.newsletter.newsletterDeclineButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     accountManager.setNewsletterPromptDone(v.getContext(), true);
@@ -151,17 +148,17 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                     findViewById(R.id.newsletter_card_result_decline).setVisibility(VISIBLE);
                 }
             });
-            newsletterBinding.newsletterSignupButton.setOnClickListener(new View.OnClickListener() {
+            binding.newsletter.newsletterSignupButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String email = newsletterBinding.newsletterEmail.getText().toString();
+                    String email = binding.newsletter.newsletterEmail.getText().toString();
                     if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                        newsletterBinding.newsletterEmail.setError(
+                        binding.newsletter.newsletterEmail.setError(
                                 getResources().getString(R.string.error_email_format));
                         return;
                     }
-                    newsletterBinding.newsletterSignupButton.setEnabled(false);
-                    newsletterBinding.newsletterDeclineButton.setEnabled(false);
+                    binding.newsletter.newsletterSignupButton.setEnabled(false);
+                    binding.newsletter.newsletterDeclineButton.setEnabled(false);
                     FiveCallsApi api =
                             AppSingleton.getInstance(getApplicationContext()).getJsonController();
                     api.newsletterSubscribe(email, new FiveCallsApi.NewsletterSubscribeCallback() {
@@ -175,8 +172,8 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
 
                         @Override
                         public void onError() {
-                            newsletterBinding.newsletterSignupButton.setEnabled(true);
-                            newsletterBinding.newsletterDeclineButton.setEnabled(true);
+                            binding.newsletter.newsletterSignupButton.setEnabled(true);
+                            binding.newsletter.newsletterDeclineButton.setEnabled(true);
                             showSnackbar(R.string.newsletter_signup_error, Snackbar.LENGTH_LONG);
                         }
                     });
