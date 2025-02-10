@@ -24,7 +24,7 @@
             />
 
         <Button
-            android:id="@+id/btn_gps"
+            android:id="@+id/gps_button"
             style="@style/locationGpsBtnStyle"
             android:text="@string/btn_gps"
             />
@@ -41,12 +41,12 @@
             >
 
             <EditText
-                android:id="@+id/address_edit"
+                android:id="@+id/address_edit_text"
                 style="@style/zipEditTextStyle"
                 />
 
             <Button
-                android:id="@+id/address_submit"
+                android:id="@+id/address_submit_button"
                 style="@style/submitBtn"
                 />
         </RelativeLayout>
