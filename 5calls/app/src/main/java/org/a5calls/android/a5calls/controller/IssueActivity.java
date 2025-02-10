@@ -58,6 +58,7 @@ public class IssueActivity extends AppCompatActivity {
     private static final String TAG = "IssueActivity";
     public static final String KEY_ISSUE = "key_issue";
     public static final String KEY_IS_LOW_ACCURACY = "key_is_low_accuracy";
+    public static final String KEY_DONATE_IS_ON = "key_donate_is_on";
 
     public static final int RESULT_OK = 1;
     public static final int RESULT_SERVER_ERROR = 2;
@@ -70,6 +71,7 @@ public class IssueActivity extends AppCompatActivity {
 
     private Issue mIssue;
     private boolean mIsLowAccuracy = false;
+    private boolean mDonateIsOn = true;
     private boolean mIsAnimating = false;
 
     @BindView(R.id.scroll_view) NestedScrollView scrollView;
@@ -96,6 +98,7 @@ public class IssueActivity extends AppCompatActivity {
             return;
         }
         mIsLowAccuracy = getIntent().getBooleanExtra(KEY_IS_LOW_ACCURACY, false);
+        mDonateIsOn = getIntent().getBooleanExtra(KEY_DONATE_IS_ON, true);
 
         setContentView(R.layout.activity_issue);
         ButterKnife.bind(this);
@@ -404,7 +407,13 @@ public class IssueActivity extends AppCompatActivity {
                 String.format(Locale.getDefault(), "%,d", mIssue.stats.calls));
 
         findViewById(R.id.share_btn).setOnClickListener(v -> sendShare());
-        findViewById(R.id.donate_btn).setOnClickListener(v -> launchDonate());
+
+        if (mDonateIsOn) {
+            findViewById(R.id.donate_section).setVisibility(View.VISIBLE);
+            findViewById(R.id.donate_btn).setOnClickListener(v -> launchDonate());
+        } else {
+            findViewById(R.id.donate_section).setVisibility(View.GONE);
+        }
     }
 
     @Override

@@ -1,47 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     android:id="@+id/issue_done_section"
-    android:layout_marginStart="@dimen/activity_horizontal_margin"
-    android:layout_marginEnd="@dimen/activity_horizontal_margin"
-    android:layout_marginBottom="@dimen/activity_vertical_margin"
-    android:padding="@dimen/activity_horizontal_padding"
-    android:background="@color/script_background_color"
+    style="@style/doneCardStyle"
     >
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Great work!"
+        android:text="@string/done_heading"
         android:textColor="@color/colorAccent"
         android:textSize="@dimen/subheading_text_size"
         android:textStyle="bold"
         />
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="You've called all your representives about this issue today. Call them again tomorrow!"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="@dimen/text_size_paragraph"
-        android:layout_marginTop="@dimen/margin_text"
-        android:layout_marginBottom="@dimen/margin_text"
+        style="@style/doneCardParagraph"
+        android:text="@string/done_description"
         />
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         >
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
+            style="@style/doneSectionCallout"
             android:layout_toStartOf="@+id/issue_call_count"
-            android:text="Total calls on this topic:"
-            android:layout_centerVertical="true"
-            android:textColor="@color/colorAccent"
-            android:textStyle="bold"
-            android:textSize="@dimen/text_size_paragraph"
+            android:text="@string/done_issue_stats"
             />
         <TextView
             android:layout_width="wrap_content"
@@ -55,36 +37,22 @@
             />
     </RelativeLayout>
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="@dimen/text_size_paragraph"
-        android:layout_marginTop="@dimen/margin_text"
-        android:layout_marginBottom="@dimen/margin_text"
-        android:text="Your calls help your representatives decide what issues are most important to their constituents and can help direct their positions on policy that makes a difference in the lives of all Americans."
+        style="@style/doneCardParagraph"
+        android:text="@string/done_description2"
         />
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         >
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Share this call"
-            android:layout_alignParentStart="true"
+            style="@style/doneSectionCallout"
+            android:text="@string/done_share_prompt"
             android:layout_toStartOf="@+id/share_btn"
-            android:layout_centerVertical="true"
-            android:textColor="@color/colorAccent"
-            android:textStyle="bold"
-            android:textSize="@dimen/text_size_paragraph"
             />
         <Button
             android:id="@id/share_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minHeight="@dimen/accessibility_min_size"
+            style="@style/doneButtonStyle"
             android:text="@string/menu_share"
-            android:layout_alignParentEnd="true"
             />
     </RelativeLayout>
     <LinearLayout
@@ -94,36 +62,22 @@
         android:id="@+id/donate_section"
         >
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="@dimen/text_size_paragraph"
-            android:layout_marginTop="@dimen/margin_text"
-            android:layout_marginBottom="@dimen/margin_text"
-            android:text="5 Calls is a grassroots supported non-profit organization"
+            style="@style/doneCardParagraph"
+            android:text="@string/done_donate_description"
             />
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             >
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Help keep 5 Calls free and up-to-date"
-                android:layout_alignParentStart="true"
+                style="@style/doneSectionCallout"
+                android:text="@string/done_donate_prompt"
                 android:layout_toStartOf="@+id/donate_btn"
-                android:layout_centerVertical="true"
-                android:textColor="@color/colorAccent"
-                android:textStyle="bold"
-                android:textSize="@dimen/text_size_paragraph"
                 />
             <Button
                 android:id="@id/donate_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minHeight="@dimen/accessibility_min_size"
-                android:text="Donate"
-                android:layout_alignParentEnd="true"
+                android:text="@string/done_donate_button"
+                style="@style/doneButtonStyle"
                 />
         </RelativeLayout>
     </LinearLayout>

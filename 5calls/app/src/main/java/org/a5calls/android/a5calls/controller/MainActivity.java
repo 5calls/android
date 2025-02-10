@@ -365,6 +365,8 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         issueIntent.putExtra(RepCallActivity.KEY_ADDRESS, getLocationString());
         issueIntent.putExtra(RepCallActivity.KEY_LOCATION_NAME, mLocationName);
         issueIntent.putExtra(IssueActivity.KEY_IS_LOW_ACCURACY, mIsLowAccuracy);
+        // TODO: Get this from the API.
+        issueIntent.putExtra(IssueActivity.KEY_DONATE_IS_ON, true);
         startActivityForResult(issueIntent, ISSUE_DETAIL_REQUEST);
     }
 
