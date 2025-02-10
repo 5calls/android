@@ -20,11 +20,14 @@ import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
 
+import androidx.core.app.NotificationManagerCompat;
+
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 
 import com.onesignal.OneSignal;
 
+import org.a5calls.android.a5calls.controller.SettingsActivity;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.NotificationUtils;
 
@@ -103,6 +106,16 @@ public class FiveCallsApplication extends Application {
             String uuid = UUID.randomUUID().toString();
             AccountManager.Instance.setCallerID(this, uuid);
             OneSignal.setExternalUserId(uuid);
+        }
+
+        // Check if notification permission has been revoked outside of the app since the last run
+        if (!NotificationManagerCompat.from(this).areNotificationsEnabled()) {
+            // Reset the notifications preference
+            SettingsActivity.updateNotificationsPreference(
+                    this,
+                    AccountManager.Instance,
+                    AccountManager.DEFAULT_NOTIFICATION_SELECTION
+            );
         }
     }
 

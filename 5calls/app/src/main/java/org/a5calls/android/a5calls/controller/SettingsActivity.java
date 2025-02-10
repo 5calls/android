@@ -102,7 +102,7 @@ public class SettingsActivity extends AppCompatActivity {
         accountManager.setNotificationPreference(application, result);
         if (TextUtils.equals("0", result)) {
             OneSignal.disablePush(false);
-            OneSignal.promptForPushNotifications();
+            OneSignal.promptForPushNotifications(true);
         } else if (TextUtils.equals("1", result)) {
             OneSignal.disablePush(true);
         }
