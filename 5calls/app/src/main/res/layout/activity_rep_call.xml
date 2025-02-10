@@ -24,7 +24,7 @@
                 />
 
             <ImageButton
-                android:id="@+id/contact_done_img"
+                android:id="@+id/contact_checked"
                 style="@style/ImageButtonStyle"
                 android:contentDescription="@string/contact_done_img_description"
                 android:src="@drawable/checked"
@@ -58,21 +58,21 @@
                 />
 
             <Button
-                android:id="@+id/local_office_btn"
+                android:id="@+id/local_office_button"
                 style="@style/localOffBtnRepCallStyle"
                 />
 
         </RelativeLayout>
 
         <LinearLayout
-            android:id="@+id/field_office_section"
+            android:id="@+id/local_office_section"
             style="@style/issueLinearLayout"
             android:orientation="vertical"
             android:layout_marginBottom="16dp"
             >
 
             <TextView
-                android:id="@+id/field_office_prompt"
+                android:id="@+id/local_office_prompt"
                 style="@style/repCallTextStyle"
                 android:layout_width="wrap_content"
                 />
