@@ -11,7 +11,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
-            android:id="@+id/main_layout"
+            android:id="@+id/issue_text_section"
             style="@style/issueLinearLayout"
             android:orientation="vertical"
             android:paddingTop="@dimen/activity_vertical_margin"
@@ -22,7 +22,7 @@
                 style="@style/issueHeadStyle" />
 
             <TextView
-                android:id="@+id/link"
+                android:id="@+id/link_text"
                 style="@style/issueNameTextStyle" />
 
             <TextView
@@ -94,7 +94,7 @@
                     android:textColor="@color/colorPrimaryDark" />
 
                 <Button
-                    android:id="@+id/update_location_btn"
+                    android:id="@+id/update_location_button"
                     style="@style/licenceBtnStyle"
                     android:layout_alignBaseline="@id/split_district_warning"
                     android:layout_alignParentEnd="true"
