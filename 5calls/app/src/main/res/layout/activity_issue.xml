@@ -29,6 +29,8 @@
                 android:id="@+id/issue_description"
                 style="@style/issueDescriptionTextStyle" />
 
+            <include layout="@layout/issue_done_view" />
+
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>

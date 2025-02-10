@@ -2,7 +2,6 @@ package org.a5calls.android.a5calls.controller;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,14 +11,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.core.widget.NestedScrollView;
 import androidx.appcompat.app.AppCompatActivity;
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,7 +28,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.play.core.review.ReviewInfo;
 import com.google.android.play.core.review.ReviewManager;
@@ -43,6 +38,7 @@ import org.a5calls.android.a5calls.BuildConfig;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.Contact;
+import org.a5calls.android.a5calls.model.DatabaseHelper;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.util.AnalyticsManager;
 import org.a5calls.android.a5calls.util.MarkdownUtil;
@@ -51,7 +47,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import ru.noties.markwon.Markwon;
 
 /**
  * More details about an issue, including links to the phone app to call and buttons to record
@@ -83,6 +78,7 @@ public class IssueActivity extends AppCompatActivity {
     @BindView(R.id.main_layout) ViewGroup issueTextSection;
     @BindView(R.id.expand_contacts_icon) ImageView expandContactsIcon;
     @BindView(R.id.link) TextView linkText;
+    @BindView(R.id.issue_done_section) LinearLayout issueDoneSection;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -216,38 +212,43 @@ public class IssueActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
             });
-        } else {
-            boolean allCalled = loadRepList();
-            int callCount = AppSingleton.getInstance(this).getDatabaseHelper()
-                    .getCallsCount();
-            Fragment dialog = getSupportFragmentManager()
-                    .findFragmentByTag(NotificationSettingsDialog.TAG);
-            if (allCalled && !AccountManager.Instance.isNotificationDialogShown(this)) {
-                if (dialog == null) {
-                    NotificationSettingsDialog fragment = NotificationSettingsDialog.newInstance();
-                    getSupportFragmentManager()
-                            .beginTransaction()
-                            .add(fragment, NotificationSettingsDialog.TAG)
-                            .commit();
-                }
-            } else if (dialog != null) {
-                ((NotificationSettingsDialog) dialog).dismiss();
-            }
-
-            // when we're not showing the dialog and have a few calls, potentially leave a review
-            if (callCount >= 4 && !BuildConfig.DEBUG && !AccountManager.Instance.hasReviewDialogBeenShown(this)) {
-                ReviewManager reviewManager = ReviewManagerFactory.create(this);
-                Task<ReviewInfo> request = reviewManager.requestReviewFlow();
-                request.addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        // We can get the ReviewInfo object
-                        ReviewInfo reviewInfo = task.getResult();
-                        Task<Void> flow = reviewManager.launchReviewFlow(this, reviewInfo);
-                        AccountManager.Instance.setReviewDialogShown(this, true);
-                    }
-                });
-            }
+            return;
         }
+
+        // Maybe show the notification dialog if everyone in this issue has been called.
+        boolean allCalled = loadRepList();
+        int callCount = AppSingleton.getInstance(this).getDatabaseHelper()
+                .getCallsCount();
+        Fragment dialog = getSupportFragmentManager()
+                .findFragmentByTag(NotificationSettingsDialog.TAG);
+        if (allCalled && !AccountManager.Instance.isNotificationDialogShown(this)) {
+            if (dialog == null) {
+                NotificationSettingsDialog fragment = NotificationSettingsDialog.newInstance();
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .add(fragment, NotificationSettingsDialog.TAG)
+                        .commit();
+            }
+        } else if (dialog != null) {
+            ((NotificationSettingsDialog) dialog).dismiss();
+        }
+
+        // When we're not showing the dialog and have a few calls, prompt to leave a review.
+        if (callCount >= 4 && !BuildConfig.DEBUG &&
+                !AccountManager.Instance.hasReviewDialogBeenShown(this)) {
+            ReviewManager reviewManager = ReviewManagerFactory.create(this);
+            Task<ReviewInfo> request = reviewManager.requestReviewFlow();
+            request.addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    // We can get the ReviewInfo object
+                    ReviewInfo reviewInfo = task.getResult();
+                    Task<Void> flow = reviewManager.launchReviewFlow(this, reviewInfo);
+                    AccountManager.Instance.setReviewDialogShown(this, true);
+                }
+            });
+        }
+
+        maybeShowIssueDone();
     }
 
     @Override
@@ -304,7 +305,7 @@ public class IssueActivity extends AppCompatActivity {
 
     /**
      * Loads the representatives-to-call list at the bottom.
-     * @return true least once.if each rep has been called at
+     * @return true if each rep has been called at least once.
      */
     private boolean loadRepList() {
         repList.removeAllViews();
@@ -315,11 +316,11 @@ public class IssueActivity extends AppCompatActivity {
                     .getCallResults(mIssue.id, mIssue.contacts.get(i).id);
             populateRepView(repView, mIssue.contacts.get(i), i, previousCalls);
             repList.addView(repView);
-            if (previousCalls.size() == 0) {
+            if (previousCalls.isEmpty()) {
                 allCalled = false;
             }
         }
-        return allCalled && mIssue.contacts.size() > 0;
+        return allCalled && !mIssue.contacts.isEmpty();
     }
 
     private void populateRepView(View repView, Contact contact, final int index,
@@ -372,6 +373,20 @@ public class IssueActivity extends AppCompatActivity {
                 startActivityForResult(intent, REP_CALL_REQUEST_CODE);
             }
         });
+    }
+
+    private void maybeShowIssueDone() {
+        DatabaseHelper dbHelper = AppSingleton.getInstance(this).getDatabaseHelper();
+        for (Contact contact : mIssue.contacts) {
+            if (!dbHelper.hasCalledToday(mIssue.id, contact.id)) {
+                issueDoneSection.setVisibility(View.GONE);
+                return;
+            }
+        }
+        // At this point, all the contacts have been contacted today.
+        issueDoneSection.setVisibility(View.VISIBLE);
+        // Format like a nice number with commas.
+        ((TextView) findViewById(R.id.issue_call_count)).setText(mIssue.stats.calls + "");
     }
 
     @Override

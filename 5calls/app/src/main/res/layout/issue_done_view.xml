@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/issue_done_section"
+    android:paddingStart="@dimen/activity_horizontal_margin"
+    android:paddingEnd="@dimen/activity_horizontal_margin"
+    >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Great work!"
+        style="@style/subheadingTutorialStyle"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="You've called all your representives about this issue today. Call them again tomrrow!"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/text_size_paragraph"
+        />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@+id/issue_call_count"
+            android:text="Total calls on this topic:"
+            android:layout_centerVertical="true"
+            android:textColor="@color/colorAccent"
+            android:textStyle="bold"
+            android:textSize="@dimen/text_size_paragraph"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:id="@id/issue_call_count"
+            android:layout_centerVertical="true"
+            android:textColor="@color/colorAccent"
+            android:textStyle="bold"
+            android:textSize="@dimen/text_size_paragraph"
+            />
+    </RelativeLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/text_size_paragraph"
+        android:text="Your calls help your representatives decide what issues are most important to their constituents and can help direct their positions on policy that makes a difference in the lives of all Americans."
+        />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Share this call"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@+id/donate_btn"
+            android:layout_centerVertical="true"
+            android:textColor="@color/colorAccent"
+            android:textStyle="bold"
+            android:textSize="@dimen/text_size_paragraph"
+            />
+        <Button
+            android:id="@id/donate_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/accessibility_min_size"
+            android:text="@string/menu_share"
+            android:layout_alignParentEnd="true"
+            />
+    </RelativeLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/text_size_paragraph"
+        android:text="5 Calls is a grassroots supported non-profit organization"
+        />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Help keep 5 Calls free and up-to-date"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@+id/donate_btn"
+            android:layout_centerVertical="true"
+            android:textColor="@color/colorAccent"
+            android:textStyle="bold"
+            android:textSize="@dimen/text_size_paragraph"
+            />
+        <Button
+            android:id="@id/donate_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/accessibility_min_size"
+            android:text="Donate"
+            android:layout_alignParentEnd="true"
+            />
+    </RelativeLayout>
+
+
+
+</LinearLayout>
