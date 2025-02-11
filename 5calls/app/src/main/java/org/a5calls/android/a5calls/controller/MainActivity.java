@@ -22,7 +22,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.util.DisplayMetrics;
 import android.util.Patterns;
 import android.view.Menu;
@@ -62,8 +61,6 @@ import static android.view.View.VISIBLE;
 
 /**
  * The activity which handles zip code lookup and showing the issues list.
- * 
- * TODO: Sort issues based on which are "done" and which are not done or hide ones which are "done".
  */
 public class MainActivity extends AppCompatActivity implements IssuesAdapter.Callback {
     private static final String TAG = "MainActivity";
@@ -80,11 +77,13 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     private IssuesAdapter mIssuesAdapter;
     private FiveCallsApi.IssuesRequestListener mIssuesRequestListener;
     private FiveCallsApi.ContactsRequestListener mContactsRequestListener;
+    private FiveCallsApi.CallRequestListener mReportListener;
     private String mAddress;
     private String mLatitude;
     private String mLongitude;
     private String mLocationName;
-    private boolean mIsLowAccuracy;
+    private boolean mIsLowAccuracy = false;
+    private boolean mDonateIsOn = false;
     private FirebaseAuth mAuth = null;
 
     @BindView(R.id.swipe_container) SwipeRefreshLayout swipeContainer;
@@ -249,6 +248,10 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
 
         registerApiListener();
 
+        // Refresh the "donateOn" information. This doesn't change much so it's sufficient
+        // to do it just once in the activity's lifecycle.
+        AppSingleton.getInstance(getApplicationContext()).getJsonController().getReport();
+
         swipeContainer.setColorSchemeResources(R.color.colorPrimary);
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override public void onRefresh() {
@@ -271,6 +274,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         FiveCallsApi api = AppSingleton.getInstance(getApplicationContext()).getJsonController();
         api.unregisterIssuesRequestListener(mIssuesRequestListener);
         api.unregisterContactsRequestListener(mContactsRequestListener);
+        api.unregisterCallRequestListener(mReportListener);
         super.onDestroy();
     }
 
@@ -365,8 +369,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         issueIntent.putExtra(RepCallActivity.KEY_ADDRESS, getLocationString());
         issueIntent.putExtra(RepCallActivity.KEY_LOCATION_NAME, mLocationName);
         issueIntent.putExtra(IssueActivity.KEY_IS_LOW_ACCURACY, mIsLowAccuracy);
-        // TODO: Get this from the API.
-        issueIntent.putExtra(IssueActivity.KEY_DONATE_IS_ON, true);
+        issueIntent.putExtra(IssueActivity.KEY_DONATE_IS_ON, mDonateIsOn);
         startActivityForResult(issueIntent, ISSUE_DETAIL_REQUEST);
     }
 
@@ -510,9 +513,26 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             }
         };
 
+        mReportListener = new FiveCallsApi.CallRequestListener() {
+            @Override
+            public void onRequestError() {}
+
+            @Override
+            public void onJsonError() {}
+
+            @Override
+            public void onReportReceived(int count, boolean donateOn) {
+                mDonateIsOn = donateOn;
+            }
+
+            @Override
+            public void onCallReported() {}
+        };
+
         FiveCallsApi api = AppSingleton.getInstance(getApplicationContext()).getJsonController();
         api.registerIssuesRequestListener(mIssuesRequestListener);
         api.registerContactsRequestListener(mContactsRequestListener);
+        api.registerCallRequestListener(mReportListener);
     }
 
     private void populateFilterAdapterIfNeeded(List<Issue> issues) {

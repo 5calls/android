@@ -71,7 +71,7 @@ public class IssueActivity extends AppCompatActivity {
 
     private Issue mIssue;
     private boolean mIsLowAccuracy = false;
-    private boolean mDonateIsOn = true;
+    private boolean mDonateIsOn = false;
     private boolean mIsAnimating = false;
 
     @BindView(R.id.scroll_view) NestedScrollView scrollView;
@@ -98,7 +98,7 @@ public class IssueActivity extends AppCompatActivity {
             return;
         }
         mIsLowAccuracy = getIntent().getBooleanExtra(KEY_IS_LOW_ACCURACY, false);
-        mDonateIsOn = getIntent().getBooleanExtra(KEY_DONATE_IS_ON, true);
+        mDonateIsOn = getIntent().getBooleanExtra(KEY_DONATE_IS_ON, false);
 
         setContentView(R.layout.activity_issue);
         ButterKnife.bind(this);

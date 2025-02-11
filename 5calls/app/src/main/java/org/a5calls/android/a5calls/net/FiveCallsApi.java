@@ -53,7 +53,7 @@ public class FiveCallsApi {
 
         void onJsonError();
 
-        void onCallCount(int count);
+        void onReportReceived(int count, boolean donateOn);
 
         void onCallReported();
     }
@@ -239,18 +239,16 @@ public class FiveCallsApi {
             mRequestQueue.add(contactsRequest);
     }
 
-    public void getCallCount() {
-        String getReport = GET_REPORT;
+    public void getReport() {
         JsonObjectRequest reportRequest = new JsonObjectRequest(
-                Request.Method.GET, getReport, null, new Response.Listener<JSONObject>() {
+                Request.Method.GET, GET_REPORT, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     int count = response.getInt("count");
-                    // TODO: Send donation on information to Issue activity.
                     boolean donateOn = response.getBoolean("donateOn");
                     for (CallRequestListener listener : mCallRequestListeners) {
-                        listener.onCallCount(count);
+                        listener.onReportReceived(count, donateOn);
                     }
                 } catch (JSONException e) {
                     for (CallRequestListener listener : mCallRequestListeners) {

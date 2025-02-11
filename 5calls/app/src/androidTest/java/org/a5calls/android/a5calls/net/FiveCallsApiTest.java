@@ -32,6 +32,7 @@ public class FiveCallsApiTest {
         protected int mCallJsonError = 0;
         protected int mCallReported = 0;
         protected int mCallCount = 0;
+        protected boolean mDonateOn = false;
 
         @Override
         public void onRequestError() {
@@ -44,8 +45,9 @@ public class FiveCallsApiTest {
         }
 
         @Override
-        public void onCallCount(int count) {
+        public void onReportReceived(int count, boolean donateOn) {
             mCallCount = count;
+            mDonateOn = donateOn;
         }
 
         @Override
@@ -99,7 +101,8 @@ public class FiveCallsApiTest {
         }
 
         @Override
-        public void onContactsReceived(String locationName, boolean isLowAccuracy, List<Contact> contacts) {
+        public void onContactsReceived(String locationName, boolean isLowAccuracy,
+                                       List<Contact> contacts) {
             mLocationName = locationName;
             mLowAccuracy = isLowAccuracy;
             mContacts = contacts;
@@ -150,13 +153,14 @@ public class FiveCallsApiTest {
 
         TestCallListener testCallListener = new TestCallListener();
         mApi.registerCallRequestListener(testCallListener);
-        mApi.getCallCount();
+        mApi.getReport();
         waitForHttpRequestComplete();
 
         assertEquals(0, testCallListener.mCallError);
         assertEquals(0, testCallListener.mCallJsonError);
         assertEquals(0, testCallListener.mCallReported);
         assertEquals(4627301, testCallListener.mCallCount);
+        assertTrue(testCallListener.mDonateOn);
 
         mApi.unregisterCallRequestListener(testCallListener);
     }
@@ -167,13 +171,14 @@ public class FiveCallsApiTest {
 
         TestCallListener testCallListener = new TestCallListener();
         mApi.registerCallRequestListener(testCallListener);
-        mApi.getCallCount();
+        mApi.getReport();
         waitForHttpRequestComplete();
 
         assertEquals(1, testCallListener.mCallError);
         assertEquals(0, testCallListener.mCallJsonError);
         assertEquals(0, testCallListener.mCallReported);
         assertEquals(0, testCallListener.mCallCount);
+        assertFalse(testCallListener.mDonateOn);
 
         mApi.unregisterCallRequestListener(testCallListener);
     }
@@ -188,13 +193,14 @@ public class FiveCallsApiTest {
 
         TestCallListener testCallListener = new TestCallListener();
         mApi.registerCallRequestListener(testCallListener);
-        mApi.getCallCount();
+        mApi.getReport();
         waitForHttpRequestComplete();
 
         assertEquals(1, testCallListener.mCallError);
         assertEquals(0, testCallListener.mCallJsonError);
         assertEquals(0, testCallListener.mCallReported);
         assertEquals(0, testCallListener.mCallCount);
+        assertFalse(testCallListener.mDonateOn);
 
         mApi.unregisterCallRequestListener(testCallListener);
     }

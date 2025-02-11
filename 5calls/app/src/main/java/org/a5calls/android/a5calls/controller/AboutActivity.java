@@ -193,7 +193,7 @@ public class AboutActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCallCount(int count) {
+            public void onReportReceived(int count, boolean donateOn) {
                 callsToDate.setText(String.format(
                         getResources().getString(R.string.calls_to_date),
                         NumberFormat.getNumberInstance(Locale.US).format(count)));
@@ -207,7 +207,7 @@ public class AboutActivity extends AppCompatActivity {
         FiveCallsApi controller = AppSingleton.getInstance(getApplicationContext())
                 .getJsonController();
         controller.registerCallRequestListener(mStatusListener);
-        controller.getCallCount();
+        controller.getReport();
 
         new AnalyticsManager().trackPageview("/about", this);
     }

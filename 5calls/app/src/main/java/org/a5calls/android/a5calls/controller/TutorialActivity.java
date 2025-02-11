@@ -189,7 +189,7 @@ public class TutorialActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onCallCount(int count) {
+                public void onReportReceived(int count, boolean donateOn) {
                     if (!isAdded()) {
                         // No longer attached to the activity!
                         return;
@@ -207,7 +207,7 @@ public class TutorialActivity extends AppCompatActivity {
             FiveCallsApi controller = AppSingleton.getInstance(getActivity())
                     .getJsonController();
             controller.registerCallRequestListener(mStatusListener);
-            controller.getCallCount();
+            controller.getReport();
 
             rootView.findViewById(R.id.btn_back).setOnClickListener(new View.OnClickListener() {
                 @Override

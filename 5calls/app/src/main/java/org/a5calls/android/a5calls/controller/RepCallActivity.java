@@ -121,7 +121,7 @@ public class RepCallActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCallCount(int count) {
+            public void onReportReceived(int count, boolean donateOn) {
                 // unused
             }
 
