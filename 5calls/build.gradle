@@ -2,7 +2,7 @@
 
 buildscript {
     ext {
-        kotlin_version = '1.9.0-RC'
+        kotlin_version = '2.1.10'
     }
     repositories {
         google()  // Google's Maven repository
