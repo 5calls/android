@@ -9,8 +9,13 @@ import androidx.annotation.VisibleForTesting;
 import androidx.core.util.Pair;
 import android.text.TextUtils;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 
 /**
  * Local database helper. I believe this is already "thread-safe" and such because SQLiteOpenHelper
@@ -245,6 +250,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         while (c.moveToNext()) {
             result.add(c.getString(0));
         }
+        c.close();
+        return result;
+    }
+
+    /**
+     * Whether a call has been made "today" (local time) for a particular issue and contact.
+     * @param issueId
+     * @param contactId
+     * @return True if so, false otherwise.
+     */
+    public boolean hasCalledToday(String issueId, String contactId) {
+        contactId = sanitizeContactId(contactId);
+        Calendar rightNow = Calendar.getInstance();
+        rightNow.set(Calendar.HOUR_OF_DAY, 0);
+        rightNow.set(Calendar.MINUTE, 0);
+        rightNow.set(Calendar.SECOND, 0);
+        String[] selectionArgs = new String[] {issueId, contactId, "" + rightNow.getTimeInMillis()};
+        Cursor c = getReadableDatabase().rawQuery("SELECT " + CallsColumns.TIMESTAMP + " FROM " +
+                        CALLS_TABLE_NAME + " WHERE " + CallsColumns.ISSUE_ID + " = ? AND " +
+                        CallsColumns.CONTACT_ID + " = ? AND " + CallsColumns.TIMESTAMP +
+                        " >= ? GROUP BY " + CallsColumns.RESULT, selectionArgs);
+        boolean result = c.getCount() > 0;
         c.close();
         return result;
     }
