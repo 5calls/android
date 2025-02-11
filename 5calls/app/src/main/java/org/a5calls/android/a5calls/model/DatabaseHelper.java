@@ -255,8 +255,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Whether a call has been made "today" (in Washington, DC time) for a particular issue and
-     * contact.
+     * Whether a call has been made "today" (local time) for a particular issue and contact.
      * @param issueId
      * @param contactId
      * @return True if so, false otherwise.
