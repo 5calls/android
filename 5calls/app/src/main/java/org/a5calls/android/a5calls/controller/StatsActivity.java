@@ -21,22 +21,20 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.DefaultValueFormatter;
-import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.R;
+import org.a5calls.android.a5calls.databinding.ActivityStatsBinding;
 import org.a5calls.android.a5calls.model.DatabaseHelper;
 import org.a5calls.android.a5calls.model.Outcome;
 import org.a5calls.android.a5calls.util.AnalyticsManager;
@@ -50,9 +48,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
  * Tell the user how great they are!
  */
@@ -63,19 +58,15 @@ public class StatsActivity extends AppCompatActivity {
     private int mCallCount = 0;
     private ShareActionProvider mShareActionProvider;
 
-    @BindView(R.id.no_calls_message) TextView noCallsMessage;
-    @BindView(R.id.stats_holder) LinearLayout statsHolder;
-    @BindView(R.id.your_call_count) TextView callCountHeader;
-    @BindView(R.id.pie_chart) PieChart pieChart;
-    @BindView(R.id.line_chart) GraphView lineChart;
+    private ActivityStatsBinding binding;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        binding = ActivityStatsBinding.inflate(getLayoutInflater());
 
-        setContentView(R.layout.activity_stats);
-        ButterKnife.bind(this);
+        setContentView(binding.getRoot());
         dateFormat = new SimpleDateFormat(getResources().getString(R.string.date_format), Locale.US);
 
         if (getSupportActionBar() != null) {
@@ -92,21 +83,21 @@ public class StatsActivity extends AppCompatActivity {
         mCallCount = db.getCallsCount();
         if (mCallCount == 0) {
             // Show a "no impact yet!" message.
-            noCallsMessage.setVisibility(View.VISIBLE);
-            statsHolder.setVisibility(View.GONE);
+            binding.noCallsMessage.setVisibility(View.VISIBLE);
+            binding.statsHolder.setVisibility(View.GONE);
             return;
         }
 
-        noCallsMessage.setVisibility(View.GONE);
-        statsHolder.setVisibility(View.VISIBLE);
-        callCountHeader.setText(getStringForCount(
+        binding.noCallsMessage.setVisibility(View.GONE);
+        binding.statsHolder.setVisibility(View.VISIBLE);
+        binding.yourCallCount.setText(getStringForCount(
                 mCallCount, R.string.your_call_count_one, R.string.your_call_count));
 
         List<Long> contacts = db.getCallTimestampsForType(Outcome.Status.CONTACT);
         List<Long> voicemails = db.getCallTimestampsForType(Outcome.Status.VOICEMAIL);
         List<Long> unavailables = db.getCallTimestampsForType(Outcome.Status.UNAVAILABLE);
 
-        pieChart.setContentDescription(TextUtils.concat(
+        binding.pieChart.setContentDescription(TextUtils.concat(
                 getStringForCount(contacts.size(), R.string.impact_contact_one, R.string.impact_contact),
                 getStringForCount(voicemails.size(), R.string.impact_vm_one, R.string.impact_vm),
                 getStringForCount(unavailables.size(), R.string.impact_unavailable_one,
@@ -128,7 +119,7 @@ public class StatsActivity extends AppCompatActivity {
             }
             TextView contactStat = (TextView) inflater.inflate(R.layout.contact_stat_textview,
                     null);
-            statsHolder.addView(contactStat);
+            binding.statsHolder.addView(contactStat);
             contactStat.setText(contactStats.get(i).second == 1 ?
                     String.format(callFormatStringOne, name) :
                     String.format(callFormatString, contactStats.get(i).second, name));
@@ -214,16 +205,16 @@ public class StatsActivity extends AppCompatActivity {
         );
         insideCircleText.setSpan(new RelativeSizeSpan(2f), 0, insideCircleText.length() - 17, 0);
 
-        pieChart.setData(data);
-        pieChart.setCenterText(insideCircleText);
-        pieChart.setCenterTextColor(getResources().getColor(R.color.colorPrimaryDark));
-        pieChart.setCenterTextSize(11f);
-        pieChart.setHoleRadius(70);
-        pieChart.setEntryLabelColor(getResources().getColor(R.color.colorPrimaryDark));
-        pieChart.getLegend().setEnabled(false);
-        pieChart.setDescription(new Description());
-        pieChart.getDescription().setText("");
-        pieChart.invalidate();
+        binding.pieChart.setData(data);
+        binding.pieChart.setCenterText(insideCircleText);
+        binding.pieChart.setCenterTextColor(getResources().getColor(R.color.colorPrimaryDark));
+        binding.pieChart.setCenterTextSize(11f);
+        binding.pieChart.setHoleRadius(70);
+        binding.pieChart.setEntryLabelColor(getResources().getColor(R.color.colorPrimaryDark));
+        binding.pieChart.getLegend().setEnabled(false);
+        binding.pieChart.setDescription(new Description());
+        binding.pieChart.getDescription().setText("");
+        binding.pieChart.invalidate();
     }
 
     private void createLineGraph(List<Long> contacts, List<Long> voicemails,
@@ -237,32 +228,32 @@ public class StatsActivity extends AppCompatActivity {
         LineGraphSeries<DataPoint> unavailableSeries = makeSeries(unavailables, firstTimestamp,
             R.color.unavailable_color);
         unavailableSeries.setTitle(getResources().getString(R.string.outcome_unavailable));
-        lineChart.addSeries(contactedSeries);
-        lineChart.addSeries(voicemailSeries);
-        lineChart.addSeries(unavailableSeries);
+        binding.lineChart.addSeries(contactedSeries);
+        binding.lineChart.addSeries(voicemailSeries);
+        binding.lineChart.addSeries(unavailableSeries);
 
-        lineChart.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this));
-        lineChart.getGridLabelRenderer().setNumHorizontalLabels(getResources().getInteger(
+        binding.lineChart.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this));
+        binding.lineChart.getGridLabelRenderer().setNumHorizontalLabels(getResources().getInteger(
                 R.integer.horizontal_labels_count));
-        lineChart.getGridLabelRenderer().setNumVerticalLabels(5);
-        lineChart.getGridLabelRenderer().setGridColor(
+        binding.lineChart.getGridLabelRenderer().setNumVerticalLabels(5);
+        binding.lineChart.getGridLabelRenderer().setGridColor(
                 getResources().getColor(android.R.color.white));
-        lineChart.getGridLabelRenderer().setHumanRounding(false, true);
-        lineChart.getViewport().setMinX(firstTimestamp - 10);
-        lineChart.getViewport().setMaxX(System.currentTimeMillis() + 10);
-        lineChart.getViewport().setXAxisBoundsManual(true);
+        binding.lineChart.getGridLabelRenderer().setHumanRounding(false, true);
+        binding.lineChart.getViewport().setMinX(firstTimestamp - 10);
+        binding.lineChart.getViewport().setMaxX(System.currentTimeMillis() + 10);
+        binding.lineChart.getViewport().setXAxisBoundsManual(true);
 
         // Pad the Y axis so the legend fits.
         int max = Math.max(Math.max(contacts.size(), voicemails.size()), unavailables.size());
         int buffer = (int) Math.ceil(max / 4.0);
-        lineChart.getViewport().setMaxY(max + buffer);
-        lineChart.getViewport().setMinY(0);
-        lineChart.getViewport().setYAxisBoundsManual(true);
+        binding.lineChart.getViewport().setMaxY(max + buffer);
+        binding.lineChart.getViewport().setMinY(0);
+        binding.lineChart.getViewport().setYAxisBoundsManual(true);
 
-        lineChart.getLegendRenderer().setVisible(true);
-        lineChart.getLegendRenderer().setBackgroundColor(
+        binding.lineChart.getLegendRenderer().setVisible(true);
+        binding.lineChart.getLegendRenderer().setBackgroundColor(
                 getResources().getColor(android.R.color.transparent));
-        lineChart.getLegendRenderer().setFixedPosition(0, 0);
+        binding.lineChart.getLegendRenderer().setFixedPosition(0, 0);
 
         /*
         // Allow manual zoom. Need to make sure the user can't zoom in too much...
@@ -367,23 +358,23 @@ public class StatsActivity extends AppCompatActivity {
 
     private Bitmap generateGraphBitmap() {
         // Show a title for the share.
-        lineChart.setTitle("Calls over time");
+        binding.lineChart.setTitle("Calls over time");
 
         // From https://stackoverflow.com/questions/5536066/convert-view-to-bitmap-on-android.
         //Define a bitmap with the same size as the view
-        Bitmap returnedBitmap = Bitmap.createBitmap(lineChart.getWidth(),
-                lineChart.getHeight(),
+        Bitmap returnedBitmap = Bitmap.createBitmap(binding.lineChart.getWidth(),
+                binding.lineChart.getHeight(),
                 Bitmap.Config.ARGB_8888);
         //Bind a canvas to it
         Canvas canvas = new Canvas(returnedBitmap);
         // Draw a background
         canvas.drawColor(Color.WHITE);
         // draw the view on the canvas
-        lineChart.draw(canvas);
-        lineChart.getLegendRenderer().draw(canvas);
+        binding.lineChart.draw(canvas);
+        binding.lineChart.getLegendRenderer().draw(canvas);
 
         // Undo the title.
-        lineChart.setTitle("");
+        binding.lineChart.setTitle("");
 
         //return the bitmap
         return returnedBitmap;
