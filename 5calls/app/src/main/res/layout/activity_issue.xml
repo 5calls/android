@@ -100,10 +100,9 @@
 
                 <Button
                     android:id="@+id/update_location_button"
-                    style="@style/licenceBtnStyle"
+                    style="@style/transparentBtnStyle"
                     android:layout_alignBaseline="@id/split_district_warning"
                     android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
                     android:text="@string/update" />
 
             </RelativeLayout>

@@ -6,7 +6,7 @@
 
     <Button
         android:id="@+id/load_more_btn"
-        style="@style/licenceBtnStyle"
+        style="@style/transparentBtnStyle"
         android:layout_gravity="center"
         android:text="@string/load_more_btn"
         android:textSize="@dimen/text_size_paragraph"

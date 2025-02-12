@@ -78,9 +78,6 @@
     <!-- Prompt to connect with 5 Calls through social media [CHAR_LIMIT=100] -->
     <string name="social_prompt">You can also get in touch via</string>
 
-    <!-- Button that links to 5 Calls' Twitter -->
-    <string name="twitter_btn" translatable="false">Twitter</string>
-
     <!-- Button that links to 5 Calls' Facebook [CHAR_LIMIT=30] -->
     <string name="facebook_btn" translatable="false">Facebook</string>
 

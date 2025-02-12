@@ -108,9 +108,7 @@
                         />
 
                     <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:minHeight="@dimen/accessibility_min_size"
+                        style="@style/genericButtonStyle"
                         android:text="@string/newsletter_sign_up"
                         android:id="@+id/newsletter_signup_button"
                         />
@@ -166,13 +164,6 @@
                 />
 
             <Button
-                android:id="@+id/twitter_button"
-                style="@style/transparentBtnStyle"
-                android:layout_margin="0dp"
-                android:text="@string/twitter_btn"
-                />
-
-            <Button
                 android:id="@+id/facebook_button"
                 style="@style/transparentBtnStyle"
                 android:layout_margin="0dp"
@@ -220,7 +211,7 @@
 
         <Button
             android:id="@+id/license_button"
-            style="@style/licenceBtnStyle"
+            style="@style/transparentBtnStyle"
             android:text="@string/license_btn"
             />
     </LinearLayout>
