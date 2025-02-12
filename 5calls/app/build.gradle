@@ -66,13 +66,6 @@ dependencies {
     implementation 'androidx.browser:browser:1.8.0'
     implementation 'com.google.android.play:review:2.0.2'
 
-    // Suppressing warning for line below, because https://github.com/JakeWharton/butterknife says
-    // to use `implementation`.
-    // TODO: replace ButterKnife (now deprecated) with View binding - no need to update ButterKnife
-    //noinspection AnnotationProcessorOnCompilePath
-    implementation 'com.jakewharton:butterknife:8.2.1'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.2.1'
-
     // firebase libs
     implementation platform('com.google.firebase:firebase-bom:28.4.2')
     implementation 'com.google.firebase:firebase-analytics'
