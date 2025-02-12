@@ -85,7 +85,7 @@ public class IssueActivity extends AppCompatActivity {
     @BindView(R.id.main_layout) ViewGroup issueTextSection;
     @BindView(R.id.expand_contacts_icon) ImageView expandContactsIcon;
     @BindView(R.id.link) TextView linkText;
-    @BindView(R.id.issue_done_section) LinearLayout issueDoneSection;
+    @BindView(R.id.issue_done) LinearLayout issueDoneSection;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
