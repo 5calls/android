@@ -62,26 +62,6 @@ public class RepCallActivity extends AppCompatActivity {
 
     private ActivityRepCallBinding binding;
 
-//    @BindView(R.id.scroll_view) NestedScrollView scrollView;
-//
-//    @BindView(R.id.rep_info) RelativeLayout repInfoLayout;
-//    @BindView(R.id.rep_image) ImageView repImage;
-//    @BindView(R.id.call_this_office) TextView callThisOffice;
-//    @BindView(R.id.contact_name) TextView contactName;
-//    @BindView(R.id.phone_number) TextView phoneNumber;
-//    @BindView(R.id.contact_done_img) ImageButton contactChecked;
-//
-//    @BindView(R.id.buttons_prompt) TextView buttonsPrompt;
-//    @BindView(R.id.outcome_list) RecyclerView outcomeList;
-//
-//    @BindView(R.id.local_office_btn) Button localOfficeButton;
-//    @BindView(R.id.field_office_section) LinearLayout localOfficeSection;
-//    @BindView(R.id.field_office_prompt) TextView localOfficePrompt;
-//
-//    @BindView(R.id.script_section) LinearLayout scriptLayout;
-//    @BindView(R.id.contact_reason) TextView contactReason;
-//    @BindView(R.id.call_script) TextView callScript;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
