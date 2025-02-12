@@ -24,7 +24,7 @@
                 />
 
             <ImageButton
-                android:id="@+id/contact_done_img"
+                android:id="@+id/contact_checked"
                 style="@style/ImageButtonStyle"
                 android:contentDescription="@string/contact_done_img_description"
                 android:src="@drawable/checked"
@@ -58,7 +58,7 @@
                 />
 
             <Button
-                android:id="@+id/local_office_btn"
+                android:id="@+id/local_office_button"
                 style="@style/localOffBtnRepCallStyle"
                 />
 
