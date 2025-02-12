@@ -108,11 +108,9 @@
                         />
 
                     <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:minHeight="@dimen/accessibility_min_size"
+                        style="@style/genericButtonStyle"
                         android:text="@string/newsletter_sign_up"
-                        android:id="@+id/newsletter_signup_btn"
+                        android:id="@+id/newsletter_signup_button"
                         />
 
                 </LinearLayout>
@@ -127,7 +125,7 @@
             />
 
         <Button
-            android:id="@+id/about_us_btn"
+            android:id="@+id/about_us_button"
             style="@style/transparentBtnStyle"
             android:text="@string/about_us_btn"
             />
@@ -138,7 +136,7 @@
             />
 
         <Button
-            android:id="@+id/contact_us_btn"
+            android:id="@+id/contact_us_button"
             style="@style/transparentBtnStyle"
             android:text="@string/contact_us_btn"
             />
@@ -161,26 +159,19 @@
             <Button
                 style="@style/transparentBtnStyle"
                 android:layout_margin="0dp"
-                android:id="@+id/bluesky_btn"
+                android:id="@+id/bluesky_button"
                 android:text="@string/bluesky_btn"
                 />
 
             <Button
-                android:id="@+id/twitter_btn"
-                style="@style/transparentBtnStyle"
-                android:layout_margin="0dp"
-                android:text="@string/twitter_btn"
-                />
-
-            <Button
-                android:id="@+id/facebook_btn"
+                android:id="@+id/facebook_button"
                 style="@style/transparentBtnStyle"
                 android:layout_margin="0dp"
                 android:text="@string/facebook_btn"
                 />
 
             <Button
-                android:id="@+id/instagram_btn"
+                android:id="@+id/instagram_button"
                 style="@style/transparentBtnStyle"
                 android:layout_margin="0dp"
                 android:text="@string/instagram_btn"
@@ -192,7 +183,7 @@
             android:text="@string/rate_us_prompt" />
 
         <Button
-            android:id="@+id/rate_us_btn"
+            android:id="@+id/rate_us_button"
             style="@style/transparentBtnStyle"
             android:text="@string/rate_us_btn"
             />
@@ -202,7 +193,7 @@
             android:text="@string/privacy_prompt" />
 
         <Button
-            android:id="@+id/privacy_btn"
+            android:id="@+id/privacy_button"
             style="@style/transparentBtnStyle"
             android:text="@string/privacy_btn"
             />
@@ -219,8 +210,8 @@
             />
 
         <Button
-            android:id="@+id/license_btn"
-            style="@style/licenceBtnStyle"
+            android:id="@+id/license_button"
+            style="@style/transparentBtnStyle"
             android:text="@string/license_btn"
             />
     </LinearLayout>

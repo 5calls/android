@@ -7,7 +7,6 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +15,7 @@ import android.widget.TextView;
 
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.R;
+import org.a5calls.android.a5calls.databinding.ActivityTutorialBinding;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
 import org.a5calls.android.a5calls.util.AnalyticsManager;
@@ -23,43 +23,40 @@ import org.a5calls.android.a5calls.util.AnalyticsManager;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
  * Tutorial / splash screen activity
  */
 public class TutorialActivity extends AppCompatActivity {
     private static final String TAG = "TutorialActivity";
 
-    @BindView(R.id.view_pager) ViewPager viewPager;
+    private ActivityTutorialBinding binding;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        binding = ActivityTutorialBinding.inflate(getLayoutInflater());
 
-        setContentView(R.layout.activity_tutorial);
-        ButterKnife.bind(this);
+        setContentView(binding.getRoot());
 
-        viewPager.setAdapter(new TutorialPagerAdapter(getSupportFragmentManager()));
+        binding.viewPager.setAdapter(new TutorialPagerAdapter(getSupportFragmentManager()));
 
         new AnalyticsManager().trackPageview("/tutorial", this);
     }
 
     @Override
     public void onBackPressed() {
-        if (viewPager.getCurrentItem() == 0) {
+        if (binding.viewPager.getCurrentItem() == 0) {
             // If the user is currently looking at the first step, allow the system to handle the
             // Back button. This calls finish() on this activity and pops the back stack.
             super.onBackPressed();
         } else {
             // Otherwise, select the previous step.
-            viewPager.setCurrentItem(viewPager.getCurrentItem() - 1);
+            binding.viewPager.setCurrentItem(binding.viewPager.getCurrentItem() - 1);
         }
     }
 
     public void onNextPressed() {
-        viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
+        binding.viewPager.setCurrentItem(binding.viewPager.getCurrentItem() + 1);
     }
 
     private class TutorialPagerAdapter extends FragmentPagerAdapter {
@@ -189,7 +186,7 @@ public class TutorialActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onCallCount(int count) {
+                public void onReportReceived(int count, boolean donateOn) {
                     if (!isAdded()) {
                         // No longer attached to the activity!
                         return;
@@ -207,7 +204,7 @@ public class TutorialActivity extends AppCompatActivity {
             FiveCallsApi controller = AppSingleton.getInstance(getActivity())
                     .getJsonController();
             controller.registerCallRequestListener(mStatusListener);
-            controller.getCallCount();
+            controller.getReport();
 
             rootView.findViewById(R.id.btn_back).setOnClickListener(new View.OnClickListener() {
                 @Override

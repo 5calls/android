@@ -184,28 +184,25 @@
         <item name="android:textColor">@color/colorAccent</item>
     </style>
 
-    <style name="paragraphTextStyle">
+    <style name="genericParagraphStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:textSize">@dimen/text_size_paragraph</item>
     </style>
 
-    <style name="aboutParagraphTextStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
+    <style name="paragraphTextStyle" parent="genericParagraphStyle">
         <item name="android:textColor">@color/colorPrimary</item>
-        <item name="android:textSize">@dimen/text_size_paragraph</item>
+    </style>
+
+    <style name="aboutParagraphTextStyle" parent="genericParagraphStyle">
+        <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:textStyle">bold|italic</item>
     </style>
 
-    <style name="linksParagraphTextStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
+    <style name="linksParagraphTextStyle" parent="genericParagraphStyle">
         <item name="android:layout_marginTop">@dimen/text_layout_marginBottom</item>
         <item name="android:linksClickable">true</item>
         <item name="android:textColor">@color/colorPrimary</item>
-        <item name="android:textSize">@dimen/text_size_paragraph</item>
     </style>
 
     <style name="aboutSubtStyle">
@@ -226,15 +223,7 @@
         <item name="android:background">@android:color/transparent</item>
         <item name="android:minHeight">@dimen/accessibility_min_size</item>
         <item name="android:textAlignment">textStart</item>
-        <item name="android:textColor">@color/colorAccent</item>
-    </style>
-
-    <style name="licenceBtnStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:background">@android:color/transparent</item>
-        <item name="android:minHeight">@dimen/accessibility_min_size</item>
-        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textColor">@color/colorAccentDark</item>
     </style>
 
     <style name="nestedScrollViewStyleTop">
@@ -257,14 +246,11 @@
         <item name="android:visibility">gone</item>
     </style>
 
-    <style name="issueDescriptionTextStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
+    <style name="issueDescriptionTextStyle" parent="genericParagraphStyle">
         <item name="android:layout_marginBottom">@dimen/activity_vertical_margin</item>
         <item name="android:paddingLeft">@dimen/activity_horizontal_margin</item>
         <item name="android:paddingRight">@dimen/activity_horizontal_margin</item>
         <item name="android:textColor">@color/colorPrimaryDark</item>
-        <item name="android:textSize">@dimen/text_size_paragraph</item>
     </style>
 
     <style name="nestedScrollViewStyleDown">
@@ -293,16 +279,13 @@
     </style>
 
 
-    <style name="issueContactTextStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
+    <style name="issueContactTextStyle" parent="genericParagraphStyle">
         <item name="android:layout_centerVertical">true</item>
         <item name="android:layout_toLeftOf">@id/expand_contacts_icon</item>
         <item name="android:layout_toStartOf">@id/expand_contacts_icon</item>
         <item name="android:paddingBottom">@dimen/activity_vertical_margin</item>
         <item name="android:paddingTop">@dimen/activity_vertical_margin</item>
         <item name="android:textColor">@android:color/white</item>
-        <item name="android:textSize">@dimen/text_size_paragraph</item>
         <item name="android:textStyle">bold</item>
     </style>
 
@@ -486,15 +469,12 @@
         <item name="android:textSize">@dimen/label_text_size</item>
     </style>
 
-    <style name="callScriptTextStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
+    <style name="callScriptTextStyle" parent="genericParagraphStyle">
         <item name="android:layout_marginTop">@dimen/margin_top8</item>
         <item name="android:background">@color/script_background_color</item>
         <item name="android:padding">@dimen/padding_spinner</item>
         <item name="android:textColor">@color/textColorDarkGrey</item>
         <item name="android:textIsSelectable">true</item>
-        <item name="android:textSize">@dimen/text_size_paragraph</item>
     </style>
 
     <style name="noCallsMsgStyle">
@@ -516,12 +496,9 @@
         <item name="android:padding">@dimen/padding_spinner</item>
     </style>
 
-    <style name="topContactTextStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
+    <style name="topContactTextStyle" parent="genericParagraphStyle">
         <item name="android:layout_marginTop">@dimen/text_layout_marginBottom16</item>\
         <item name="android:textColor">@color/colorPrimaryDark</item>
-        <item name="android:textSize">@dimen/text_size_paragraph</item>
         <item name="android:textStyle">bold</item>
     </style>
 
@@ -681,7 +658,7 @@
     <style name="repListContactNameStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
         <item name="android:textSize">@dimen/splash_text_size</item>
         <item name="android:textStyle">bold</item>
     </style>
@@ -719,10 +696,13 @@
         <item name="android:background">@color/background_color</item>
     </style>
 
-    <style name="newsletterButtonStyle">
+    <style name="genericButtonStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:minHeight">@dimen/accessibility_min_size</item>
+    </style>
+
+    <style name="newsletterButtonStyle" parent="genericButtonStyle">
         <item name="android:layout_weight">1</item>
     </style>
 
@@ -738,4 +718,36 @@
     <style name="horizontalInPortraitStyle">
         <item name="android:orientation">vertical</item>
     </style>
+
+    <style name="doneCardStyle">
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/activity_horizontal_margin</item>
+        <item name="android:layout_marginEnd">@dimen/activity_horizontal_margin</item>
+        <item name="android:layout_marginBottom">@dimen/activity_vertical_margin</item>
+        <item name="android:padding">@dimen/activity_horizontal_padding</item>
+        <item name="android:background">@color/script_background_color</item>
+    </style>
+
+    <style name="doneCardParagraph" parent="genericParagraphStyle">
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+        <item name="android:layout_marginTop">@dimen/margin_text</item>
+        <item name="android:layout_marginBottom">@dimen/margin_text</item>
+    </style>
+
+    <style name="doneButtonStyle" parent="genericButtonStyle">
+        <item name="android:layout_alignParentEnd">true</item>
+    </style>
+
+    <style name="doneSectionCallout">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_alignParentStart">true</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/text_size_paragraph</item>
+    </style>
+
 </resources>

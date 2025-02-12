@@ -104,13 +104,13 @@
                 <Button
                     style="@style/newsletterButtonStyle"
                     android:text="@string/newsletter_no_thanks"
-                    android:id="@+id/newsletter_decline_btn"
+                    android:id="@+id/newsletter_decline_button"
                     />
 
                 <Button
                     style="@style/newsletterButtonStyle"
                     android:text="@string/newsletter_sign_up"
-                    android:id="@+id/newsletter_signup_btn"
+                    android:id="@+id/newsletter_signup_button"
                     />
 
             </LinearLayout>

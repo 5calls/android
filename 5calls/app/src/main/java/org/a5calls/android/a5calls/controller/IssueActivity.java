@@ -2,7 +2,7 @@ package org.a5calls.android.a5calls.controller;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,27 +12,20 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.core.widget.NestedScrollView;
 import androidx.appcompat.app.AppCompatActivity;
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.play.core.review.ReviewInfo;
 import com.google.android.play.core.review.ReviewManager;
@@ -41,17 +34,16 @@ import com.google.android.play.core.review.ReviewManagerFactory;
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.BuildConfig;
 import org.a5calls.android.a5calls.R;
+import org.a5calls.android.a5calls.databinding.ActivityIssueBinding;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.Contact;
+import org.a5calls.android.a5calls.model.DatabaseHelper;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.util.AnalyticsManager;
 import org.a5calls.android.a5calls.util.MarkdownUtil;
 
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import ru.noties.markwon.Markwon;
+import java.util.Locale;
 
 /**
  * More details about an issue, including links to the phone app to call and buttons to record
@@ -61,32 +53,28 @@ public class IssueActivity extends AppCompatActivity {
     private static final String TAG = "IssueActivity";
     public static final String KEY_ISSUE = "key_issue";
     public static final String KEY_IS_LOW_ACCURACY = "key_is_low_accuracy";
+    public static final String KEY_DONATE_IS_ON = "key_donate_is_on";
 
     public static final int RESULT_OK = 1;
     public static final int RESULT_SERVER_ERROR = 2;
 
     private static final int REP_CALL_REQUEST_CODE = 1;
+
+    private static final String DONATE_URL = "https://secure.actblue.com/donate/5calls-donate?refcode=android&refcode2=";
+
     private boolean mShowServerError = false;
 
     private Issue mIssue;
     private boolean mIsLowAccuracy = false;
+    private boolean mDonateIsOn = false;
     private boolean mIsAnimating = false;
 
-    @BindView(R.id.scroll_view) NestedScrollView scrollView;
-    @BindView(R.id.issue_name) TextView issueName;
-    @BindView(R.id.issue_description) TextView issueDescription;
-    @BindView(R.id.no_calls_left) ViewGroup noCallsLeft;
-    @BindView(R.id.update_location_btn) Button updateLocationBtn;
-    @BindView(R.id.rep_prompt) ViewGroup repPrompt;
-    @BindView(R.id.rep_list) LinearLayout repList;
-    @BindView(R.id.bottom_sheet) NestedScrollView bottomSheet;
-    @BindView(R.id.main_layout) ViewGroup issueTextSection;
-    @BindView(R.id.expand_contacts_icon) ImageView expandContactsIcon;
-    @BindView(R.id.link) TextView linkText;
+    private ActivityIssueBinding binding;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        binding = ActivityIssueBinding.inflate(getLayoutInflater());
 
         mIssue = getIntent().getParcelableExtra(KEY_ISSUE);
         if (mIssue == null) {
@@ -95,33 +83,33 @@ public class IssueActivity extends AppCompatActivity {
             return;
         }
         mIsLowAccuracy = getIntent().getBooleanExtra(KEY_IS_LOW_ACCURACY, false);
+        mDonateIsOn = getIntent().getBooleanExtra(KEY_DONATE_IS_ON, false);
 
-        setContentView(R.layout.activity_issue);
-        ButterKnife.bind(this);
+        setContentView(binding.getRoot());
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle(mIssue.name);
         }
 
-        issueName.setText(mIssue.name);
-        MarkdownUtil.setUpScript(issueDescription, mIssue.reason, getApplicationContext());
+        binding.issueName.setText(mIssue.name);
+        MarkdownUtil.setUpScript(binding.issueDescription, mIssue.reason, getApplicationContext());
         if (!TextUtils.isEmpty(mIssue.link)) {
-            linkText.setVisibility(View.VISIBLE);
-            linkText.setMovementMethod(LinkMovementMethod.getInstance());
+            binding.link.setVisibility(View.VISIBLE);
+            binding.link.setMovementMethod(LinkMovementMethod.getInstance());
             if ((TextUtils.isEmpty(mIssue.linkTitle))) {
-                linkText.setText(mIssue.link);
+                binding.link.setText(mIssue.link);
             } else {
-                linkText.setText(Html.fromHtml(
+                binding.link.setText(Html.fromHtml(
                         String.format("<a href=\"%s\">%s</a>", mIssue.link, mIssue.linkTitle)));
             }
         } else {
-            linkText.setVisibility(View.GONE);
+            binding.link.setVisibility(View.GONE);
         }
 
         final BottomSheetBehavior<NestedScrollView> behavior =
-                BottomSheetBehavior.from(bottomSheet);
-        repPrompt.setOnClickListener(new View.OnClickListener() {
+                BottomSheetBehavior.from(binding.bottomSheet);
+        binding.repPrompt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (behavior.getState() == BottomSheetBehavior.STATE_COLLAPSED ||
@@ -140,12 +128,12 @@ public class IssueActivity extends AppCompatActivity {
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 if (newState == BottomSheetBehavior.STATE_SETTLING ||
                         newState == BottomSheetBehavior.STATE_DRAGGING) {
-                    wasAtBottom = scrollView.getHeight() + scrollView.getScrollY() >=
-                            issueTextSection.getMeasuredHeight();
+                    wasAtBottom = binding.scrollView.getHeight() + binding.scrollView.getScrollY() >=
+                            binding.issueSection.getMeasuredHeight();
                     mIsAnimating = true;
                 } else {
                     mIsAnimating = false;
-                    expandContactsIcon.setRotation(newState == BottomSheetBehavior.STATE_EXPANDED ?
+                    binding.expandContactsIcon.setRotation(newState == BottomSheetBehavior.STATE_EXPANDED ?
                             0 : 180);
                 }
             }
@@ -156,20 +144,20 @@ public class IssueActivity extends AppCompatActivity {
                         behavior.getState() != BottomSheetBehavior.STATE_SETTLING) {
                     return;
                 }
-                expandContactsIcon.setRotation(180 - slideOffset * 180);
+                binding.expandContactsIcon.setRotation(180 - slideOffset * 180);
                 CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams)
-                        scrollView.getLayoutParams();
+                        binding.scrollView.getLayoutParams();
                 params.bottomMargin = collapsedSize + (int) ((bottomSheet.getMeasuredHeight() -
                         collapsedSize) * slideOffset);
-                scrollView.setLayoutParams(params);
+                binding.scrollView.setLayoutParams(params);
                 // Only auto-scroll up if we are already scrolled to the bottom.
                 if (wasAtBottom) {
-                    scrollView.fullScroll(View.FOCUS_DOWN);
+                    binding.scrollView.fullScroll(View.FOCUS_DOWN);
                 }
             }
         });
 
-        scrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+        binding.scrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY,
                                        int oldScrollX, int oldScrollY) {
@@ -177,8 +165,8 @@ public class IssueActivity extends AppCompatActivity {
                 if (mIsAnimating) {
                     return;
                 }
-                if (scrollView.getHeight() + scrollView.getScrollY() >=
-                        issueTextSection.getMeasuredHeight()) {
+                if (binding.scrollView.getHeight() + binding.scrollView.getScrollY() >=
+                        binding.issueSection.getMeasuredHeight()) {
                     if (behavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
                         behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                     }
@@ -207,8 +195,8 @@ public class IssueActivity extends AppCompatActivity {
             mShowServerError = false;
         }
         if (mIssue.contacts == null || mIssue.contacts.isEmpty()) {
-            noCallsLeft.setVisibility(View.VISIBLE);
-            updateLocationBtn.setOnClickListener(new View.OnClickListener() {
+            binding.noCallsLeft.setVisibility(View.VISIBLE);
+            binding.updateLocationButton.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View view) {
@@ -216,38 +204,43 @@ public class IssueActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
             });
-        } else {
-            boolean allCalled = loadRepList();
-            int callCount = AppSingleton.getInstance(this).getDatabaseHelper()
-                    .getCallsCount();
-            Fragment dialog = getSupportFragmentManager()
-                    .findFragmentByTag(NotificationSettingsDialog.TAG);
-            if (allCalled && !AccountManager.Instance.isNotificationDialogShown(this)) {
-                if (dialog == null) {
-                    NotificationSettingsDialog fragment = NotificationSettingsDialog.newInstance();
-                    getSupportFragmentManager()
-                            .beginTransaction()
-                            .add(fragment, NotificationSettingsDialog.TAG)
-                            .commit();
-                }
-            } else if (dialog != null) {
-                ((NotificationSettingsDialog) dialog).dismiss();
-            }
-
-            // when we're not showing the dialog and have a few calls, potentially leave a review
-            if (callCount >= 4 && !BuildConfig.DEBUG && !AccountManager.Instance.hasReviewDialogBeenShown(this)) {
-                ReviewManager reviewManager = ReviewManagerFactory.create(this);
-                Task<ReviewInfo> request = reviewManager.requestReviewFlow();
-                request.addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        // We can get the ReviewInfo object
-                        ReviewInfo reviewInfo = task.getResult();
-                        Task<Void> flow = reviewManager.launchReviewFlow(this, reviewInfo);
-                        AccountManager.Instance.setReviewDialogShown(this, true);
-                    }
-                });
-            }
+            return;
         }
+
+        // Maybe show the notification dialog if everyone in this issue has been called.
+        boolean allCalled = loadRepList();
+        int callCount = AppSingleton.getInstance(this).getDatabaseHelper()
+                .getCallsCount();
+        Fragment dialog = getSupportFragmentManager()
+                .findFragmentByTag(NotificationSettingsDialog.TAG);
+        if (allCalled && !AccountManager.Instance.isNotificationDialogShown(this)) {
+            if (dialog == null) {
+                NotificationSettingsDialog fragment = NotificationSettingsDialog.newInstance();
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .add(fragment, NotificationSettingsDialog.TAG)
+                        .commit();
+            }
+        } else if (dialog != null) {
+            ((NotificationSettingsDialog) dialog).dismiss();
+        }
+
+        // When we're not showing the dialog and have a few calls, prompt to leave a review.
+        if (callCount >= 4 && !BuildConfig.DEBUG &&
+                !AccountManager.Instance.hasReviewDialogBeenShown(this)) {
+            ReviewManager reviewManager = ReviewManagerFactory.create(this);
+            Task<ReviewInfo> request = reviewManager.requestReviewFlow();
+            request.addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    // We can get the ReviewInfo object
+                    ReviewInfo reviewInfo = task.getResult();
+                    Task<Void> flow = reviewManager.launchReviewFlow(this, reviewInfo);
+                    AccountManager.Instance.setReviewDialogShown(this, true);
+                }
+            });
+        }
+
+        maybeShowIssueDone();
     }
 
     @Override
@@ -302,24 +295,31 @@ public class IssueActivity extends AppCompatActivity {
                 R.string.share_chooser_title)));
     }
 
+    private void launchDonate() {
+        // Could send analytics on donate event.
+
+        String donateUrl = DONATE_URL + AccountManager.Instance.getCallerID(this);
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(donateUrl)));
+    }
+
     /**
      * Loads the representatives-to-call list at the bottom.
-     * @return true least once.if each rep has been called at
+     * @return true if each rep has been called at least once.
      */
     private boolean loadRepList() {
-        repList.removeAllViews();
+        binding.repList.removeAllViews();
         boolean allCalled = true;
         for (int i = 0; i < mIssue.contacts.size(); i++) {
             View repView = LayoutInflater.from(this).inflate(R.layout.rep_list_view, null);
             List<String> previousCalls = AppSingleton.getInstance(this).getDatabaseHelper()
                     .getCallResults(mIssue.id, mIssue.contacts.get(i).id);
             populateRepView(repView, mIssue.contacts.get(i), i, previousCalls);
-            repList.addView(repView);
-            if (previousCalls.size() == 0) {
+            binding.repList.addView(repView);
+            if (previousCalls.isEmpty()) {
                 allCalled = false;
             }
         }
-        return allCalled && mIssue.contacts.size() > 0;
+        return allCalled && !mIssue.contacts.isEmpty();
     }
 
     private void populateRepView(View repView, Contact contact, final int index,
@@ -372,6 +372,32 @@ public class IssueActivity extends AppCompatActivity {
                 startActivityForResult(intent, REP_CALL_REQUEST_CODE);
             }
         });
+    }
+
+    private void maybeShowIssueDone() {
+        final DatabaseHelper dbHelper = AppSingleton.getInstance(this).getDatabaseHelper();
+        for (Contact contact : mIssue.contacts) {
+            if (!dbHelper.hasCalledToday(mIssue.id, contact.id)) {
+                binding.issueDone.getRoot().setVisibility(View.GONE);
+                return;
+            }
+        }
+        // At this point, all the contacts have been contacted today.
+        binding.issueDone.getRoot().setVisibility(View.VISIBLE);
+        binding.scrollView.scrollTo(0, 0);
+
+        // Format call stats like a nice number with commas.
+        ((TextView) findViewById(R.id.issue_call_count)).setText(
+                String.format(Locale.getDefault(), "%,d", mIssue.stats.calls));
+
+        findViewById(R.id.share_btn).setOnClickListener(v -> sendShare());
+
+        if (mDonateIsOn) {
+            findViewById(R.id.donate_section).setVisibility(View.VISIBLE);
+            findViewById(R.id.donate_btn).setOnClickListener(v -> launchDonate());
+        } else {
+            findViewById(R.id.donate_section).setVisibility(View.GONE);
+        }
     }
 
     @Override

@@ -10,11 +10,9 @@ import androidx.annotation.Nullable;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.core.app.NavUtils;
-import androidx.core.widget.NestedScrollView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.text.util.Linkify;
 import android.util.DisplayMetrics;
@@ -22,11 +20,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -34,6 +27,7 @@ import com.bumptech.glide.Glide;
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.adapter.OutcomeAdapter;
+import org.a5calls.android.a5calls.databinding.ActivityRepCallBinding;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.Issue;
@@ -46,9 +40,6 @@ import org.a5calls.android.a5calls.view.GridItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 import static org.a5calls.android.a5calls.controller.IssueActivity.KEY_ISSUE;
 
@@ -69,29 +60,12 @@ public class RepCallActivity extends AppCompatActivity {
     private int mActiveContactIndex;
     private OutcomeAdapter outcomeAdapter;
 
-    @BindView(R.id.scroll_view) NestedScrollView scrollView;
-
-    @BindView(R.id.rep_info) RelativeLayout repInfoLayout;
-    @BindView(R.id.rep_image) ImageView repImage;
-    @BindView(R.id.call_this_office) TextView callThisOffice;
-    @BindView(R.id.contact_name) TextView contactName;
-    @BindView(R.id.phone_number) TextView phoneNumber;
-    @BindView(R.id.contact_done_img) ImageButton contactChecked;
-
-    @BindView(R.id.buttons_prompt) TextView buttonsPrompt;
-    @BindView(R.id.outcome_list) RecyclerView outcomeList;
-
-    @BindView(R.id.local_office_btn) Button localOfficeButton;
-    @BindView(R.id.field_office_section) LinearLayout localOfficeSection;
-    @BindView(R.id.field_office_prompt) TextView localOfficePrompt;
-
-    @BindView(R.id.script_section) LinearLayout scriptLayout;
-    @BindView(R.id.contact_reason) TextView contactReason;
-    @BindView(R.id.call_script) TextView callScript;
+    private ActivityRepCallBinding binding;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        binding = ActivityRepCallBinding.inflate(getLayoutInflater());
 
         final String address = getIntent().getStringExtra(KEY_ADDRESS);
         mActiveContactIndex = getIntent().getIntExtra(KEY_ACTIVE_CONTACT_INDEX, 0);
@@ -101,8 +75,7 @@ public class RepCallActivity extends AppCompatActivity {
             return;
         }
 
-        setContentView(R.layout.activity_rep_call);
-        ButterKnife.bind(this);
+        setContentView(binding.getRoot());
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -121,7 +94,7 @@ public class RepCallActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCallCount(int count) {
+            public void onReportReceived(int count, boolean donateOn) {
                 // unused
             }
 
@@ -136,8 +109,8 @@ public class RepCallActivity extends AppCompatActivity {
         controller.registerCallRequestListener(mStatusListener);
 
         // The markdown view gets focus unless we let the scrollview take it back.
-        scrollView.setFocusableInTouchMode(true);
-        scrollView.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
+        binding.scrollView.setFocusableInTouchMode(true);
+        binding.scrollView.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
 
         Contact c = mIssue.contacts.get(mActiveContactIndex);
         String script = ScriptReplacements.replacing(
@@ -147,7 +120,7 @@ public class RepCallActivity extends AppCompatActivity {
                 getIntent().getStringExtra(KEY_LOCATION_NAME),
                 AccountManager.Instance.getUserName(this)
         );
-        MarkdownUtil.setUpScript(callScript, script, getApplicationContext());
+        MarkdownUtil.setUpScript(binding.callScript, script, getApplicationContext());
 
         boolean expandLocalOffices = false;
         if (savedInstanceState != null) {
@@ -173,12 +146,12 @@ public class RepCallActivity extends AppCompatActivity {
             }
         });
 
-        outcomeList.setLayoutManager(
+        binding.outcomeList.setLayoutManager(
                 new GridLayoutManager(this, getSpanCount(RepCallActivity.this)));
-        outcomeList.setAdapter(outcomeAdapter);
+        binding.outcomeList.setAdapter(outcomeAdapter);
 
         int gridPadding = (int) getResources().getDimension(R.dimen.grid_padding);
-        outcomeList.addItemDecoration(new GridItemDecoration(gridPadding,
+        binding.outcomeList.addItemDecoration(new GridItemDecoration(gridPadding,
                 getSpanCount(RepCallActivity.this)));
 
         new AnalyticsManager().trackPageview(String.format("/issue/%s/%s/", mIssue.slug,c.id), this);
@@ -196,7 +169,7 @@ public class RepCallActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         outState.putParcelable(KEY_ISSUE, mIssue);
         outState.putBoolean(KEY_LOCAL_OFFICES_EXPANDED,
-                localOfficeSection.getVisibility() == View.VISIBLE);
+                binding.fieldOfficeSection.getVisibility() == View.VISIBLE);
     }
 
     @Override
@@ -220,13 +193,13 @@ public class RepCallActivity extends AppCompatActivity {
 
     private void setupContactUi(int index, boolean expandLocalSection) {
         final Contact contact = mIssue.contacts.get(index);
-        contactName.setText(contact.name);
+        binding.contactName.setText(contact.name);
 
         // Set the reason for contacting this rep, using default text if no reason is provided.
         final String contactReasonText = TextUtils.isEmpty(contact.reason)
                 ? getResources().getString(R.string.contact_reason_default)
                 : contact.reason;
-        contactReason.setText(contactReasonText);
+        binding.contactReason.setText(contactReasonText);
 
         if (!TextUtils.isEmpty(contact.photoURL)) {
             Glide.with(getApplicationContext())
@@ -234,25 +207,25 @@ public class RepCallActivity extends AppCompatActivity {
                     .centerCrop()
                     .transform(new CircleCrop())
                     .placeholder(R.drawable.baseline_person_52)
-                    .into(repImage);
+                    .into(binding.repImage);
         }
-        phoneNumber.setText(contact.phone);
-        Linkify.addLinks(phoneNumber, Linkify.PHONE_NUMBERS);
+        binding.phoneNumber.setText(contact.phone);
+        Linkify.addLinks(binding.phoneNumber, Linkify.PHONE_NUMBERS);
 
         if (expandLocalSection) {
-            localOfficeButton.setVisibility(View.INVISIBLE);
+            binding.localOfficeButton.setVisibility(View.INVISIBLE);
             expandLocalOfficeSection(contact);
         } else {
-            localOfficeSection.setVisibility(View.GONE);
-            localOfficeSection.removeViews(1, localOfficeSection.getChildCount() - 1);
+            binding.fieldOfficeSection.setVisibility(View.GONE);
+            binding.fieldOfficeSection.removeViews(1, binding.fieldOfficeSection.getChildCount() - 1);
             if (contact.field_offices == null || contact.field_offices.length == 0) {
-                localOfficeButton.setVisibility(View.GONE);
+                binding.fieldOfficeSection.setVisibility(View.GONE);
             } else {
-                localOfficeButton.setVisibility(View.VISIBLE);
-                localOfficeButton.setOnClickListener(new View.OnClickListener() {
+                binding.localOfficeButton.setVisibility(View.VISIBLE);
+                binding.localOfficeButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        localOfficeButton.setOnClickListener(null);
+                        binding.localOfficeButton.setOnClickListener(null);
                         expandLocalOfficeSection(contact);
                     }
                 });
@@ -265,15 +238,15 @@ public class RepCallActivity extends AppCompatActivity {
         if (previousCalls.size() > 0) {
             showContactChecked(previousCalls);
         } else {
-            contactChecked.setVisibility(View.GONE);
-            contactChecked.setOnClickListener(null);
+            binding.contactChecked.setVisibility(View.GONE);
+            binding.contactChecked.setOnClickListener(null);
         }
     }
 
     private void showContactChecked(final List<String> previousCalls) {
-        contactChecked.setVisibility(View.VISIBLE);
-        contactChecked.setImageLevel(1);
-        contactChecked.setOnClickListener(new View.OnClickListener() {
+        binding.contactChecked.setVisibility(View.VISIBLE);
+        binding.contactChecked.setImageLevel(1);
+        binding.contactChecked.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 new AlertDialog.Builder(RepCallActivity.this)
@@ -307,9 +280,9 @@ public class RepCallActivity extends AppCompatActivity {
     }
 
     private void expandLocalOfficeSection(Contact contact) {
-        localOfficeButton.setVisibility(View.INVISIBLE);
-        localOfficeSection.setVisibility(View.VISIBLE);
-        localOfficePrompt.setText(String.format(getResources().getString(
+        binding.localOfficeButton.setVisibility(View.INVISIBLE);
+        binding.fieldOfficeSection.setVisibility(View.VISIBLE);
+        binding.fieldOfficePrompt.setText(String.format(getResources().getString(
                 R.string.field_office_prompt), contact.name));
         // TODO: Use an adapter or ListView or something. There aren't expected to be
         // so many local offices so this is OK for now.
@@ -325,12 +298,12 @@ public class RepCallActivity extends AppCompatActivity {
                 ((TextView) localOfficeInfo.findViewById(R.id.field_office_city)).setText(
                         "- " + contact.field_offices[i].city);
             }
-            localOfficeSection.addView(localOfficeInfo);
+            binding.fieldOfficeSection.addView(localOfficeInfo);
         }
     }
 
     private void showError(int errorStringId) {
-        Snackbar.make(scrollView, errorStringId, Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(binding.scrollView, errorStringId, Snackbar.LENGTH_SHORT).show();
     }
 
     private void reportEvent(String event) {

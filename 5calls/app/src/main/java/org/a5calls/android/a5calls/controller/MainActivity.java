@@ -5,44 +5,35 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.util.DisplayMetrics;
 import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.adapter.IssuesAdapter;
+import org.a5calls.android.a5calls.databinding.ActivityMainBinding;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.Category;
 import org.a5calls.android.a5calls.model.Contact;
@@ -55,15 +46,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 import static android.view.View.VISIBLE;
 
 /**
  * The activity which handles zip code lookup and showing the issues list.
- * 
- * TODO: Sort issues based on which are "done" and which are not done or hide ones which are "done".
  */
 public class MainActivity extends AppCompatActivity implements IssuesAdapter.Callback {
     private static final String TAG = "MainActivity";
@@ -80,28 +66,16 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     private IssuesAdapter mIssuesAdapter;
     private FiveCallsApi.IssuesRequestListener mIssuesRequestListener;
     private FiveCallsApi.ContactsRequestListener mContactsRequestListener;
+    private FiveCallsApi.CallRequestListener mReportListener;
     private String mAddress;
     private String mLatitude;
     private String mLongitude;
     private String mLocationName;
-    private boolean mIsLowAccuracy;
+    private boolean mIsLowAccuracy = false;
+    private boolean mDonateIsOn = false;
     private FirebaseAuth mAuth = null;
 
-    @BindView(R.id.swipe_container) SwipeRefreshLayout swipeContainer;
-    @BindView(R.id.issues_recycler_view) RecyclerView issuesRecyclerView;
-    @BindView(R.id.drawer_layout) DrawerLayout drawerLayout;
-    @BindView(R.id.toolbar) Toolbar actionBar;
-    @BindView(R.id.nav_view) NavigationView navigationView;
-    @BindView(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsingToolbarLayout;
-    @BindView(R.id.action_bar_subtitle) TextView actionBarSubtitle;
-    @BindView(R.id.filter) AppCompatSpinner filter;
-    @BindView(R.id.search_bar) ViewGroup searchBar;
-    @BindView(R.id.clear_search_button) ImageButton clearSearchButton;
-    @BindView(R.id.search_text) TextView searchTextView;
-    @BindView(R.id.newsletter_signup_view) View newsletterWrapper;
-    @BindView(R.id.newsletter_email) EditText newsletterEmail;
-    @BindView(R.id.newsletter_signup_btn) Button newsletterSignupBtn;
-    @BindView(R.id.newsletter_decline_btn) Button newsletterDeclineBtn;
+    private ActivityMainBinding binding;
 
     private Snackbar mSnackbar;
 
@@ -109,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     protected void onCreate(Bundle savedInstanceState) {
         // TODO: Consider using fragments
         super.onCreate(savedInstanceState);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
 
         try {
             mAuth = FirebaseAuth.getInstance();
@@ -153,22 +128,19 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             new AnalyticsManager().trackPageview("/", this);
         }
 
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
+        setContentView(binding.getRoot());
 
-        setSupportActionBar(actionBar);
+        setSupportActionBar(binding.toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
         }
 
-        if (navigationView != null) {
-            setupDrawerContent(navigationView);
-        }
+        setupDrawerContent(binding.navigationView);
 
         if (!accountManager.isNewsletterPromptDone(this)) {
-            newsletterWrapper.setVisibility(View.VISIBLE);
-            newsletterDeclineBtn.setOnClickListener(new View.OnClickListener() {
+            binding.newsletterSignupView.setVisibility(View.VISIBLE);
+            binding.newsletterView.newsletterDeclineButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     accountManager.setNewsletterPromptDone(v.getContext(), true);
@@ -176,17 +148,17 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                     findViewById(R.id.newsletter_card_result_decline).setVisibility(VISIBLE);
                 }
             });
-            newsletterSignupBtn.setOnClickListener(new View.OnClickListener() {
+            binding.newsletterView.newsletterSignupButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String email = newsletterEmail.getText().toString();
+                    String email = binding.newsletterView.newsletterEmail.getText().toString();
                     if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                        newsletterEmail.setError(
+                        binding.newsletterView.newsletterEmail.setError(
                                 getResources().getString(R.string.error_email_format));
                         return;
                     }
-                    newsletterSignupBtn.setEnabled(false);
-                    newsletterDeclineBtn.setEnabled(false);
+                    binding.newsletterView.newsletterSignupButton.setEnabled(false);
+                    binding.newsletterView.newsletterDeclineButton.setEnabled(false);
                     FiveCallsApi api =
                             AppSingleton.getInstance(getApplicationContext()).getJsonController();
                     api.newsletterSubscribe(email, new FiveCallsApi.NewsletterSubscribeCallback() {
@@ -200,8 +172,8 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
 
                         @Override
                         public void onError() {
-                            newsletterSignupBtn.setEnabled(true);
-                            newsletterDeclineBtn.setEnabled(true);
+                            binding.newsletterView.newsletterSignupButton.setEnabled(true);
+                            binding.newsletterView.newsletterDeclineButton.setEnabled(true);
                             showSnackbar(R.string.newsletter_signup_error, Snackbar.LENGTH_LONG);
                         }
                     });
@@ -210,37 +182,37 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         }
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        issuesRecyclerView.setLayoutManager(layoutManager);
+        binding.issuesRecyclerView.setLayoutManager(layoutManager);
         DividerItemDecoration divider = new DividerItemDecoration(this, RecyclerView.VERTICAL);
-        issuesRecyclerView.addItemDecoration(divider);
+        binding.issuesRecyclerView.addItemDecoration(divider);
         mIssuesAdapter = new IssuesAdapter(this, this);
-        issuesRecyclerView.setAdapter(mIssuesAdapter);
+        binding.issuesRecyclerView.setAdapter(mIssuesAdapter);
 
         mFilterAdapter = new ArrayAdapter<>(this, R.layout.filter_item);
         mFilterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mFilterAdapter.addAll(getResources().getStringArray(R.array.default_filters));
-        filter.setAdapter(mFilterAdapter);
+        binding.filter.setAdapter(mFilterAdapter);
         if (savedInstanceState != null) {
             mFilterText = savedInstanceState.getString(KEY_FILTER_ITEM_SELECTED);
             mSearchText = savedInstanceState.getString(KEY_SEARCH_TEXT);
             if (TextUtils.isEmpty(mSearchText)) {
-                searchBar.setVisibility(View.GONE);
-                filter.setVisibility(VISIBLE);
+                binding.searchBar.setVisibility(View.GONE);
+                binding.filter.setVisibility(VISIBLE);
             } else {
-                searchBar.setVisibility(VISIBLE);
-                filter.setVisibility(View.GONE);
-                searchTextView.setText(mSearchText);
+                binding.searchBar.setVisibility(VISIBLE);
+                binding.filter.setVisibility(View.GONE);
+                binding.searchText.setText(mSearchText);
             }
         } else {
             mFilterText = mFilterAdapter.getItem(0);  // Default value
         }
-        searchTextView.setOnClickListener(new View.OnClickListener() {
+        binding.searchText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 launchSearchDialog();
             }
         });
-        clearSearchButton.setOnClickListener(new View.OnClickListener() {
+        binding.clearSearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onIssueSearchCleared();
@@ -249,8 +221,12 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
 
         registerApiListener();
 
-        swipeContainer.setColorSchemeResources(R.color.colorPrimary);
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        // Refresh the "donateOn" information. This doesn't change much so it's sufficient
+        // to do it just once in the activity's lifecycle.
+        AppSingleton.getInstance(getApplicationContext()).getJsonController().getReport();
+
+        binding.swipeContainer.setColorSchemeResources(R.color.colorPrimary);
+        binding.swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override public void onRefresh() {
                 refreshIssues();
             }
@@ -271,6 +247,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         FiveCallsApi api = AppSingleton.getInstance(getApplicationContext()).getJsonController();
         api.unregisterIssuesRequestListener(mIssuesRequestListener);
         api.unregisterContactsRequestListener(mContactsRequestListener);
+        api.unregisterCallRequestListener(mReportListener);
         super.onDestroy();
     }
 
@@ -278,19 +255,19 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     protected void onResume() {
         super.onResume();
 
-        drawerLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        binding.drawerLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 DisplayMetrics displayMetrics = new DisplayMetrics();
                 getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
                 int supportActionBarHeight =
                         getSupportActionBar() != null ? getSupportActionBar().getHeight() : 0;
-                int searchHeight = searchBar.getHeight();
-                int filterHeight = filter.getHeight();
-                swipeContainer.getLayoutParams().height = (int)
+                int searchHeight = binding.searchBar.getHeight();
+                int filterHeight = binding.filter.getHeight();
+                binding.swipeContainer.getLayoutParams().height = (int)
                         (getResources().getConfiguration().screenHeightDp * displayMetrics.density -
                                 searchHeight - filterHeight - supportActionBarHeight);
-                filter.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                binding.filter.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
         });
 
@@ -302,15 +279,15 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
 
         if (accountManager.isNewsletterPromptDone(this) ||
                 accountManager.isNewsletterSignUpCompleted(this)) {
-            newsletterWrapper.setVisibility(View.GONE);
+            binding.newsletterSignupView.setVisibility(View.GONE);
         }
 
         // Refresh on resume. The post is necessary to start the spinner animation.
         // Note that refreshing issues will also refresh the contacts list when it runs
         // on resume.
-        swipeContainer.post(new Runnable() {
+        binding.swipeContainer.post(new Runnable() {
             @Override public void run() {
-                swipeContainer.setRefreshing(true);
+                binding.swipeContainer.setRefreshing(true);
                 refreshIssues();
             }
         });
@@ -333,13 +310,13 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            drawerLayout.openDrawer(GravityCompat.START);
+            binding.drawerLayout.openDrawer(GravityCompat.START);
             return true;
         }
         else if (item.getItemId() == R.id.menu_refresh) {
-            swipeContainer.post(new Runnable() {
+            binding.swipeContainer.post(new Runnable() {
                 @Override public void run() {
-                    swipeContainer.setRefreshing(true);
+                    binding.swipeContainer.setRefreshing(true);
                     refreshIssues();
                 }
             });
@@ -365,6 +342,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         issueIntent.putExtra(RepCallActivity.KEY_ADDRESS, getLocationString());
         issueIntent.putExtra(RepCallActivity.KEY_LOCATION_NAME, mLocationName);
         issueIntent.putExtra(IssueActivity.KEY_IS_LOW_ACCURACY, mIsLowAccuracy);
+        issueIntent.putExtra(IssueActivity.KEY_DONATE_IS_ON, mDonateIsOn);
         startActivityForResult(issueIntent, ISSUE_DETAIL_REQUEST);
     }
 
@@ -374,7 +352,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         //menuItem.setChecked(true); // don't use this atm
-                        drawerLayout.closeDrawers();
+                        binding.drawerLayout.closeDrawers();
 
                         if (item.getItemId() == R.id.menu_about) {
                             Intent intent = new Intent(MainActivity.this, AboutActivity.class);
@@ -418,7 +396,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 // active issues list to avoid showing a stale list.
                 mIssuesAdapter.setAllIssues(Collections.<Issue>emptyList(),
                         IssuesAdapter.ERROR_REQUEST);
-                swipeContainer.setRefreshing(false);
+                binding.swipeContainer.setRefreshing(false);
             }
 
             @Override
@@ -428,7 +406,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 // active issues list to avoid showing a stale list.
                 mIssuesAdapter.setAllIssues(Collections.<Issue>emptyList(),
                         IssuesAdapter.ERROR_REQUEST);
-                swipeContainer.setRefreshing(false);
+                binding.swipeContainer.setRefreshing(false);
             }
 
             @Override
@@ -436,7 +414,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 populateFilterAdapterIfNeeded(issues);
                 mIssuesAdapter.setAllIssues(issues, IssuesAdapter.NO_ERROR);
                 mIssuesAdapter.setFilterAndSearch(mFilterText, mSearchText);
-                swipeContainer.setRefreshing(false);
+                binding.swipeContainer.setRefreshing(false);
             }
         };
 
@@ -447,7 +425,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 // Our only type of request in MainActivity is a GET. If it doesn't work, clear the
                 // active issues list to avoid showing a stale list.
                 mIssuesAdapter.setAddressError(IssuesAdapter.ERROR_REQUEST);
-                swipeContainer.setRefreshing(false);
+                binding.swipeContainer.setRefreshing(false);
             }
 
             @Override
@@ -456,14 +434,14 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 // Our only type of request in MainActivity is a GET. If it doesn't work, clear the
                 // active issues list to avoid showing a stale list.
                 mIssuesAdapter.setAddressError(IssuesAdapter.ERROR_REQUEST);
-                swipeContainer.setRefreshing(false);
+                binding.swipeContainer.setRefreshing(false);
             }
 
             @Override
             public void onAddressError() {
                 showAddressErrorSnackbar();
                 mIssuesAdapter.setAddressError(IssuesAdapter.ERROR_ADDRESS);
-                swipeContainer.setRefreshing(false);
+                binding.swipeContainer.setRefreshing(false);
             }
 
             @Override
@@ -471,7 +449,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                                            List<Contact> contacts) {
                 mLocationName = TextUtils.isEmpty(locationName) ?
                         getResources().getString(R.string.unknown_location) : locationName;
-                collapsingToolbarLayout.setTitle(String.format(getResources().getString(
+                binding.collapsingToolbar.setTitle(String.format(getResources().getString(
                         R.string.title_main), mLocationName));
                 mIssuesAdapter.setContacts(contacts, IssuesAdapter.NO_ERROR);
                 mIsLowAccuracy = isLowAccuracy;
@@ -488,7 +466,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 if (houseCount > 1 || mIsLowAccuracy) {
                     int warning = houseCount > 1 ? R.string.split_district_warning :
                             R.string.low_accuracy_warning;
-                    mSnackbar = Snackbar.make(swipeContainer, warning,
+                    mSnackbar = Snackbar.make(binding.swipeContainer, warning,
                             Snackbar.LENGTH_INDEFINITE)
                             .setAction(R.string.update, new View.OnClickListener() {
                                 @Override
@@ -508,9 +486,26 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             }
         };
 
+        mReportListener = new FiveCallsApi.CallRequestListener() {
+            @Override
+            public void onRequestError() {}
+
+            @Override
+            public void onJsonError() {}
+
+            @Override
+            public void onReportReceived(int count, boolean donateOn) {
+                mDonateIsOn = donateOn;
+            }
+
+            @Override
+            public void onCallReported() {}
+        };
+
         FiveCallsApi api = AppSingleton.getInstance(getApplicationContext()).getJsonController();
         api.registerIssuesRequestListener(mIssuesRequestListener);
         api.registerContactsRequestListener(mContactsRequestListener);
+        api.registerCallRequestListener(mReportListener);
     }
 
     private void populateFilterAdapterIfNeeded(List<Issue> issues) {
@@ -532,9 +527,9 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         }
         Collections.sort(topics);
         mFilterAdapter.addAll(topics);
-        filter.setSelection(mFilterAdapter.getPosition(mFilterText));
+        binding.filter.setSelection(mFilterAdapter.getPosition(mFilterText));
         // Set this listener after manually setting the selection so it isn't fired right away.
-        filter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        binding.filter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String newFilter = mFilterAdapter.getItem(i);
@@ -543,7 +538,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                     return;
                 }
                 mFilterText = newFilter;
-                if (swipeContainer.isRefreshing()) {
+                if (binding.swipeContainer.isRefreshing()) {
                     // Already loading issues!
                     return;
                 }
@@ -562,7 +557,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 .getDatabaseHelper().getCallsCount();
         if (callCount > 1) {
             // Don't bother if it is less than 1.
-            actionBarSubtitle.setText(String.format(
+            binding.actionBarSubtitle.setText(String.format(
                     getResources().getString(R.string.your_call_count_summary), callCount));
         }
     }
@@ -609,25 +604,25 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             onIssueSearchCleared();
             return;
         }
-        filter.setVisibility(View.GONE);
-        searchBar.setVisibility(VISIBLE);
+        binding.filter.setVisibility(View.GONE);
+        binding.searchBar.setVisibility(VISIBLE);
         setSearchText(searchText);
     }
 
     public void onIssueSearchCleared() {
-        filter.setVisibility(VISIBLE);
-        searchBar.setVisibility(View.GONE);
+        binding.filter.setVisibility(VISIBLE);
+        binding.searchBar.setVisibility(View.GONE);
         setSearchText("");
     }
 
     private void setSearchText(String searchText) {
-        searchTextView.setText(searchText);
+        binding.searchText.setText(searchText);
         if (TextUtils.equals(mSearchText, searchText)) {
             // Already set, no need to do work.
             return;
         }
         mSearchText = searchText;
-        if (swipeContainer.isRefreshing()) {
+        if (binding.swipeContainer.isRefreshing()) {
             // Already loading issues!
             return;
         }
