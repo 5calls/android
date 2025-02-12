@@ -358,7 +358,7 @@ public class StatsActivity extends AppCompatActivity {
 
     private Bitmap generateGraphBitmap() {
         // Show a title for the share.
-        binding.lineChart.setTitle("Calls over time");
+        binding.lineChart.setTitle(getString(R.string.impact_calls_over_time));
 
         // From https://stackoverflow.com/questions/5536066/convert-view-to-bitmap-on-android.
         //Define a bitmap with the same size as the view

@@ -208,6 +208,9 @@
     <!-- Tells the user how many times they've called but the office was unavailable, if the count is 1 [CHAR_LIMIT=50] -->
     <string name="impact_unavailable_one">and 1 time the contact was unavailable.</string>
 
+    <!-- Title for user's calls over time line chart -->
+    <string name="impact_calls_over_time">Calls over time</string>
+
     <!-- Unknown contact name [CHAR_LIMIT=50] -->
     <string name="unknown_contact">Unknown contact</string>
 
