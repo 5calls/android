@@ -16,12 +16,11 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.BuildConfig;
+import org.a5calls.android.a5calls.databinding.ActivityAboutBinding;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
 import org.a5calls.android.a5calls.R;
@@ -30,9 +29,6 @@ import org.a5calls.android.a5calls.util.CustomTabsUtil;
 
 import java.text.NumberFormat;
 import java.util.Locale;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 import static android.view.View.VISIBLE;
 
@@ -46,32 +42,19 @@ public class AboutActivity extends AppCompatActivity {
     private final AccountManager accountManager = AccountManager.Instance;
     private FiveCallsApi.CallRequestListener mStatusListener;
 
-    @BindView(R.id.about_us_btn) Button aboutUsButton;
-    @BindView(R.id.contact_us_btn) Button contactUsButton;
-    @BindView(R.id.twitter_btn) TextView twitterButton;
-    @BindView(R.id.facebook_btn) TextView facebookButton;
-    @BindView(R.id.instagram_btn) TextView instagramButton;
-    @BindView(R.id.bluesky_btn) TextView blueskyButton;
-    @BindView(R.id.rate_us_btn) Button rateUsButton;
-    @BindView(R.id.privacy_btn) Button privacyButton;
-    @BindView(R.id.version_info) TextView version;
-    @BindView(R.id.calls_to_date) TextView callsToDate;
-    @BindView(R.id.license_btn) Button licenseButton;
-    @BindView(R.id.newsletter_signup_view) View newsletterWrapper;
-    @BindView(R.id.newsletter_email) EditText newsletterEmail;
-    @BindView(R.id.newsletter_signup_btn) Button newsletterSignupBtn;
+    private ActivityAboutBinding binding;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        binding = ActivityAboutBinding.inflate(getLayoutInflater());
 
-        setContentView(R.layout.activity_about);
-        ButterKnife.bind(this);
+        setContentView(binding.getRoot());
 
         getSupportActionBar().setTitle(getString(R.string.about_title));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        aboutUsButton.setOnClickListener(new View.OnClickListener() {
+        binding.aboutUsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 CustomTabsUtil.launchUrl(AboutActivity.this, Uri.parse(getString(R.string.about_url)));
@@ -79,37 +62,37 @@ public class AboutActivity extends AppCompatActivity {
         });
 
         setOpenIntentOnClick(
-                contactUsButton, getSendEmailIntent(getResources()), getString(R.string.send_email)
+                binding.contactUsButton, getSendEmailIntent(getResources()), getString(R.string.send_email)
         );
 
         // Testing note: to see the Intent Chooser, install some Twitter apps other than the official Twitter
         // app. The Intent Chooser will show browser apps and third-party Twitter apps. If the official
         // Twitter app is installed, it will be opened directly without asking the user which app to open.
         setOpenIntentOnClick(
-                twitterButton,
+                binding.twitterButton,
                 getActionIntent(getString(R.string.twitter_url)),
                 getString(R.string.open_social_media, getString(R.string.twitter_btn))
         );
 
         setOpenIntentOnClick(
-                facebookButton,
+                binding.facebookButton,
                 getActionIntent(getString(R.string.facebook_url)),
                 getString(R.string.open_social_media, getString(R.string.facebook_btn))
         );
 
         setOpenIntentOnClick(
-                instagramButton,
+                binding.instagramButton,
                 getActionIntent(getString(R.string.instagram_url)),
                 getString(R.string.open_social_media, getString(R.string.instagram_btn))
         );
 
         setOpenIntentOnClick(
-                blueskyButton,
+                binding.blueskyButton,
                 getActionIntent(getString(R.string.bluesky_url)),
                 getString(R.string.open_social_media, getString(R.string.bluesky_btn))
         );
 
-        rateUsButton.setOnClickListener(new View.OnClickListener() {
+        binding.rateUsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // From http://stackoverflow.com/questions/11753000/how-to-open-the-google-play-store-directly-from-my-android-application
@@ -124,14 +107,14 @@ public class AboutActivity extends AppCompatActivity {
             }
         });
 
-        privacyButton.setOnClickListener(new View.OnClickListener() {
+        binding.privacyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://5calls.org/privacy")));
             }
         });
 
-        licenseButton.setOnClickListener(new View.OnClickListener() {
+        binding.licenseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showOpenSourceLicenses();
@@ -139,17 +122,17 @@ public class AboutActivity extends AppCompatActivity {
         });
 
         if (!accountManager.isNewsletterSignUpCompleted(this)) {
-            newsletterWrapper.setVisibility(View.VISIBLE);
-            newsletterSignupBtn.setOnClickListener(new View.OnClickListener() {
+            binding.newsletterSignupView.setVisibility(View.VISIBLE);
+            binding.newsletterSignupButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String email = newsletterEmail.getText().toString();
+                    String email = binding.newsletterEmail.getText().toString();
                     if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                        newsletterEmail.setError(
+                        binding.newsletterEmail.setError(
                                 getResources().getString(R.string.error_email_format));
                         return;
                     }
-                    newsletterSignupBtn.setEnabled(false);
+                    binding.newsletterSignupButton.setEnabled(false);
                     FiveCallsApi api =
                             AppSingleton.getInstance(getApplicationContext()).getJsonController();
                     api.newsletterSubscribe(email, new FiveCallsApi.NewsletterSubscribeCallback() {
@@ -162,7 +145,7 @@ public class AboutActivity extends AppCompatActivity {
 
                         @Override
                         public void onError() {
-                            newsletterSignupBtn.setEnabled(true);
+                            binding.newsletterSignupButton.setEnabled(true);
                             Snackbar.make(findViewById(R.id.activity_about),
                                     getResources().getString(R.string.newsletter_signup_error),
                                     Snackbar.LENGTH_LONG).show();
@@ -174,27 +157,27 @@ public class AboutActivity extends AppCompatActivity {
 
         underlineButtons();
 
-        version.setText(String.format(getResources().getString(R.string.version_info),
+        binding.versionInfo.setText(String.format(getResources().getString(R.string.version_info),
                 BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE));
 
         mStatusListener = new FiveCallsApi.CallRequestListener() {
             @Override
             public void onRequestError() {
-                Snackbar.make(aboutUsButton,
+                Snackbar.make(binding.aboutUsButton,
                         getResources().getString(R.string.request_error),
                         Snackbar.LENGTH_LONG).show();
             }
 
             @Override
             public void onJsonError() {
-                Snackbar.make(aboutUsButton,
+                Snackbar.make(binding.aboutUsButton,
                         getResources().getString(R.string.json_error),
                         Snackbar.LENGTH_LONG).show();
             }
 
             @Override
             public void onReportReceived(int count, boolean donateOn) {
-                callsToDate.setText(String.format(
+                binding.callsToDate.setText(String.format(
                         getResources().getString(R.string.calls_to_date),
                         NumberFormat.getNumberInstance(Locale.US).format(count)));
             }
@@ -234,20 +217,20 @@ public class AboutActivity extends AppCompatActivity {
         super.onResume();
 
         if (accountManager.isNewsletterSignUpCompleted(this)) {
-            newsletterWrapper.setVisibility(View.GONE);
+            binding.newsletterSignupView.setVisibility(View.GONE);
         }
     }
 
     private void underlineButtons() {
-        underlineText(aboutUsButton);
-        underlineText(contactUsButton);
-        underlineText(twitterButton);
-        underlineText(facebookButton);
-        underlineText(instagramButton);
-        underlineText(blueskyButton);
-        underlineText(rateUsButton);
-        underlineText(privacyButton);
-        underlineText(licenseButton);
+        underlineText(binding.aboutUsButton);
+        underlineText(binding.contactUsButton);
+        underlineText(binding.twitterButton);
+        underlineText(binding.facebookButton);
+        underlineText(binding.instagramButton);
+        underlineText(binding.blueskyButton);
+        underlineText(binding.rateUsButton);
+        underlineText(binding.privacyButton);
+        underlineText(binding.licenseButton);
     }
 
     /**

@@ -28,10 +28,13 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
     }
-    buildFeatures.buildConfig = true
+    buildFeatures {
+        buildConfig = true
+        viewBinding = true
+    }
 }
 
 repositories {
@@ -62,13 +65,6 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.browser:browser:1.8.0'
     implementation 'com.google.android.play:review:2.0.2'
-
-    // Suppressing warning for line below, because https://github.com/JakeWharton/butterknife says
-    // to use `implementation`.
-    // TODO: replace ButterKnife (now deprecated) with View binding - no need to update ButterKnife
-    //noinspection AnnotationProcessorOnCompilePath
-    implementation 'com.jakewharton:butterknife:8.2.1'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.2.1'
 
     // firebase libs
     implementation platform('com.google.firebase:firebase-bom:28.4.2')

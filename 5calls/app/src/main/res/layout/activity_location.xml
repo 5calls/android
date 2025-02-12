@@ -24,7 +24,7 @@
             />
 
         <Button
-            android:id="@+id/btn_gps"
+            android:id="@+id/gps_button"
             style="@style/locationGpsBtnStyle"
             android:text="@string/btn_gps"
             />
