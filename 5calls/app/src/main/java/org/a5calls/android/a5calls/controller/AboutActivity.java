@@ -65,15 +65,6 @@ public class AboutActivity extends AppCompatActivity {
                 binding.contactUsButton, getSendEmailIntent(getResources()), getString(R.string.send_email)
         );
 
-        // Testing note: to see the Intent Chooser, install some Twitter apps other than the official Twitter
-        // app. The Intent Chooser will show browser apps and third-party Twitter apps. If the official
-        // Twitter app is installed, it will be opened directly without asking the user which app to open.
-        setOpenIntentOnClick(
-                binding.twitterButton,
-                getActionIntent(getString(R.string.twitter_url)),
-                getString(R.string.open_social_media, getString(R.string.twitter_btn))
-        );
-
         setOpenIntentOnClick(
                 binding.facebookButton,
                 getActionIntent(getString(R.string.facebook_url)),
@@ -224,7 +215,6 @@ public class AboutActivity extends AppCompatActivity {
     private void underlineButtons() {
         underlineText(binding.aboutUsButton);
         underlineText(binding.contactUsButton);
-        underlineText(binding.twitterButton);
         underlineText(binding.facebookButton);
         underlineText(binding.instagramButton);
         underlineText(binding.blueskyButton);
