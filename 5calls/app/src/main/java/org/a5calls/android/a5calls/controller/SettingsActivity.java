@@ -151,7 +151,6 @@ public class SettingsActivity extends AppCompatActivity {
 
             Preference timePreference = findPreference("prefsKeyReminderTimePlaceholder");
             timePreference.setOnPreferenceClickListener(preference -> {
-                // new TimePreference2().show(getParentFragmentManager(), "timePicker");
                 final TimePickerFragment dialog = new TimePickerFragment();
                 dialog.setCallback((hourOfDay, minute) -> {
                     final int reminderMinutes = hourOfDay * 60 + minute;
