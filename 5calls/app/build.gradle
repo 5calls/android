@@ -65,6 +65,7 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.browser:browser:1.8.0'
     implementation 'com.google.android.play:review:2.0.2'
+    implementation 'androidx.preference:preference:1.2.1'
 
     // firebase libs
     implementation platform('com.google.firebase:firebase-bom:28.4.2')
