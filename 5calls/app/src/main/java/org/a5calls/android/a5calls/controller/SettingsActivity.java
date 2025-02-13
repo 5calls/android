@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.MenuItem;
 
+import com.onesignal.Continue;
 import com.onesignal.OneSignal;
 
 import org.a5calls.android.a5calls.FiveCallsApplication;
@@ -101,10 +102,10 @@ public class SettingsActivity extends AppCompatActivity {
                                                      String result) {
         accountManager.setNotificationPreference(application, result);
         if (TextUtils.equals("0", result)) {
-            OneSignal.disablePush(false);
-            OneSignal.promptForPushNotifications(true);
+            OneSignal.getUser().getPushSubscription().optIn();
+            OneSignal.getNotifications().requestPermission(true, Continue.none());
         } else if (TextUtils.equals("1", result)) {
-            OneSignal.disablePush(true);
+            OneSignal.getUser().getPushSubscription().optOut();
         }
         // If the user changes the settings there's no need to show the dialog in the future.
         accountManager.setNotificationDialogShown(application, true);

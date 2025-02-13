@@ -19,6 +19,7 @@ package org.a5calls.android.a5calls;
 import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.core.app.NotificationManagerCompat;
 
@@ -97,15 +98,13 @@ public class FiveCallsApplication extends Application {
         }
 
         // Set up OneSignal.
-        OneSignal.initWithContext(this);
-        OneSignal.setAppId(ONESIGNAL_APP_ID);
-        OneSignal.unsubscribeWhenNotificationsAreDisabled(true);
+        OneSignal.initWithContext(this, ONESIGNAL_APP_ID);
 
         String storedCID = AccountManager.Instance.getCallerID(this);
         if (storedCID == "") {
             String uuid = UUID.randomUUID().toString();
             AccountManager.Instance.setCallerID(this, uuid);
-            OneSignal.setExternalUserId(uuid);
+            OneSignal.login(uuid);
         }
 
         // Check if notification permission has been revoked outside of the app since the last run
