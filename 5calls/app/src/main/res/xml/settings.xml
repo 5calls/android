@@ -23,7 +23,7 @@
         <SwitchPreference
             android:title="@string/settings_reminders_enable_title"
             android:key="prefsKeyEnableReminders"
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:summary="@string/settings_reminders_enable_summary"
             android:disableDependentsState="false"
             />

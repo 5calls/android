@@ -118,7 +118,7 @@ public enum AccountManager {
     }
 
     public boolean getAllowReminders(Context context) {
-        return getSharedPrefs(context).getBoolean(KEY_ALLOW_REMINDERS, true);
+        return getSharedPrefs(context).getBoolean(KEY_ALLOW_REMINDERS, false);
     }
 
     public void setAllowReminders(Context context, boolean allowReminders) {
