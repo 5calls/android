@@ -6,7 +6,9 @@ import org.a5calls.android.a5calls.BuildConfig
 import org.a5calls.android.a5calls.model.AccountManager
 
 class AnalyticsManager {
-    private val staticProps: Map<String, String> = mapOf("isAndroidApp" to "true")
+    private val staticProps: Map<String, String> = mapOf(
+        "isAndroidApp" to "true",
+        "version" to BuildConfig.VERSION_CODE.toString())
 
     fun trackPageview(path: String, context: Context) {
         if (!BuildConfig.DEBUG && AccountManager.Instance.allowAnalytics(context)) {
