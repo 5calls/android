@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.app.TaskStackBuilder;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -189,8 +191,21 @@ public class SettingsActivity extends AppCompatActivity {
                 accountManager.setAllowAnalytics(getActivity(), result);
                 updateAllowAnalytics(getActivity(), result);
             } else if (TextUtils.equals(key, AccountManager.KEY_ALLOW_REMINDERS)) {
-                boolean result = sharedPreferences.getBoolean(key, true);
-                accountManager.setAllowReminders(getActivity(), result);
+                boolean result = sharedPreferences.getBoolean(key, false);
+                if (result && !NotificationManagerCompat.from(requireContext()).areNotificationsEnabled()) {
+                    // Trying to enable reminders and notification permission is not granted
+                    // Prompt using OneSignal's shortcut method and handle the response
+                    OneSignal.promptForPushNotifications(true, (response) -> {
+                        // If the user denied the notification permission, set the preference to false
+                        // Otherwise they granted and we will set the permission to true
+                        accountManager.setAllowReminders(getActivity(), response);
+                    });
+                } else {
+                    // Either disabling reminders or notification permission is already granted
+                    // so we don't need to prompt
+                    accountManager.setAllowReminders(getActivity(), result);
+                }
+
             } else if (TextUtils.equals(key, AccountManager.KEY_REMINDER_DAYS)) {
                 Set<String> result = sharedPreferences.getStringSet(key,
                         AccountManager.DEFAULT_REMINDER_DAYS);
