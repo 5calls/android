@@ -109,8 +109,8 @@
     <string name="about_splash_2">5 Calls provides phone numbers and scripts so calling is quick and easy, finds your local representatives so your calls have more impact.</string>
 
     <!-- Text shown to the user on the splash / tutorial screen letting them know about notifications and reminders [CHAR_LIMIT=NONE] -->
-    <string name="about_splash_3">The 5 Calls app helps you maintain involvement by reminding you several times a week to make calls.
-                                  \n\nYou can customize or turn off reminders in settings.</string>
+    <string name="about_splash_3">The 5 Calls app can help you maintain involvement by reminding you several times a week to make calls.
+                                  \n\nYou can turn on and customize reminders in settings.</string>
 
     <!-- Button shown to the user on the splash / tutorial screen to get to the next page of the tutorial [CHAR_LIMIT=30] -->
     <string name="next">Next</string>
