@@ -1,28 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/viewRelativeLayoutStyle">
 
     <TextView
         android:id="@+id/issue_name"
         style="@style/issueViewTextStyle"
-        android:layout_toEndOf="@+id/issue_done_img"
-        android:layout_toRightOf="@id/issue_done_img"
+        android:layout_alignParentTop="true"
         />
 
     <TextView
         android:id="@+id/issue_call_count"
         style="@style/issueCallCountStyle"
         android:layout_below="@id/issue_name"
-        android:layout_toEndOf="@id/issue_done_img"
-        android:layout_toRightOf="@id/issue_done_img"
         />
 
-    <ImageView
-        android:id="@+id/issue_done_img"
-        style="@style/issueImageStyle"
-        android:contentDescription="@null"
-        android:src="@drawable/checked"
+    <TextView
+        style="@style/issuePreviousCallStatsStyle"
+        android:id="@+id/previous_call_stats"
+        android:layout_below="@id/issue_call_count"
+        app:drawableStartCompat="@drawable/checked_small"
         />
 
 </RelativeLayout>

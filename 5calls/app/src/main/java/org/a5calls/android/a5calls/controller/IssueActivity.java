@@ -309,11 +309,14 @@ public class IssueActivity extends AppCompatActivity {
     private boolean loadRepList() {
         binding.repList.removeAllViews();
         boolean allCalled = true;
+        DatabaseHelper dbHelper = AppSingleton.getInstance(this).getDatabaseHelper();
         for (int i = 0; i < mIssue.contacts.size(); i++) {
+            Contact contact = mIssue.contacts.get(i);
             View repView = LayoutInflater.from(this).inflate(R.layout.rep_list_view, null);
-            List<String> previousCalls = AppSingleton.getInstance(this).getDatabaseHelper()
-                    .getCallResults(mIssue.id, mIssue.contacts.get(i).id);
-            populateRepView(repView, mIssue.contacts.get(i), i, previousCalls);
+            List<String> previousCalls =
+                    dbHelper.getCallResults(mIssue.id, contact.id);
+            boolean hasCalledToday = dbHelper.hasCalledToday(mIssue.id, contact.id);
+            populateRepView(repView, contact, i, previousCalls.size(), hasCalledToday);
             binding.repList.addView(repView);
             if (previousCalls.isEmpty()) {
                 allCalled = false;
@@ -323,7 +326,7 @@ public class IssueActivity extends AppCompatActivity {
     }
 
     private void populateRepView(View repView, Contact contact, final int index,
-                                 List<String> previousCalls) {
+                                 int previousCallCount, boolean hasCalledToday) {
         TextView contactName = repView.findViewById(R.id.contact_name);
         final ImageView repImage = repView.findViewById(R.id.rep_image);
         ImageView contactChecked = repView.findViewById(R.id.contact_done_img);
@@ -350,7 +353,7 @@ public class IssueActivity extends AppCompatActivity {
                     .into(repImage);
         }
         // Show a bit about whether they've been contacted yet
-        if (!previousCalls.isEmpty()) {
+        if (hasCalledToday) {
             contactChecked.setImageLevel(1);
             contactChecked.setContentDescription(getResources().getString(
                     R.string.contact_done_img_description));

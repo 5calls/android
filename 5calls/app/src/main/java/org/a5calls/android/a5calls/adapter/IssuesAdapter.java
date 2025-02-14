@@ -16,6 +16,7 @@ import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.Category;
 import org.a5calls.android.a5calls.model.Contact;
+import org.a5calls.android.a5calls.model.DatabaseHelper;
 import org.a5calls.android.a5calls.model.Issue;
 
 import java.util.ArrayList;
@@ -221,7 +222,6 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             if (mAddressErrorType != NO_ERROR) {
                 // If there was an address error, clear the number of calls to make.
                 vh.numCalls.setText("");
-                vh.doneIcon.setImageLevel(0);
                 return;
             }
 
@@ -244,30 +244,47 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 }
             }
 
-            int totalCalls = issue.contacts.size();
-            List<String> contacted = AppSingleton.getInstance(mActivity.getApplicationContext())
-                    .getDatabaseHelper().getCallsForIssueAndContacts(issue.id, issue.contacts);
-            int callsLeft = totalCalls - contacted.size();
-            if (callsLeft == totalCalls) {
-                if (totalCalls == 1) {
+            DatabaseHelper dbHelper =  AppSingleton.getInstance(mActivity.getApplicationContext())
+                    .getDatabaseHelper();
+            // Calls ever made.
+            int totalUserCalls = dbHelper.getTotalCallsForIssueAndContacts(issue.id, issue.contacts);
+
+            // Calls today only.
+            int callsLeft = issue.contacts.size();
+            for (Contact contact : issue.contacts) {
+                if(dbHelper.hasCalledToday(issue.id, contact.id)) {
+                    callsLeft--;
+                }
+            }
+            if (totalUserCalls == 0) {
+                vh.previousCallStats.setVisibility(View.GONE);
+                if (callsLeft == 1) {
                     vh.numCalls.setText(
                             mActivity.getResources().getString(R.string.call_count_one));
                 } else {
                     vh.numCalls.setText(String.format(
-                            mActivity.getResources().getString(R.string.call_count), totalCalls));
+                            mActivity.getResources().getString(R.string.call_count), callsLeft));
                 }
             } else {
+                if (totalUserCalls == 1) {
+                    vh.previousCallStats.setVisibility(View.VISIBLE);
+                    vh.previousCallStats.setText(mActivity.getResources().getString(
+                            R.string.previous_call_count_one));
+                } else {
+                    vh.previousCallStats.setVisibility(View.VISIBLE);
+                    vh.previousCallStats.setText(
+                            mActivity.getResources().getString(
+                                    R.string.previous_call_count_many, totalUserCalls));
+                }
                 if (callsLeft == 1) {
-                    vh.numCalls.setText(String.format(
-                            mActivity.getResources().getString(R.string.call_count_remaining_one),
-                            totalCalls));
+                    vh.numCalls.setText(
+                            mActivity.getResources().getString(R.string.call_count_today_one));
                 } else {
                     vh.numCalls.setText(String.format(
-                            mActivity.getResources().getString(R.string.call_count_remaining),
-                            callsLeft, totalCalls));
+                            mActivity.getResources().getString(R.string.call_count_today), callsLeft));
                 }
             }
-            vh.doneIcon.setImageLevel(callsLeft == 0 && totalCalls > 0 ? 1 : 0);
+
         } else if (type == VIEW_TYPE_EMPTY_REQUEST) {
             EmptyRequestViewHolder vh = (EmptyRequestViewHolder) holder;
             vh.refreshButton.setOnClickListener(new View.OnClickListener() {
@@ -334,13 +351,13 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private static class IssueViewHolder extends RecyclerView.ViewHolder {
     public TextView name;
     public TextView numCalls;
-    public ImageView doneIcon;
+    public TextView previousCallStats;
 
     public IssueViewHolder(View itemView) {
         super(itemView);
         name = (TextView) itemView.findViewById(R.id.issue_name);
         numCalls = (TextView) itemView.findViewById(R.id.issue_call_count);
-        doneIcon = (ImageView) itemView.findViewById(R.id.issue_done_img);
+        previousCallStats = (TextView) itemView.findViewById(R.id.previous_call_stats);
     }
 }
 
