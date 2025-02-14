@@ -257,6 +257,8 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 }
             }
             if (totalUserCalls == 0) {
+                // The user has never called on this issue before. Show a simple number of calls
+                // text, without the word "today".
                 vh.previousCallStats.setVisibility(View.GONE);
                 if (callsLeft == 1) {
                     vh.numCalls.setText(
@@ -266,16 +268,19 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                             mActivity.getResources().getString(R.string.call_count), callsLeft));
                 }
             } else {
+                vh.previousCallStats.setVisibility(View.VISIBLE);
+
+                // Previous call stats
                 if (totalUserCalls == 1) {
-                    vh.previousCallStats.setVisibility(View.VISIBLE);
                     vh.previousCallStats.setText(mActivity.getResources().getString(
                             R.string.previous_call_count_one));
                 } else {
-                    vh.previousCallStats.setVisibility(View.VISIBLE);
                     vh.previousCallStats.setText(
                             mActivity.getResources().getString(
                                     R.string.previous_call_count_many, totalUserCalls));
                 }
+
+                // Calls to make today.
                 if (callsLeft == 1) {
                     vh.numCalls.setText(
                             mActivity.getResources().getString(R.string.call_count_today_one));
@@ -284,7 +289,6 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                             mActivity.getResources().getString(R.string.call_count_today), callsLeft));
                 }
             }
-
         } else if (type == VIEW_TYPE_EMPTY_REQUEST) {
             EmptyRequestViewHolder vh = (EmptyRequestViewHolder) holder;
             vh.refreshButton.setOnClickListener(new View.OnClickListener() {

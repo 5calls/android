@@ -22,14 +22,16 @@
     <!-- Message telling a user they sill have one call to make on a particular issue [CHAR_LIMIT=30] -->
     <string name="call_count_one">1 call to make</string>
 
-    <!-- Message telling a user how many calls they still need to make on a particular issue [CHAR_LIMIT=30] -->
+    <!-- Message telling a user how many calls they still need to make on a particular issue today [CHAR_LIMIT=none] -->
     <string name="call_count_today"><xliff:g id="callCount">%1$d</xliff:g> calls to make today</string>
 
-    <!-- Message telling a user they sill have one call to make on a particular issue [CHAR_LIMIT=30] -->
+    <!-- Message telling a user they sill have one call to make on a particular issue today [CHAR_LIMIT=none] -->
     <string name="call_count_today_one">1 call to make today</string>
 
+    <!-- Message telling a user they have made one previous call [CHAR_LIMIT=none] -->
     <string name="previous_call_count_one">1 previous call</string>
 
+    <!-- Message telling a user how many previous calls they have made [CHAR_LIMIT=none] -->
     <string name="previous_call_count_many"><xliff:g id="callCount">%1$d</xliff:g> previous calls</string>
 
     <!-- Prompt for explaining which contact/office to call [CHAR_LIMIT=50] -->
