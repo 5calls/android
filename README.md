@@ -12,6 +12,32 @@ To run the app locally, you'll need to generate your own `google-services.json` 
 
 To test the app, set `TESTING=true` in `FiveCallsApi.java`. This makes sure that calls logged to the server are marked as test calls.
 
+### Notifications
+
+To test snoozing notifications, change `FREQUENT_NOTIFICATION_DEBUG_MODE` to `true` in `NotificationUtils.java`. Note that notifications
+do not use exact alarms, so they may arrive a few minutes later than scheduled.
+
+### Releasing
+
+Steps to create a release:
+* Ensure all strings are in strings.xml and translations are in strings-es.xml.
+* Run the automated tests
+* Manual testing (Note issue #130 to add more automated testing)
+  * Testing anything that's been touched since the last release
+  * If the release includes any settings or database changes:
+    * Do your settings and database info persist across an upgrade? (Check out the previous release branch & flash, then the lastest and flash)
+    * Do all pages lay out as expected in portrait and landscape? Does rotation cause crashes in any activity?
+  * If the release includes any UI changes:
+    * Accessibility testing of new UI, including:
+      * Use the Accessibility Scanner tool to check for contrast, touch target size, etc
+      * Enable TalkBack and ensure all parts of the UI can be accessed using swiping to navigate and double-tap to click.
+  * If the release includes any API changes:
+    * Do filter and search functionality still work?
+    * Does the app behave OK as airplane mode is toggled?
+* Rev the version number and code in the app `build.gradle`.
+* Push to the release branch
+* Build a bundle in Android Studio and upload to Play store
+
 ## TODOs and Issues
 Issues marked "[up for grabs](https://github.com/5calls/android/labels/up%20for%20grabs)" are available for contributors. Please add a comment to the issue when you start working on it to avoid conflicts. Feel free to add new issues to the list too -- even better if new issues have some justification or background information.
 

@@ -21,6 +21,21 @@
     <!-- Message telling a user they sill have one call to make on a particular issue [CHAR_LIMIT=30] -->
     <string name="call_count_one">1 llamada para hacer</string>
 
+    <!-- Message telling a user how many calls they still need to make on a particular issue today [CHAR_LIMIT=none] -->
+    <string name="call_count_today"><xliff:g id="callCount">%1$d</xliff:g> llamadas para hacer hoy</string>
+
+    <!-- Message telling a user they sill have one call to make on a particular issue today [CHAR_LIMIT=none] -->
+    <string name="call_count_today_one">1 llamada para hacer</string>
+
+    <!-- Message telling a user they sill have no calls left on a particular issue today [CHAR_LIMIT=none] -->
+    <string name="call_count_today_done">¡Buen trabajo, todas las llamadas hecho hoy!</string>
+
+    <!-- Message telling a user they have made one previous call [CHAR_LIMIT=none] -->
+    <string name="previous_call_count_one">"1 llamada anterior "</string>
+
+    <!-- Message telling a user how many previous calls they have made [CHAR_LIMIT=none] -->
+    <string name="previous_call_count_many"><xliff:g id="callCount">%1$d</xliff:g> llamadas anteriores</string>
+
     <!-- Prompt for explaining which contact/office to call [CHAR_LIMIT=50] -->
     <string name="call_this_office">Llame a esta oficina:</string>
 
@@ -184,6 +199,9 @@
 
     <!-- Tells the user how many times they've called but the office was unavailable, if the count is 1 [CHAR_LIMIT=50] -->
     <string name="impact_unavailable_one">1 vez el contacto no estaba disponible.</string>
+
+    <!-- Title for user's calls over time line chart -->
+    <string name="impact_calls_over_time">"Llamadas con el tiempo "</string>
 
     <!-- Unknown contact name [CHAR_LIMIT=50] -->
     <string name="unknown_contact">Contacto desconocido</string>
@@ -373,6 +391,9 @@
 
     <!-- Warning that you may be in a split district [CHAR_LIMIT=90] -->
     <string name="split_district_warning">Este código postal se corresponde con múltiples representantes. Verifique que esta representante sea suya. Se necesita una dirección más exacta para identificar a su representante</string>
+
+    <!-- Warning that you have a low accuracy location [CHAR_LIMIT=90] -->
+    <string name="low_accuracy_warning">Su ubicación no es lo suficientemente precisa para garantizar que tengamos al representante de la Cámara adecuado.</string>
 
     <!-- Action for a snackbar or button which brings you to the location update screen [CHAR_LIMIT=10] -->
     <string name="update">Actualización</string>
