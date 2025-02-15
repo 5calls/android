@@ -281,7 +281,10 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 }
 
                 // Calls to make today.
-                if (callsLeft == 1) {
+                if (callsLeft == 0) {
+                    vh.numCalls.setText(
+                            mActivity.getResources().getString(R.string.call_count_today_done));
+                } else if (callsLeft == 1) {
                     vh.numCalls.setText(
                             mActivity.getResources().getString(R.string.call_count_today_one));
                 } else {

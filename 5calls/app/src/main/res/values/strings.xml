@@ -28,6 +28,9 @@
     <!-- Message telling a user they sill have one call to make on a particular issue today [CHAR_LIMIT=none] -->
     <string name="call_count_today_one">1 call to make today</string>
 
+    <!-- Message telling a user they sill have no calls left on a particular issue today [CHAR_LIMIT=none] -->
+    <string name="call_count_today_done">Nice job, all calls made today!</string>
+
     <!-- Message telling a user they have made one previous call [CHAR_LIMIT=none] -->
     <string name="previous_call_count_one">1 previous call</string>
 
