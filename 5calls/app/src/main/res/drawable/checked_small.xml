@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<level-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <layer-list>
+            <item>
+                <shape
+                    android:shape="oval"
+                    >
+                    <solid
+                        android:color="@color/check_color"
+                        />
+                    <size
+                        android:width="12dp"
+                        android:height="12dp"
+                        />
+                </shape>
+            </item>
+            <item android:drawable="@drawable/ic_check_white_36dp"
+                android:width="12dp"
+                android:height="12dp"
+                />
+        </layer-list>
+    </item>
+</level-list>

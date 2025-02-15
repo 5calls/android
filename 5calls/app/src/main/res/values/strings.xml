@@ -22,6 +22,21 @@
     <!-- Message telling a user they sill have one call to make on a particular issue [CHAR_LIMIT=30] -->
     <string name="call_count_one">1 call to make</string>
 
+    <!-- Message telling a user how many calls they still need to make on a particular issue today [CHAR_LIMIT=none] -->
+    <string name="call_count_today"><xliff:g id="callCount">%1$d</xliff:g> calls to make today</string>
+
+    <!-- Message telling a user they sill have one call to make on a particular issue today [CHAR_LIMIT=none] -->
+    <string name="call_count_today_one">1 call to make today</string>
+
+    <!-- Message telling a user they sill have no calls left on a particular issue today [CHAR_LIMIT=none] -->
+    <string name="call_count_today_done">Nice job, all calls made today!</string>
+
+    <!-- Message telling a user they have made one previous call [CHAR_LIMIT=none] -->
+    <string name="previous_call_count_one">1 previous call</string>
+
+    <!-- Message telling a user how many previous calls they have made [CHAR_LIMIT=none] -->
+    <string name="previous_call_count_many"><xliff:g id="callCount">%1$d</xliff:g> previous calls</string>
+
     <!-- Prompt for explaining which contact/office to call [CHAR_LIMIT=50] -->
     <string name="call_this_office">Call this office:</string>
 
@@ -392,7 +407,7 @@
     <string name="menu_faq">FAQ</string>
 
     <!-- Header for the representatives / contacts list [CHAR_LIMIT=100] -->
-    <string name="rep_section_prompt">Contacts to call for this issue</string>
+    <string name="rep_section_prompt">Contacts to call today</string>
 
     <!-- Warning that you may be in a split district [CHAR_LIMIT=90] -->
     <string name="split_district_warning">Your zip code has multiple house representatives. This is our best guess.</string>
