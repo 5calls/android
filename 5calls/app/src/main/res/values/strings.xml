@@ -22,6 +22,21 @@
     <!-- Message telling a user they sill have one call to make on a particular issue [CHAR_LIMIT=30] -->
     <string name="call_count_one">1 call to make</string>
 
+    <!-- Message telling a user how many calls they still need to make on a particular issue today [CHAR_LIMIT=none] -->
+    <string name="call_count_today"><xliff:g id="callCount">%1$d</xliff:g> calls to make today</string>
+
+    <!-- Message telling a user they sill have one call to make on a particular issue today [CHAR_LIMIT=none] -->
+    <string name="call_count_today_one">1 call to make today</string>
+
+    <!-- Message telling a user they sill have no calls left on a particular issue today [CHAR_LIMIT=none] -->
+    <string name="call_count_today_done">Nice job, all calls made today!</string>
+
+    <!-- Message telling a user they have made one previous call [CHAR_LIMIT=none] -->
+    <string name="previous_call_count_one">1 previous call</string>
+
+    <!-- Message telling a user how many previous calls they have made [CHAR_LIMIT=none] -->
+    <string name="previous_call_count_many"><xliff:g id="callCount">%1$d</xliff:g> previous calls</string>
+
     <!-- Prompt for explaining which contact/office to call [CHAR_LIMIT=50] -->
     <string name="call_this_office">Call this office:</string>
 
@@ -78,9 +93,6 @@
     <!-- Prompt to connect with 5 Calls through social media [CHAR_LIMIT=100] -->
     <string name="social_prompt">You can also get in touch via</string>
 
-    <!-- Button that links to 5 Calls' Twitter -->
-    <string name="twitter_btn" translatable="false">Twitter</string>
-
     <!-- Button that links to 5 Calls' Facebook [CHAR_LIMIT=30] -->
     <string name="facebook_btn" translatable="false">Facebook</string>
 
@@ -112,8 +124,8 @@
     <string name="about_splash_2">5 Calls provides phone numbers and scripts so calling is quick and easy, finds your local representatives so your calls have more impact.</string>
 
     <!-- Text shown to the user on the splash / tutorial screen letting them know about notifications and reminders [CHAR_LIMIT=NONE] -->
-    <string name="about_splash_3">The 5 Calls app helps you maintain involvement by reminding you several times a week to make calls.
-                                  \n\nYou can customize or turn off reminders in settings.</string>
+    <string name="about_splash_3">The 5 Calls app can help you maintain involvement by reminding you several times a week to make calls.
+                                  \n\nYou can turn on and customize reminders in settings.</string>
 
     <!-- Button shown to the user on the splash / tutorial screen to get to the next page of the tutorial [CHAR_LIMIT=30] -->
     <string name="next">Next</string>
@@ -395,7 +407,7 @@
     <string name="menu_faq">FAQ</string>
 
     <!-- Header for the representatives / contacts list [CHAR_LIMIT=100] -->
-    <string name="rep_section_prompt">Contacts to call for this issue</string>
+    <string name="rep_section_prompt">Contacts to call today</string>
 
     <!-- Warning that you may be in a split district [CHAR_LIMIT=90] -->
     <string name="split_district_warning">Your zip code has multiple house representatives. This is our best guess.</string>

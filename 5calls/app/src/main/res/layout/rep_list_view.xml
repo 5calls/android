@@ -17,7 +17,6 @@
         style="@style/repListLinearStyle"
         android:orientation="vertical"
         android:layout_toEndOf="@id/rep_image"
-        android:layout_toRightOf="@id/rep_image"
         >
 
         <TextView

@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
 
     <PreferenceCategory
         android:title="@string/settings_category_notifications"
+        app:iconSpaceReserved="false"
         >
 
         <ListPreference
@@ -12,20 +16,23 @@
             android:entries="@array/notification_options"
             android:entryValues="@array/notification_options_values"
             android:defaultValue="0"
+            app:iconSpaceReserved="false"
             />
 
     </PreferenceCategory>
 
     <PreferenceCategory
         android:title="@string/settings_category_reminders"
+        app:iconSpaceReserved="false"
         >
 
         <SwitchPreference
             android:title="@string/settings_reminders_enable_title"
             android:key="prefsKeyEnableReminders"
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:summary="@string/settings_reminders_enable_summary"
             android:disableDependentsState="false"
+            app:iconSpaceReserved="false"
             />
 
         <MultiSelectListPreference
@@ -34,18 +41,21 @@
             android:dependency="prefsKeyEnableReminders"
             android:entries="@array/reminder_days_titles"
             android:entryValues="@array/reminder_days_values"
+            app:iconSpaceReserved="false"
             />
 
-        <org.a5calls.android.a5calls.controller.TimePreference
+        <Preference
             android:title="@string/settings_reminders_time_title"
-            android:key="prefsKeyRemindersTime"
+            android:key="prefsKeyReminderTimePlaceholder"
             android:dependency="prefsKeyEnableReminders"
+            app:iconSpaceReserved="false"
             />
 
     </PreferenceCategory>
 
     <PreferenceCategory
         android:title="@string/settings_category_general"
+        app:iconSpaceReserved="false"
         >
 
         <EditTextPreference
@@ -53,6 +63,7 @@
             android:singleLine="true"
             android:summary="@string/settings_name_description"
             android:title="@string/settings_name"
+            app:iconSpaceReserved="false"
             />
 
         <SwitchPreference
@@ -60,6 +71,7 @@
             android:defaultValue="true"
             android:summary="@string/settings_usage_summary"
             android:key="prefsKeyAllowAnalytics"
+            app:iconSpaceReserved="false"
             />
 
     </PreferenceCategory>

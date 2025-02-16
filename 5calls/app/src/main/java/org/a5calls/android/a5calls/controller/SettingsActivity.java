@@ -4,16 +4,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.ListPreference;
-import android.preference.MultiSelectListPreference;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
-import android.preference.SwitchPreference;
-import androidx.core.app.NavUtils;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.app.TaskStackBuilder;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.ListPreference;
+import androidx.preference.MultiSelectListPreference;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
+import androidx.preference.SwitchPreference;
+
 import android.text.TextUtils;
+import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.onesignal.Continue;
@@ -25,8 +32,11 @@ import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.NotificationUtils;
 import org.a5calls.android.a5calls.util.AnalyticsManager;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -54,25 +64,27 @@ public class SettingsActivity extends AppCompatActivity {
             new AnalyticsManager().trackPageview("/settings", this);
         }
 
-        getFragmentManager().beginTransaction().replace(R.id.content, new SettingsFragment())
+        getSupportFragmentManager().beginTransaction().replace(R.id.content, new SettingsFragment())
                 .commit();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            Intent upIntent = NavUtils.getParentActivityIntent(this);
-            if (NavUtils.shouldUpRecreateTask(this, upIntent) || isTaskRoot()) {
+            Intent upIntent = getParentActivityIntent();
+            if (shouldUpRecreateTask(upIntent) || isTaskRoot()) {
                 // This activity is NOT part of this app's task, so create a new task
                 // when navigating up, with a synthesized back stack.
                 // This is probably because we opened settings from the notification.
-                TaskStackBuilder.create(this)
-                        // Add all of this activity's parents to the back stack
-                        .addNextIntentWithParentStack(upIntent)
-                        // Navigate up to the closest parent
-                        .startActivities();
+                if (upIntent != null) {
+                    TaskStackBuilder.create(this)
+                            // Add all of this activity's parents to the back stack
+                            .addNextIntentWithParentStack(upIntent)
+                            // Navigate up to the closest parent
+                            .startActivities();
+                }
             } else {
-                NavUtils.navigateUpTo(this, upIntent);
+                navigateUpTo(upIntent);
             }
             return true;
         }
@@ -122,13 +134,12 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
-    public static class SettingsFragment extends PreferenceFragment implements
-            SharedPreferences.OnSharedPreferenceChangeListener{
+    public static class SettingsFragment extends PreferenceFragmentCompat implements
+            SharedPreferences.OnSharedPreferenceChangeListener {
         private final AccountManager accountManager = AccountManager.Instance;
 
         @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
+        public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
             addPreferencesFromResource(R.xml.settings);
 
             boolean hasReminders = accountManager.getAllowReminders(getActivity());
@@ -140,6 +151,19 @@ public class SettingsActivity extends AppCompatActivity {
                     (MultiSelectListPreference) findPreference(AccountManager.KEY_REMINDER_DAYS);
             daysPreference.setValues(reminderDays);
             updateReminderDaysSummary(daysPreference, reminderDays);
+
+            Preference timePreference = findPreference("prefsKeyReminderTimePlaceholder");
+            timePreference.setOnPreferenceClickListener(preference -> {
+                final TimePickerFragment dialog = new TimePickerFragment();
+                dialog.setCallback((hourOfDay, minute) -> {
+                    final int reminderMinutes = hourOfDay * 60 + minute;
+                    accountManager.setReminderMinutes(requireContext(), reminderMinutes);
+                    updateReminderTimeSummary(timePreference);
+                });
+                dialog.show(getParentFragmentManager(), "timePicker");
+                return true;
+            });
+            updateReminderTimeSummary(timePreference);
 
             String notificationSetting = accountManager.getNotificationPreference(getActivity());
             ListPreference notificationPref =
@@ -168,8 +192,21 @@ public class SettingsActivity extends AppCompatActivity {
                 accountManager.setAllowAnalytics(getActivity(), result);
                 updateAllowAnalytics(getActivity(), result);
             } else if (TextUtils.equals(key, AccountManager.KEY_ALLOW_REMINDERS)) {
-                boolean result = sharedPreferences.getBoolean(key, true);
-                accountManager.setAllowReminders(getActivity(), result);
+                boolean result = sharedPreferences.getBoolean(key, false);
+                if (result && !NotificationManagerCompat.from(requireContext()).areNotificationsEnabled()) {
+                    // Trying to enable reminders and notification permission is not granted
+                    // Prompt using OneSignal's shortcut method and handle the response
+                    OneSignal.promptForPushNotifications(true, (response) -> {
+                        // If the user denied the notification permission, set the preference to false
+                        // Otherwise they granted and we will set the permission to true
+                        accountManager.setAllowReminders(getActivity(), response);
+                    });
+                } else {
+                    // Either disabling reminders or notification permission is already granted
+                    // so we don't need to prompt
+                    accountManager.setAllowReminders(getActivity(), result);
+                }
+
             } else if (TextUtils.equals(key, AccountManager.KEY_REMINDER_DAYS)) {
                 Set<String> result = sharedPreferences.getStringSet(key,
                         AccountManager.DEFAULT_REMINDER_DAYS);
@@ -219,6 +256,24 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             }
             daysPreference.setSummary(summary);
+        }
+
+        private void updateReminderTimeSummary(Preference timePreference) {
+            Calendar c = Calendar.getInstance();
+            int storedMinutes = accountManager.getReminderMinutes(requireContext());
+            int hour = storedMinutes / 60;
+            int minutes = storedMinutes % 60;
+
+            c.set(Calendar.HOUR_OF_DAY, hour);
+            c.set(Calendar.MINUTE, minutes);
+
+            final SimpleDateFormat dateFormat;
+            if (DateFormat.is24HourFormat(requireContext())) {
+                dateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+            } else {
+                dateFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+            }
+            timePreference.setSummary(dateFormat.format(c.getTime()));
         }
     }
 }

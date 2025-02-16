@@ -219,7 +219,7 @@ public class RepCallActivity extends AppCompatActivity {
             binding.fieldOfficeSection.setVisibility(View.GONE);
             binding.fieldOfficeSection.removeViews(1, binding.fieldOfficeSection.getChildCount() - 1);
             if (contact.field_offices == null || contact.field_offices.length == 0) {
-                binding.fieldOfficeSection.setVisibility(View.GONE);
+                binding.localOfficeButton.setVisibility(View.GONE);
             } else {
                 binding.localOfficeButton.setVisibility(View.VISIBLE);
                 binding.localOfficeButton.setOnClickListener(new View.OnClickListener() {
