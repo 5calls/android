@@ -31,7 +31,6 @@
     </style>
 
     <style name="AppTheme.SpinnerTheme" parent="Base.Widget.AppCompat.Spinner.Underlined">
-
     </style>
 
     <style name="headingStyle">
@@ -49,9 +48,7 @@
         <item name="android:visibility">gone</item>
     </style>
 
-    <style name="locationGpsBtnStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
+    <style name="locationGpsBtnStyle" parent="genericButtonStyle">
         <item name="android:layout_marginTop">@dimen/margin_top16</item>
         <item name="android:textColor">@color/colorPrimaryDark</item>
         <item name="android:visibility">gone</item>
@@ -76,12 +73,9 @@
         <item name="android:layout_toLeftOf">@+id/address_submit</item>
     </style>
 
-    <style name="submitBtn">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
+    <style name="submitBtn" parent="genericButtonStyle">
         <item name="android:layout_alignParentEnd">true</item>
         <item name="android:layout_marginStart">@dimen/margin_text</item>
-        <item name="android:minHeight">@dimen/accessibility_min_size</item>
         <item name="android:minWidth">@dimen/accessibility_min_size</item>
         <item name="android:textColor">@color/colorPrimaryDark</item>
         <item name="android:layout_alignParentRight">true</item>
@@ -162,26 +156,16 @@
         <item name="android:textSize">@dimen/splash_text_size</item>
     </style>
 
-    <style name="nextBtnTutorialStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
+    <style name="nextBtnTutorialStyle" parent="linkButtonStyle">
         <item name="android:layout_alignParentEnd">true</item>
         <item name="android:layout_alignParentRight">true</item>
         <item name="android:layout_alignParentBottom">true</item>
-        <item name="android:background">@android:color/transparent</item>
-        <item name="android:minHeight">@dimen/accessibility_min_size</item>
-        <item name="android:textColor">@color/colorAccent</item>
     </style>
 
-    <style name="backBtnTutorialStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
+    <style name="backBtnTutorialStyle" parent="linkButtonStyle">
         <item name="android:layout_alignParentStart">true</item>
         <item name="android:layout_alignParentLeft">true</item>
         <item name="android:layout_alignParentBottom">true</item>
-        <item name="android:background">@android:color/transparent</item>
-        <item name="android:minHeight">@dimen/accessibility_min_size</item>
-        <item name="android:textColor">@color/colorAccent</item>
     </style>
 
     <style name="genericParagraphStyle">
@@ -215,15 +199,10 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="transparentBtnStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
+    <style name="transparentBtnStyle" parent="linkButtonStyle">
         <item name="android:layout_gravity">start</item>
         <item name="android:layout_margin">@dimen/layout_margin_button</item>
-        <item name="android:background">@android:color/transparent</item>
-        <item name="android:minHeight">@dimen/accessibility_min_size</item>
         <item name="android:textAlignment">textStart</item>
-        <item name="android:textColor">@color/colorAccent</item>
     </style>
 
     <style name="nestedScrollViewStyleTop">
@@ -289,13 +268,11 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="issueTextNoCallsStyle">
+    <style name="issueTextNoCallsStyle" >
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_alignParentStart">true</item>
         <item name="android:layout_alignParentLeft">true</item>
-        <item name="android:layout_toStartOf">@id/update_location_btn</item>
-        <item name="android:layout_toLeftOf">@+id/update_location_btn</item>
         <item name="android:textSize">@dimen/text_size_paragraph</item>
         <item name="android:textStyle">bold</item>
     </style>
@@ -514,12 +491,7 @@
         <item name="android:textAlignment">center</item>
     </style>
 
-    <style name="emptyIssuesBtnStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:background">@android:color/transparent</item>
-        <item name="android:minHeight">@dimen/accessibility_min_size</item>
-        <item name="android:textColor">@color/colorAccent</item>
+    <style name="emptyIssuesBtnStyle" parent="linkButtonStyle">
         <item name="android:layout_centerHorizontal">true</item>
         <item name="android:drawablePadding">@dimen/grid_padding</item>
     </style>
@@ -712,6 +684,11 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:minHeight">@dimen/accessibility_min_size</item>
+    </style>
+
+    <style name="linkButtonStyle" parent="genericButtonStyle">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:textColor">@color/colorAccent</item>
     </style>
 
     <style name="newsletterButtonStyle" parent="genericButtonStyle">
