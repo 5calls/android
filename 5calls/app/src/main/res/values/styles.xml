@@ -427,7 +427,7 @@
         <item name="android:layout_height">@dimen/rep_image_size</item>
         <item name="android:layout_alignParentStart">true</item>
         <item name="android:layout_alignParentLeft">true</item>
-        <item name="android:layout_marginRight">@dimen/margin_rigth</item>
+        <item name="android:layout_marginRight">@dimen/margin_right</item>
     </style>
 
     <style name="contactNameStyle">
@@ -603,8 +603,8 @@
         <item name="android:layout_alignParentLeft">true</item>
         <item name="android:layout_alignParentBottom">true</item>
         <item name="android:layout_centerVertical">true</item>
-        <item name="android:layout_marginEnd">@dimen/margin_rigth</item>
-        <item name="android:layout_marginRight">@dimen/margin_rigth</item>
+        <item name="android:layout_marginEnd">@dimen/margin_right</item>
+        <item name="android:layout_marginRight">@dimen/margin_right</item>
         <item name="android:scaleType">fitCenter</item>
     </style>
 
