@@ -1,16 +1,20 @@
 package org.a5calls.android.a5calls.controller;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.app.TaskStackBuilder;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.preference.ListPreference;
 import androidx.preference.MultiSelectListPreference;
 import androidx.preference.Preference;
@@ -20,7 +24,6 @@ import androidx.preference.SwitchPreference;
 
 import android.text.TextUtils;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.MenuItem;
 
 import com.onesignal.Continue;
@@ -38,6 +41,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * Settings for the app
@@ -195,11 +199,10 @@ public class SettingsActivity extends AppCompatActivity {
                 boolean result = sharedPreferences.getBoolean(key, false);
                 if (result && !NotificationManagerCompat.from(requireContext()).areNotificationsEnabled()) {
                     // Trying to enable reminders and notification permission is not granted
-                    // Prompt using OneSignal's shortcut method and handle the response
-                    OneSignal.promptForPushNotifications(true, (response) -> {
+                    requestNotificationPermission((isGranted) -> {
                         // If the user denied the notification permission, set the preference to false
                         // Otherwise they granted and we will set the permission to true
-                        accountManager.setAllowReminders(getActivity(), response);
+                        accountManager.setAllowReminders(getActivity(), isGranted);
                     });
                 } else {
                     // Either disabling reminders or notification permission is already granted
@@ -233,6 +236,18 @@ public class SettingsActivity extends AppCompatActivity {
         public void onStop() {
             turnOnReminders(getActivity(), accountManager);
             super.onStop();
+        }
+
+        private void requestNotificationPermission(Consumer<Boolean> isGranted) {
+            // Only needed on SDK 33 (Tiramisu) and newer
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    registerForActivityResult(
+                            new ActivityResultContracts.RequestPermission(), isGranted::accept
+                    );
+                }
+            }
         }
 
         private void updateReminderDaysSummary(MultiSelectListPreference daysPreference,
