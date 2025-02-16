@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="script_text_size_labels">
+        <item>@string/script_text_size_normal</item>
+        <item>@string/script_text_size_large</item>
+        <item>@string/script_text_size_xlarge</item>
+    </string-array>
+
+    <string-array name="script_text_size_values">
+        <item>16</item>
+        <item>20</item>
+        <item>24</item>
+    </string-array>
+</resources>

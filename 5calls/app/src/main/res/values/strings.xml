@@ -508,6 +508,13 @@
         <item>1</item>
     </string-array>
 
+    <string name="script_text_size">Script text size</string>
+
+    <!-- Script text size options -->
+    <string name="script_text_size_normal">Normal</string>
+    <string name="script_text_size_large">Large</string>
+    <string name="script_text_size_xlarge">Extra large</string>
+
     <!-- Title for a dialog where users can pick their notification frequency [CHAR_LIMIT=100] -->
     <string name="notifications_dialog_title">Get alerts before your reps vote on important issues?</string>
 
