@@ -30,8 +30,7 @@
         <item name="android:singleLine">false</item>
     </style>
 
-    <style name="AppTheme.SpinnerTheme" parent="Base.Widget.AppCompat.Spinner.Underlined">
-    </style>
+    <style name="AppTheme.SpinnerTheme" parent="Base.Widget.AppCompat.Spinner.Underlined"></style>
 
     <style name="headingStyle">
         <item name="android:layout_width">wrap_content</item>
@@ -268,7 +267,7 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="issueTextNoCallsStyle" >
+    <style name="issueTextNoCallsStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_alignParentStart">true</item>
@@ -700,10 +699,12 @@
         <item name="android:textSize">@dimen/splash_text_size</item>
         <item name="android:textStyle">bold</item>
     </style>
+
     <style name="newsletterDescriptionStyle">
         <item name="android:textColor">@color/colorPrimaryDark</item>
         <item name="android:textSize">@dimen/text_size_paragraph</item>
     </style>
+
     <style name="horizontalInPortraitStyle">
         <item name="android:orientation">vertical</item>
     </style>
