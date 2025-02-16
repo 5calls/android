@@ -100,12 +100,12 @@ public class FiveCallsApplication extends Application {
         // Set up OneSignal.
         OneSignal.initWithContext(this, ONESIGNAL_APP_ID);
 
-        String storedCID = AccountManager.Instance.getCallerID(this);
-        if (storedCID == "") {
-            String uuid = UUID.randomUUID().toString();
-            AccountManager.Instance.setCallerID(this, uuid);
-            OneSignal.login(uuid);
+        String callerID = AccountManager.Instance.getCallerID(this);
+        if (callerID.isEmpty()) {
+            callerID = UUID.randomUUID().toString();
+            AccountManager.Instance.setCallerID(this, callerID);
         }
+        OneSignal.login(callerID);
 
         // Check if notification permission has been revoked outside of the app since the last run
         if (!NotificationManagerCompat.from(this).areNotificationsEnabled()) {
