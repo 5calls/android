@@ -76,8 +76,9 @@ dependencies {
 
     implementation 'com.onesignal:OneSignal:[4.8.6, 4.99.99]'
 
-    implementation 'ru.noties:markwon:1.0.6'
-    implementation 'me.saket:better-link-movement-method:2.2.0'
+    implementation 'io.noties.markwon:core:4.6.2'
+    implementation 'io.noties.markwon:ext-strikethrough:4.6.2'
+    implementation 'io.noties.markwon:simple-ext:4.6.2'
 
     implementation 'com.wbrawner.plausible:plausible-android:0.1.0-SNAPSHOT'
 
