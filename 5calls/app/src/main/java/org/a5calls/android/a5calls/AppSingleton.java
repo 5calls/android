@@ -14,24 +14,24 @@ import org.a5calls.android.a5calls.net.FiveCallsApi;
 public class AppSingleton {
 
     private static AppSingleton sSingleton;
-    private final Context mContext;
+    private final Context mAppContext;
     private DatabaseHelper mDatabaseHelper;
     private FiveCallsApi mFiveCallsApi;
 
     public static final AppSingleton getInstance(Context context) {
         if (sSingleton == null) {
-            sSingleton = new AppSingleton(context);
+            sSingleton = new AppSingleton(context.getApplicationContext());
         }
         return sSingleton;
     }
 
     private AppSingleton(Context context) {
-        mContext = context;
+        mAppContext = context;
     }
 
     public DatabaseHelper getDatabaseHelper() {
         if (mDatabaseHelper == null) {
-            mDatabaseHelper = new DatabaseHelper(mContext);
+            mDatabaseHelper = new DatabaseHelper(mAppContext);
         }
         return mDatabaseHelper;
     }
@@ -39,8 +39,8 @@ public class AppSingleton {
     public FiveCallsApi getJsonController() {
         if (mFiveCallsApi == null) {
             mFiveCallsApi = new FiveCallsApi(
-                    AccountManager.Instance.getCallerID(mContext),
-                    Volley.newRequestQueue(mContext));
+                    AccountManager.Instance.getCallerID(mAppContext),
+                    Volley.newRequestQueue(mAppContext));
         }
         return mFiveCallsApi;
     }
