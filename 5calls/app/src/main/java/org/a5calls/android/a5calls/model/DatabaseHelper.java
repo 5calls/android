@@ -26,9 +26,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
 
     private static final int DATABASE_VERSION = 3;
-    private static final String CALLS_TABLE_NAME = "UserCallsDatabase";
-    private static final String ISSUES_TABLE_NAME = "UserIssuesTable";
-    private static final String CONTACTS_TABLE_NAME = "UserContactsTable";
+    @VisibleForTesting
+    protected static final String CALLS_TABLE_NAME = "UserCallsDatabase";
+    @VisibleForTesting
+    protected static final String ISSUES_TABLE_NAME = "UserIssuesTable";
+    @VisibleForTesting
+    protected static final String CONTACTS_TABLE_NAME = "UserContactsTable";
 
 
     private static class CallsColumns {
@@ -122,7 +125,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         getWritableDatabase().insert(CALLS_TABLE_NAME, null, values);
     }
 
-    public void addIssue(String issueId, String issueName) {
+    private void addIssue(String issueId, String issueName) {
         ContentValues values = new ContentValues();
         values.put(IssuesColumns.ISSUE_ID, issueId);
         values.put(IssuesColumns.ISSUE_NAME, issueName);
@@ -131,7 +134,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 SQLiteDatabase.CONFLICT_IGNORE);
     }
 
-    public void addContact(String contactId, String contactName) {
+    private void addContact(String contactId, String contactName) {
         ContentValues values = new ContentValues();
         values.put(ContactColumns.CONTACT_ID, contactId);
         values.put(ContactColumns.CONTACT_NAME, contactName);
@@ -230,18 +233,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         c.close();
         return result;
-    }
-
-    /**
-     * Gets the calls in the database for a particular contact.
-     * @param contactId
-     * @return a list of the issues IDs that were called for a particular contact.
-     */
-    public List<String> getCallsForContact(String contactId) {
-        // TODO do we want to return issue IDs, or more detailed info about the call? What about
-        // whether contact was made?
-        // Probably need to make a "Call" class to store this in.
-        return null;
     }
 
     /**
