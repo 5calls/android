@@ -169,49 +169,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Gets the calls in the database for a particular issue.
-     * @param issueId
-     * @return A list of the contact IDs contacted for this issue.
-     */
-    public List<String> getCallsForIssue(String issueId) {
-        Cursor c = getReadableDatabase().rawQuery("SELECT " + CallsColumns.CONTACT_ID + " FROM " +
-                CALLS_TABLE_NAME + " WHERE " + CallsColumns.ISSUE_ID + " = ? GROUP BY " +
-                CallsColumns.CONTACT_ID, new String[] {issueId});
-        List<String> result = new ArrayList<>();
-        while (c.moveToNext()) {
-            result.add(c.getString(0));
-        }
-        c.close();
-        return result;
-    }
-
-    /**
-     * Gets the contacts in the database who were contacted for a particular issue and list of
-     * contacts.
-     * @param issueId
-     * @param contacts
-     * @return A list of the contact IDs contacted for this issue.
-     */
-    public List<String> getCallsForIssueAndContacts(String issueId, List<Contact> contacts) {
-        String[] contactIdList = new String[contacts.size()];
-        for (int i = 0; i < contacts.size(); i++) {
-            contactIdList[i] = "'" + sanitizeContactId(contacts.get(i).id) + "'";
-        }
-        String contactIds = "(" + TextUtils.join(",", contactIdList) + ")";
-        String query = "SELECT " + CallsColumns.CONTACT_ID + " FROM " +
-                CALLS_TABLE_NAME + " WHERE " + CallsColumns.ISSUE_ID + " = ? AND " +
-                CallsColumns.CONTACT_ID + " IN " + contactIds + " GROUP BY " +
-                CallsColumns.CONTACT_ID;
-        Cursor c = getReadableDatabase().rawQuery(query, new String[] {issueId});
-        List<String> result = new ArrayList<>();
-        while (c.moveToNext()) {
-            result.add(c.getString(0));
-        }
-        c.close();
-        return result;
-    }
-
-    /**
      * Gets the total number of calls made for a given issue and list of contacts.
      * @param issueId
      * @param contacts

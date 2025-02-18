@@ -49,7 +49,7 @@ public class DatabaseHelperTest {
     }
 
     @Test
-    public void addAndReadCalls() {
+    public void addCall_readCall() {
         mDatabase.addCall("myIssue", "Issue name", "myContact", "Contact name",
                 "myFirstResult", "myLocation");
         assertEquals(1, mDatabase.getCallsCount());
@@ -66,7 +66,7 @@ public class DatabaseHelperTest {
     }
 
     @Test
-    public void addCallAddsContactAndIssueOnce() {
+    public void addCall_AddsContactOnce() {
         // Contact not in DB yet.
         assertEquals("", mDatabase.getContactName("myContact"));
 
@@ -79,5 +79,36 @@ public class DatabaseHelperTest {
         mDatabase.addCall("anotherIssue", "Issue name 2", "myContact", "Contact name",
                 "mySecondResult", "myLocation");
         assertEquals("Contact name", mDatabase.getContactName("myContact"));
+
+        // If the contact name changes for some reason, there's no conflict.
+        // Not sure if this is the "correct" behavior, but we can test the app doesn't
+        // have any issues in this case.
+        mDatabase.addCall("anotherIssue", "Issue name 2", "myContact", "New contact name",
+                "myThirdResult", "myLocation");
+        assertEquals("Contact name", mDatabase.getContactName("myContact"));
+    }
+
+    @Test
+    public void addCall_AddsIssueOnce() {
+        // Issue not in DB yet.
+        assertEquals("", mDatabase.getIssueName("myIssue"));
+
+        // Gets added when call is logged.
+        mDatabase.addCall("myIssue", "Issue name", "myContact", "Contact name",
+                "myFirstResult", "myLocation");
+        assertEquals("Issue name", mDatabase.getIssueName("myIssue"));
+
+        // Logging another call with the same issue ID doesn't cause any problems.
+        mDatabase.addCall("myIssue", "Issue name", "myContact2", "Contact name 2",
+                "mySecondResult", "myLocation");
+        assertEquals("Issue name", mDatabase.getIssueName("myIssue"));
+
+        // Does not change the issue name in the DB if it was already there.
+        // Issue names may change over time, for example issues writers may put
+        // major updates in an issue name. We only keep the first title of the
+        // issue in the DB.
+        mDatabase.addCall("myIssue", "New issue name", "myContact2", "Contact name 2",
+                "myThirdResult", "myLocation");
+        assertEquals("Issue name", mDatabase.getIssueName("myIssue"));
     }
 }
