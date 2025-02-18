@@ -288,7 +288,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         " ORDER BY count desc", null);
         List<Pair<String, Integer>> result = new ArrayList<>();
         while (c.moveToNext()) {
-            Pair<String, Integer> next = new Pair(c.getString(0), c.getInt(1));
+            Pair<String, Integer> next = new Pair<>(c.getString(0), c.getInt(1));
             result.add(next);
         }
         c.close();
