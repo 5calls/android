@@ -222,6 +222,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             if (mAddressErrorType != NO_ERROR) {
                 // If there was an address error, clear the number of calls to make.
                 vh.numCalls.setText("");
+                vh.previousCallStats.setVisibility(View.GONE);
                 return;
             }
 

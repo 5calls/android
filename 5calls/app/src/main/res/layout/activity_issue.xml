@@ -96,10 +96,11 @@
                     android:layout_below="@id/no_calls_message"
                     android:layout_marginTop="@dimen/grid_padding"
                     android:text="@string/error_address_invalid"
+                    android:layout_toStartOf="@+id/update_location_button"
                     android:textColor="@color/colorPrimaryDark" />
 
                 <Button
-                    android:id="@+id/update_location_button"
+                    android:id="@id/update_location_button"
                     style="@style/transparentBtnStyle"
                     android:layout_alignBaseline="@id/split_district_warning"
                     android:layout_alignParentEnd="true"
