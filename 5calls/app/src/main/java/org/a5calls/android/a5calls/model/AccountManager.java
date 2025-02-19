@@ -5,8 +5,6 @@ import android.content.SharedPreferences;
 import androidx.annotation.Nullable;
 import android.text.TextUtils;
 
-import org.a5calls.android.a5calls.controller.MainActivity;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -34,10 +32,10 @@ public enum AccountManager {
     private static final String KEY_NOTIFICATION_DIALOG_SHOWN = "prefsKeyNotificationDialog";
     private static final String KEY_CALLER_ID = "prefsKeyCallerID";
     private static final String KEY_REVIEW_DIALOG_SHOWN = "prefsKeyReviewDialog";
-    private static final String KEY_LOCATION_NAME = "prefsKeyLocationName";
     private static final String KEY_NEWSLETTER_PROMPT_DONE = "prefsKeyNewsletterPrompt";
     private static final String KEY_NEWSLETTER_SIGNUP_DONE = "prefsKeyNewsletterSignup";
     public static final String KEY_USER_NAME = "prefsKeyUserName";
+    public static final String KEY_SCRIPT_TEXT_SIZE = "prefsKeyScriptTextSize";
 
     // Default to 11 am.
     public static final int DEFAULT_REMINDER_MINUTES = 60 * 11;
@@ -197,6 +195,14 @@ public enum AccountManager {
 
     public void setUserName(Context context, String userName) {
         getSharedPrefs(context).edit().putString(KEY_USER_NAME, userName).apply();
+    }
+
+    public float getScriptTextSize(Context context) {
+        return getSharedPrefs(context).getFloat(KEY_SCRIPT_TEXT_SIZE, 16);
+    }
+
+    public void setScriptTextSize(Context context, String value) {
+        getSharedPrefs(context).edit().putFloat(KEY_SCRIPT_TEXT_SIZE, Float.parseFloat(value)).apply();
     }
 
     private SharedPreferences getSharedPrefs(Context context) {

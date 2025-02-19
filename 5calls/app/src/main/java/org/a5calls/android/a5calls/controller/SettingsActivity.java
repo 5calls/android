@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.app.TaskStackBuilder;
@@ -20,7 +19,6 @@ import androidx.preference.SwitchPreference;
 
 import android.text.TextUtils;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.MenuItem;
 
 import com.onesignal.OneSignal;
@@ -225,6 +223,8 @@ public class SettingsActivity extends AppCompatActivity {
                 } else {
                     AccountManager.Instance.setUserName(getActivity(), null);
                 }
+            } else if (TextUtils.equals(key, "prefsKeyScriptTextSize")) {
+                AccountManager.Instance.setScriptTextSize(getActivity(), sharedPreferences.getString(AccountManager.KEY_SCRIPT_TEXT_SIZE, "16"));
             }
         }
 
