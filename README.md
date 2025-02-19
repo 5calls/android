@@ -50,9 +50,9 @@ The app is also available on the [Amazon App Store](https://www.amazon.com/5-Cal
 
 ## Contributors
  - [Katie Dektar](https://github.com/dektar)
+ - [Ben Rericha](https://github.com/brericha)
  - [Greg Lee](https://github.com/gregliest)
  - [Bryan Sills](https://github.com/bryansills)
- - [Ben Rericha](https://github.com/brericha)
  - [All contributors](https://github.com/5calls/android/graphs/contributors)
 
 ## Acknowledgments
