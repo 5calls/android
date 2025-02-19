@@ -12,6 +12,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.appcompat.app.AlertDialog;
 
+import com.onesignal.Continue;
 import com.onesignal.OneSignal;
 
 import org.a5calls.android.a5calls.FiveCallsApplication;
@@ -53,8 +54,8 @@ public class NotificationSettingsDialog extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (mSelectedOption == 0) {
-                    OneSignal.disablePush(false);
-                    OneSignal.promptForPushNotifications();
+                    OneSignal.getUser().getPushSubscription().optIn();
+                    OneSignal.getNotifications().requestPermission(true, Continue.none());
                 }
                 SettingsActivity.updateNotificationsPreference(
                         (FiveCallsApplication) getActivity().getApplication(),
