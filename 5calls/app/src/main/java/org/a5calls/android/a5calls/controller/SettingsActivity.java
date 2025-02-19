@@ -118,8 +118,9 @@ public class SettingsActivity extends AppCompatActivity {
                                                      String result) {
         accountManager.setNotificationPreference(application, result);
         if (TextUtils.equals("0", result)) {
-            OneSignal.getUser().getPushSubscription().optIn();
             OneSignal.getNotifications().requestPermission(true, Continue.none());
+            OneSignal.getUser().getPushSubscription().optIn();
+            // TODO: Wait for permission request result before opting in
         } else if (TextUtils.equals("1", result)) {
             OneSignal.getUser().getPushSubscription().optOut();
         }
@@ -240,14 +241,16 @@ public class SettingsActivity extends AppCompatActivity {
 
         private void requestNotificationPermission(Consumer<Boolean> isGranted) {
             // Only needed on SDK 33 (Tiramisu) and newer
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    registerForActivityResult(
-                            new ActivityResultContracts.RequestPermission(), isGranted::accept
-                    );
-                }
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                return;
             }
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS)
+                    == PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            registerForActivityResult(
+                    new ActivityResultContracts.RequestPermission(), isGranted::accept
+            );
         }
 
         private void updateReminderDaysSummary(MultiSelectListPreference daysPreference,
