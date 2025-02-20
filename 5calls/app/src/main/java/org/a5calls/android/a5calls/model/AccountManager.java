@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import androidx.annotation.Nullable;
 import android.text.TextUtils;
 
+import org.a5calls.android.a5calls.R;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -198,7 +200,8 @@ public enum AccountManager {
     }
 
     public float getScriptTextSize(Context context) {
-        return getSharedPrefs(context).getFloat(KEY_SCRIPT_TEXT_SIZE_SP, 16);
+        return getSharedPrefs(context).getFloat(KEY_SCRIPT_TEXT_SIZE_SP,
+                Float.parseFloat(context.getString(R.string.script_text_size_normal_sp)));
     }
 
     public void setScriptTextSize(Context context, float value) {
