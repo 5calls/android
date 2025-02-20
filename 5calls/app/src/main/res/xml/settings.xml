@@ -54,7 +54,7 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="Appearance"
+        android:title="@string/settings_category_appearance"
         app:iconSpaceReserved="false"
         >
 
@@ -71,7 +71,7 @@
             android:title="@string/script_text_size"
             android:entries="@array/script_text_size_labels"
             android:entryValues="@array/script_text_size_values"
-            android:defaultValue="16"
+            android:defaultValue="@string/script_text_size_normal_sp"
             android:summary="%s"
             app:iconSpaceReserved="false"
             />

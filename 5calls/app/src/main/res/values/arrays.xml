@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Array of script text size names e.g. Normal, Large, Extra Large -->
     <string-array name="script_text_size_labels">
         <item>@string/script_text_size_normal</item>
         <item>@string/script_text_size_large</item>
         <item>@string/script_text_size_xlarge</item>
     </string-array>
 
+    <!-- Script text size SP values -->
+    <string name="script_text_size_normal_sp" translatable="false">16</string>
+    <string name="script_text_size_large_sp" translatable="false">20</string>
+    <string name="script_text_size_xlarge_sp" translatable="false">24</string>
+
+    <!-- Array of script text size SP values e.g. 16, 20, 24 -->
     <string-array name="script_text_size_values">
-        <item>16</item>
-        <item>20</item>
-        <item>24</item>
+        <item>@string/script_text_size_normal_sp</item>
+        <item>@string/script_text_size_large_sp</item>
+        <item>@string/script_text_size_xlarge_sp</item>
     </string-array>
 </resources>

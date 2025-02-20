@@ -508,6 +508,9 @@
         <item>1</item>
     </string-array>
 
+    <!-- Title of a section in settings about appearance -->
+    <string name="settings_category_appearance">Appearance</string>
+
     <string name="script_text_size">Script text size</string>
 
     <!-- Script text size options -->

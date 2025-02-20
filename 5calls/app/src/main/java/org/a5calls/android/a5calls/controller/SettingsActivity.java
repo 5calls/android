@@ -224,7 +224,8 @@ public class SettingsActivity extends AppCompatActivity {
                     AccountManager.Instance.setUserName(getActivity(), null);
                 }
             } else if (TextUtils.equals(key, "prefsKeyScriptTextSize")) {
-                AccountManager.Instance.setScriptTextSize(getActivity(), sharedPreferences.getString(AccountManager.KEY_SCRIPT_TEXT_SIZE, "16"));
+                String value = sharedPreferences.getString(AccountManager.KEY_SCRIPT_TEXT_SIZE_SP, getString(R.string.script_text_size_normal_sp));
+                AccountManager.Instance.setScriptTextSize(getActivity(), Float.parseFloat(value));
             }
         }
 

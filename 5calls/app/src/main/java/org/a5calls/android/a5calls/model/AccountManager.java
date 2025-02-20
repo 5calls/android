@@ -35,7 +35,7 @@ public enum AccountManager {
     private static final String KEY_NEWSLETTER_PROMPT_DONE = "prefsKeyNewsletterPrompt";
     private static final String KEY_NEWSLETTER_SIGNUP_DONE = "prefsKeyNewsletterSignup";
     public static final String KEY_USER_NAME = "prefsKeyUserName";
-    public static final String KEY_SCRIPT_TEXT_SIZE = "prefsKeyScriptTextSize";
+    public static final String KEY_SCRIPT_TEXT_SIZE_SP = "prefsKeyScriptTextSize";
 
     // Default to 11 am.
     public static final int DEFAULT_REMINDER_MINUTES = 60 * 11;
@@ -198,11 +198,11 @@ public enum AccountManager {
     }
 
     public float getScriptTextSize(Context context) {
-        return getSharedPrefs(context).getFloat(KEY_SCRIPT_TEXT_SIZE, 16);
+        return getSharedPrefs(context).getFloat(KEY_SCRIPT_TEXT_SIZE_SP, 16);
     }
 
-    public void setScriptTextSize(Context context, String value) {
-        getSharedPrefs(context).edit().putFloat(KEY_SCRIPT_TEXT_SIZE, Float.parseFloat(value)).apply();
+    public void setScriptTextSize(Context context, float value) {
+        getSharedPrefs(context).edit().putFloat(KEY_SCRIPT_TEXT_SIZE_SP, value).apply();
     }
 
     private SharedPreferences getSharedPrefs(Context context) {
