@@ -196,6 +196,7 @@ public class IssueActivity extends AppCompatActivity {
         }
         if (mIssue.contacts == null || mIssue.contacts.isEmpty()) {
             binding.noCallsLeft.setVisibility(View.VISIBLE);
+            binding.issueDone.getRoot().setVisibility(View.GONE);
             binding.updateLocationButton.setOnClickListener(new View.OnClickListener() {
 
                 @Override
@@ -376,6 +377,11 @@ public class IssueActivity extends AppCompatActivity {
     }
 
     private void maybeShowIssueDone() {
+        if (mIssue.contacts.isEmpty()) {
+            // Couldn't find any contacts.
+            binding.issueDone.getRoot().setVisibility(View.GONE);
+            return;
+        }
         final DatabaseHelper dbHelper = AppSingleton.getInstance(this).getDatabaseHelper();
         for (Contact contact : mIssue.contacts) {
             if (!dbHelper.hasCalledToday(mIssue.id, contact.id)) {

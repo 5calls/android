@@ -1,15 +1,20 @@
 package org.a5calls.android.a5calls.controller;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.app.TaskStackBuilder;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.preference.ListPreference;
 import androidx.preference.MultiSelectListPreference;
 import androidx.preference.Preference;
@@ -21,6 +26,7 @@ import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.view.MenuItem;
 
+import com.onesignal.Continue;
 import com.onesignal.OneSignal;
 
 import org.a5calls.android.a5calls.FiveCallsApplication;
@@ -35,6 +41,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * Settings for the app
@@ -111,10 +118,11 @@ public class SettingsActivity extends AppCompatActivity {
                                                      String result) {
         accountManager.setNotificationPreference(application, result);
         if (TextUtils.equals("0", result)) {
-            OneSignal.disablePush(false);
-            OneSignal.promptForPushNotifications(true);
+            OneSignal.getNotifications().requestPermission(true, Continue.none());
+            OneSignal.getUser().getPushSubscription().optIn();
+            // TODO: Wait for permission request result before opting in
         } else if (TextUtils.equals("1", result)) {
-            OneSignal.disablePush(true);
+            OneSignal.getUser().getPushSubscription().optOut();
         }
         // If the user changes the settings there's no need to show the dialog in the future.
         accountManager.setNotificationDialogShown(application, true);
@@ -192,11 +200,10 @@ public class SettingsActivity extends AppCompatActivity {
                 boolean result = sharedPreferences.getBoolean(key, false);
                 if (result && !NotificationManagerCompat.from(requireContext()).areNotificationsEnabled()) {
                     // Trying to enable reminders and notification permission is not granted
-                    // Prompt using OneSignal's shortcut method and handle the response
-                    OneSignal.promptForPushNotifications(true, (response) -> {
+                    requestNotificationPermission((isGranted) -> {
                         // If the user denied the notification permission, set the preference to false
                         // Otherwise they granted and we will set the permission to true
-                        accountManager.setAllowReminders(getActivity(), response);
+                        accountManager.setAllowReminders(getActivity(), isGranted);
                     });
                 } else {
                     // Either disabling reminders or notification permission is already granted
@@ -233,6 +240,20 @@ public class SettingsActivity extends AppCompatActivity {
         public void onStop() {
             turnOnReminders(getActivity(), accountManager);
             super.onStop();
+        }
+
+        private void requestNotificationPermission(Consumer<Boolean> isGranted) {
+            // Only needed on SDK 33 (Tiramisu) and newer
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                return;
+            }
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS)
+                    == PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            registerForActivityResult(
+                    new ActivityResultContracts.RequestPermission(), isGranted::accept
+            );
         }
 
         private void updateReminderDaysSummary(MultiSelectListPreference daysPreference,

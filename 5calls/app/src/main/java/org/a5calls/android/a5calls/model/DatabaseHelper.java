@@ -7,15 +7,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.VisibleForTesting;
 import androidx.core.util.Pair;
+
 import android.text.TextUtils;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.TimeZone;
 
 /**
  * Local database helper. I believe this is already "thread-safe" and such because SQLiteOpenHelper
@@ -26,10 +23,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
 
     private static final int DATABASE_VERSION = 3;
-    private static final String CALLS_TABLE_NAME = "UserCallsDatabase";
-    private static final String ISSUES_TABLE_NAME = "UserIssuesTable";
-    private static final String CONTACTS_TABLE_NAME = "UserContactsTable";
+    @VisibleForTesting
+    protected static final String CALLS_TABLE_NAME = "UserCallsDatabase";
+    @VisibleForTesting
+    protected static final String ISSUES_TABLE_NAME = "UserIssuesTable";
+    @VisibleForTesting
+    protected static final String CONTACTS_TABLE_NAME = "UserContactsTable";
 
+    // Can be used to control time in tests.
+    private TimeProvider mTimeProvider;
+    public interface TimeProvider {
+        public long currentTimeMillis();
+        public Calendar getCalendar();
+    }
+
+    private static class DefaultTimeProvider implements TimeProvider {
+
+        @Override
+        public long currentTimeMillis() {
+            return System.currentTimeMillis();
+        }
+
+        @Override
+        public Calendar getCalendar() {
+            return Calendar.getInstance();
+        }
+    }
 
     private static class CallsColumns {
         public static String TIMESTAMP = "timestamp";
@@ -64,7 +83,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     ContactColumns.CONTACT_NAME + " STRING);";
 
     public DatabaseHelper(Context context) {
+        this(context, new DefaultTimeProvider());
+    }
+
+    public DatabaseHelper(Context context, TimeProvider timeProvider) {
         super(context, CALLS_TABLE_NAME, null, DATABASE_VERSION);
+        mTimeProvider = timeProvider;
     }
 
     @Override
@@ -114,7 +138,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private void addCall(String issueId, String contactId, String result, String location) {
         ContentValues values = new ContentValues();
-        values.put(CallsColumns.TIMESTAMP, System.currentTimeMillis());
+        values.put(CallsColumns.TIMESTAMP, mTimeProvider.currentTimeMillis());
         values.put(CallsColumns.CONTACT_ID, contactId);
         values.put(CallsColumns.ISSUE_ID, issueId);
         values.put(CallsColumns.LOCATION, location);
@@ -122,7 +146,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         getWritableDatabase().insert(CALLS_TABLE_NAME, null, values);
     }
 
-    public void addIssue(String issueId, String issueName) {
+    private void addIssue(String issueId, String issueName) {
         ContentValues values = new ContentValues();
         values.put(IssuesColumns.ISSUE_ID, issueId);
         values.put(IssuesColumns.ISSUE_NAME, issueName);
@@ -131,7 +155,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 SQLiteDatabase.CONFLICT_IGNORE);
     }
 
-    public void addContact(String contactId, String contactName) {
+    private void addContact(String contactId, String contactName) {
         ContentValues values = new ContentValues();
         values.put(ContactColumns.CONTACT_ID, contactId);
         values.put(ContactColumns.CONTACT_NAME, contactName);
@@ -166,49 +190,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Gets the calls in the database for a particular issue.
-     * @param issueId
-     * @return A list of the contact IDs contacted for this issue.
-     */
-    public List<String> getCallsForIssue(String issueId) {
-        Cursor c = getReadableDatabase().rawQuery("SELECT " + CallsColumns.CONTACT_ID + " FROM " +
-                CALLS_TABLE_NAME + " WHERE " + CallsColumns.ISSUE_ID + " = ? GROUP BY " +
-                CallsColumns.CONTACT_ID, new String[] {issueId});
-        List<String> result = new ArrayList<>();
-        while (c.moveToNext()) {
-            result.add(c.getString(0));
-        }
-        c.close();
-        return result;
-    }
-
-    /**
-     * Gets the contacts in the database who were contacted for a particular issue and list of
-     * contacts.
-     * @param issueId
-     * @param contacts
-     * @return A list of the contact IDs contacted for this issue.
-     */
-    public List<String> getCallsForIssueAndContacts(String issueId, List<Contact> contacts) {
-        String[] contactIdList = new String[contacts.size()];
-        for (int i = 0; i < contacts.size(); i++) {
-            contactIdList[i] = "'" + sanitizeContactId(contacts.get(i).id) + "'";
-        }
-        String contactIds = "(" + TextUtils.join(",", contactIdList) + ")";
-        String query = "SELECT " + CallsColumns.CONTACT_ID + " FROM " +
-                CALLS_TABLE_NAME + " WHERE " + CallsColumns.ISSUE_ID + " = ? AND " +
-                CallsColumns.CONTACT_ID + " IN " + contactIds + " GROUP BY " +
-                CallsColumns.CONTACT_ID;
-        Cursor c = getReadableDatabase().rawQuery(query, new String[] {issueId});
-        List<String> result = new ArrayList<>();
-        while (c.moveToNext()) {
-            result.add(c.getString(0));
-        }
-        c.close();
-        return result;
-    }
-
-    /**
      * Gets the total number of calls made for a given issue and list of contacts.
      * @param issueId
      * @param contacts
@@ -230,18 +211,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         c.close();
         return result;
-    }
-
-    /**
-     * Gets the calls in the database for a particular contact.
-     * @param contactId
-     * @return a list of the issues IDs that were called for a particular contact.
-     */
-    public List<String> getCallsForContact(String contactId) {
-        // TODO do we want to return issue IDs, or more detailed info about the call? What about
-        // whether contact was made?
-        // Probably need to make a "Call" class to store this in.
-        return null;
     }
 
     /**
@@ -287,7 +256,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public boolean hasCalledToday(String issueId, String contactId) {
         contactId = sanitizeContactId(contactId);
-        Calendar rightNow = Calendar.getInstance();
+        Calendar rightNow = mTimeProvider.getCalendar();
         rightNow.set(Calendar.HOUR_OF_DAY, 0);
         rightNow.set(Calendar.MINUTE, 0);
         rightNow.set(Calendar.SECOND, 0);
@@ -313,7 +282,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Gets the list of timestamps of calls of a particular type (voicemail, unavailable, contacted)
+     * Gets the list of timestamps of calls of a particular type (voicemail, unavailable, contact)
      * that this user has made
      */
     public List<Long> getCallTimestampsForType(Outcome.Status status) {
@@ -340,7 +309,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         " ORDER BY count desc", null);
         List<Pair<String, Integer>> result = new ArrayList<>();
         while (c.moveToNext()) {
-            Pair<String, Integer> next = new Pair(c.getString(0), c.getInt(1));
+            Pair<String, Integer> next = new Pair<>(c.getString(0), c.getInt(1));
             result.add(next);
         }
         c.close();
