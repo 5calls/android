@@ -7,15 +7,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.VisibleForTesting;
 import androidx.core.util.Pair;
+
 import android.text.TextUtils;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.TimeZone;
 
 /**
  * Local database helper. I believe this is already "thread-safe" and such because SQLiteOpenHelper
@@ -33,6 +30,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @VisibleForTesting
     protected static final String CONTACTS_TABLE_NAME = "UserContactsTable";
 
+    // Can be used to control time in tests.
+    private TimeProvider mTimeProvider;
+    public interface TimeProvider {
+        public long currentTimeMillis();
+        public Calendar getCalendar();
+    }
+
+    private static class DefaultTimeProvider implements TimeProvider {
+
+        @Override
+        public long currentTimeMillis() {
+            return System.currentTimeMillis();
+        }
+
+        @Override
+        public Calendar getCalendar() {
+            return Calendar.getInstance();
+        }
+    }
 
     private static class CallsColumns {
         public static String TIMESTAMP = "timestamp";
@@ -67,7 +83,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     ContactColumns.CONTACT_NAME + " STRING);";
 
     public DatabaseHelper(Context context) {
+        this(context, new DefaultTimeProvider());
+    }
+
+    public DatabaseHelper(Context context, TimeProvider timeProvider) {
         super(context, CALLS_TABLE_NAME, null, DATABASE_VERSION);
+        mTimeProvider = timeProvider;
     }
 
     @Override
@@ -117,7 +138,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private void addCall(String issueId, String contactId, String result, String location) {
         ContentValues values = new ContentValues();
-        values.put(CallsColumns.TIMESTAMP, System.currentTimeMillis());
+        values.put(CallsColumns.TIMESTAMP, mTimeProvider.currentTimeMillis());
         values.put(CallsColumns.CONTACT_ID, contactId);
         values.put(CallsColumns.ISSUE_ID, issueId);
         values.put(CallsColumns.LOCATION, location);
@@ -235,7 +256,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public boolean hasCalledToday(String issueId, String contactId) {
         contactId = sanitizeContactId(contactId);
-        Calendar rightNow = Calendar.getInstance();
+        Calendar rightNow = mTimeProvider.getCalendar();
         rightNow.set(Calendar.HOUR_OF_DAY, 0);
         rightNow.set(Calendar.MINUTE, 0);
         rightNow.set(Calendar.SECOND, 0);
@@ -261,7 +282,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Gets the list of timestamps of calls of a particular type (voicemail, unavailable, contacted)
+     * Gets the list of timestamps of calls of a particular type (voicemail, unavailable, contact)
      * that this user has made
      */
     public List<Long> getCallTimestampsForType(Outcome.Status status) {

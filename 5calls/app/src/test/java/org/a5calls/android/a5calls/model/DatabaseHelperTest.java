@@ -1,6 +1,5 @@
 package org.a5calls.android.a5calls.model;
 
-import android.os.Bundle;
 import android.os.Parcel;
 
 import org.junit.After;
@@ -9,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import androidx.core.util.Pair;
@@ -23,13 +23,31 @@ import static org.junit.Assert.*;
 @RunWith(AndroidJUnit4.class)
 public class DatabaseHelperTest {
     private DatabaseHelper mDatabase;
+    private Calendar mCalendar;
 
     @Before
     public void setUp() {
         getApplicationContext().deleteDatabase(DatabaseHelper.CALLS_TABLE_NAME);
         getApplicationContext().deleteDatabase(DatabaseHelper.ISSUES_TABLE_NAME);
         getApplicationContext().deleteDatabase(DatabaseHelper.CONTACTS_TABLE_NAME);
-        mDatabase = new DatabaseHelper(getApplicationContext());
+
+        // Create a fake TimeProvider so we can control timestamps.
+        mCalendar = new Calendar.Builder()
+                .setDate(1973, Calendar.JANUARY, 22)
+                .setTimeOfDay(20, 0, 0) // 8 pm
+                .build();
+        DatabaseHelper.TimeProvider mTimeProvider = new DatabaseHelper.TimeProvider() {
+            @Override
+            public long currentTimeMillis() {
+                return mCalendar.getTimeInMillis();
+            }
+
+            @Override
+            public Calendar getCalendar() {
+                return mCalendar;
+            }
+        };
+        mDatabase = new DatabaseHelper(getApplicationContext(), mTimeProvider);
     }
 
     @After
@@ -119,7 +137,7 @@ public class DatabaseHelperTest {
 
     @Test
     public void testGetTotalCallsForIssueAndContacts() {
-        IssuesAndContacts issuesAndContacts = initializeDbWithThreeIssuesAndContacts();
+        IssuesAndContacts issuesAndContacts = initializeDbWithIssuesAndContacts();
         List<Issue> issues = issuesAndContacts.issues;
         List<Contact> contacts = issuesAndContacts.contacts;
 
@@ -142,7 +160,7 @@ public class DatabaseHelperTest {
 
     @Test
     public void testHasCalled() {
-        IssuesAndContacts issuesAndContacts = initializeDbWithThreeIssuesAndContacts();
+        IssuesAndContacts issuesAndContacts = initializeDbWithIssuesAndContacts();
         List<Issue> issues = issuesAndContacts.issues;
         List<Contact> contacts = issuesAndContacts.contacts;
 
@@ -176,17 +194,17 @@ public class DatabaseHelperTest {
 
     @Test
     public void testGetCallResults() {
-        IssuesAndContacts issuesAndContacts = initializeDbWithThreeIssuesAndContacts();
+        IssuesAndContacts issuesAndContacts = initializeDbWithIssuesAndContacts();
         List<Issue> issues = issuesAndContacts.issues;
         List<Contact> contacts = issuesAndContacts.contacts;
 
-        // The first three contacts have "first_result" as their call result
+        // The first three contacts have "unavailable" as their call result
         // on the first issue.
         for (int i = 0; i < 3; i++) {
             List<String> callResults = mDatabase.getCallResults(issues.get(0).id,
                     contacts.get(i).id);
             assertEquals(1, callResults.size());
-            assertEquals("first_result", callResults.getFirst());
+            assertEquals("unavailable", callResults.getFirst());
         }
 
         // The second issue has calls only from the second contact.
@@ -196,7 +214,7 @@ public class DatabaseHelperTest {
                     issues.get(1).id, contacts.get(i).id);
             if (i == 1) {
                 assertEquals(1, callResults.size());
-                assertEquals("second_result", callResults.getFirst());
+                assertEquals("voicemail", callResults.getFirst());
             } else {
                 assertEquals(0, callResults.size());
             }
@@ -210,7 +228,7 @@ public class DatabaseHelperTest {
             if (i == 0 || i == 2) {
                 assertEquals(3, callResults.size());
                 for (int j = 0; j < 3; j++) {
-                    assertTrue(callResults.contains("third_result" + j));
+                    assertTrue(callResults.contains(String.valueOf(Outcome.Status.values()[j])));
                 }
             } else {
                 assertEquals(0, callResults.size());
@@ -227,7 +245,7 @@ public class DatabaseHelperTest {
 
     @Test
     public void testGetCallCountsByContact() {
-        IssuesAndContacts issuesAndContacts = initializeDbWithThreeIssuesAndContacts();
+        IssuesAndContacts issuesAndContacts = initializeDbWithIssuesAndContacts();
         List<Contact> contacts = issuesAndContacts.contacts;
 
         List<Pair<String, Integer>> callCountsByContact =
@@ -248,7 +266,7 @@ public class DatabaseHelperTest {
 
     @Test
     public void testGetCalLCountsByIssue() {
-        IssuesAndContacts issuesAndContacts = initializeDbWithThreeIssuesAndContacts();
+        IssuesAndContacts issuesAndContacts = initializeDbWithIssuesAndContacts();
         List<Issue> issues = issuesAndContacts.issues;
 
         List<Pair<String, Integer>> callCountsByIssue =
@@ -267,7 +285,64 @@ public class DatabaseHelperTest {
         assertTrue(callCountsByIssue.contains(expectedIssue3));
     }
 
-    // TODO: Add tests for DB calls in which timestamps matter.
+    @Test
+    public void testGetCallTimestampsForType() {
+        initializeDbWithIssuesAndContacts();
+        List<Long> unavailable = mDatabase.getCallTimestampsForType(Outcome.Status.UNAVAILABLE);
+        List<Long> contact = mDatabase.getCallTimestampsForType(Outcome.Status.CONTACT);
+        List<Long> voicemail = mDatabase.getCallTimestampsForType(Outcome.Status.VOICEMAIL);
+
+        assertEquals(5, unavailable.size());
+        assertEquals(2, contact.size());
+        assertEquals(4, voicemail.size());
+    }
+
+    @Test
+    public void testHasCalledToday() {
+        IssuesAndContacts issuesAndContacts = initializeDbWithIssuesAndContacts();
+        List<Issue> issues = issuesAndContacts.issues;
+        List<Contact> contacts = issuesAndContacts.contacts;
+
+        // The first issue was not called today for any contacts, as the current calendar
+        // started at 8 pm and progressed by 11 hours.
+        for (Contact contact : contacts) {
+            assertFalse(mDatabase.hasCalledToday(issues.get(0).id, contact.id));
+        }
+
+        // The second issue was called once today by contact 2.
+        for (int i = 0; i < 4; i++) {
+            if (i == 1) {
+                assertTrue(mDatabase.hasCalledToday(issues.get(1).id, contacts.get(i).id));
+            } else {
+                assertFalse(mDatabase.hasCalledToday(issues.get(1).id, contacts.get(i).id));
+            }
+        }
+
+        // The third issue was called today by contacts 1 and 3.
+        for (int i = 0; i < 4; i++) {
+            if (i == 0 || i == 2) {
+                assertTrue(mDatabase.hasCalledToday(issues.get(2).id, contacts.get(i).id));
+            } else {
+                assertFalse(mDatabase.hasCalledToday(issues.get(2).id, contacts.get(i).id));
+            }
+        }
+
+        // The fourth issue was not called today.
+        for (Contact contact : contacts) {
+            assertFalse(mDatabase.hasCalledToday(issues.get(3).id, contact.id));
+        }
+
+        // Move time forward to "tomorrow".
+        long twentyFourHoursInMs = 24 * 60 * 60 * 1000;
+        mCalendar.setTimeInMillis(mCalendar.getTimeInMillis() + twentyFourHoursInMs);
+
+        // No calls now.
+        for (Contact contact : contacts) {
+            for (Issue issue : issues) {
+                assertFalse(mDatabase.hasCalledToday(issue.id, contact.id));
+            }
+        }
+    }
 
     // Wrapper class for holding a pair of issues and contacts.
     private static class IssuesAndContacts {
@@ -275,57 +350,50 @@ public class DatabaseHelperTest {
         List<Issue> issues;
     }
 
-    private IssuesAndContacts initializeDbWithThreeIssuesAndContacts() {
+    private IssuesAndContacts initializeDbWithIssuesAndContacts() {
         IssuesAndContacts result = new IssuesAndContacts();
         result.contacts = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
-            Contact contact = createContact("contact_id" + i, "Contact Name " + i);
+            Contact contact = TestModelUtils.createContact("contact_id" + i, "Contact Name " + i);
             result.contacts.add(contact);
         }
         result.issues = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
-            Issue issue = createIssue("issue_id" + i, "Issue Name " + i);
+            Issue issue = TestModelUtils.createIssue("issue_id" + i, "Issue Name " + i);
             result.issues.add(issue);
         }
-        // For the first issue, log a single call for the first 3 contacts.
+        long oneHourInMs = 60 * 60 * 1000;
+        // For the first issue, log a single call for the first 3 contacts,
+        // one hour apart.
         for (int i = 0; i < 3; i++) {
             mDatabase.addCall(result.issues.get(0).id, result.issues.get(0).name,
                     result.contacts.get(i).id, result.contacts.get(i).name,
-                    "first_result", "location");
+                    "unavailable", "location");
+            mCalendar.setTimeInMillis(mCalendar.getTimeInMillis() + oneHourInMs);
         }
-        // For the second issue, log two identical calls for only the second contact.
+        // For the second issue, log two identical calls for only the second contact,
+        // one hour apart.
         for (int i = 0; i < 2; i++) {
             mDatabase.addCall(result.issues.get(1).id, result.issues.get(1).name,
                     result.contacts.get(1).id, result.contacts.get(1).name,
-                    "second_result", "location");
+                    "voicemail", "location");
+            mCalendar.setTimeInMillis(mCalendar.getTimeInMillis() + oneHourInMs);
         }
         // For the third issue, log three calls from the first and third contact,
         // each with a different result.
         for (int i = 0; i < 3; i++) {
             mDatabase.addCall(result.issues.get(2).id, result.issues.get(2).name,
                     result.contacts.get(0).id, result.contacts.get(0).name,
-                    "third_result" + i, "location");
+                    String.valueOf(Outcome.Status.values()[i]), "location");
+            mCalendar.setTimeInMillis(mCalendar.getTimeInMillis() + oneHourInMs);
             mDatabase.addCall(result.issues.get(2).id, result.issues.get(2).name,
                     result.contacts.get(2).id, result.contacts.get(2).name,
-                    "third_result" + i, "location");
+                    String.valueOf(Outcome.Status.values()[i]), "location");
+            mCalendar.setTimeInMillis(mCalendar.getTimeInMillis() + oneHourInMs);
         }
         // The fourth issue and contact are unused.
 
         assertEquals(11, mDatabase.getCallsCount());
         return result;
-    }
-
-    private Contact createContact(String id, String name) {
-        Contact contact = Contact.CREATOR.createFromParcel(Parcel.obtain());
-        contact.id = id;
-        contact.name = name;
-        return contact;
-    }
-
-    private Issue createIssue(String id, String name) {
-        Issue issue = Issue.CREATOR.createFromParcel(Parcel.obtain());
-        issue.id = id;
-        issue.name = name;
-        return issue;
     }
 }
