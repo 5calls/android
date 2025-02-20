@@ -354,12 +354,12 @@ public class DatabaseHelperTest {
         IssuesAndContacts result = new IssuesAndContacts();
         result.contacts = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
-            Contact contact = createContact("contact_id" + i, "Contact Name " + i);
+            Contact contact = TestModelUtils.createContact("contact_id" + i, "Contact Name " + i);
             result.contacts.add(contact);
         }
         result.issues = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
-            Issue issue = createIssue("issue_id" + i, "Issue Name " + i);
+            Issue issue = TestModelUtils.createIssue("issue_id" + i, "Issue Name " + i);
             result.issues.add(issue);
         }
         long oneHourInMs = 60 * 60 * 1000;
@@ -395,19 +395,5 @@ public class DatabaseHelperTest {
 
         assertEquals(11, mDatabase.getCallsCount());
         return result;
-    }
-
-    private Contact createContact(String id, String name) {
-        Contact contact = Contact.CREATOR.createFromParcel(Parcel.obtain());
-        contact.id = id;
-        contact.name = name;
-        return contact;
-    }
-
-    private Issue createIssue(String id, String name) {
-        Issue issue = Issue.CREATOR.createFromParcel(Parcel.obtain());
-        issue.id = id;
-        issue.name = name;
-        return issue;
     }
 }

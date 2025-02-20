@@ -31,9 +31,10 @@ public class ScriptReplacements {
     private static final String ATTORNEY_GENERAL = "AttorneyGeneral";
     private static final String SECRETARY_OF_STATE = "SecretaryOfState";
 
-    public static String replacing(Context context, String script, Contact contact, @Nullable String location, @Nullable String userName) {
+    public static String replacing(Context context, String script, Contact contact,
+                                   @Nullable String location, @Nullable String userName) {
         String replacedScript = chooseSubscript(script, contact);
-        replacedScript = replacingContact(context, script, contact);
+        replacedScript = replacingContact(context, replacedScript, contact);
 
         if (!TextUtils.isEmpty(location)) {
             replacedScript = replacingLocation(replacedScript, location);
@@ -79,7 +80,7 @@ public class ScriptReplacements {
         return Pattern.compile(
                 introPattern +
                 "[^\\n]+" + // One or more non-newline characters
-                "\\r+" // One or more newline sequences
+                "([\\n\\r]|(\\r\\n))+" // One or more newline sequences
         );
     }
 
