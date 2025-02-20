@@ -16,25 +16,25 @@
     <string name="json_error">Error: Datos inválidos o inexistentes para esta ubicación</string>
 
     <!-- Message telling a user how many calls they still need to make on a particular issue [CHAR_LIMIT=30] -->
-    <string name="call_count"><xliff:g id="callCount">%1$d</xliff:g> llamadas para hacer</string>
+    <string name="call_count"><xliff:g id="callCount">%1$d</xliff:g> llamadas por hacer</string>
 
     <!-- Message telling a user they sill have one call to make on a particular issue [CHAR_LIMIT=30] -->
-    <string name="call_count_one">1 llamada para hacer</string>
+    <string name="call_count_one">1 llamada por hacer</string>
 
     <!-- Message telling a user how many calls they still need to make on a particular issue today [CHAR_LIMIT=none] -->
-    <string name="call_count_today"><xliff:g id="callCount">%1$d</xliff:g> llamadas para hacer hoy</string>
+    <string name="call_count_today"><xliff:g id="callCount">%1$d</xliff:g> llamadas por hacer hoy</string>
 
     <!-- Message telling a user they sill have one call to make on a particular issue today [CHAR_LIMIT=none] -->
-    <string name="call_count_today_one">1 llamada para hacer</string>
+    <string name="call_count_today_one">1 llamada por hacer</string>
 
     <!-- Message telling a user they sill have no calls left on a particular issue today [CHAR_LIMIT=none] -->
-    <string name="call_count_today_done">¡Buen trabajo, todas las llamadas hecho hoy!</string>
+    <string name="call_count_today_done">¡Bien hecho, ha hecho todas las llamadas hoy!</string>
 
     <!-- Message telling a user they have made one previous call [CHAR_LIMIT=none] -->
-    <string name="previous_call_count_one">"1 llamada anterior "</string>
+    <string name="previous_call_count_one">1 llamada hecha</string>
 
     <!-- Message telling a user how many previous calls they have made [CHAR_LIMIT=none] -->
-    <string name="previous_call_count_many"><xliff:g id="callCount">%1$d</xliff:g> llamadas anteriores</string>
+    <string name="previous_call_count_many"><xliff:g id="callCount">%1$d</xliff:g> llamadas hechas</string>
 
     <!-- Prompt for explaining which contact/office to call [CHAR_LIMIT=50] -->
     <string name="call_this_office">Llame a esta oficina:</string>
@@ -183,7 +183,7 @@
     <string name="motivational_text">¡Está marcando la diferencia! Llamando a sus representantes es el método más eficaz de influenciarlos, y aquí se puede ver lo que ha logrado:</string>
 
     <!-- Tells the user how many times they've made contact [CHAR_LIMIT=50] -->
-    <string name="impact_contact">Has hecho contacto <xliff:g id="contactCallCount">"%1$d</xliff:g> veces, </string>
+    <string name="impact_contact">Has hecho contacto <xliff:g id="contactCallCount">%1$d</xliff:g> veces, </string>
 
     <!-- Tells the user how many times they've left a voicemail [CHAR_LIMIT=50] -->
     <string name="impact_vm">has dejado <xliff:g id="voicemailCallCount">%1$d</xliff:g> mensajes, </string>
@@ -201,7 +201,7 @@
     <string name="impact_unavailable_one">1 vez el contacto no estaba disponible.</string>
 
     <!-- Title for user's calls over time line chart -->
-    <string name="impact_calls_over_time">"Llamadas con el tiempo "</string>
+    <string name="impact_calls_over_time">Llamadas a través del tiempo</string>
 
     <!-- Unknown contact name [CHAR_LIMIT=50] -->
     <string name="unknown_contact">Contacto desconocido</string>
