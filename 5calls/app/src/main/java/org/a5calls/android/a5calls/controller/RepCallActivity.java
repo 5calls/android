@@ -121,6 +121,7 @@ public class RepCallActivity extends AppCompatActivity {
                 AccountManager.Instance.getUserName(this)
         );
         MarkdownUtil.setUpScript(binding.callScript, script, getApplicationContext());
+        binding.callScript.setTextSize(AccountManager.Instance.getScriptTextSize(getApplicationContext()));
 
         boolean expandLocalOffices = false;
         if (savedInstanceState != null) {
