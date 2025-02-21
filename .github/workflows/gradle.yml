@@ -24,8 +24,8 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v3
       - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+        run: chmod +x 5Calls/gradlew
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./5Calls/gradlew build
       - name: Run tests
-        run: ./gradlew test
+        run: ./5Calls/gradlew test
