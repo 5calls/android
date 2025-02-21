@@ -22,15 +22,11 @@ jobs:
         distribution: 'temurin'
         cache: gradle
 
-    - name: Create google-services.json file
-      working-directory: ./5calls
-      run: cat ./app/google-services.json | base64
-    
-    - name: Get google-services.json data from env
+    - name: Create Google Services JSON File
       env:
-        DATA: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
       working-directory: ./5calls
-      run: echo $DATA > ./app/google-services.json
+      run: echo $GOOGLE_SERVICES_JSON | base64 -di > ./app/google-services.json
 
     - name: Grant execute permission for gradlew
       run: chmod +x ./gradlew
