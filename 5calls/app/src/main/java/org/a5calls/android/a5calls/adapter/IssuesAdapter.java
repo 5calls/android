@@ -21,8 +21,10 @@ import org.a5calls.android.a5calls.model.Issue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -103,7 +105,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     public void setFilterAndSearch(String filterText, String searchText) {
         if (!TextUtils.isEmpty(searchText)) {
-            mIssues = filterIssuesBySearchText(searchText);
+            mIssues = filterIssuesBySearchText(searchText, mAllIssues);
             // If there's no other error, show a search error.
             if (mIssues.isEmpty() && mErrorType == NO_ERROR) {
                 mErrorType = ERROR_SEARCH_NO_MATCH;
@@ -125,21 +127,34 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         notifyDataSetChanged();
     }
 
-    private ArrayList<Issue> filterIssuesBySearchText(String searchText) {
+    @VisibleForTesting
+    public static ArrayList<Issue> filterIssuesBySearchText(String searchText, List<Issue> allIssues) {
         ArrayList<Issue> tempIssues = new ArrayList<>();
         // Should we .trim() the whitespace?
         String lowerSearchText = searchText.toLowerCase();
-        for (Issue issue : mAllIssues) {
+        for (Issue issue : allIssues) {
             // Search the name and the categories for the search term.
-            // TODO: Searching full text is less straight forward, as a simple "contains"
-            // matches things like "ice" to "avarice" or whatever.
             if (issue.name.toLowerCase().contains(lowerSearchText)) {
                 tempIssues.add(issue);
             } else {
+                boolean found = false;
                 for (int i = 0; i < issue.categories.length; i++) {
                     if (issue.categories[i].name.toLowerCase().contains(lowerSearchText)) {
                         tempIssues.add(issue);
+                        found = true;
+                        break;
                     }
+                }
+                if (found) {
+                    continue;
+                }
+                // Search through the issue's reason for words that start with the
+                // search text. This is better than substring matching so that text
+                // like "ice" doesn't match "averice" but just ICE.
+                Pattern pattern = Pattern.compile("\\s" + searchText,
+                        Pattern.CASE_INSENSITIVE);
+                if (pattern.matcher(issue.reason).find()) {
+                    tempIssues.add(issue);
                 }
             }
         }
