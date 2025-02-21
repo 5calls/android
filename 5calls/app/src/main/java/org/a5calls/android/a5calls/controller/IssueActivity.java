@@ -194,6 +194,11 @@ public class IssueActivity extends AppCompatActivity {
                     Snackbar.LENGTH_LONG).show();
             mShowServerError = false;
         }
+        if (mIssue.contactAreas.isEmpty()) {
+            binding.issueDone.getRoot().setVisibility(View.GONE);
+            binding.noContactAreas.setVisibility(View.VISIBLE);
+            return;
+        }
         if (mIssue.contacts == null || mIssue.contacts.isEmpty()) {
             binding.noCallsLeft.setVisibility(View.VISIBLE);
             binding.issueDone.getRoot().setVisibility(View.GONE);
