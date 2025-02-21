@@ -18,17 +18,18 @@ jobs:
     - name: Set up JDK
       uses: actions/setup-java@v3
       with:
-        java-version: '21'
+        java-version: '17'
         distribution: 'temurin'
         cache: gradle
 
     - name: Grant execute permission for gradlew
-      run: chmod +x 5Calls/gradlew
+      run: chmod +x ./gradlew
+      working-directory: ./5calls
       
     - name: Build with Gradle
-      working-directory: ./5Calls
+      working-directory: ./5calls
       run: ./gradlew build
 
     - name: Run tests
-      working-directory: ./5Calls
+      working-directory: ./5calls
       run: ./gradlew test
