@@ -226,6 +226,15 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 return;
             }
 
+            // Sometimes an issue is shown with no contact areas in order to
+            // inform users that a major vote or change has happened.
+            if (issue.contactAreas.isEmpty()) {
+                vh.numCalls.setText(
+                        mActivity.getResources().getString(R.string.no_contact_areas_message));
+                vh.previousCallStats.setVisibility(View.GONE);
+                return;
+            }
+
             issue.contacts = new ArrayList<Contact>();
             int houseCount = 0;  // Only add the first contact in the house for each issue.
             for (String contactArea : issue.contactAreas) {
@@ -244,55 +253,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     }
                 }
             }
-
-            DatabaseHelper dbHelper =  AppSingleton.getInstance(mActivity.getApplicationContext())
-                    .getDatabaseHelper();
-            // Calls ever made.
-            int totalUserCalls = dbHelper.getTotalCallsForIssueAndContacts(issue.id, issue.contacts);
-
-            // Calls today only.
-            int callsLeft = issue.contacts.size();
-            for (Contact contact : issue.contacts) {
-                if(dbHelper.hasCalledToday(issue.id, contact.id)) {
-                    callsLeft--;
-                }
-            }
-            if (totalUserCalls == 0) {
-                // The user has never called on this issue before. Show a simple number of calls
-                // text, without the word "today".
-                vh.previousCallStats.setVisibility(View.GONE);
-                if (callsLeft == 1) {
-                    vh.numCalls.setText(
-                            mActivity.getResources().getString(R.string.call_count_one));
-                } else {
-                    vh.numCalls.setText(String.format(
-                            mActivity.getResources().getString(R.string.call_count), callsLeft));
-                }
-            } else {
-                vh.previousCallStats.setVisibility(View.VISIBLE);
-
-                // Previous call stats
-                if (totalUserCalls == 1) {
-                    vh.previousCallStats.setText(mActivity.getResources().getString(
-                            R.string.previous_call_count_one));
-                } else {
-                    vh.previousCallStats.setText(
-                            mActivity.getResources().getString(
-                                    R.string.previous_call_count_many, totalUserCalls));
-                }
-
-                // Calls to make today.
-                if (callsLeft == 0) {
-                    vh.numCalls.setText(
-                            mActivity.getResources().getString(R.string.call_count_today_done));
-                } else if (callsLeft == 1) {
-                    vh.numCalls.setText(
-                            mActivity.getResources().getString(R.string.call_count_today_one));
-                } else {
-                    vh.numCalls.setText(String.format(
-                            mActivity.getResources().getString(R.string.call_count_today), callsLeft));
-                }
-            }
+            displayPreviousCallStats(issue, vh);
         } else if (type == VIEW_TYPE_EMPTY_REQUEST) {
             EmptyRequestViewHolder vh = (EmptyRequestViewHolder) holder;
             vh.refreshButton.setOnClickListener(new View.OnClickListener() {
@@ -354,6 +315,57 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             }
         }
         return VIEW_TYPE_ISSUE;
+    }
+
+    private void displayPreviousCallStats(Issue issue, IssueViewHolder vh) {
+        DatabaseHelper dbHelper =  AppSingleton.getInstance(mActivity.getApplicationContext())
+                .getDatabaseHelper();
+        // Calls ever made.
+        int totalUserCalls = dbHelper.getTotalCallsForIssueAndContacts(issue.id, issue.contacts);
+
+        // Calls today only.
+        int callsLeft = issue.contacts.size();
+        for (Contact contact : issue.contacts) {
+            if(dbHelper.hasCalledToday(issue.id, contact.id)) {
+                callsLeft--;
+            }
+        }
+        if (totalUserCalls == 0) {
+            // The user has never called on this issue before. Show a simple number of calls
+            // text, without the word "today".
+            vh.previousCallStats.setVisibility(View.GONE);
+            if (callsLeft == 1) {
+                vh.numCalls.setText(
+                        mActivity.getResources().getString(R.string.call_count_one));
+            } else {
+                vh.numCalls.setText(String.format(
+                        mActivity.getResources().getString(R.string.call_count), callsLeft));
+            }
+        } else {
+            vh.previousCallStats.setVisibility(View.VISIBLE);
+
+            // Previous call stats
+            if (totalUserCalls == 1) {
+                vh.previousCallStats.setText(mActivity.getResources().getString(
+                        R.string.previous_call_count_one));
+            } else {
+                vh.previousCallStats.setText(
+                        mActivity.getResources().getString(
+                                R.string.previous_call_count_many, totalUserCalls));
+            }
+
+            // Calls to make today.
+            if (callsLeft == 0) {
+                vh.numCalls.setText(
+                        mActivity.getResources().getString(R.string.call_count_today_done));
+            } else if (callsLeft == 1) {
+                vh.numCalls.setText(
+                        mActivity.getResources().getString(R.string.call_count_today_one));
+            } else {
+                vh.numCalls.setText(String.format(
+                        mActivity.getResources().getString(R.string.call_count_today), callsLeft));
+            }
+        }
     }
 
     private static class IssueViewHolder extends RecyclerView.ViewHolder {
