@@ -7,6 +7,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import org.a5calls.android.a5calls.FakeJSONData;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -22,6 +25,13 @@ public class IssueTest {
     @Test
     public void testReadFromJSON() {
         List<Issue> issues = getTestIssues();
+        assertNotNull(issues);
+        assertEquals(issues.size(), 14);
+    }
+
+    @Test
+    public void testReadFromJSONWithUnknownFields() {
+        List<Issue> issues = getTestIssuesWithUnknownFields();
         assertNotNull(issues);
         assertEquals(issues.size(), 14);
     }
@@ -56,5 +66,22 @@ public class IssueTest {
         Gson gson = new GsonBuilder().serializeNulls().create();
         Type listType = new TypeToken<ArrayList<Issue>>(){}.getType();
         return gson.fromJson(FakeJSONData.ISSUE_DATA, listType);
+    }
+
+    // Add some unrecognized stuff to the JSON response to ensure that API
+    // changes won't break the logic.
+    private ArrayList<Issue> getTestIssuesWithUnknownFields() {
+        JSONArray initialIssues = FakeJSONData.GetIssueJSON();
+        for (int i = 0; i < initialIssues.length(); i++) {
+            try {
+                JSONObject issue = initialIssues.getJSONObject(i);
+                issue.put("unrecognizedField", "unrecognized value");
+            } catch (Exception e) {
+                return new ArrayList<>();
+            }
+        }
+        Gson gson = new GsonBuilder().serializeNulls().create();
+        Type listType = new TypeToken<ArrayList<Issue>>(){}.getType();
+        return gson.fromJson(initialIssues.toString(), listType);
     }
 }
