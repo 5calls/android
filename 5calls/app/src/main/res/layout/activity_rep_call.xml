@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/scroll_view"
     style="@style/scrollViewStyle">
 
@@ -9,24 +10,34 @@
         android:orientation="vertical"
         >
 
+        <TextView
+            style="@style/repCallTextStyle"
+            android:text="@string/call_count_today_one"
+            android:id="@+id/call_to_make_today_prompt"
+            />
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_text"
             >
 
             <TextView
-                android:id="@+id/call_this_office"
-                style="@style/repCallTextStyle"
+                style="@style/issuePreviousCallStatsStyle"
+                android:layout_width="wrap_content"
+                android:layout_centerVertical="true"
+                android:id="@+id/previous_call_stats"
                 android:layout_alignParentStart="true"
-                android:layout_marginBottom="16dp"
-                android:text="@string/call_this_office"
+                app:drawableStartCompat="@drawable/checked_small"
                 />
 
-            <ImageButton
-                android:id="@+id/contact_checked"
-                style="@style/ImageButtonStyle"
-                android:contentDescription="@string/contact_done_img_description"
-                android:src="@drawable/checked"
+            <Button
+                style="@style/linkButtonStyle"
+                android:textAllCaps="false"
+                android:textAlignment="center"
+                android:id="@+id/previous_call_details"
+                android:layout_toEndOf="@id/previous_call_stats"
+                android:text="@string/details_btn"
                 />
 
         </RelativeLayout>

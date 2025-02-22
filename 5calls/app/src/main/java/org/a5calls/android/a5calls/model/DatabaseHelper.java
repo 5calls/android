@@ -229,7 +229,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * The types of calls made for a particular issue and contact.
+     * The results for calls made for a particular issue and contact.
      * @param issueId
      * @param contactId
      * @return A list of the call results for this issue and contact.
@@ -238,7 +238,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contactId = sanitizeContactId(contactId);
         Cursor c = getReadableDatabase().rawQuery("SELECT " + CallsColumns.RESULT + " FROM " +
                 CALLS_TABLE_NAME + " WHERE " + CallsColumns.ISSUE_ID + " = ? AND " +
-                CallsColumns.CONTACT_ID + " = ? GROUP BY " + CallsColumns.RESULT,
+                CallsColumns.CONTACT_ID + " = ? ORDER BY " + CallsColumns.TIMESTAMP,
                 new String[] {issueId, contactId});
         List<String> result = new ArrayList<>();
         while (c.moveToNext()) {

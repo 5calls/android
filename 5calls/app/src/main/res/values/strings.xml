@@ -618,4 +618,7 @@
 
     <!-- A button to go to a page that accepts donations. -->
     <string name="done_donate_button">Donate</string>
+
+    <!-- A button to see more details about your previous calls for an issue/contact. -->
+    <string name="details_btn">Details</string>
 </resources>
