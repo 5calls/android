@@ -104,6 +104,11 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     public void setFilterAndSearch(String filterText, String searchText) {
+        if (mErrorType == ERROR_SEARCH_NO_MATCH) {
+            // If we previously had a search error, reset it: this is a new
+            // filter or search.
+            mErrorType = NO_ERROR;
+        }
         if (!TextUtils.isEmpty(searchText)) {
             mIssues = filterIssuesBySearchText(searchText, mAllIssues);
             // If there's no other error, show a search error.
