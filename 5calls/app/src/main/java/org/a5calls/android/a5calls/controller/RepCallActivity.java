@@ -268,7 +268,6 @@ public class RepCallActivity extends AppCompatActivity {
         }
     }
 
-    // TODO: Add nicely readable times to displayed call results.
     private void showPreviousCallDetails(List<String> previousCalls) {
         new AlertDialog.Builder(RepCallActivity.this)
                 .setTitle(R.string.contact_details_dialog_title)
@@ -284,12 +283,27 @@ public class RepCallActivity extends AppCompatActivity {
         String result = "";
 
         if (previousActions != null) {
-            List<String> displayedActions = new ArrayList<>();
+            int numContacted = 0;
+            int numVoicemail = 0;
+            int numUnavailable = 0;
             for (String prev : previousActions) {
-                displayedActions.add(Outcome.getDisplayString(context, prev));
+                if (TextUtils.equals(prev, Outcome.Status.VOICEMAIL.toString())) {
+                    numVoicemail++;
+                } else if (TextUtils.equals(prev, Outcome.Status.CONTACT.toString())) {
+                    numContacted++;
+                } else if (TextUtils.equals(prev, Outcome.Status.UNAVAILABLE.toString())) {
+                    numUnavailable++;
+                }
             }
-
-            result = TextUtils.join("\n", displayedActions);
+            if (numContacted > 0) {
+                result += numContacted + ": " + Outcome.getDisplayString(context, Outcome.Status.VOICEMAIL) + "\n";
+            }
+            if (numVoicemail > 0) {
+                result += numVoicemail + ": " + Outcome.getDisplayString(context, Outcome.Status.CONTACT) + "\n";
+            }
+            if (numUnavailable > 0) {
+                result += numUnavailable + ": " + Outcome.getDisplayString(context, Outcome.Status.UNAVAILABLE);
+            }
         }
 
         return result;

@@ -84,6 +84,10 @@ public class Outcome implements Parcelable {
         }
     }
 
+    public static String getDisplayString(Context context, Outcome.Status status) {
+        return getDisplayString(context, status.toString());
+    }
+
     public static String getDisplayString(Context context, String label) {
         String result;
 
