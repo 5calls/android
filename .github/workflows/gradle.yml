@@ -1,0 +1,41 @@
+name: Android CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up JDK
+      uses: actions/setup-java@v3
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        cache: gradle
+
+    - name: Create Google Services JSON File
+      env:
+        GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+      working-directory: ./5calls
+      run: echo $GOOGLE_SERVICES_JSON | base64 -di > ./app/google-services.json
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x ./gradlew
+      working-directory: ./5calls
+      
+    - name: Build with Gradle
+      working-directory: ./5calls
+      run: ./gradlew build
+
+    - name: Run tests
+      working-directory: ./5calls
+      run: ./gradlew test
