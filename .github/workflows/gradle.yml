@@ -32,9 +32,9 @@ jobs:
       run: chmod +x ./gradlew
       working-directory: ./5calls
       
-    - name: Build with Gradle
-      working-directory: ./5calls
-      run: ./gradlew build
+    #- name: Build with Gradle
+    #  working-directory: ./5calls
+    #  run: ./gradlew build
 
     - name: Run tests
       working-directory: ./5calls
