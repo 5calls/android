@@ -105,14 +105,6 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
-    public static void updateAllowAnalytics(Context context, boolean allowAnalytics) {
-        if (allowAnalytics) {
-            ((FiveCallsApplication) context.getApplicationContext()).enableAnalyticsHandler();
-        } else {
-            ((FiveCallsApplication) context.getApplicationContext()).disableAnalyticsHandler();
-        }
-    }
-
     public static void updateNotificationsPreference(FiveCallsApplication application,
                                                      AccountManager accountManager,
                                                      String result) {
@@ -195,7 +187,6 @@ public class SettingsActivity extends AppCompatActivity {
             if (TextUtils.equals(key, AccountManager.KEY_ALLOW_ANALYTICS)) {
                 boolean result = sharedPreferences.getBoolean(key, true);
                 accountManager.setAllowAnalytics(getActivity(), result);
-                updateAllowAnalytics(getActivity(), result);
             } else if (TextUtils.equals(key, AccountManager.KEY_ALLOW_REMINDERS)) {
                 boolean result = sharedPreferences.getBoolean(key, false);
                 if (result && !NotificationManagerCompat.from(requireContext()).areNotificationsEnabled()) {
