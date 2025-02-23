@@ -46,6 +46,9 @@
     <!-- Message to the user that no calls are left on a particular issue [CHAR_LIMIT=NONE] -->
     <string name="no_calls_left">No calls left for this issue.</string>
 
+    <!-- Message to the user when there are no contact areas on a particular issue, so there are no calls and it's just informational. [CHAR_LIMIT=NONE] -->
+    <string name="no_contact_areas_message">There are no calls for this issue.</string>
+
     <!-- Menu option to go to the About 5 Calls screen [CHAR_LIMIT=25] -->
     <string name="menu_about">About 5 Calls</string>
 
@@ -508,6 +511,17 @@
         <item>1</item>
     </string-array>
 
+    <!-- Title of a section in settings about appearance -->
+    <string name="settings_category_appearance">Appearance</string>
+
+    <!-- Name of a setting to change the text size of the script -->
+    <string name="script_text_size">Script text size</string>
+
+    <!-- Script text size options -->
+    <string name="script_text_size_normal">Normal</string>
+    <string name="script_text_size_large">Large</string>
+    <string name="script_text_size_xlarge">Extra large</string>
+
     <!-- Title for a dialog where users can pick their notification frequency [CHAR_LIMIT=100] -->
     <string name="notifications_dialog_title">Get alerts before your reps vote on important issues?</string>
 
@@ -605,4 +619,16 @@
 
     <!-- A button to go to a page that accepts donations. -->
     <string name="done_donate_button">Donate</string>
+
+    <!-- A button to see more details about your previous calls for an issue/contact. -->
+    <string name="details_btn">Details</string>
+
+    <!-- Description of a contact that has a name, political party, state and district -->
+    <string name="contact_political_details_all"><xliff:g id="name">%1$s</xliff:g> is a <xliff:g id="party">%2$s</xliff:g> from <xliff:g id="state">%3$s</xliff:g> District <xliff:g id="district">%4$s</xliff:g>.</string>
+
+    <!-- Description of a contact that has a name, political party, and state. -->
+    <string name="contact_political_details_party_state"><xliff:g id="name">%1$s</xliff:g> is a <xliff:g id="party">%2$s</xliff:g> from <xliff:g id="state">%3$s</xliff:g>.</string>
+
+    <!-- Description of a contact that has a name and state. -->
+    <string name="contact_political_details_state"><xliff:g id="name">%1$s</xliff:g> is from <xliff:g id="state">%2$s</xliff:g>.</string>
 </resources>

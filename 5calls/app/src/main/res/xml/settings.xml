@@ -54,7 +54,7 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="@string/settings_category_general"
+        android:title="@string/settings_category_appearance"
         app:iconSpaceReserved="false"
         >
 
@@ -65,6 +65,23 @@
             android:title="@string/settings_name"
             app:iconSpaceReserved="false"
             />
+
+        <ListPreference
+            android:key="prefsKeyScriptTextSize"
+            android:title="@string/script_text_size"
+            android:entries="@array/script_text_size_labels"
+            android:entryValues="@array/script_text_size_values"
+            android:defaultValue="@string/script_text_size_normal_sp"
+            android:summary="%s"
+            app:iconSpaceReserved="false"
+            />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/settings_category_general"
+        app:iconSpaceReserved="false"
+        >
 
         <SwitchPreference
             android:title="@string/setting_usage_title"

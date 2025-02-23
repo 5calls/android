@@ -1,7 +1,12 @@
 package org.a5calls.android.a5calls.model;
 
+import android.content.res.Resources;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
+import android.view.View;
+
+import org.a5calls.android.a5calls.R;
 
 /**
  * Represents a contact.
@@ -16,6 +21,7 @@ public class Contact implements Parcelable {
     public String state;
     public String reason;
     public String area;
+    public String district;
     public FieldOffice[] field_offices;
 
     protected Contact(Parcel in) {
@@ -27,6 +33,7 @@ public class Contact implements Parcelable {
         state = in.readString();
         reason = in.readString();
         area = in.readString();
+        district = in.readString();
         field_offices = in.createTypedArray(FieldOffice.CREATOR);
     }
 
@@ -57,6 +64,23 @@ public class Contact implements Parcelable {
         dest.writeString(state);
         dest.writeString(reason);
         dest.writeString(area);
+        dest.writeString(district);
         dest.writeTypedArray(field_offices, PARCELABLE_WRITE_RETURN_VALUE);
+    }
+
+    public String getDescription(Resources res) {
+        if (TextUtils.isEmpty(state)) {
+            return "";
+        }
+        if (!TextUtils.isEmpty(party)) {
+            if (!TextUtils.isEmpty(district)) {
+                return res.getString(R.string.contact_political_details_all,
+                        name, party, state, district);
+            }
+            return res.getString(R.string.contact_political_details_party_state,
+                    name, party, state);
+        }
+        return res.getString(R.string.contact_political_details_state,
+                name, state);
     }
 }

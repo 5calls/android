@@ -2,6 +2,8 @@ package org.a5calls.android.a5calls.controller;
 
 import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.fragment.app.Fragment;
@@ -40,22 +42,30 @@ public class TutorialActivity extends AppCompatActivity {
 
         binding.viewPager.setAdapter(new TutorialPagerAdapter(getSupportFragmentManager()));
 
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (binding.viewPager.getCurrentItem() == 0) {
+                    // If the user is currently looking at the first step, allow the system to handle the
+                    // Back button. Call finish() on this activity and pop the back stack.
+                    finish();
+                } else {
+                    // Otherwise, select the previous step.
+                    onPreviousPagePressed();
+                }
+            }
+        });
+
         new AnalyticsManager().trackPageview("/tutorial", this);
     }
 
-    @Override
-    public void onBackPressed() {
-        if (binding.viewPager.getCurrentItem() == 0) {
-            // If the user is currently looking at the first step, allow the system to handle the
-            // Back button. This calls finish() on this activity and pops the back stack.
-            super.onBackPressed();
-        } else {
-            // Otherwise, select the previous step.
+    public void onPreviousPagePressed() {
+        if (binding.viewPager.getCurrentItem() > 0) {
             binding.viewPager.setCurrentItem(binding.viewPager.getCurrentItem() - 1);
         }
     }
 
-    public void onNextPressed() {
+    public void onNextPagePressed() {
         binding.viewPager.setCurrentItem(binding.viewPager.getCurrentItem() + 1);
     }
 
@@ -97,7 +107,7 @@ public class TutorialActivity extends AppCompatActivity {
             rootView.findViewById(R.id.btn_next).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ((TutorialActivity) getActivity()).onNextPressed();
+                    ((TutorialActivity) getActivity()).onNextPagePressed();
                 }
             });
             return rootView;
@@ -119,13 +129,13 @@ public class TutorialActivity extends AppCompatActivity {
             rootView.findViewById(R.id.btn_back).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    getActivity().onBackPressed();
+                    ((TutorialActivity) getActivity()).onPreviousPagePressed();
                 }
             });
             rootView.findViewById(R.id.btn_next).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ((TutorialActivity) getActivity()).onNextPressed();
+                    ((TutorialActivity) getActivity()).onNextPagePressed();
                 }
             });
             return rootView;
@@ -209,7 +219,7 @@ public class TutorialActivity extends AppCompatActivity {
             rootView.findViewById(R.id.btn_back).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    getActivity().onBackPressed();
+                    ((TutorialActivity) getActivity()).onPreviousPagePressed();
                 }
             });
             rootView.findViewById(R.id.get_started_btn).setOnClickListener(

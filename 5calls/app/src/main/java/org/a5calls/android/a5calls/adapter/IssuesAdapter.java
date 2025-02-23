@@ -21,8 +21,10 @@ import org.a5calls.android.a5calls.model.Issue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -102,8 +104,13 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     public void setFilterAndSearch(String filterText, String searchText) {
+        if (mErrorType == ERROR_SEARCH_NO_MATCH) {
+            // If we previously had a search error, reset it: this is a new
+            // filter or search.
+            mErrorType = NO_ERROR;
+        }
         if (!TextUtils.isEmpty(searchText)) {
-            mIssues = filterIssuesBySearchText(searchText);
+            mIssues = filterIssuesBySearchText(searchText, mAllIssues);
             // If there's no other error, show a search error.
             if (mIssues.isEmpty() && mErrorType == NO_ERROR) {
                 mErrorType = ERROR_SEARCH_NO_MATCH;
@@ -125,21 +132,34 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         notifyDataSetChanged();
     }
 
-    private ArrayList<Issue> filterIssuesBySearchText(String searchText) {
+    @VisibleForTesting
+    public static ArrayList<Issue> filterIssuesBySearchText(String searchText, List<Issue> allIssues) {
         ArrayList<Issue> tempIssues = new ArrayList<>();
         // Should we .trim() the whitespace?
         String lowerSearchText = searchText.toLowerCase();
-        for (Issue issue : mAllIssues) {
+        for (Issue issue : allIssues) {
             // Search the name and the categories for the search term.
-            // TODO: Searching full text is less straight forward, as a simple "contains"
-            // matches things like "ice" to "avarice" or whatever.
             if (issue.name.toLowerCase().contains(lowerSearchText)) {
                 tempIssues.add(issue);
             } else {
+                boolean found = false;
                 for (int i = 0; i < issue.categories.length; i++) {
                     if (issue.categories[i].name.toLowerCase().contains(lowerSearchText)) {
                         tempIssues.add(issue);
+                        found = true;
+                        break;
                     }
+                }
+                if (found) {
+                    continue;
+                }
+                // Search through the issue's reason for words that start with the
+                // search text. This is better than substring matching so that text
+                // like "ice" doesn't match "averice" but just ICE.
+                Pattern pattern = Pattern.compile("\\s" + searchText,
+                        Pattern.CASE_INSENSITIVE);
+                if (pattern.matcher(issue.reason).find()) {
+                    tempIssues.add(issue);
                 }
             }
         }
@@ -226,6 +246,15 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 return;
             }
 
+            // Sometimes an issue is shown with no contact areas in order to
+            // inform users that a major vote or change has happened.
+            if (issue.contactAreas.isEmpty()) {
+                vh.numCalls.setText(
+                        mActivity.getResources().getString(R.string.no_contact_areas_message));
+                vh.previousCallStats.setVisibility(View.GONE);
+                return;
+            }
+
             issue.contacts = new ArrayList<Contact>();
             int houseCount = 0;  // Only add the first contact in the house for each issue.
             for (String contactArea : issue.contactAreas) {
@@ -244,55 +273,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     }
                 }
             }
-
-            DatabaseHelper dbHelper =  AppSingleton.getInstance(mActivity.getApplicationContext())
-                    .getDatabaseHelper();
-            // Calls ever made.
-            int totalUserCalls = dbHelper.getTotalCallsForIssueAndContacts(issue.id, issue.contacts);
-
-            // Calls today only.
-            int callsLeft = issue.contacts.size();
-            for (Contact contact : issue.contacts) {
-                if(dbHelper.hasCalledToday(issue.id, contact.id)) {
-                    callsLeft--;
-                }
-            }
-            if (totalUserCalls == 0) {
-                // The user has never called on this issue before. Show a simple number of calls
-                // text, without the word "today".
-                vh.previousCallStats.setVisibility(View.GONE);
-                if (callsLeft == 1) {
-                    vh.numCalls.setText(
-                            mActivity.getResources().getString(R.string.call_count_one));
-                } else {
-                    vh.numCalls.setText(String.format(
-                            mActivity.getResources().getString(R.string.call_count), callsLeft));
-                }
-            } else {
-                vh.previousCallStats.setVisibility(View.VISIBLE);
-
-                // Previous call stats
-                if (totalUserCalls == 1) {
-                    vh.previousCallStats.setText(mActivity.getResources().getString(
-                            R.string.previous_call_count_one));
-                } else {
-                    vh.previousCallStats.setText(
-                            mActivity.getResources().getString(
-                                    R.string.previous_call_count_many, totalUserCalls));
-                }
-
-                // Calls to make today.
-                if (callsLeft == 0) {
-                    vh.numCalls.setText(
-                            mActivity.getResources().getString(R.string.call_count_today_done));
-                } else if (callsLeft == 1) {
-                    vh.numCalls.setText(
-                            mActivity.getResources().getString(R.string.call_count_today_one));
-                } else {
-                    vh.numCalls.setText(String.format(
-                            mActivity.getResources().getString(R.string.call_count_today), callsLeft));
-                }
-            }
+            displayPreviousCallStats(issue, vh);
         } else if (type == VIEW_TYPE_EMPTY_REQUEST) {
             EmptyRequestViewHolder vh = (EmptyRequestViewHolder) holder;
             vh.refreshButton.setOnClickListener(new View.OnClickListener() {
@@ -354,6 +335,57 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             }
         }
         return VIEW_TYPE_ISSUE;
+    }
+
+    private void displayPreviousCallStats(Issue issue, IssueViewHolder vh) {
+        DatabaseHelper dbHelper =  AppSingleton.getInstance(mActivity.getApplicationContext())
+                .getDatabaseHelper();
+        // Calls ever made.
+        int totalUserCalls = dbHelper.getTotalCallsForIssueAndContacts(issue.id, issue.contacts);
+
+        // Calls today only.
+        int callsLeft = issue.contacts.size();
+        for (Contact contact : issue.contacts) {
+            if(dbHelper.hasCalledToday(issue.id, contact.id)) {
+                callsLeft--;
+            }
+        }
+        if (totalUserCalls == 0) {
+            // The user has never called on this issue before. Show a simple number of calls
+            // text, without the word "today".
+            vh.previousCallStats.setVisibility(View.GONE);
+            if (callsLeft == 1) {
+                vh.numCalls.setText(
+                        mActivity.getResources().getString(R.string.call_count_one));
+            } else {
+                vh.numCalls.setText(String.format(
+                        mActivity.getResources().getString(R.string.call_count), callsLeft));
+            }
+        } else {
+            vh.previousCallStats.setVisibility(View.VISIBLE);
+
+            // Previous call stats
+            if (totalUserCalls == 1) {
+                vh.previousCallStats.setText(mActivity.getResources().getString(
+                        R.string.previous_call_count_one));
+            } else {
+                vh.previousCallStats.setText(
+                        mActivity.getResources().getString(
+                                R.string.previous_call_count_many, totalUserCalls));
+            }
+
+            // Calls to make today.
+            if (callsLeft == 0) {
+                vh.numCalls.setText(
+                        mActivity.getResources().getString(R.string.call_count_today_done));
+            } else if (callsLeft == 1) {
+                vh.numCalls.setText(
+                        mActivity.getResources().getString(R.string.call_count_today_one));
+            } else {
+                vh.numCalls.setText(String.format(
+                        mActivity.getResources().getString(R.string.call_count_today), callsLeft));
+            }
+        }
     }
 
     private static class IssueViewHolder extends RecyclerView.ViewHolder {

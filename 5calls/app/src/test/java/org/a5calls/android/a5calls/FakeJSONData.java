@@ -1,5 +1,6 @@
 package org.a5calls.android.a5calls;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -12,4 +13,31 @@ public class FakeJSONData {
 
     // A snapshot of real report data, used for testing.
     public static final String REPORT_DATA = "{\"count\":4627301,\"donateOn\":true}";
+
+    public static JSONArray GetIssueJSON() {
+        try {
+            return new JSONArray(ISSUE_DATA);
+        } catch (JSONException e) {
+            // Shouldn't happen since all the JSON data is static strings above.
+            return new JSONArray();
+        }
+    }
+
+    public static JSONObject GetRepsJSON() {
+        try {
+            return new JSONObject(REPS_DATA);
+        } catch (JSONException e) {
+            // Shouldn't happen since all the JSON data is static strings above.
+            return new JSONObject();
+        }
+    }
+
+    public static JSONObject GetReportJSON() {
+        try {
+            return new JSONObject(REPORT_DATA);
+        } catch (JSONException e) {
+            // Shouldn't happen since all the JSON data is static strings above.
+            return new JSONObject();
+        }
+    }
 }

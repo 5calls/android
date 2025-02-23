@@ -8,6 +8,7 @@ import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import androidx.core.view.GravityCompat;
@@ -45,6 +46,7 @@ import org.a5calls.android.a5calls.util.CustomTabsUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import static android.view.View.VISIBLE;
 
@@ -67,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     private FiveCallsApi.IssuesRequestListener mIssuesRequestListener;
     private FiveCallsApi.ContactsRequestListener mContactsRequestListener;
     private FiveCallsApi.CallRequestListener mReportListener;
+    private OnBackPressedCallback mOnBackPressedCallback;
     private String mAddress;
     private String mLatitude;
     private String mLongitude;
@@ -204,7 +207,8 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 binding.searchText.setText(mSearchText);
             }
         } else {
-            mFilterText = mFilterAdapter.getItem(0);  // Default value
+            // Safe to use index as the top two filters are hard-coded strings.
+            mFilterText = mFilterAdapter.getItem(0);
         }
         binding.searchText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -218,6 +222,8 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 onIssueSearchCleared();
             }
         });
+
+        registerOnBackPressedCallback();
 
         registerApiListener();
 
@@ -508,6 +514,32 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         api.registerCallRequestListener(mReportListener);
     }
 
+    // Registers a callback that handles back presses. This should be active
+    // only when filtering or searching, so that it can do a one-time clear of
+    // the active filter or search back to the default main activity state.
+    private void registerOnBackPressedCallback() {
+        mOnBackPressedCallback = new OnBackPressedCallback(/* enabled= */ false) {
+            @Override
+            public void handleOnBackPressed() {
+                // Clear the filter, if there was one.
+                binding.filter.setSelection(0);
+                // Clear the search, if there was one.
+                onIssueSearchSet("");
+                // The calls above will disable this callback, so no need
+                // to do it here.
+            }
+        };
+        updateOnBackPressedCallbackEnabled();
+        getOnBackPressedDispatcher().addCallback(mOnBackPressedCallback);
+    }
+
+    // Should be called whenever filter or search state changes.
+    private void updateOnBackPressedCallbackEnabled() {
+        boolean isFiltering = !Objects.equals(mFilterText, mFilterAdapter.getItem(0));
+        boolean isSearching = !TextUtils.isEmpty(mSearchText);
+        mOnBackPressedCallback.setEnabled(isFiltering || isSearching);
+    }
+
     private void populateFilterAdapterIfNeeded(List<Issue> issues) {
         if (mFilterAdapter.getCount() > 2) {
             // Already populated. Don't try again.
@@ -538,6 +570,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                     return;
                 }
                 mFilterText = newFilter;
+                updateOnBackPressedCallbackEnabled();
                 if (binding.swipeContainer.isRefreshing()) {
                     // Already loading issues!
                     return;
@@ -607,12 +640,14 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         binding.filter.setVisibility(View.GONE);
         binding.searchBar.setVisibility(VISIBLE);
         setSearchText(searchText);
+        updateOnBackPressedCallbackEnabled();
     }
 
     public void onIssueSearchCleared() {
         binding.filter.setVisibility(VISIBLE);
         binding.searchBar.setVisibility(View.GONE);
         setSearchText("");
+        updateOnBackPressedCallbackEnabled();
     }
 
     private void setSearchText(String searchText) {

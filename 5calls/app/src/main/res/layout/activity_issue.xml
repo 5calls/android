@@ -8,22 +8,26 @@
     <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/scroll_view"
         style="@style/nestedScrollViewStyleTop"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        >
 
         <LinearLayout
             android:id="@+id/issue_section"
             style="@style/issueLinearLayout"
             android:orientation="vertical"
             android:paddingTop="@dimen/activity_vertical_margin"
-            android:paddingBottom="@dimen/activity_vertical_margin">
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            >
 
             <TextView
                 android:id="@+id/issue_name"
-                style="@style/issueHeadStyle" />
+                style="@style/issueHeadStyle"
+                />
 
             <TextView
                 android:id="@+id/link"
-                style="@style/issueNameTextStyle" />
+                style="@style/issueNameTextStyle"
+                />
 
             <include
                 android:id="@+id/issue_done"
@@ -32,7 +36,8 @@
 
             <TextView
                 android:id="@+id/issue_description"
-                style="@style/issueDescriptionTextStyle" />
+                style="@style/issueDescriptionTextStyle"
+                />
 
         </LinearLayout>
 
@@ -44,7 +49,8 @@
         android.support.design:ignore="UnusedAttribute"
         app:behavior_hideable="false"
         app:behavior_peekHeight="52dp"
-        app:layout_behavior="@string/bottom_sheet_behavior">
+        app:layout_behavior="@string/bottom_sheet_behavior"
+        >
 
         <LinearLayout style="@style/issueLinearLayout"
             android:orientation="vertical"
@@ -54,7 +60,8 @@
                 android:id="@+id/rep_prompt"
                 style="@style/issueRelativeLayoutStyle"
                 android:background="@color/colorAccent"
-                android:minHeight="@dimen/issue_height_relative_layout">
+                android:minHeight="@dimen/issue_height_relative_layout"
+                >
 
                 <ImageView
                     android:id="@+id/expand_contacts_icon"
@@ -74,7 +81,8 @@
                 style="@style/issueLinearLayout"
                 android:orientation="vertical"
                 android:divider="@drawable/layout_divider"
-                android:showDividers="middle" />
+                android:showDividers="middle"
+                />
 
             <RelativeLayout
                 android:id="@+id/no_calls_left"
@@ -82,13 +90,15 @@
                 android:background="@color/issue_background_color"
                 android:paddingTop="@dimen/activity_horizontal_margin"
                 android:paddingBottom="@dimen/activity_horizontal_margin"
-                android:visibility="gone">
+                android:visibility="gone"
+                >
 
                 <TextView
                     android:id="@+id/no_calls_message"
                     style="@style/issueTextNoCallsStyle"
                     android:text="@string/no_calls_left"
-                    android:textColor="@color/colorPrimary" />
+                    android:textColor="@color/colorPrimary"
+                    />
 
                 <TextView
                     android:id="@+id/split_district_warning"
@@ -97,14 +107,34 @@
                     android:layout_marginTop="@dimen/grid_padding"
                     android:text="@string/error_address_invalid"
                     android:layout_toStartOf="@+id/update_location_button"
-                    android:textColor="@color/colorPrimaryDark" />
+                    android:textColor="@color/colorPrimaryDark"
+                    />
 
                 <Button
                     android:id="@id/update_location_button"
                     style="@style/transparentBtnStyle"
                     android:layout_alignBaseline="@id/split_district_warning"
                     android:layout_alignParentEnd="true"
-                    android:text="@string/update" />
+                    android:text="@string/update"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/no_contact_areas"
+                style="@style/issueRelativeLayoutStyle"
+                android:background="@color/issue_background_color"
+                android:paddingTop="@dimen/activity_horizontal_margin"
+                android:paddingBottom="@dimen/activity_horizontal_margin"
+                android:visibility="gone"
+                >
+
+                <TextView
+                    android:id="@+id/no_contact_areas_message"
+                    style="@style/issueTextNoCallsStyle"
+                    android:text="@string/no_contact_areas_message"
+                    android:textColor="@color/colorPrimary"
+                    />
 
             </RelativeLayout>
 

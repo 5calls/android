@@ -33,7 +33,7 @@
     <dimen name="padding_spinner">16dp</dimen>
     <dimen name="filter_item_margin">24dp</dimen>
     <dimen name="filter_item_padding">22dp</dimen>
-    <dimen name="margin_rigth">16dp</dimen>
+    <dimen name="margin_right">16dp</dimen>
     <dimen name="margin_left">16dp</dimen>
     <dimen name="margin_top16">16dp</dimen>
     <dimen name="margin_bottom">8dp</dimen>

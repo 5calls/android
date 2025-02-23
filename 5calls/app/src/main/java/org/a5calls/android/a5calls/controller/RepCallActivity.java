@@ -30,6 +30,7 @@ import org.a5calls.android.a5calls.adapter.OutcomeAdapter;
 import org.a5calls.android.a5calls.databinding.ActivityRepCallBinding;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.Contact;
+import org.a5calls.android.a5calls.model.DatabaseHelper;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.model.Outcome;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
@@ -121,6 +122,7 @@ public class RepCallActivity extends AppCompatActivity {
                 AccountManager.Instance.getUserName(this)
         );
         MarkdownUtil.setUpScript(binding.callScript, script, getApplicationContext());
+        binding.callScript.setTextSize(AccountManager.Instance.getScriptTextSize(getApplicationContext()));
 
         boolean expandLocalOffices = false;
         if (savedInstanceState != null) {
@@ -232,48 +234,76 @@ public class RepCallActivity extends AppCompatActivity {
             }
         }
 
+        DatabaseHelper dbHelper = AppSingleton.getInstance(this).getDatabaseHelper();
         // Show a bit about whether they've been contacted yet
-        final List<String> previousCalls = AppSingleton.getInstance(this).getDatabaseHelper()
-                .getCallResults(mIssue.id, contact.id);
-        if (previousCalls.size() > 0) {
-            showContactChecked(previousCalls);
+        final List<String> previousCalls = dbHelper.getCallResults(mIssue.id, contact.id);
+        boolean hasCalledToday = dbHelper.hasCalledToday(mIssue.id, contact.id);
+        if (hasCalledToday) {
+            binding.callToMakeTodayPrompt.setVisibility(View.GONE);
+        }
+        if (previousCalls.isEmpty()) {
+            binding.previousCallStats.setVisibility(View.GONE);
+            binding.previousCallDetails.setVisibility(View.GONE);
         } else {
-            binding.contactChecked.setVisibility(View.GONE);
-            binding.contactChecked.setOnClickListener(null);
+            binding.previousCallStats.setVisibility(View.VISIBLE);
+            binding.previousCallDetails.setVisibility(View.VISIBLE);
+            if (previousCalls.size() == 1) {
+                binding.previousCallStats.setText(getResources().getString(
+                        R.string.previous_call_count_one));
+            } else {
+                binding.previousCallStats.setText(
+                        getResources().getString(
+                                R.string.previous_call_count_many, previousCalls.size()));
+            }
+            binding.previousCallDetails.setOnClickListener(v -> {
+                showPreviousCallDetails(previousCalls);
+            });
+        }
+
+        String contactDetails = contact.getDescription(getResources());
+        if (TextUtils.isEmpty(contactDetails)) {
+            binding.contactDetails.setVisibility(View.GONE);
+        } else {
+            binding.contactDetails.setText(contactDetails);
         }
     }
 
-    private void showContactChecked(final List<String> previousCalls) {
-        binding.contactChecked.setVisibility(View.VISIBLE);
-        binding.contactChecked.setImageLevel(1);
-        binding.contactChecked.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new AlertDialog.Builder(RepCallActivity.this)
-                        .setTitle(R.string.contact_details_dialog_title)
-                        .setMessage(getReportedActionsMessage(RepCallActivity.this, previousCalls))
-                        .setPositiveButton(android.R.string.ok,
-                                new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
+    private void showPreviousCallDetails(List<String> previousCalls) {
+        new AlertDialog.Builder(RepCallActivity.this)
+                .setTitle(R.string.contact_details_dialog_title)
+                .setMessage(getReportedActionsMessage(RepCallActivity.this, previousCalls))
+                .setPositiveButton(android.R.string.ok,
+                        (dialog, which) -> {
 
-                                    }
-                                })
-                        .show();
-            }
-        });
+                        })
+                .show();
     }
 
     private String getReportedActionsMessage(Context context, List<String> previousActions) {
         String result = "";
 
         if (previousActions != null) {
-            List<String> displayedActions = new ArrayList<>();
+            int numContacted = 0;
+            int numVoicemail = 0;
+            int numUnavailable = 0;
             for (String prev : previousActions) {
-                displayedActions.add(Outcome.getDisplayString(context, prev));
+                if (TextUtils.equals(prev, Outcome.Status.VOICEMAIL.toString())) {
+                    numVoicemail++;
+                } else if (TextUtils.equals(prev, Outcome.Status.CONTACT.toString())) {
+                    numContacted++;
+                } else if (TextUtils.equals(prev, Outcome.Status.UNAVAILABLE.toString())) {
+                    numUnavailable++;
+                }
             }
-
-            result = TextUtils.join(", ", displayedActions);
+            if (numContacted > 0) {
+                result += numContacted + ": " + Outcome.getDisplayString(context, Outcome.Status.VOICEMAIL) + "\n";
+            }
+            if (numVoicemail > 0) {
+                result += numVoicemail + ": " + Outcome.getDisplayString(context, Outcome.Status.CONTACT) + "\n";
+            }
+            if (numUnavailable > 0) {
+                result += numUnavailable + ": " + Outcome.getDisplayString(context, Outcome.Status.UNAVAILABLE);
+            }
         }
 
         return result;
