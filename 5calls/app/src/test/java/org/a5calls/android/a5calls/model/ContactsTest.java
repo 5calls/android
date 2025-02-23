@@ -13,11 +13,13 @@ import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
@@ -46,8 +48,43 @@ public class ContactsTest {
             assertEquals(expected.party, actual.party);
             assertEquals(expected.photoURL, actual.photoURL);
             assertEquals(expected.state, actual.state);
+            assertEquals(expected.district, actual.district);
             assertArrayEquals(expected.field_offices, actual.field_offices);
         }
+    }
+
+    @Test
+    public void testDescriptionSenate() {
+        List<Contact> contacts = getTestContacts();
+        String description = contacts.get(1).getDescription(getApplicationContext().getResources());
+        assertEquals("Kirsten Gillibrand is a Democrat from NY.", description);
+    }
+
+    @Test
+    public void testDescriptionHouse() {
+        List<Contact> contacts = getTestContacts();
+        String description = contacts.get(0).getDescription(getApplicationContext().getResources());
+        assertEquals("Dan Goldman is a Democrat from NY District 10.", description);
+    }
+
+    @Test
+    public void testDescriptionAttorneyGeneral() {
+        List<Contact> contacts = getTestContacts();
+        String description = contacts.get(3).getDescription(getApplicationContext().getResources());
+        assertEquals("Letitia A. James is from NY.", description);
+    }
+
+    @Test
+    public void testDescriptionGovernor() {
+        List<Contact> contacts = getTestContacts();
+        String description = contacts.get(4).getDescription(getApplicationContext().getResources());
+        assertEquals("Kathy Hochul is a Democrat from NY.", description);
+    }
+
+    @Test
+    public void testDescriptionMissingFields() {
+        Contact contact = TestModelUtils.createContact("contactId", "name");
+        assertEquals("", contact.getDescription(getApplicationContext().getResources()));
     }
 
     private ArrayList<Contact> getTestContacts() {
@@ -61,7 +98,8 @@ public class ContactsTest {
         }
         JSONArray jsonArray = contactsResponse.optJSONArray("representatives");
         assertNotNull(jsonArray);
-        Type listType = new TypeToken<ArrayList<Contact>>(){}.getType();
+        Type listType = new TypeToken<ArrayList<Contact>>() {
+        }.getType();
         return gson.fromJson(jsonArray.toString(), listType);
     }
 }
