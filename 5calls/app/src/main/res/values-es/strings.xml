@@ -45,6 +45,9 @@
     <!-- Message to the user that no calls are left on a particular issue [CHAR_LIMIT=NONE] -->
     <string name="no_calls_left">No faltan llamadas pare este asunto.</string>
 
+    <!-- Message to the user when there are no contact areas on a particular issue, so there are no calls and it's just informational. [CHAR_LIMIT=NONE] -->
+    <string name="no_contact_areas_message">No hay llamadas para este tema.</string>
+
     <!-- Menu option to go to the About 5 Calls screen [CHAR_LIMIT=25] -->
     <string name="menu_about">Sobre 5 Calls</string>
 
@@ -439,6 +442,17 @@
 
     <!-- Filter for only the most important issues [CHAR_LIMIT=50] -->
     <string name="important_issues_filter">Asuntos importantes</string>
+
+    <!-- Title of a section in settings about appearance -->
+    <string name="settings_category_appearance">Apariencia</string>
+
+    <!-- Name of a setting to change the text size of the script -->
+    <string name="script_text_size">Tamaño del texto</string>
+
+    <!-- Script text size options -->
+    <string name="script_text_size_normal">Normal</string>
+    <string name="script_text_size_large">Grande</string>
+    <string name="script_text_size_xlarge">Extra grande</string>
 
     <!-- Title for a dialog where users can pick their notification frequency [CHAR_LIMIT=100] -->
     <string name="notifications_dialog_title">Recibir notificaciones de asuntos nuevos</string>

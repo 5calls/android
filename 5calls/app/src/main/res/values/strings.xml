@@ -514,6 +514,7 @@
     <!-- Title of a section in settings about appearance -->
     <string name="settings_category_appearance">Appearance</string>
 
+    <!-- Name of a setting to change the text size of the script -->
     <string name="script_text_size">Script text size</string>
 
     <!-- Script text size options -->
