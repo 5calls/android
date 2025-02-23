@@ -51,7 +51,7 @@ public class TutorialActivity extends AppCompatActivity {
                     finish();
                 } else {
                     // Otherwise, select the previous step.
-                    binding.viewPager.setCurrentItem(binding.viewPager.getCurrentItem() - 1);
+                    onPreviousPagePressed();
                 }
             }
         });
