@@ -22,7 +22,6 @@ import android.os.Bundle;
 
 import androidx.core.app.NotificationManagerCompat;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 
 import com.onesignal.OneSignal;
@@ -38,9 +37,6 @@ import java.util.UUID;
  */
 public class FiveCallsApplication extends Application {
     private int mRunningActivities;
-    private Thread.UncaughtExceptionHandler mDefaultHandler;
-    private FirebaseAnalytics mFirebaseAnalytics;
-    private FirebaseAuth mAuth;
 
     private static final String ONESIGNAL_APP_ID = "5fd4ca41-9f6c-4149-a312-ae3e71b35c0e";
 
@@ -90,12 +86,6 @@ public class FiveCallsApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        // We could automatically report all exceptions with an XML change to the configuration file
-        // but that wouldn't respect the user's setting to share data with 5 calls.
-        if (AccountManager.Instance.allowAnalytics(getApplicationContext())) {
-            enableAnalyticsHandler();
-        }
-
         // Set up OneSignal.
         OneSignal.initWithContext(this, ONESIGNAL_APP_ID);
 
@@ -119,16 +109,5 @@ public class FiveCallsApplication extends Application {
 
     public boolean isRunning() {
         return mRunningActivities > 0;
-    }
-
-    public void enableAnalyticsHandler() {
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-    }
-
-    public void disableAnalyticsHandler() {
-        if (mDefaultHandler != null) {
-            // In this case, Analytics handler was enabled, so disable it.
-            Thread.setDefaultUncaughtExceptionHandler(mDefaultHandler);
-        }
     }
 }
