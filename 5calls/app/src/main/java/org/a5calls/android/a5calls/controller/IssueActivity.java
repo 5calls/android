@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -42,7 +44,6 @@ import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.util.AnalyticsManager;
 import org.a5calls.android.a5calls.util.MarkdownUtil;
 
-import java.util.List;
 import java.util.Locale;
 
 /**
@@ -176,6 +177,13 @@ public class IssueActivity extends AppCompatActivity {
         });
 
         new AnalyticsManager().trackPageview(String.format("/issue/%s/", mIssue.slug), this);
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                returnToMain();
+            }
+        });
     }
 
     @Override
@@ -260,7 +268,7 @@ public class IssueActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                onBackPressed();
+                returnToMain();
                 return true;
             case R.id.menu_share:
                 sendShare();
@@ -269,10 +277,6 @@ public class IssueActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onBackPressed() {
-        returnToMain();
-    }
 
     private void returnToMain() {
         Intent intent = new Intent();
@@ -338,8 +342,8 @@ public class IssueActivity extends AppCompatActivity {
         TextView contactWarning = repView.findViewById(R.id.contact_warning);
         contactName.setText(contact.name);
         contactWarning.setVisibility(View.GONE);
-        if (!TextUtils.isEmpty(contact.area)) {
-            contactReason.setText(contact.area);
+        if (!TextUtils.isEmpty(contact.reason)) {
+            contactReason.setText(contact.reason);
             if (TextUtils.equals(contact.area, "US House") && mIsLowAccuracy) {
                 contactWarning.setVisibility(View.VISIBLE);
                 contactWarning.setText(R.string.low_accuracy_warning);

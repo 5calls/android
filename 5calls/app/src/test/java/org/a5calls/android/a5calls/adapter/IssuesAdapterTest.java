@@ -36,8 +36,9 @@ public class IssuesAdapterTest {
         Gson gson = new GsonBuilder().serializeNulls().create();
         Type listType = new TypeToken<ArrayList<Issue>>(){}.getType();
         List<Issue> issues = gson.fromJson(FakeJSONData.ISSUE_DATA, listType);
-        List<Issue> filtered = IssuesAdapter.filterIssuesBySearchText("Healthcare", issues);
-        assertEquals(3, filtered.size());
+        List<Issue> filtered = IssuesAdapter.filterIssuesBySearchText(
+                "Government Oversight", issues);
+        assertEquals(2, filtered.size());
     }
 
     @Test
@@ -45,8 +46,18 @@ public class IssuesAdapterTest {
         Gson gson = new GsonBuilder().serializeNulls().create();
         Type listType = new TypeToken<ArrayList<Issue>>(){}.getType();
         List<Issue> issues = gson.fromJson(FakeJSONData.ISSUE_DATA, listType);
-        List<Issue> filtered = IssuesAdapter.filterIssuesBySearchText("hEaLtHcArE", issues);
-        assertEquals(3, filtered.size());
+        List<Issue> filtered = IssuesAdapter.filterIssuesBySearchText(
+                "gOvErNmEnT oVeRsIgHt", issues);
+        assertEquals(2, filtered.size());
+    }
+
+    @Test
+    public void testFilterIssuesBySearchText_matchesCategoryAndReason() {
+        Gson gson = new GsonBuilder().serializeNulls().create();
+        Type listType = new TypeToken<ArrayList<Issue>>(){}.getType();
+        List<Issue> issues = gson.fromJson(FakeJSONData.ISSUE_DATA, listType);
+        List<Issue> filtered = IssuesAdapter.filterIssuesBySearchText("healthcare", issues);
+        assertEquals(4, filtered.size());
     }
 
     @Test
@@ -73,7 +84,7 @@ public class IssuesAdapterTest {
         Type listType = new TypeToken<ArrayList<Issue>>(){}.getType();
         List<Issue> issues = gson.fromJson(FakeJSONData.ISSUE_DATA, listType);
         List<Issue> filtered = IssuesAdapter.filterIssuesBySearchText("Trump admin", issues);
-        assertEquals(2, filtered.size());
+        assertEquals(4, filtered.size());
     }
 
     @Test

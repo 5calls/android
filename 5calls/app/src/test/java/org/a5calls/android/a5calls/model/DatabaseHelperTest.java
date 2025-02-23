@@ -208,12 +208,11 @@ public class DatabaseHelperTest {
         }
 
         // The second issue has calls only from the second contact.
-        // Both calls have the same result, so only one item is returned.
         for (int i = 0; i < 4; i++) {
             List<String> callResults = mDatabase.getCallResults(
                     issues.get(1).id, contacts.get(i).id);
             if (i == 1) {
-                assertEquals(1, callResults.size());
+                assertEquals(2, callResults.size());
                 assertEquals("voicemail", callResults.getFirst());
             } else {
                 assertEquals(0, callResults.size());
