@@ -259,6 +259,13 @@ public class RepCallActivity extends AppCompatActivity {
                 showPreviousCallDetails(previousCalls);
             });
         }
+
+        String contactDetails = contact.getDescription(getResources());
+        if (TextUtils.isEmpty(contactDetails)) {
+            binding.contactDetails.setVisibility(View.GONE);
+        } else {
+            binding.contactDetails.setText(contactDetails);
+        }
     }
 
     // TODO: Add nicely readable times to displayed call results.

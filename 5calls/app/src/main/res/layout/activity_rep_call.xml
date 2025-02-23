@@ -108,6 +108,13 @@
                 />
 
             <TextView
+                android:id="@+id/contact_details"
+                style="@style/splashTextStyle"
+                android:layout_marginTop="@dimen/margin_top4"
+                android:textSize="@dimen/text_size_paragraph"
+                />
+
+            <TextView
                 style="@style/repCallTextStyle"
                 android:layout_marginTop="@dimen/margin_top8"
                 android:text="@string/call_script_prompt"

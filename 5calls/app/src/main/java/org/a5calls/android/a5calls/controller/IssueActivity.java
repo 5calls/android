@@ -338,8 +338,8 @@ public class IssueActivity extends AppCompatActivity {
         TextView contactWarning = repView.findViewById(R.id.contact_warning);
         contactName.setText(contact.name);
         contactWarning.setVisibility(View.GONE);
-        if (!TextUtils.isEmpty(contact.area)) {
-            contactReason.setText(contact.area);
+        if (!TextUtils.isEmpty(contact.reason)) {
+            contactReason.setText(contact.reason);
             if (TextUtils.equals(contact.area, "US House") && mIsLowAccuracy) {
                 contactWarning.setVisibility(View.VISIBLE);
                 contactWarning.setText(R.string.low_accuracy_warning);
