@@ -113,7 +113,7 @@ public class SettingsActivity extends AppCompatActivity {
         if (TextUtils.equals("0", result)) {
             OneSignal.getNotifications().requestPermission(true, Continue.none());
             OneSignal.getUser().getPushSubscription().optIn();
-            // TODO: Wait for permission request result before opting in
+            // TODO(#139): Wait for permission request result before opting in
         } else if (TextUtils.equals("1", result)) {
             OneSignal.getUser().getPushSubscription().optOut();
         }
@@ -145,10 +145,13 @@ public class SettingsActivity extends AppCompatActivity {
                 // Otherwise they granted and we will set the permission to true
                 accountManager.setAllowReminders(getActivity(), isGranted);
                 if (!isGranted) {
-                    // TODO: Update reminder UI to explain they must go into system settings
-                    // to allow notifications if they want to use reminders.
-                    ((SwitchPreference) findPreference(AccountManager.KEY_ALLOW_REMINDERS))
-                            .setChecked(false);
+                    SwitchPreference remindersPref =
+                            findPreference(AccountManager.KEY_ALLOW_REMINDERS);
+                    if (remindersPref == null) {
+                        return;
+                    }
+                    remindersPref.setChecked(false);
+                    remindersPref.setSummary(R.string.reminders_disabled_summary);
                 }
             });
         }

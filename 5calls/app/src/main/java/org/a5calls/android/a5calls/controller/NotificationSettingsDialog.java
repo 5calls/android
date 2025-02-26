@@ -56,6 +56,8 @@ public class NotificationSettingsDialog extends DialogFragment {
                 if (mSelectedOption == 0) {
                     OneSignal.getUser().getPushSubscription().optIn();
                     OneSignal.getNotifications().requestPermission(true, Continue.none());
+                    // TODO(#139): Do not turn on notifications preference if they did not enable
+                    // permissions.
                 }
                 SettingsActivity.updateNotificationsPreference(
                         (FiveCallsApplication) getActivity().getApplication(),
