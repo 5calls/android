@@ -283,6 +283,9 @@
     <!-- Summary for settings option to enable reminders [CHAR_LIMIT=NONE] -->
     <string name="settings_reminders_enable_summary">Enable reminders to make 5 calls.</string>
 
+    <!-- Summary string for settings option to enable reminders, when the notification permission has been denied [CHAR_LIMIT=NONE] -->
+    <string name="reminders_disabled_summary">Notifications are disabled. Turn on notifications in your device\'s settings to allow reminders.</string>
+
     <!-- Title for settings option to enable weekday reminders [CHAR_LIMIT=50] -->
     <string name="settings_reminder_days_title">Remind me on these days</string>
 

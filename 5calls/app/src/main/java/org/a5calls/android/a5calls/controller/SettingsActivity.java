@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationManagerCompat;
@@ -112,7 +113,7 @@ public class SettingsActivity extends AppCompatActivity {
         if (TextUtils.equals("0", result)) {
             OneSignal.getNotifications().requestPermission(true, Continue.none());
             OneSignal.getUser().getPushSubscription().optIn();
-            // TODO: Wait for permission request result before opting in
+            // TODO(#139): Wait for permission request result before opting in
         } else if (TextUtils.equals("1", result)) {
             OneSignal.getUser().getPushSubscription().optOut();
         }
@@ -134,6 +135,26 @@ public class SettingsActivity extends AppCompatActivity {
     public static class SettingsFragment extends PreferenceFragmentCompat implements
             SharedPreferences.OnSharedPreferenceChangeListener {
         private final AccountManager accountManager = AccountManager.Instance;
+        private ActivityResultLauncher<String> mNotificationPermissionRequest;
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            requestNotificationPermission((isGranted) -> {
+                // If the user denied the notification permission, set the preference to false
+                // Otherwise they granted and we will set the permission to true
+                accountManager.setAllowReminders(getActivity(), isGranted);
+                if (!isGranted) {
+                    SwitchPreference remindersPref =
+                            findPreference(AccountManager.KEY_ALLOW_REMINDERS);
+                    if (remindersPref == null) {
+                        return;
+                    }
+                    remindersPref.setChecked(false);
+                    remindersPref.setSummary(R.string.reminders_disabled_summary);
+                }
+            });
+        }
 
         @Override
         public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
@@ -191,11 +212,10 @@ public class SettingsActivity extends AppCompatActivity {
                 boolean result = sharedPreferences.getBoolean(key, false);
                 if (result && !NotificationManagerCompat.from(requireContext()).areNotificationsEnabled()) {
                     // Trying to enable reminders and notification permission is not granted
-                    requestNotificationPermission((isGranted) -> {
-                        // If the user denied the notification permission, set the preference to false
-                        // Otherwise they granted and we will set the permission to true
-                        accountManager.setAllowReminders(getActivity(), isGranted);
-                    });
+                    if (mNotificationPermissionRequest != null
+                            && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        mNotificationPermissionRequest.launch(Manifest.permission.POST_NOTIFICATIONS);
+                    }
                 } else {
                     // Either disabling reminders or notification permission is already granted
                     // so we don't need to prompt
@@ -242,7 +262,7 @@ public class SettingsActivity extends AppCompatActivity {
                     == PackageManager.PERMISSION_GRANTED) {
                 return;
             }
-            registerForActivityResult(
+            mNotificationPermissionRequest = registerForActivityResult(
                     new ActivityResultContracts.RequestPermission(), isGranted::accept
             );
         }
