@@ -1,18 +1,11 @@
 package org.a5calls.android.a5calls.controller;
 
-import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.core.content.FileProvider;
-import androidx.core.util.Pair;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.ShareActionProvider;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.RelativeSizeSpan;
@@ -48,6 +41,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
+import androidx.core.util.Pair;
+
 /**
  * Tell the user how great they are!
  */
@@ -58,8 +56,6 @@ public class StatsActivity extends AppCompatActivity {
     private static final long MIN_DAYS_FOR_LINE_GRAPH = 3;
     private SimpleDateFormat dateFormat;
     private int mCallCount = 0;
-    private ShareActionProvider mShareActionProvider;
-
     private ActivityStatsBinding binding;
 
 
@@ -183,16 +179,16 @@ public class StatsActivity extends AppCompatActivity {
         ArrayList<Integer> colorsList = new ArrayList<>();
         // Create pie pieChart data entries and add correct colors.
         ArrayList<PieEntry> entries = new ArrayList<>();
-        if (contacts.size() > 0) {
+        if (!contacts.isEmpty()) {
             entries.add(new PieEntry(contacts.size(), getResources().getString(R.string.contact_n)));
             colorsList.add(getResources().getColor(R.color.contacted_color));
         }
-        if (voicemails.size() > 0) {
-            entries.add(new PieEntry(voicemails.size(),  getResources().getString(R.string.voicemail_n)));
+        if (!voicemails.isEmpty()) {
+            entries.add(new PieEntry(voicemails.size(), getResources().getString(R.string.voicemail_n)));
             colorsList.add(getResources().getColor(R.color.voicemail_color));
         }
-        if (unavailables.size() > 0) {
-            entries.add(new PieEntry(unavailables.size(),  getResources().getString(R.string.unavailable_n)));
+        if (!unavailables.isEmpty()) {
+            entries.add(new PieEntry(unavailables.size(), getResources().getString(R.string.unavailable_n)));
             colorsList.add(getResources().getColor(R.color.unavailable_color));
         }
 
@@ -215,8 +211,8 @@ public class StatsActivity extends AppCompatActivity {
         data.setValueTextColor(Color.WHITE);
 
         SpannableString insideCircleText = new SpannableString(getResources().getString(R.string.stats_summary_total)
-                +"\n"
-                + Integer.toString(voicemails.size()+contacts.size()+unavailables.size())
+                + "\n"
+                + Integer.toString(voicemails.size() + contacts.size() + unavailables.size())
                 + "\n"
                 + this.dateFormat.format(date)
                 + "-"
@@ -247,7 +243,7 @@ public class StatsActivity extends AppCompatActivity {
                 R.color.voicemail_color);
         voicemailSeries.setTitle(getResources().getString(R.string.outcome_voicemail));
         LineGraphSeries<DataPoint> unavailableSeries = makeSeries(unavailables, firstTimestamp,
-            R.color.unavailable_color);
+                R.color.unavailable_color);
         unavailableSeries.setTitle(getResources().getString(R.string.outcome_unavailable));
         binding.lineChart.addSeries(contactedSeries);
         binding.lineChart.addSeries(voicemailSeries);
@@ -315,13 +311,13 @@ public class StatsActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-            case R.id.menu_share:
-                sendShare();
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        if (item.getItemId() == R.id.menu_share) {
+            sendShare();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -345,17 +341,7 @@ public class StatsActivity extends AppCompatActivity {
         startActivity(Intent.createChooser(shareIntent,
                 getResources().getString(R.string.share_chooser_title)));
 
-//        if (mTracker != null) {
-//            mTracker.send(new HitBuilders.EventBuilder()
-//                    .setCategory("Share")
-//                    .setAction("StatsShare")
-//                    .setLabel(mCallCount + " calls")
-//                    .setValue(1)
-//                    .build());
-//        }
-
-        startActivity(Intent.createChooser(shareIntent, getResources().getString(
-                R.string.share_chooser_title)));
+        // Could send analytics here.
     }
 
     private Uri saveGraphImage() {
