@@ -339,6 +339,8 @@ public class StatsActivity extends AppCompatActivity {
             shareIntent.setDataAndType(imageUri, "image/png");
             shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
             shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        } else {
+            shareIntent.setType("text/plain");
         }
         startActivity(Intent.createChooser(shareIntent,
                 getResources().getString(R.string.share_chooser_title)));
