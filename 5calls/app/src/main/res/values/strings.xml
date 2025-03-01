@@ -188,7 +188,7 @@
     <string name="location_private">Your location stays private. We don\'t store it and we never
         sell data to third parties.</string>
 
-    <string name="location_why">We\'ll figure out who you need to call.</string>
+    <string name="location_why">We\'ll figure out who you need to call</string>
 
     <!-- Prompt to use your GPS location in the app [CHAR_LIMIT=NONE] -->
     <string name="location_gps_prompt">Use device location:</string>

@@ -39,19 +39,14 @@
         <item name="android:textSize">@dimen/h2_text_size</item>
     </style>
 
-    <style name="locationGpsTextStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">@dimen/layout_margin_top</item>
-        <item name="android:textSize">@dimen/label_text_size</item>
-        <item name="android:visibility">gone</item>
-    </style>
-
     <style name="locationGpsBtnStyle" parent="genericButtonStyle">
         <item name="android:layout_marginTop">@dimen/margin_top16</item>
         <item name="android:textColor">@color/colorPrimaryDark</item>
         <item name="android:visibility">gone</item>
         <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:drawableStart">@drawable/ic_gps_fixed_white_24dp</item>
+        <item name="android:drawableTint">@color/colorPrimaryDark</item>
+        <item name="android:drawablePadding">@dimen/drawable_padding</item>
     </style>
 
     <style name="spacedParagraphTextStyle">
@@ -475,7 +470,7 @@
 
     <style name="emptyIssuesBtnStyle" parent="linkButtonStyle">
         <item name="android:layout_centerHorizontal">true</item>
-        <item name="android:drawablePadding">@dimen/grid_padding</item>
+        <item name="android:drawablePadding">@dimen/drawable_padding</item>
     </style>
 
     <style name="horizontalLinearLayoutStyle">
@@ -542,7 +537,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">center_vertical</item>
-        <item name="android:drawablePadding">8dp</item>
+        <item name="android:drawablePadding">@dimen/drawable_padding</item>
         <item name="android:textSize">@dimen/text_size_paragraph</item>
         <item name="android:textColor">@color/colorPrimaryDark</item>
         <item name="android:fontFeatureSettings">smcp</item>

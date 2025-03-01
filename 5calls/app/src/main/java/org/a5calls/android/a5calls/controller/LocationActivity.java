@@ -51,17 +51,17 @@ public class LocationActivity extends AppCompatActivity {
         binding = ActivityLocationBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        ActionBar supportActionBar = getSupportActionBar();
-        if (supportActionBar != null) {
-            supportActionBar.setTitle(R.string.menu_location);
-        }
-
         // Allow home up if required
         Intent intent = getIntent();
         if (intent != null) {
             if (intent.getBooleanExtra(ALLOW_HOME_UP_KEY, false)) {
+                ActionBar supportActionBar = getSupportActionBar();
                 if (supportActionBar != null) {
                     supportActionBar.setDisplayHomeAsUpEnabled(true);
+                    
+                    // Set the title to "update location" if we haven't come here
+                    // from the tutorial.
+                    supportActionBar.setTitle(R.string.menu_location);
                 }
                 allowsHomeUp = true;
             }
@@ -124,8 +124,7 @@ public class LocationActivity extends AppCompatActivity {
 
     private void returnToMain() {
         // Make sure we're still alive
-        if (isFinishing() ||
-                (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && isDestroyed())) {
+        if (isFinishing() || isDestroyed()) {
                 return;
         }
 

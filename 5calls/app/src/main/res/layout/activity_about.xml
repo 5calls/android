@@ -118,7 +118,7 @@
             </LinearLayout>
 
         </LinearLayout>
-        
+
         <TextView
             style="@style/aboutParagraphTextStyle"
             android:text="@string/about_us_prompt"
