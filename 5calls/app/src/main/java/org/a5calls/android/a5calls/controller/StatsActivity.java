@@ -1,18 +1,11 @@
 package org.a5calls.android.a5calls.controller;
 
-import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.core.content.FileProvider;
-import androidx.core.util.Pair;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.ShareActionProvider;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.RelativeSizeSpan;
@@ -48,16 +41,21 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
+import androidx.core.util.Pair;
+
 /**
  * Tell the user how great they are!
  */
 public class StatsActivity extends AppCompatActivity {
     private static final String TAG = "StatsActivity";
     private static final int NUM_CONTACTS_TO_SHOW = 3;
+    private static final int NUM_ISSUES_TO_SHOW = 5;
+    private static final long MIN_DAYS_FOR_LINE_GRAPH = 3;
     private SimpleDateFormat dateFormat;
     private int mCallCount = 0;
-    private ShareActionProvider mShareActionProvider;
-
     private ActivityStatsBinding binding;
 
 
@@ -85,6 +83,7 @@ public class StatsActivity extends AppCompatActivity {
             // Show a "no impact yet!" message.
             binding.noCallsMessage.setVisibility(View.VISIBLE);
             binding.statsHolder.setVisibility(View.GONE);
+            binding.lineChart.setVisibility(View.GONE);
             return;
         }
 
@@ -111,48 +110,64 @@ public class StatsActivity extends AppCompatActivity {
         LayoutInflater inflater = LayoutInflater.from(this);
         String callFormatString = getResources().getString(R.string.contact_call_stat);
         String callFormatStringOne = getResources().getString(R.string.contact_call_stat_one);
-        int numToShow = Math.min(NUM_CONTACTS_TO_SHOW, contactStats.size());
-        for (int i = 0; i < numToShow; i++) {
-            String name = db.getContactName(contactStats.get(i).first);
+        int numContactsShown = 0;
+        for (Pair<String, Integer> contactStat : contactStats) {
+            String name = db.getContactName(contactStat.first);
             if (TextUtils.isEmpty(name)) {
                 name = getResources().getString(R.string.unknown_contact);
             }
-            TextView contactStat = (TextView) inflater.inflate(R.layout.contact_stat_textview,
+            TextView contactStatView = (TextView) inflater.inflate(R.layout.stat_textview,
                     null);
-            binding.statsHolder.addView(contactStat);
-            contactStat.setText(contactStats.get(i).second == 1 ?
+            binding.repStats.addView(contactStatView);
+            contactStatView.setText(contactStat.second == 1 ?
                     String.format(callFormatStringOne, name) :
-                    String.format(callFormatString, contactStats.get(i).second, name));
+                    String.format(callFormatString, contactStat.second, name));
+            numContactsShown++;
+            if (numContactsShown >= NUM_CONTACTS_TO_SHOW) {
+                break;
+            }
         }
 
-        /*
-        // Listing issues called doesn't seem so useful since most people will make 1-3 calls per
-        // issue to the same set of contacts.
-        // Can add this in later if there is need.
         List<Pair<String, Integer>> issueStats = db.getCallCountsByIssue();
-        for (int i = 0; i < issueStats.size(); i++) {
-            String name = db.getIssueName(issueStats.get(i).first);
+        int numIssuesShown = 0;
+        for (Pair<String, Integer> issueStat : issueStats) {
+            String name = db.getIssueName(issueStat.first);
             if (TextUtils.isEmpty(name)) {
                 name = getResources().getString(R.string.unknown_issue);
             }
-            Log.d(TAG, name + " had " + issueStats.get(i).second + " calls");
+            TextView issueStatView = (TextView) inflater.inflate(R.layout.stat_textview,
+                    null);
+            binding.callStats.addView(issueStatView);
+            issueStatView.setText(issueStat.second == 1 ?
+                    String.format(callFormatStringOne, name) :
+                    String.format(callFormatString, issueStat.second, name));
+            numIssuesShown++;
+            if (numIssuesShown >= NUM_ISSUES_TO_SHOW) {
+                break;
+            }
         }
-        */
 
         // Find first time when user made any call.
         long firstTimestamp = Long.MAX_VALUE;
-        if (contacts.size() > 0) {
+        long lastTimestamp = Long.MIN_VALUE;
+        if (!contacts.isEmpty()) {
             firstTimestamp = Math.min(firstTimestamp, contacts.get(0));
+            lastTimestamp = Math.max(lastTimestamp, contacts.get(contacts.size() - 1));
         }
-        if (voicemails.size() > 0) {
+        if (!voicemails.isEmpty()) {
             firstTimestamp = Math.min(firstTimestamp, voicemails.get(0));
+            lastTimestamp = Math.max(lastTimestamp, voicemails.get(voicemails.size() - 1));
         }
-        if (unavailables.size() > 0) {
+        if (!unavailables.isEmpty()) {
             firstTimestamp = Math.min(firstTimestamp, unavailables.get(0));
+            lastTimestamp = Math.max(lastTimestamp, unavailables.get(unavailables.size() - 1));
         }
 
         createPieChart(contacts, voicemails, unavailables, firstTimestamp);
-        createLineGraph(contacts, voicemails, unavailables, firstTimestamp);
+
+        if (lastTimestamp - firstTimestamp > MIN_DAYS_FOR_LINE_GRAPH * 24 * 60 * 60 * 1000) {
+            createLineGraph(contacts, voicemails, unavailables, firstTimestamp);
+        }
 
         // Show the share button.
         invalidateOptionsMenu();
@@ -164,16 +179,16 @@ public class StatsActivity extends AppCompatActivity {
         ArrayList<Integer> colorsList = new ArrayList<>();
         // Create pie pieChart data entries and add correct colors.
         ArrayList<PieEntry> entries = new ArrayList<>();
-        if (contacts.size() > 0) {
+        if (!contacts.isEmpty()) {
             entries.add(new PieEntry(contacts.size(), getResources().getString(R.string.contact_n)));
             colorsList.add(getResources().getColor(R.color.contacted_color));
         }
-        if (voicemails.size() > 0) {
-            entries.add(new PieEntry(voicemails.size(),  getResources().getString(R.string.voicemail_n)));
+        if (!voicemails.isEmpty()) {
+            entries.add(new PieEntry(voicemails.size(), getResources().getString(R.string.voicemail_n)));
             colorsList.add(getResources().getColor(R.color.voicemail_color));
         }
-        if (unavailables.size() > 0) {
-            entries.add(new PieEntry(unavailables.size(),  getResources().getString(R.string.unavailable_n)));
+        if (!unavailables.isEmpty()) {
+            entries.add(new PieEntry(unavailables.size(), getResources().getString(R.string.unavailable_n)));
             colorsList.add(getResources().getColor(R.color.unavailable_color));
         }
 
@@ -196,8 +211,8 @@ public class StatsActivity extends AppCompatActivity {
         data.setValueTextColor(Color.WHITE);
 
         SpannableString insideCircleText = new SpannableString(getResources().getString(R.string.stats_summary_total)
-                +"\n"
-                + Integer.toString(voicemails.size()+contacts.size()+unavailables.size())
+                + "\n"
+                + Integer.toString(voicemails.size() + contacts.size() + unavailables.size())
                 + "\n"
                 + this.dateFormat.format(date)
                 + "-"
@@ -219,6 +234,8 @@ public class StatsActivity extends AppCompatActivity {
 
     private void createLineGraph(List<Long> contacts, List<Long> voicemails,
                                  List<Long> unavailables, long firstTimestamp) {
+        binding.lineChart.setVisibility(View.VISIBLE);
+        binding.lineChartTitle.setVisibility(View.VISIBLE);
         LineGraphSeries<DataPoint> contactedSeries = makeSeries(contacts, firstTimestamp,
                 R.color.contacted_color);
         contactedSeries.setTitle(getResources().getString(R.string.outcome_contact));
@@ -226,7 +243,7 @@ public class StatsActivity extends AppCompatActivity {
                 R.color.voicemail_color);
         voicemailSeries.setTitle(getResources().getString(R.string.outcome_voicemail));
         LineGraphSeries<DataPoint> unavailableSeries = makeSeries(unavailables, firstTimestamp,
-            R.color.unavailable_color);
+                R.color.unavailable_color);
         unavailableSeries.setTitle(getResources().getString(R.string.outcome_unavailable));
         binding.lineChart.addSeries(contactedSeries);
         binding.lineChart.addSeries(voicemailSeries);
@@ -294,47 +311,37 @@ public class StatsActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-            case R.id.menu_share:
-                sendShare();
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        if (item.getItemId() == R.id.menu_share) {
+            sendShare();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     private void sendShare() {
-        Uri imageUri = saveGraphImage();
         Intent shareIntent = new Intent();
         shareIntent.setAction(Intent.ACTION_SEND);
         shareIntent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(
                 R.string.share_subject));
         shareIntent.putExtra(Intent.EXTRA_TEXT,
                 String.format(getResources().getString(R.string.share_content), mCallCount));
-        shareIntent.setDataAndType(imageUri, "image/png");
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            // Needed to avoid security exception on KitKat.
-            shareIntent.setClipData(ClipData.newRawUri(null, imageUri));
+        if (binding.lineChart.getVisibility() == View.VISIBLE) {
+            Uri imageUri = saveGraphImage();
+            shareIntent.setDataAndType(imageUri, "image/png");
+            shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        } else {
+            shareIntent.setType("text/plain");
         }
-        shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
-        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         startActivity(Intent.createChooser(shareIntent,
                 getResources().getString(R.string.share_chooser_title)));
 
-//        if (mTracker != null) {
-//            mTracker.send(new HitBuilders.EventBuilder()
-//                    .setCategory("Share")
-//                    .setAction("StatsShare")
-//                    .setLabel(mCallCount + " calls")
-//                    .setValue(1)
-//                    .build());
-//        }
-
-        startActivity(Intent.createChooser(shareIntent, getResources().getString(
-                R.string.share_chooser_title)));
+        // Could send analytics here.
     }
 
     private Uri saveGraphImage() {

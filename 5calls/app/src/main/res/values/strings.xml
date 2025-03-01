@@ -235,8 +235,11 @@
     <!-- Unknown location set [CHAR_LIMIT=50] -->
     <string name="unknown_location">Unknown location</string>
 
-    <!-- Label for a list of most contacted representatives [CHAR_LIMIT=100] -->
-    <string name="top_contacts">Your most contacted representatives are:</string>
+    <!-- Label for a list of most called representatives [CHAR_LIMIT=100] -->
+    <string name="top_contacts">Your most called representatives are:</string>
+
+    <!-- Label for a list of most called-about issues [CHAR_LIMIT=100] -->
+    <string name="top_issues">Your top issues are:</string>
 
     <!-- Description of how many calls for a given contact name [CHAR_LIMIT=50] -->
     <string name="contact_call_stat"><xliff:g id="callCount">%1$d</xliff:g> calls: <xliff:g id="repName">%2$s</xliff:g></string>
@@ -634,4 +637,5 @@
 
     <!-- Description of a contact that has a name and state. -->
     <string name="contact_political_details_state"><xliff:g id="name">%1$s</xliff:g> is from <xliff:g id="state">%2$s</xliff:g>.</string>
+
 </resources>

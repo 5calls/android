@@ -44,18 +44,38 @@
             <TextView
                 style="@style/topContactTextStyle"
                 android:text="@string/line_chart_title"
+                android:id="@+id/line_chart_title"
+                android:visibility="gone"
                 />
 
             <com.jjoe64.graphview.GraphView
                 android:id="@+id/line_chart"
                 style="@style/graphViewStyle"
+                android:visibility="gone"
                 android:layout_height="@dimen/graph_view_height"
                 />
 
             <TextView
                 style="@style/topContactTextStyle"
+                android:text="@string/top_issues"
+                />
+
+            <LinearLayout
+                style="@style/simpleVerticalLinearLayout"
+                android:id="@+id/call_stats"
+                >
+            </LinearLayout>
+
+            <TextView
+                style="@style/topContactTextStyle"
                 android:text="@string/top_contacts"
                 />
+
+            <LinearLayout
+                style="@style/simpleVerticalLinearLayout"
+                android:id="@+id/rep_stats"
+                >
+            </LinearLayout>
         </LinearLayout>
 
     </FrameLayout>
