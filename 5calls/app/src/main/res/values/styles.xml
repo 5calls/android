@@ -51,13 +51,22 @@
         <item name="android:layout_marginTop">@dimen/margin_top16</item>
         <item name="android:textColor">@color/colorPrimaryDark</item>
         <item name="android:visibility">gone</item>
+        <item name="android:layout_gravity">center_horizontal</item>
     </style>
 
-    <style name="descriptiveTextStyle">
+    <style name="spacedParagraphTextStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">@dimen/text_layout_marginBottom</item>
-        <item name="android:textSize">@dimen/label_text_size</item>
+        <item name="android:layout_marginTop">@dimen/text_layout_marginTop</item>
+        <item name="android:textSize">@dimen/text_size_paragraph</item>
+    </style>
+
+    <style name="spacedParagraphTextStyleHighlight">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/text_layout_marginTop</item>
+        <item name="android:textSize">@dimen/text_size_paragraph</item>
+        <item name="android:textStyle">italic</item>
     </style>
 
     <style name="zipEditTextStyle">

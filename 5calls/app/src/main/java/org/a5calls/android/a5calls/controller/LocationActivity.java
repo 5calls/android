@@ -10,6 +10,7 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -50,12 +51,17 @@ public class LocationActivity extends AppCompatActivity {
         binding = ActivityLocationBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        ActionBar supportActionBar = getSupportActionBar();
+        if (supportActionBar != null) {
+            supportActionBar.setTitle(R.string.menu_location);
+        }
+
         // Allow home up if required
         Intent intent = getIntent();
         if (intent != null) {
             if (intent.getBooleanExtra(ALLOW_HOME_UP_KEY, false)) {
-                if (getSupportActionBar() != null) {
-                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                if (supportActionBar != null) {
+                    supportActionBar.setDisplayHomeAsUpEnabled(true);
                 }
                 allowsHomeUp = true;
             }
@@ -87,7 +93,6 @@ public class LocationActivity extends AppCompatActivity {
         });
 
         if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_LOCATION_GPS)) {
-            binding.gpsPrompt.setVisibility(View.VISIBLE);
             binding.gpsButton.setVisibility(View.VISIBLE);
             binding.gpsButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -97,7 +102,6 @@ public class LocationActivity extends AppCompatActivity {
             });
         } else {
             // No GPS available, so don't show the GPS location section.
-            binding.gpsPrompt.setVisibility(View.GONE);
             binding.gpsButton.setVisibility(View.GONE);
         }
 
