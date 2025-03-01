@@ -5,17 +5,21 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.google.android.material.snackbar.Snackbar;
+
 import androidx.core.app.NavUtils;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
+
 import android.text.TextUtils;
 import android.text.util.Linkify;
 import android.util.DisplayMetrics;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,7 +43,6 @@ import org.a5calls.android.a5calls.util.ScriptReplacements;
 import org.a5calls.android.a5calls.util.MarkdownUtil;
 import org.a5calls.android.a5calls.view.GridItemDecoration;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.a5calls.android.a5calls.controller.IssueActivity.KEY_ISSUE;
@@ -156,7 +159,7 @@ public class RepCallActivity extends AppCompatActivity {
         binding.outcomeList.addItemDecoration(new GridItemDecoration(gridPadding,
                 getSpanCount(RepCallActivity.this)));
 
-        new AnalyticsManager().trackPageview(String.format("/issue/%s/%s/", mIssue.slug,c.id), this);
+        new AnalyticsManager().trackPageview(String.format("/issue/%s/%s/", mIssue.slug, c.id), this);
     }
 
     @Override
@@ -211,8 +214,8 @@ public class RepCallActivity extends AppCompatActivity {
                     .placeholder(R.drawable.baseline_person_52)
                     .into(binding.repImage);
         }
-        binding.phoneNumber.setText(contact.phone);
-        Linkify.addLinks(binding.phoneNumber, Linkify.PHONE_NUMBERS);
+
+        linkPhoneNumber(binding.phoneNumber, contact.phone);
 
         if (expandLocalSection) {
             binding.localOfficeButton.setVisibility(View.INVISIBLE);
@@ -323,7 +326,7 @@ public class RepCallActivity extends AppCompatActivity {
             TextView numberView = (TextView) localOfficeInfo.findViewById(
                     R.id.field_office_number);
             numberView.setText(contact.field_offices[i].phone);
-            Linkify.addLinks(numberView, Linkify.PHONE_NUMBERS);
+            linkPhoneNumber(numberView, contact.field_offices[i].phone);
             if (!TextUtils.isEmpty(contact.field_offices[i].city)) {
                 ((TextView) localOfficeInfo.findViewById(R.id.field_office_city)).setText(
                         "- " + contact.field_offices[i].city);
@@ -373,5 +376,12 @@ public class RepCallActivity extends AppCompatActivity {
         double minButtonWidth = activity.getResources().getDimension(R.dimen.min_button_width);
 
         return (int) (displayMetrics.widthPixels / minButtonWidth);
+    }
+
+    private static void linkPhoneNumber(TextView textView, String phoneNumber) {
+        textView.setText(phoneNumber);
+        Linkify.addLinks(textView, Patterns.PHONE, "tel:",
+                Linkify.sPhoneNumberMatchFilter,
+                Linkify.sPhoneNumberTransformFilter);
     }
 }
