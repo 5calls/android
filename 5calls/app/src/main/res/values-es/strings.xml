@@ -36,9 +36,6 @@
     <!-- Message telling a user how many previous calls they have made [CHAR_LIMIT=none] -->
     <string name="previous_call_count_many"><xliff:g id="callCount">%1$d</xliff:g> llamadas hechas</string>
 
-    <!-- Prompt for explaining which contact/office to call [CHAR_LIMIT=50] -->
-    <string name="call_this_office">Llame a esta oficina:</string>
-
     <!-- Prompt for call result buttons [CHAR_LIMIT=NONE] -->
     <string name="buttons_prompt">Entre su resultado:</string>
 
@@ -70,20 +67,11 @@
     <!-- Button linking to a page about Why calling works [CHAR_LIMIT=30] -->
     <string name="why_calling_btn">why calling works</string>
 
-    <!-- Prompt to click on the "About Us" button [CHAR_LIMIT=100] -->
-    <string name="about_us_prompt">¿Quiere saber más?</string>
-
     <!-- Prompt to click on the "Rate" button [CHAR_LIMIT=100] -->
     <string name="rate_us_prompt">Si la aplicación de 5 Calls ha sido útil, por favor dénos una reseña en el Play Store.</string>
 
-    <!-- Button linking to the 5calls.org newsletter signup page [CHAR_LIMIT=40] -->
-    <string name="sign_up_newsletter_btn">Apúntese al boletín informativo de 5 Calls</string>
-
     <!-- Button linking to the 5calls.org about page [CHAR_LIMIT=30] -->
     <string name="about_us_btn">sobre nosotros</string>
-
-    <!-- Prompt to send 5 Calls an email [CHAR_LIMIT=100] -->
-    <string name="contact_us_prompt">¿Quiere ponerse en contacto con nosotros? ¿Hay asunto que debemos cubrir?</string>
 
     <!-- Button that allows users to send 5 Calls an email [CHAR_LIMIT=30] -->
     <string name="contact_us_btn">contactar con nosotros</string>
@@ -93,9 +81,6 @@
 
     <!-- Text to show the user the number of calls made by everyone [CHAR_LIMIT=50] -->
     <string name="calls_to_date"><xliff:g id="callCount">%1$s</xliff:g> llamadas a la fecha</string>
-
-    <!-- Message to the user shown when a call is recorded in the database and the server [CHAR_LIMIT=150] -->
-    <string name="call_reported">Llamadas comunicadas con exito!</string>
 
     <!-- Text shown to the user on the splash / tutorial screen describing the 5 Calls app.   n  n is used to create new paragraphs. [CHAR_LIMIT=NONE] -->
     <string name="about_splash">Hay una forma sencilla y directa de influir al Gobierno que se supone te representa: Llámales por teléfono.</string>
@@ -134,12 +119,6 @@
     <!-- Default text for a section that says why the contact is someone you might call [CHAR_LIMIT=NONE] -->
     <string name="contact_reason_default">Esta organización conduce legislación sobre este asunto.</string>
 
-    <!-- Shows the user how many calls remain and how many calls there are total for a particular issue [CHAR_LIMIT=50] -->
-    <string name="call_count_remaining"><xliff:g id="callsLeft">%1$d</xliff:g> LLamadas para hacer(<xliff:g id="callsTotal">%2$d</xliff:g> total)</string>
-
-    <!-- Shows the user that 1 call remains and how many calls there are total for a particular issue [CHAR_LIMIT=50] -->
-    <string name="call_count_remaining_one">1 llamada para hacer(<xliff:g id="callsTotal">%1$d</xliff:g> total)</string>
-
     <!-- Menu option to refresh the issues list [CHAR_LIMIT=25] -->
     <string name="refresh">Reactualizar asuntos</string>
 
@@ -163,12 +142,6 @@
 
     <!-- Button that will use the user's device location to set the location in the app [CHAR_LIMIT=30] -->
     <string name="btn_gps">Use mi ubicación</string>
-
-    <!-- Prompt to use your GPS location in the app [CHAR_LIMIT=NONE] -->
-    <string name="location_gps_prompt">Use la ubicación de tu teléfono para encontrar a todos los representantes</string>
-
-    <!-- Error shown when the location cannot be parsed properly in the issues list page [CHAR_LIMIT=150] -->
-    <string name="main_activity_location_error">Lo sentimos, no pudimos encontrar su ubicación, por favor, inténtelo otra vez</string>
 
     <!-- Title of the Your Impact activity showing a user their stats [CHAR_LIMIT=30] -->
     <string name="stats_activity">Su impacto</string>
@@ -239,14 +212,8 @@
     <!-- Title for a dialog telling a user what type of contact they've made with a rep on an issue [CHAR_LIMIT=30] -->
     <string name="contact_details_dialog_title">Ya ha informado de estas acciones:</string>
 
-    <!-- Message shown to the user when a contact is skipped [CHAR_LIMIT=150] -->
-    <string name="skip_snackbar_message">Oficina omitida.</string>
-
     <!-- Link to go back to the issues list main activity from an issue [CHAR_LIMIT=20] -->
     <string name="back">regresar</string>
-
-    <!-- Done button for issues page [CHAR_LIMIT=30] -->
-    <string name="done">hecho</string>
 
     <!-- Name for settings category for general settings[CHAR_LIMIT=50]-->
     <string name="settings_category_general">Configuración general</string>
@@ -483,11 +450,8 @@
 
     <!-- Date format used for stats -->
     <string name="date_format">dd/MM/yy</string>
-    <string name="social_prompt">Comunícate con nosotros a través de nuestras redes sociales</string>
-    <string name="open_social_media">Abre <xliff:g id="socialNetworkName">%1$s</xliff:g></string>
 
-    <!-- Prompt to click on the privacy policy button [CHAR_LIMIT=100] -->
-    <string name="privacy_prompt">Privacidad</string>
+    <string name="social_prompt">Comunícate con nosotros a través de nuestras redes sociales</string>
 
     <!-- Button linking to the privacy policy [CHAR_LIMIT=30] -->
     <string name="privacy_btn">Política de privacidad</string>
