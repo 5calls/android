@@ -17,12 +17,6 @@
             />
 
         <TextView
-            style="@style/paragraphTextStyle"
-            android:layout_marginBottom="@dimen/text_layout_marginBottom16"
-            android:text="@string/about_p1"
-            />
-
-        <TextView
             style="@style/subheadingTutorialStyle"
             android:layout_marginBottom="@dimen/text_layout_marginBottom16"
             android:text="@string/about_p2" />
@@ -30,7 +24,8 @@
         <TextView
             style="@style/paragraphTextStyle"
             android:layout_marginBottom="@dimen/text_layout_marginBottom16"
-            android:text="@string/about_p3" />
+            android:text="@string/about_p1"
+            />
 
         <TextView
             android:id="@+id/calls_to_date"

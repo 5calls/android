@@ -57,9 +57,14 @@ public class AboutActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.about_title));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        binding.aboutUsButton.setOnClickListener(v -> CustomTabsUtil.launchUrl(AboutActivity.this, Uri.parse(getString(R.string.about_url))));
+        binding.aboutUsButton.setOnClickListener(v -> CustomTabsUtil.launchUrl(
+                AboutActivity.this, Uri.parse(getString(R.string.about_url))));
 
-        binding.whyCallingButton.setOnClickListener(v -> CustomTabsUtil.launchUrl(AboutActivity.this, Uri.parse(getString(R.string.why_calling_url))));
+        binding.whyCallingButton.setOnClickListener(v -> CustomTabsUtil.launchUrl(
+                AboutActivity.this, Uri.parse(getString(R.string.why_calling_url))));
+
+        binding.privacyButton.setOnClickListener(v -> CustomTabsUtil.launchUrl(
+                AboutActivity.this, Uri.parse("https://5calls.org/privacy")));
 
         setOpenIntentWithChooserOnClick(
                 binding.contactUsButton, getSendEmailIntent(getResources()), getString(R.string.send_email)
@@ -101,8 +106,6 @@ public class AboutActivity extends AppCompatActivity {
                         "https://play.google.com/store/apps/details?id=" + appPackageName)));
             }
         });
-
-        binding.privacyButton.setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://5calls.org/privacy"))));
 
         binding.licenseButton.setOnClickListener(new View.OnClickListener() {
             @Override
