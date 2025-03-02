@@ -8,12 +8,6 @@
         />
 
     <item
-        android:id="@+id/menu_location"
-        android:icon="@drawable/ic_gps_fixed_white_24dp"
-        android:title="@string/menu_location"
-        />
-
-    <item
         android:id="@+id/menu_about"
         android:icon="@drawable/ic_info_black_24dp"
         android:title="@string/menu_about"
@@ -23,6 +17,12 @@
         android:id="@+id/menu_faq"
         android:icon="@drawable/ic_live_help_white_24dp"
         android:title="@string/menu_faq"
+        />
+
+    <item
+        android:id="@+id/menu_location"
+        android:icon="@drawable/ic_gps_fixed_white_24dp"
+        android:title="@string/menu_location"
         />
 
     <item

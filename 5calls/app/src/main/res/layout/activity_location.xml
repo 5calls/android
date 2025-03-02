@@ -14,13 +14,18 @@
         <TextView
             android:id="@+id/location_prompt"
             style="@style/headingStyle"
+            android:text="@string/location_why"
+            />
+
+        <TextView
+            android:id="@+id/location_why"
+            style="@style/spacedParagraphTextStyle"
             android:text="@string/location_prompt"
             />
 
         <TextView
-            android:id="@+id/gps_prompt"
-            style="@style/locationGpsTextStyle"
-            android:text="@string/location_gps_prompt"
+            style="@style/spacedParagraphTextStyleHighlight"
+            android:text="@string/location_private"
             />
 
         <Button
@@ -30,7 +35,7 @@
             />
 
         <TextView
-            style="@style/descriptiveTextStyle"
+            style="@style/spacedParagraphTextStyle"
             android:text="@string/location_address_prompt"
             />
 
