@@ -201,6 +201,7 @@
     <style name="fullWidthBtnStyle" parent="genericButtonStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:textAlignment">textStart</item>
+        <item name="android:drawableEnd">@drawable/arrow_forward_24px</item>
     </style>
 
     <style name="nestedScrollViewStyleTop">
