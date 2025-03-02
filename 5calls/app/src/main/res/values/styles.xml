@@ -175,30 +175,31 @@
         <item name="android:textColor">@color/colorPrimary</item>
     </style>
 
-    <style name="aboutParagraphTextStyle" parent="genericParagraphStyle">
-        <item name="android:textColor">@color/colorPrimary</item>
-        <item name="android:textStyle">bold|italic</item>
-    </style>
-
-    <style name="linksParagraphTextStyle" parent="genericParagraphStyle">
-        <item name="android:layout_marginTop">@dimen/text_layout_marginBottom</item>
-        <item name="android:linksClickable">true</item>
-        <item name="android:textColor">@color/colorPrimary</item>
+    <style name="aboutPrompt">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/splash_text_size</item>
+        <item name="android:layout_marginTop">@dimen/margin_text</item>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="aboutSubtStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">@dimen/text_layout_marginTop</item>
-        <item name="android:layout_marginBottom">@dimen/text_layout_marginBottom</item>
         <item name="android:textColor">@color/colorAccent</item>
-        <item name="android:textSize">@dimen/h2_text_size</item>
+        <item name="android:textSize">@dimen/subheading_text_size</item>
         <item name="android:textStyle">bold</item>
     </style>
 
     <style name="transparentBtnStyle" parent="linkButtonStyle">
         <item name="android:layout_gravity">start</item>
         <item name="android:layout_margin">@dimen/layout_margin_button</item>
+        <item name="android:textAlignment">textStart</item>
+    </style>
+
+    <style name="fullWidthBtnStyle" parent="genericButtonStyle">
+        <item name="android:layout_width">match_parent</item>
         <item name="android:textAlignment">textStart</item>
     </style>
 

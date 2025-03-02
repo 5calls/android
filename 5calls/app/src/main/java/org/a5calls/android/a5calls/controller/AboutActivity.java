@@ -3,20 +3,22 @@ package org.a5calls.android.a5calls.controller;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
+
 import com.google.android.material.snackbar.Snackbar;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.text.method.LinkMovementMethod;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
-import android.widget.TextView;
 
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.BuildConfig;
@@ -29,6 +31,7 @@ import org.a5calls.android.a5calls.util.CustomTabsUtil;
 
 import java.text.NumberFormat;
 import java.util.Locale;
+import java.util.Objects;
 
 import static android.view.View.VISIBLE;
 
@@ -51,59 +54,55 @@ public class AboutActivity extends AppCompatActivity {
 
         setContentView(binding.getRoot());
 
-        getSupportActionBar().setTitle(getString(R.string.about_title));
+        Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.about_title));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        binding.aboutUsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CustomTabsUtil.launchUrl(AboutActivity.this, Uri.parse(getString(R.string.about_url)));
-            }
-        });
+        binding.aboutUsButton.setOnClickListener(v -> CustomTabsUtil.launchUrl(AboutActivity.this, Uri.parse(getString(R.string.about_url))));
 
-        setOpenIntentOnClick(
+        binding.whyCallingButton.setOnClickListener(v -> CustomTabsUtil.launchUrl(AboutActivity.this, Uri.parse(getString(R.string.why_calling_url))));
+
+        setOpenIntentWithChooserOnClick(
                 binding.contactUsButton, getSendEmailIntent(getResources()), getString(R.string.send_email)
         );
 
         setOpenIntentOnClick(
                 binding.facebookButton,
-                getActionIntent(getString(R.string.facebook_url)),
-                getString(R.string.open_social_media, getString(R.string.facebook_btn))
+                getActionIntent(getString(R.string.facebook_url))
         );
 
         setOpenIntentOnClick(
                 binding.instagramButton,
-                getActionIntent(getString(R.string.instagram_url)),
-                getString(R.string.open_social_media, getString(R.string.instagram_btn))
+                getActionIntent(getString(R.string.instagram_url))
         );
 
         setOpenIntentOnClick(
                 binding.blueskyButton,
-                getActionIntent(getString(R.string.bluesky_url)),
-                getString(R.string.open_social_media, getString(R.string.bluesky_btn))
+                getActionIntent(getString(R.string.bluesky_url))
         );
 
-        binding.rateUsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // From http://stackoverflow.com/questions/11753000/how-to-open-the-google-play-store-directly-from-my-android-application
-                final String appPackageName = getPackageName();
-                try {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(
-                            "market://details?id=" + appPackageName)));
-                } catch (android.content.ActivityNotFoundException ex) {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(
-                            "https://play.google.com/store/apps/details?id=" + appPackageName)));
-                }
+        setOpenIntentOnClick(
+                binding.mastodonButton,
+                getActionIntent(getString(R.string.mastodon_url))
+        );
+
+        setOpenIntentOnClick(
+                binding.threadsButton,
+                getActionIntent(getString(R.string.threads_url))
+        );
+
+        binding.rateUsButton.setOnClickListener(v -> {
+            // From http://stackoverflow.com/questions/11753000/how-to-open-the-google-play-store-directly-from-my-android-application
+            final String appPackageName = getPackageName();
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(
+                        "market://details?id=" + appPackageName)));
+            } catch (android.content.ActivityNotFoundException ex) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(
+                        "https://play.google.com/store/apps/details?id=" + appPackageName)));
             }
         });
 
-        binding.privacyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://5calls.org/privacy")));
-            }
-        });
+        binding.privacyButton.setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://5calls.org/privacy"))));
 
         binding.licenseButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,41 +111,38 @@ public class AboutActivity extends AppCompatActivity {
             }
         });
 
+        binding.githubTextview.setMovementMethod(LinkMovementMethod.getInstance());
+
         if (!accountManager.isNewsletterSignUpCompleted(this)) {
             binding.newsletterSignupView.setVisibility(View.VISIBLE);
-            binding.newsletterSignupButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String email = binding.newsletterEmail.getText().toString();
-                    if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                        binding.newsletterEmail.setError(
-                                getResources().getString(R.string.error_email_format));
-                        return;
-                    }
-                    binding.newsletterSignupButton.setEnabled(false);
-                    FiveCallsApi api =
-                            AppSingleton.getInstance(getApplicationContext()).getJsonController();
-                    api.newsletterSubscribe(email, new FiveCallsApi.NewsletterSubscribeCallback() {
-                        @Override
-                        public void onSuccess() {
-                            accountManager.setNewsletterSignUpCompleted(v.getContext(), true);
-                            findViewById(R.id.newsletter_card).setVisibility(View.GONE);
-                            findViewById(R.id.newsletter_card_result_success).setVisibility(VISIBLE);
-                        }
-
-                        @Override
-                        public void onError() {
-                            binding.newsletterSignupButton.setEnabled(true);
-                            Snackbar.make(findViewById(R.id.activity_about),
-                                    getResources().getString(R.string.newsletter_signup_error),
-                                    Snackbar.LENGTH_LONG).show();
-                        }
-                    });
+            binding.newsletterSignupButton.setOnClickListener(v -> {
+                String email = binding.newsletterEmail.getText().toString();
+                if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                    binding.newsletterEmail.setError(
+                            getResources().getString(R.string.error_email_format));
+                    return;
                 }
+                binding.newsletterSignupButton.setEnabled(false);
+                FiveCallsApi api =
+                        AppSingleton.getInstance(getApplicationContext()).getJsonController();
+                api.newsletterSubscribe(email, new FiveCallsApi.NewsletterSubscribeCallback() {
+                    @Override
+                    public void onSuccess() {
+                        accountManager.setNewsletterSignUpCompleted(v.getContext(), true);
+                        findViewById(R.id.newsletter_card).setVisibility(View.GONE);
+                        findViewById(R.id.newsletter_card_result_success).setVisibility(VISIBLE);
+                    }
+
+                    @Override
+                    public void onError() {
+                        binding.newsletterSignupButton.setEnabled(true);
+                        Snackbar.make(findViewById(R.id.activity_about),
+                                getResources().getString(R.string.newsletter_signup_error),
+                                Snackbar.LENGTH_LONG).show();
+                    }
+                });
             });
         }
-
-        underlineButtons();
 
         binding.versionInfo.setText(String.format(getResources().getString(R.string.version_info),
                 BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE));
@@ -212,24 +208,6 @@ public class AboutActivity extends AppCompatActivity {
         }
     }
 
-    private void underlineButtons() {
-        underlineText(binding.aboutUsButton);
-        underlineText(binding.contactUsButton);
-        underlineText(binding.facebookButton);
-        underlineText(binding.instagramButton);
-        underlineText(binding.blueskyButton);
-        underlineText(binding.rateUsButton);
-        underlineText(binding.privacyButton);
-        underlineText(binding.licenseButton);
-    }
-
-    /**
-     * Underlines text in the given {@code TextView}.
-     */
-    private static void underlineText(final TextView textView) {
-        textView.setPaintFlags(textView.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
-    }
-
     // Inspired by https://www.bignerdranch.com/blog/open-source-licenses-and-android/
     private void showOpenSourceLicenses() {
         @SuppressLint("InflateParams")
@@ -243,20 +221,27 @@ public class AboutActivity extends AppCompatActivity {
     }
 
     /**
+     * Sets the on click listener of the given {@link View} to launch the given {@link Intent}.
+     */
+    private void setOpenIntentOnClick(final View view,
+                                      final Intent intent) {
+        view.setOnClickListener(view1 -> {
+            startActivity(intent);
+        });
+    }
+
+    /**
      * Sets the on click listener of the given {@link View} to launch the given {@link Intent}
      * with a chooser with the given prompt.
      */
-    private void setOpenIntentOnClick(final View view,
-                                      final Intent intent,
-                                      final String prompt) {
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                final Intent intentChooser = Intent.createChooser(
-                        intent, prompt
-                );
-                startActivity(intentChooser);
-            }
+    private void setOpenIntentWithChooserOnClick(final View view,
+                                                 final Intent intent,
+                                                 final String prompt) {
+        view.setOnClickListener(view1 -> {
+            final Intent intentChooser = Intent.createChooser(
+                    intent, prompt
+            );
+            startActivity(intentChooser);
         });
     }
 
