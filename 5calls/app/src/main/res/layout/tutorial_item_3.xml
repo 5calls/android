@@ -14,12 +14,28 @@
         <TextView
             android:id="@+id/calls_to_date"
             style="@style/subheadingTutorialStyle"
+            android:visibility="gone"
             />
 
         <TextView
             style="@style/splashTextStyle"
             android:layout_marginBottom="@dimen/margin_text"
             android:text="@string/about_splash_3"
+            />
+
+        <Button
+            style="@style/genericButtonStyle"
+            android:id="@+id/reminders_btn"
+            android:text="@string/tutorial_reminders_btn"
+            />
+
+        <TextView
+            style="@style/splashTextStyle"
+            android:layout_marginTop="@dimen/margin_text"
+            android:layout_marginBottom="@dimen/margin_text"
+            android:text="@string/about_reminders_on"
+            android:id="@+id/reminders_done"
+            android:visibility="gone"
             />
 
     </LinearLayout>

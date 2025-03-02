@@ -1,18 +1,13 @@
 package org.a5calls.android.a5calls.controller;
 
+import android.Manifest;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
-
-import androidx.activity.OnBackPressedCallback;
-import androidx.annotation.Nullable;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import org.a5calls.android.a5calls.AppSingleton;
@@ -24,6 +19,15 @@ import org.a5calls.android.a5calls.util.AnalyticsManager;
 
 import java.text.NumberFormat;
 import java.util.Locale;
+
+import androidx.activity.OnBackPressedCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 
 /**
  * Tutorial / splash screen activity
@@ -146,6 +150,10 @@ public class TutorialActivity extends AppCompatActivity {
 
         private FiveCallsApi.CallRequestListener mStatusListener;
         private TextView callsToDate;
+        private Button remindersBtn;
+        private TextView remindersDoneText;
+
+        private ActivityResultLauncher<String> mNotificationPermissionRequest;
 
         public static ThirdTutorialPageFragment newInstance() {
             ThirdTutorialPageFragment fragment = new ThirdTutorialPageFragment();
@@ -155,6 +163,18 @@ public class TutorialActivity extends AppCompatActivity {
         @Override
         public void onCreate(@Nullable Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
+            mNotificationPermissionRequest =
+                    SettingsActivity.createNotificationPermissionRequest(this, (isGranted) -> {
+                        // If the user denied the notification permission, set the preference to false
+                        // Otherwise they granted and we will set the permission to true.
+                        if (isGranted) {
+                            turnOnReminders();
+                        } else {
+                            remindersBtn.setVisibility(View.GONE);
+                            remindersDoneText.setText(R.string.about_reminders_off);
+                            remindersDoneText.setVisibility(View.VISIBLE);
+                        }
+                    });
         }
 
         @Override
@@ -169,30 +189,32 @@ public class TutorialActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                                  @Nullable Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.tutorial_item_3, container, false);
-            callsToDate = (TextView) rootView.findViewById(R.id.calls_to_date);
+            callsToDate = rootView.findViewById(R.id.calls_to_date);
+            remindersBtn = rootView.findViewById(R.id.reminders_btn);
+            remindersDoneText = rootView.findViewById(R.id.reminders_done);
 
-            // TODO: Re-use this listener between AboutActivity and here, since it's really the same.
+            remindersBtn.setOnClickListener(v -> {
+                if (!NotificationManagerCompat.from(requireContext()).areNotificationsEnabled()) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        // Show notification permission then turn on reminders depending on the result.
+                        mNotificationPermissionRequest.launch(Manifest.permission.POST_NOTIFICATIONS);
+                    }
+                } else {
+                    // Don't need to ask for notification permission, can simply
+                    // directly enable reminders.
+                    turnOnReminders();
+                }
+            });
+
             mStatusListener = new FiveCallsApi.CallRequestListener() {
                 @Override
                 public void onRequestError() {
-                    if (!isAdded()) {
-                        // No longer attached to the activity!
-                        return;
-                    }
-                    Snackbar.make(callsToDate,
-                            getResources().getString(R.string.request_error),
-                            Snackbar.LENGTH_LONG).show();
+                    // unused
                 }
 
                 @Override
                 public void onJsonError() {
-                    if (!isAdded()) {
-                        // No longer attached to the activity!
-                        return;
-                    }
-                    Snackbar.make(callsToDate,
-                            getResources().getString(R.string.json_error),
-                            Snackbar.LENGTH_LONG).show();
+                    // unused
                 }
 
                 @Override
@@ -201,6 +223,7 @@ public class TutorialActivity extends AppCompatActivity {
                         // No longer attached to the activity!
                         return;
                     }
+                    callsToDate.setVisibility(View.VISIBLE);
                     callsToDate.setText(String.format(
                             getResources().getString(R.string.calls_to_date),
                             NumberFormat.getNumberInstance(Locale.US).format(count)));
@@ -216,28 +239,27 @@ public class TutorialActivity extends AppCompatActivity {
             controller.registerCallRequestListener(mStatusListener);
             controller.getReport();
 
-            rootView.findViewById(R.id.btn_back).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ((TutorialActivity) getActivity()).onPreviousPagePressed();
-                }
-            });
+            rootView.findViewById(R.id.btn_back).setOnClickListener(v ->
+                    ((TutorialActivity) getActivity()).onPreviousPagePressed());
             rootView.findViewById(R.id.get_started_btn).setOnClickListener(
-                    new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Set that the user has seen info about reminders.
-                    AccountManager.Instance.setRemindersInfoShown(getActivity(), true);
-                    SettingsActivity.turnOnReminders(getActivity(), AccountManager.Instance);
+                    v -> {
+                        // Set that the user has seen info about reminders.
+                        AccountManager.Instance.setRemindersInfoShown(getActivity(), true);
 
-                    // Return to the main activity
-                    AccountManager.Instance.setTutorialSeen(getActivity(), true);
-                    Intent intent = new Intent(getActivity(), MainActivity.class);
-                    startActivity(intent);
-                    getActivity().finish();
-                }
-            });
+                        // Return to the main activity
+                        AccountManager.Instance.setTutorialSeen(getActivity(), true);
+                        Intent intent = new Intent(getActivity(), MainActivity.class);
+                        startActivity(intent);
+                        getActivity().finish();
+                    });
             return rootView;
+        }
+
+        private void turnOnReminders() {
+            AccountManager.Instance.setAllowReminders(getActivity(), true);
+            SettingsActivity.turnOnReminders(getActivity(), AccountManager.Instance);
+            remindersBtn.setVisibility(View.GONE);
+            remindersDoneText.setVisibility(View.VISIBLE);
         }
     }
 }
