@@ -37,9 +37,6 @@
     <!-- Message telling a user how many previous calls they have made [CHAR_LIMIT=none] -->
     <string name="previous_call_count_many"><xliff:g id="callCount">%1$d</xliff:g> previous calls</string>
 
-    <!-- Prompt for explaining which contact/office to call [CHAR_LIMIT=50] -->
-    <string name="call_this_office">Call this office:</string>
-
     <!-- Prompt for call result buttons [CHAR_LIMIT=NONE] -->
     <string name="buttons_prompt">Enter your result:</string>
 
@@ -72,29 +69,26 @@
     <!-- Button linking to a page about Why calling works [CHAR_LIMIT=30] -->
     <string name="why_calling_btn">why calling works</string>
 
-    <!-- Prompt to click on the "About Us" button [CHAR_LIMIT=100] -->
-    <string name="about_us_prompt">Want to know more?</string>
+    <!-- Section on the about page about the app -->
+    <string name="about_app_prompt">About this app</string>
 
     <!-- Prompt to click on the "Rate" button [CHAR_LIMIT=100] -->
     <string name="rate_us_prompt">If the 5 Calls app has been useful to you, we would appreciate it if you rate us in the Play Store.</string>
 
-    <!-- Prompt to click on the privacy policy button [CHAR_LIMIT=100] -->
-    <string name="privacy_prompt">Privacy</string>
-
-    <!-- Button linking to the 5calls.org newsletter signup page [CHAR_LIMIT=40] -->
-    <string name="sign_up_newsletter_btn">sign up for the 5 Calls newsletter</string>
-
     <!-- Button linking to the 5calls.org about page [CHAR_LIMIT=30] -->
     <string name="about_us_btn">about us</string>
-
-    <!-- Prompt to send 5 Calls an email [CHAR_LIMIT=100] -->
-    <string name="contact_us_prompt">Want to get in touch? Are we not covering an issue we should be?</string>
 
     <!-- Button that allows users to send 5 Calls an email [CHAR_LIMIT=30] -->
     <string name="contact_us_btn">contact us</string>
 
-    <!-- Prompt to connect with 5 Calls through social media [CHAR_LIMIT=100] -->
-    <string name="social_prompt">You can also get in touch via</string>
+    <!-- Toast shown when an Intent doesn't have an Activity that can handle it (e.g. sending an email) -->
+    <string name="intent_resolve_error">Unable to find installed app to open this link</string>
+
+    <!-- Heading for buttons to learn more about 5 calls -->
+    <string name="general_prompt">General</string>
+
+    <!-- Heading for buttons to connect with 5 Calls through social media [CHAR_LIMIT=100] -->
+    <string name="social_prompt">Follow us on your favorite platform</string>
 
     <!-- Button that links to 5 Calls' Facebook [CHAR_LIMIT=30] -->
     <string name="facebook_btn" translatable="false">Facebook</string>
@@ -105,6 +99,12 @@
     <!-- Button that links to 5 Calls' Bluesky [CHAR_LIMIT=30] -->
     <string name="bluesky_btn" translatable="false">Bluesky</string>
 
+    <!-- Button that links to 5 Calls' Threads [CHAR_LIMIT=30] -->
+    <string name="threads_btn" translatable="false">Threads</string>
+
+    <!-- Button that links to 5 Calls' Mastodon [CHAR_LIMIT=30] -->
+    <string name="mastodon_btn" translatable="false">Mastodon</string>
+
     <!-- Button linking to the 5calls.org Play Store page to request a rating [CHAR_LIMIT=30] -->
     <string name="rate_us_btn">Rate 5 Calls</string>
 
@@ -113,9 +113,6 @@
 
     <!-- Text to show the user the number of calls made by everyone [CHAR_LIMIT=50] -->
     <string name="calls_to_date">Together we\'ve made <xliff:g id="callCount">%1$s</xliff:g> calls</string>
-
-    <!-- Message to the user shown when a call is recorded in the database and the server [CHAR_LIMIT=150] -->
-    <string name="call_reported">Call reported successfully!</string>
 
     <!-- Text shown to the user on the splash / tutorial screen describing the 5 Calls app. \n\n is used to create new paragraphs. [CHAR_LIMIT=NONE] -->
     <string name="about_splash">There\'s one simple and straightforward way to influence the Government that is supposed to represent you: Call them on the phone.</string>
@@ -137,7 +134,8 @@
     <string name="get_started_btn">Get started</string>
 
     <!-- Description of how the 5 Calls app is open-source, link to github page [CHAR_LIMIT=NONE] -->
-    <string name="open_source_info">The 5 Calls app is open-source and volunteer made. Find it at <u>github.com/5calls/android</u>.</string>
+    <string name="open_source_info">The 5 Calls app is open-source and volunteer made. Find it at
+        <a href="https://github.com/5calls/android\">github</a>.</string>
 
     <!-- Version code shown to the user in the about page [CHAR_LIMIT=NONE] -->
     <string name="version_info">Version <xliff:g id="versionName">%1$s</xliff:g> (<xliff:g id="versionCode">%2$d</xliff:g>)</string>
@@ -153,12 +151,6 @@
 
     <!-- Default text for a section that says why the contact is someone you might call [CHAR_LIMIT=NONE] -->
     <string name="contact_reason_default">This organization is driving legislation related to the issue.</string>
-
-    <!-- Shows the user how many calls remain and how many calls there are total for a particular issue [CHAR_LIMIT=50] -->
-    <string name="call_count_remaining"><xliff:g id="callsLeft">%1$d</xliff:g> calls to make (<xliff:g id="callsTotal">%2$d</xliff:g> total)</string>
-
-    <!-- Shows the user that 1 call remains and how many calls there are total for a particular issue [CHAR_LIMIT=50] -->
-    <string name="call_count_remaining_one">1 call to make (<xliff:g id="callsTotal">%1$d</xliff:g> total)</string>
 
     <!-- Menu option to refresh the issues list [CHAR_LIMIT=25] -->
     <string name="refresh">Refresh issues</string>
@@ -184,11 +176,11 @@
     <!-- Button that will use the user's device location to set the location in the app [CHAR_LIMIT=30] -->
     <string name="btn_gps">Use my location</string>
 
-    <!-- Prompt to use your GPS location in the app [CHAR_LIMIT=NONE] -->
-    <string name="location_gps_prompt">Use your phone\'s location to find all representatives</string>
+    <!-- Inform the user their location is private -->
+    <string name="location_private">Your location stays private. We don\'t store it and we never
+        sell data to third parties.</string>
 
-    <!-- Error shown when the location cannot be parsed properly in the issues list page [CHAR_LIMIT=150] -->
-    <string name="main_activity_location_error">Sorry, we could not read your location, please try re-entering it</string>
+    <string name="location_why">We\'ll figure out who you need to call</string>
 
     <!-- Title of the Your Impact activity showing a user their stats [CHAR_LIMIT=30] -->
     <string name="stats_activity">Your Impact</string>
@@ -262,14 +254,8 @@
     <!-- Title for a dialog telling a user what type of contact they've made with a rep on an issue [CHAR_LIMIT=30] -->
     <string name="contact_details_dialog_title">You have already reported these actions:</string>
 
-    <!-- Message shown to the user when a contact is skipped [CHAR_LIMIT=150] -->
-    <string name="skip_snackbar_message">Office skipped.</string>
-
     <!-- Link to go back to the issues list main activity from an issue [CHAR_LIMIT=20] -->
     <string name="back">back</string>
-
-    <!-- Done button for issues page [CHAR_LIMIT=30] -->
-    <string name="done">done</string>
 
     <!-- Name for settings category for general settings[CHAR_LIMIT=50] -->
     <string name="settings_category_general">General settings</string>
@@ -361,8 +347,9 @@
     <string name="try_again_btn">Try again</string>
 
     <!-- Prompt to enter an address or zip code instead of using the phone's GPS location [CHAR_LIMIT=NONE] -->
-    <string name="location_address_prompt">Enter your address or zip code.
-        \nA 5 digit zip code may be specific enough to return your correct representatives in some districts.</string>
+    <string name="location_address_prompt">You can enter a zip code or address manually. If
+        your ZIP code is in more than one Congressional district we may show our best guess for your
+        representative in the House. Use an address or cross streets to more accurately locate you.</string>
 
     <!-- Hint text for edittext to enter an address or zip code for the user's location [CHAR_LIMIT=50] -->
     <string name="address_hint">Address or zip code</string>
@@ -427,9 +414,6 @@
     <!-- Action for a snackbar or button which brings you to the location update screen [CHAR_LIMIT=10] -->
     <string name="update">update</string>
 
-    <!-- URL for the 5 Calls Twitter account -->
-    <string name="twitter_url" translatable="false">https://twitter.com/make5calls</string>
-
     <!-- URL for the 5 Calls Facebook page -->
     <string name="facebook_url" translatable="false">https://www.facebook.com/make5calls/</string>
 
@@ -439,14 +423,20 @@
     <!-- URL for the 5 Calls Bluesky account -->
     <string name="bluesky_url" translatable="false">https://bsky.app/profile/5calls.org</string>
 
-    <!-- URL to sign up for the 5 Calls newsletter [CHAR_LIMIT=NONE] -->
-    <string name="newsletter_url" translatable="false">https://5calls.org/</string>
+    <!-- URL for the 5 Calls Mastodon account -->
+    <string name="mastodon_url" translatable="false">https://mastodon.social/@5calls</string>
+
+    <!-- URL for the 5 Calls Threads account -->
+    <string name="threads_url" translatable="false">https://www.threads.net/@5calls</string>
 
     <!-- URL for the 5 Calls About page [CHAR_LIMIT=NONE] -->
     <string name="about_url" translatable="false">https://5calls.org/about-us/</string>
 
     <!-- URL for the 5 Calls FAQ page [CHAR_LIMIT=NONE] -->
-    <string name="faq_url" translatable="false">https://5calls.org/troubleshooting/</string>
+    <string name="faq_url" translatable="false">https://5calls.org/getting-started/</string>
+
+    <!-- URL for the 5 Calls Why Calling Works page [CHAR_LIMIT=NONE] -->
+    <string name="why_calling_url" translatable="false">https://5calls.org/why-calling-works/</string>
 
     <!-- Email address to contact 5 Calls [CHAR_LIMIT=NONE] -->
     <string name="email_address" translatable="false">hello@5calls.org</string>
@@ -456,11 +446,6 @@
 
     <!-- Name of the intent chooser for sending emails [CHAR_LIMIT=NONE] -->
     <string name="send_email">Send Email</string>
-
-    <!-- Name of the intent chooser for opening Twitter/Facebook/Instagram [CHAR_LIMIT=NONE]
-    Instead of having three separate strings for "Open Twitter", "Open Facebook", "Open Instagram",
-    we can use one substitution string and substitute the social network name that we use in the buttons -->
-    <string name="open_social_media">Open <xliff:g id="socialNetworkName">%1$s</xliff:g></string>
 
     <!-- Call result button for when the contact was unavailable (i.e. couldn't even leave a voicemail) [CHAR_LIMIT=30] -->
     <string name="outcome_unavailable">unavailable</string>

@@ -54,7 +54,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".controller.MainActivity" />
         </activity>
-        <activity android:name=".controller.LocationActivity"/>
+        <activity android:name=".controller.LocationActivity"
+            android:windowSoftInputMode="stateHidden" />
         <activity android:name=".controller.StatsActivity"
             android:label="@string/stats_activity"
             android:parentActivityName=".controller.MainActivity">
@@ -93,5 +94,13 @@
                 android:resource="@xml/file_paths" />
         </provider>
     </application>
+
+    <!-- Query for Android 11+ to find apps that can handle mailto Intents -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.SENDTO"/>
+            <data android:scheme="mailto" android:host="*" />
+        </intent>
+    </queries>
 
 </manifest>
