@@ -81,6 +81,9 @@
     <!-- Button that allows users to send 5 Calls an email [CHAR_LIMIT=30] -->
     <string name="contact_us_btn">contact us</string>
 
+    <!-- Toast shown when an Intent doesn't have an Activity that can handle it (e.g. sending an email) -->
+    <string name="intent_resolve_error">Unable to find installed app to open this link</string>
+
     <!-- Heading for buttons to learn more about 5 calls -->
     <string name="general_prompt">General</string>
 

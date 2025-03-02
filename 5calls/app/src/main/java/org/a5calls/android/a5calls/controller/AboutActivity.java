@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
+import android.widget.Toast;
 
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.BuildConfig;
@@ -40,7 +41,6 @@ import static android.view.View.VISIBLE;
  */
 public class AboutActivity extends AppCompatActivity {
     private static final String TAG = "AboutActivity";
-    private static final String EMAIL_CONTENT_TYPE = "message/rfc822";
 
     private final AccountManager accountManager = AccountManager.Instance;
     private FiveCallsApi.CallRequestListener mStatusListener;
@@ -238,10 +238,15 @@ public class AboutActivity extends AppCompatActivity {
                                                  final Intent intent,
                                                  final String prompt) {
         view.setOnClickListener(view1 -> {
-            final Intent intentChooser = Intent.createChooser(
-                    intent, prompt
-            );
-            startActivity(intentChooser);
+            if (intent.resolveActivity(getPackageManager()) != null) {
+                final Intent intentChooser = Intent.createChooser(
+                        intent, prompt
+                );
+                startActivity(intentChooser);
+            } else {
+                // There was no installed application that can handle the intent
+                Toast.makeText(this, getString(R.string.intent_resolve_error), Toast.LENGTH_LONG).show();
+            }
         });
     }
 
@@ -252,10 +257,10 @@ public class AboutActivity extends AppCompatActivity {
         final String[] emailAddress = {resources.getString(R.string.email_address)};
         final String subject = resources.getString(R.string.email_subject);
 
-        final Intent intent = new Intent(Intent.ACTION_SEND);
+        final Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mailto:"));
         intent.putExtra(Intent.EXTRA_EMAIL, emailAddress);
         intent.putExtra(Intent.EXTRA_SUBJECT, subject);
-        intent.setType(EMAIL_CONTENT_TYPE);
 
         return intent;
     }
