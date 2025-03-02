@@ -108,6 +108,21 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
+    public static ActivityResultLauncher<String> createNotificationPermissionRequest(
+            Fragment fragment, Consumer<Boolean> isGranted) {
+        // Only needed on SDK 33 (Tiramisu) and newer
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            return null;
+        }
+        if (ContextCompat.checkSelfPermission(fragment.getContext(),
+                Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+            return null;
+        }
+        return fragment.registerForActivityResult(
+                new ActivityResultContracts.RequestPermission(), isGranted::accept
+        );
+    }
+
     public static void updateNotificationsPreference(FiveCallsApplication application,
                                                      AccountManager accountManager,
                                                      String result) {
@@ -142,7 +157,7 @@ public class SettingsActivity extends AppCompatActivity {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            requestNotificationPermission((isGranted) -> {
+            mNotificationPermissionRequest = createNotificationPermissionRequest(this, (isGranted) -> {
                 // If the user denied the notification permission, set the preference to false
                 // Otherwise they granted and we will set the permission to true
                 accountManager.setAllowReminders(getActivity(), isGranted);
@@ -212,7 +227,8 @@ public class SettingsActivity extends AppCompatActivity {
                 accountManager.setAllowAnalytics(getActivity(), result);
             } else if (TextUtils.equals(key, AccountManager.KEY_ALLOW_REMINDERS)) {
                 boolean result = sharedPreferences.getBoolean(key, false);
-                if (result && !NotificationManagerCompat.from(requireContext()).areNotificationsEnabled()) {
+                if (result &&
+                        !NotificationManagerCompat.from(requireContext()).areNotificationsEnabled()) {
                     // Trying to enable reminders and notification permission is not granted
                     if (mNotificationPermissionRequest != null
                             && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -253,20 +269,6 @@ public class SettingsActivity extends AppCompatActivity {
         public void onStop() {
             turnOnReminders(getActivity(), accountManager);
             super.onStop();
-        }
-
-        private void requestNotificationPermission(Consumer<Boolean> isGranted) {
-            // Only needed on SDK 33 (Tiramisu) and newer
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                return;
-            }
-            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS)
-                    == PackageManager.PERMISSION_GRANTED) {
-                return;
-            }
-            mNotificationPermissionRequest = registerForActivityResult(
-                    new ActivityResultContracts.RequestPermission(), isGranted::accept
-            );
         }
 
         private void updateReminderDaysSummary(MultiSelectListPreference daysPreference,

@@ -255,6 +255,15 @@ public class TutorialActivity extends AppCompatActivity {
             return rootView;
         }
 
+        @Override
+        public void onResume() {
+            super.onResume();
+            if (AccountManager.Instance.getAllowReminders(getContext())) {
+                remindersBtn.setVisibility(View.GONE);
+                remindersDoneText.setVisibility(View.VISIBLE);
+            }
+        }
+
         private void turnOnReminders() {
             AccountManager.Instance.setAllowReminders(getActivity(), true);
             SettingsActivity.turnOnReminders(getActivity(), AccountManager.Instance);
