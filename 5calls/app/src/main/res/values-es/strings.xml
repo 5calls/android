@@ -92,8 +92,10 @@
     <string name="about_splash_2">5 Calls te da contactos y guiones para que puedas llamar rápido y fácilmente. Usamos su ubicación para darle a sus representantes locales para que sus llamadas sean más impactantes.</string>
 
     <!-- Text shown to the user on the splash / tutorial screen letting them know about notifications and reminders [CHAR_LIMIT=NONE] -->
-    <string name="about_splash_3">La aplicación de 5 Calls le ayuda a mantener la participación recordándole varias veces a la semana para hacer llamadas.
-                                    \nPuede personalizar o desactivar los recordatorios en la configuración.</string>
+    <string name="about_splash_3">La aplicación de 5 Calls le ayuda a mantener la participación recordándole varias veces a la semana para hacer llamadas.</string>
+
+    <!-- Text shown after reminders are enabled [CHAR_LIMIT=50] -->
+    <string name="about_reminders_on">Puede personalizar o activar los recordatorios en la configuración.</string>
 
     <!-- Button shown to the user on the splash / tutorial screen to get to the next page of the tutorial [CHAR_LIMIT=30] -->
     <string name="next">Siguiente</string>
@@ -284,13 +286,6 @@
 
     <!-- Text for a notification reminder to make 5 calls [CHAR_LIMIT=50]-->
     <string name="notification_text">Dedique 5 minutos para ponerse en contacto con sus representantes.</string>
-
-    <!-- Title for a dialog that lets users know on upgrade that reminders have been added [CHAR_LIMIT=50] -->
-    <string name="reminders_dialog_title">Nueva función ańadida</string>
-
-    <!-- Content for a dialog that lets users know on upgrade that reminders have been added [CHAR_LIMIT=50] -->
-    <string name="reminders_dialog_content">La aplicación de 5 Calls ahora puede ayudarle a mantener la participación recordándole varias veces a la semana para hacer llamadas.
-                                    \n\nPuede personalizar o desactivar los recordatorios en la configuración.</string>
 
     <!-- Button to go to the settings activity [CHAR_LIMIT=25] -->
     <string name="go_to_settings">Ve a configuración</string>

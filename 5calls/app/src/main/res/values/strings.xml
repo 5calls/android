@@ -124,8 +124,16 @@
     <string name="about_splash_2">5 Calls provides phone numbers and scripts so calling is quick and easy, finds your local representatives so your calls have more impact.</string>
 
     <!-- Text shown to the user on the splash / tutorial screen letting them know about notifications and reminders [CHAR_LIMIT=NONE] -->
-    <string name="about_splash_3">The 5 Calls app can help you maintain involvement by reminding you several times a week to make calls.
-                                  \n\nYou can turn on and customize reminders in settings.</string>
+    <string name="about_splash_3">The 5 Calls app can help you maintain involvement by reminding you several times a week to make calls.</string>
+
+    <!-- Button shown to turn on reminders [CHAR_LIMIT=50] -->
+    <string name="tutorial_reminders_btn">Turn on reminders</string>
+
+    <!-- Text shown after reminders are enabled [CHAR_LIMIT=50] -->
+    <string name="about_reminders_on">You can customize reminders in settings.</string>
+
+    <!-- Text shown after notifications are declined [CHAR_LIMIT=50] -->
+    <string name="about_reminders_off">If you change your mind, you can turn on reminders in settings.</string>
 
     <!-- Button shown to the user on the splash / tutorial screen to get to the next page of the tutorial [CHAR_LIMIT=30] -->
     <string name="next">Next</string>
@@ -329,13 +337,6 @@
 
     <!-- Text for a notification reminder to make 5 calls [CHAR_LIMIT=50] -->
     <string name="notification_text">Spend 5 minutes to contact your representatives.</string>
-
-    <!-- Title for a dialog that lets users know on upgrade that reminders have been added [CHAR_LIMIT=50] -->
-    <string name="reminders_dialog_title">New feature added</string>
-
-    <!-- Content for a dialog that lets users know on upgrade that reminders have been added [CHAR_LIMIT=50] -->
-    <string name="reminders_dialog_content">The 5 Calls app can now help you maintain involvement by reminding you several times a week to make calls.
-                                  \n\nYou can customize or turn off reminders in settings.</string>
 
     <!-- Button to go to the settings activity [CHAR_LIMIT=25] -->
     <string name="go_to_settings">Go to settings</string>

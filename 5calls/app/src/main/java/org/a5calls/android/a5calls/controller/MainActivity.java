@@ -46,6 +46,7 @@ import org.a5calls.android.a5calls.util.CustomTabsUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import static android.view.View.VISIBLE;
@@ -112,22 +113,12 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             return;
         }
 
-        // TODO: Remove this as probably no one is running the old version of the app any more.
-        if (!accountManager.isRemindersInfoShown(this)) {
-            // We haven't yet told the user that reminders exist, they probably upgraded to get here
-            // instead of learning about it in the tutorial. Give a dialog explaining more.
-            // This should only happen for users upgrading from a pretty old version of the app.
-            DialogFragment fragment = NewSettingsDialog.newInstance(R.string.reminders_dialog_title,
-                    R.string.reminders_dialog_content);
-            getSupportFragmentManager().beginTransaction().add(fragment, NewSettingsDialog.TAG)
-                    .commit();
-            accountManager.setRemindersInfoShown(this, true);
-            SettingsActivity.turnOnReminders(this, accountManager);
-        }
-
         Intent intent = getIntent();
         if (intent != null && intent.getExtras() != null &&
                 intent.getExtras().getBoolean(EXTRA_FROM_NOTIFICATION, false)) {
+            new AnalyticsManager().trackPageviewWithProps("/", this,
+                    Map.of("fromNotification", "true"));
+        } else {
             new AnalyticsManager().trackPageview("/", this);
         }
 
