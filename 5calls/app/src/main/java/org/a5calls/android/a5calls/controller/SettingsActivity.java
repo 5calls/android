@@ -270,7 +270,7 @@ public class SettingsActivity extends AppCompatActivity {
             turnOnReminders(getActivity(), accountManager);
             super.onStop();
         }
-        
+
         private void updateReminderDaysSummary(MultiSelectListPreference daysPreference,
                                                Set<String> savedValues) {
             if (savedValues == null || savedValues.size() == 0) {
