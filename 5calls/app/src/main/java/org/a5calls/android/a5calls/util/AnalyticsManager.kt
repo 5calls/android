@@ -15,4 +15,10 @@ class AnalyticsManager {
             Plausible.pageView(path, props = staticProps)
         }
     }
+
+    fun trackPageviewWithProps(path: String, context: Context, extraProps: Map<String, String>) {
+        if (!BuildConfig.DEBUG && AccountManager.Instance.allowAnalytics(context)) {
+            Plausible.pageView(path, path, props = extraProps + staticProps)
+        }
+    }
 }

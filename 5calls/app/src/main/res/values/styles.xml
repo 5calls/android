@@ -39,25 +39,29 @@
         <item name="android:textSize">@dimen/h2_text_size</item>
     </style>
 
-    <style name="locationGpsTextStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">@dimen/layout_margin_top</item>
-        <item name="android:textSize">@dimen/label_text_size</item>
-        <item name="android:visibility">gone</item>
-    </style>
-
     <style name="locationGpsBtnStyle" parent="genericButtonStyle">
         <item name="android:layout_marginTop">@dimen/margin_top16</item>
         <item name="android:textColor">@color/colorPrimaryDark</item>
         <item name="android:visibility">gone</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:drawableStart">@drawable/ic_gps_fixed_white_24dp</item>
+        <item name="android:drawableTint">@color/colorPrimaryDark</item>
+        <item name="android:drawablePadding">@dimen/drawable_padding</item>
     </style>
 
-    <style name="descriptiveTextStyle">
+    <style name="spacedParagraphTextStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">@dimen/text_layout_marginBottom</item>
-        <item name="android:textSize">@dimen/label_text_size</item>
+        <item name="android:layout_marginTop">@dimen/text_layout_marginTop</item>
+        <item name="android:textSize">@dimen/text_size_paragraph</item>
+    </style>
+
+    <style name="spacedParagraphTextStyleHighlight">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/text_layout_marginTop</item>
+        <item name="android:textSize">@dimen/text_size_paragraph</item>
+        <item name="android:textStyle">italic</item>
     </style>
 
     <style name="zipEditTextStyle">
@@ -171,24 +175,20 @@
         <item name="android:textColor">@color/colorPrimary</item>
     </style>
 
-    <style name="aboutParagraphTextStyle" parent="genericParagraphStyle">
-        <item name="android:textColor">@color/colorPrimary</item>
-        <item name="android:textStyle">bold|italic</item>
-    </style>
-
-    <style name="linksParagraphTextStyle" parent="genericParagraphStyle">
-        <item name="android:layout_marginTop">@dimen/text_layout_marginBottom</item>
-        <item name="android:linksClickable">true</item>
-        <item name="android:textColor">@color/colorPrimary</item>
+    <style name="aboutPrompt">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/splash_text_size</item>
+        <item name="android:layout_marginTop">@dimen/margin_text</item>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="aboutSubtStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">@dimen/text_layout_marginTop</item>
-        <item name="android:layout_marginBottom">@dimen/text_layout_marginBottom</item>
         <item name="android:textColor">@color/colorAccent</item>
-        <item name="android:textSize">@dimen/h2_text_size</item>
+        <item name="android:textSize">@dimen/subheading_text_size</item>
         <item name="android:textStyle">bold</item>
     </style>
 
@@ -196,6 +196,12 @@
         <item name="android:layout_gravity">start</item>
         <item name="android:layout_margin">@dimen/layout_margin_button</item>
         <item name="android:textAlignment">textStart</item>
+    </style>
+
+    <style name="fullWidthBtnStyle" parent="genericButtonStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:textAlignment">textStart</item>
+        <item name="android:drawableEnd">@drawable/arrow_forward_24px</item>
     </style>
 
     <style name="nestedScrollViewStyleTop">
@@ -466,7 +472,7 @@
 
     <style name="emptyIssuesBtnStyle" parent="linkButtonStyle">
         <item name="android:layout_centerHorizontal">true</item>
-        <item name="android:drawablePadding">@dimen/grid_padding</item>
+        <item name="android:drawablePadding">@dimen/drawable_padding</item>
     </style>
 
     <style name="horizontalLinearLayoutStyle">
@@ -533,7 +539,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">center_vertical</item>
-        <item name="android:drawablePadding">8dp</item>
+        <item name="android:drawablePadding">@dimen/drawable_padding</item>
         <item name="android:textSize">@dimen/text_size_paragraph</item>
         <item name="android:textColor">@color/colorPrimaryDark</item>
         <item name="android:fontFeatureSettings">smcp</item>
@@ -677,10 +683,13 @@
         <item name="android:orientation">vertical</item>
     </style>
 
-    <style name="doneCardStyle">
+    <style name="simpleVerticalLinearLayout">
         <item name="android:orientation">vertical</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="doneCardStyle" parent="simpleVerticalLinearLayout">
         <item name="android:layout_marginStart">@dimen/activity_horizontal_margin</item>
         <item name="android:layout_marginEnd">@dimen/activity_horizontal_margin</item>
         <item name="android:layout_marginBottom">@dimen/activity_vertical_margin</item>
