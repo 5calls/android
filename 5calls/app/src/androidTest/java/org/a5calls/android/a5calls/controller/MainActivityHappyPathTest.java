@@ -197,6 +197,7 @@ public class MainActivityHappyPathTest {
         onView(withId(R.id.filter)).check(matches(isDisplayed()));
 
         // Verify that our test issue is displayed
+        // TODO: check that additional text is displayed correctly
         onView(withText("Test Issue 1")).check(matches(isDisplayed()));
 
         // The subtitle might not contain the exact location string, so let's just verify it's displayed
