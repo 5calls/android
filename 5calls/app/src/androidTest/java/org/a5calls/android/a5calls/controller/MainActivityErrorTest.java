@@ -38,6 +38,7 @@ public class MainActivityErrorTest {
     private RequestQueue mOriginalRequestQueue;
     private FiveCallsApi mOriginalApi;
     private String mOriginalAddress;
+    private ActivityScenario<MainActivity> scenario;
 
     @Before
     public void setUp() {
@@ -79,13 +80,17 @@ public class MainActivityErrorTest {
         AccountManager.Instance.setAddress(
                 InstrumentationRegistry.getInstrumentation().getTargetContext(),
                 mOriginalAddress);
+
+        // Close the activity scenario if it's open
+        if (scenario != null) {
+            scenario.close();
+        }
     }
 
-    @Test
-    public void testNetworkErrorDisplaysSnackbar() {
-        // Set up mock to throw network error
-        mHttpStack.setExceptionToThrow(new IOException("Network error"));
-
+    /**
+     * Sets up the mock request queue and API
+     */
+    private void setupMockRequestQueue() {
         // Create a custom RequestQueue with our mock HTTP stack
         BasicNetwork basicNetwork = new BasicNetwork(mHttpStack);
         FakeRequestQueue requestQueue = new FakeRequestQueue(basicNetwork);
@@ -103,27 +108,49 @@ public class MainActivityErrorTest {
         AppSingleton.getInstance(
                 InstrumentationRegistry.getInstrumentation().getTargetContext())
                 .setFiveCallsApi(api);
+    }
 
+    /**
+     * Launches the MainActivity and waits for it to load
+     * @param waitTimeMs time to wait for the activity to load and process errors
+     */
+    private void launchMainActivity(int waitTimeMs) {
         // Launch the activity
-        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
+        scenario = ActivityScenario.launch(MainActivity.class);
 
-        // The activity will automatically make a request for issues
-        // Wait longer for the error to be processed and Snackbar to be displayed
+        // Wait for error processing and UI to update
         try {
-            Thread.sleep(3000); // Allow sufficient time for error processing
+            Thread.sleep(waitTimeMs);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
 
+    /**
+     * Verifies that error UI is displayed correctly
+     */
+    private void verifyErrorUI() {
         // Check that the error message is displayed
         onView(withText(R.string.request_error))
                 .check(matches(isDisplayed()));
 
         // Also verify that the RecyclerView is displayed (but empty)
         onView(withId(R.id.issues_recycler_view)).check(matches(isDisplayed()));
+    }
 
-        // Close the activity
-        scenario.close();
+    @Test
+    public void testNetworkErrorDisplaysSnackbar() {
+        // Set up mock to throw network error
+        mHttpStack.setExceptionToThrow(new IOException("Network error"));
+
+        // Set up mock request queue
+        setupMockRequestQueue();
+
+        // Launch the activity and wait for error processing
+        launchMainActivity(3000);
+
+        // Verify error UI is displayed
+        verifyErrorUI();
     }
 
     @Test
@@ -132,44 +159,13 @@ public class MainActivityErrorTest {
         HttpResponse response = new HttpResponse(200, new ArrayList<>(), "Not valid JSON".getBytes());
         mHttpStack.setResponseToReturn(response);
 
-        // Create a custom RequestQueue with our mock HTTP stack
-        BasicNetwork basicNetwork = new BasicNetwork(mHttpStack);
-        FakeRequestQueue requestQueue = new FakeRequestQueue(basicNetwork);
-        requestQueue.start();
+        // Set up mock request queue
+        setupMockRequestQueue();
 
-        // Replace the app's RequestQueue with our mock
-        AppSingleton.getInstance(
-                InstrumentationRegistry.getInstrumentation().getTargetContext())
-                .setRequestQueue(requestQueue);
+        // Launch the activity and wait for error processing
+        launchMainActivity(1000);
 
-        // Create a new FiveCallsApi with our mock RequestQueue
-        String callerId = AccountManager.Instance.getCallerID(
-                InstrumentationRegistry.getInstrumentation().getTargetContext());
-        FiveCallsApi api = new FiveCallsApi(callerId, requestQueue);
-        AppSingleton.getInstance(
-                InstrumentationRegistry.getInstrumentation().getTargetContext())
-                .setFiveCallsApi(api);
-
-        // Launch the activity
-        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
-
-        // The activity will automatically make a request for issues
-        // Wait longer for the error to be processed and Snackbar to be displayed
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        // Since we observed the same Snackbar appearing for both tests,
-        // let's check for the request_error message instead
-        onView(withText(R.string.request_error))
-                .check(matches(isDisplayed()));
-
-        // Also verify that the RecyclerView is displayed (but empty)
-        onView(withId(R.id.issues_recycler_view)).check(matches(isDisplayed()));
-
-        // Close the activity
-        scenario.close();
+        // Verify error UI is displayed
+        verifyErrorUI();
     }
 }
