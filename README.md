@@ -12,6 +12,12 @@ To run the app locally, you'll need to generate your own `google-services.json` 
 
 To test the app, set `TESTING=true` in `FiveCallsApi.java`. This makes sure that calls logged to the server are marked as test calls.
 
+For instrumentation testing, connect a device or start an emulator, then:
+
+```
+./gradlew connectedAndroidTest
+```
+
 ### Notifications
 
 To test snoozing notifications, change `FREQUENT_NOTIFICATION_DEBUG_MODE` to `true` in `NotificationUtils.java`. Note that notifications
