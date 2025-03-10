@@ -27,49 +27,6 @@ public class FakeJSONData {
     }
 
     /**
-     * Returns a simplified issue JSON array with a single test issue.
-     * Useful for tests that need a more controlled and simpler dataset.
-     */
-    public static JSONArray getSimpleIssuesJSON() {
-        try {
-            JSONArray issuesArray = new JSONArray();
-            JSONObject issue = new JSONObject();
-            issue.put("id", "test-issue-1");
-            issue.put("name", "Test Issue 1");
-            issue.put("slug", "test-issue-1");
-            issue.put("reason", "This is a test issue");
-            issue.put("script", "This is a test script");
-            issue.put("active", true);
-            issue.put("link", "https://5calls.org");
-            issue.put("linkTitle", "Learn More");
-
-            // Add categories
-            JSONArray categoriesArray = new JSONArray();
-            JSONObject category = new JSONObject();
-            category.put("name", "Test Category");
-            category.put("slug", "test-category");
-            categoriesArray.put(category);
-            issue.put("categories", categoriesArray);
-
-            // Add stats
-            JSONObject stats = new JSONObject();
-            stats.put("calls", 100);
-            issue.put("stats", stats);
-
-            // Add contactAreas
-            JSONArray contactAreasArray = new JSONArray();
-            contactAreasArray.put("Senate");
-            issue.put("contactAreas", contactAreasArray);
-
-            issuesArray.put(issue);
-            return issuesArray;
-        } catch (JSONException e) {
-            // Shouldn't happen since we're constructing the JSON manually.
-            return new JSONArray();
-        }
-    }
-
-    /**
      * Returns the reps data as a JSONObject.
      */
     public static JSONObject getRepsJSON() {

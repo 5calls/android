@@ -124,7 +124,7 @@ public class MainActivityHappyPathTest {
      */
     private void setupMockResponses() throws JSONException {
         // Use FakeJSONData for mock issues response
-        JSONArray issuesArray = FakeJSONData.getSimpleIssuesJSON();
+        JSONArray issuesArray = FakeJSONData.getIssueJSON();
         HttpResponse issuesResponse = new HttpResponse(200, new ArrayList<>(), issuesArray.toString().getBytes());
 
         // Use FakeJSONData for mock contacts response
@@ -203,8 +203,8 @@ public class MainActivityHappyPathTest {
         // Verify that the filter spinner is displayed
         onView(withId(R.id.filter)).check(matches(isDisplayed()));
 
-        // Verify that our test issue is displayed
-        onView(withText("Test Issue 1")).check(matches(isDisplayed()));
+        // Verify that a real issue is displayed (using the first issue from the real data)
+        onView(withText("Condemn a US Takeover of Gaza")).check(matches(isDisplayed()));
 
         // Wait a bit longer to ensure the title is fully loaded
         try {
