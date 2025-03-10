@@ -13,10 +13,6 @@ import com.android.volley.toolbox.HttpResponse;
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
-import org.a5calls.android.a5calls.model.Category;
-import org.a5calls.android.a5calls.model.Contact;
-import org.a5calls.android.a5calls.model.Issue;
-import org.a5calls.android.a5calls.model.IssueStats;
 import org.a5calls.android.a5calls.net.FakeRequestQueue;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
 import org.a5calls.android.a5calls.net.MockHttpStack;
@@ -29,7 +25,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static androidx.test.espresso.Espresso.onView;
@@ -37,7 +32,9 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.Matchers.containsString;
+import androidx.core.view.GravityCompat;
+import android.view.View;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 /**
  * Integration test for MainActivity that tests the happy path.
@@ -257,27 +254,80 @@ public class MainActivityHappyPathTest {
 
     @Test
     public void testNavigationDrawerOpens() {
-        // Set up mock to return empty responses (we don't care about the data for this test)
-        HttpResponse emptyResponse = new HttpResponse(200, new ArrayList<>(), "[]".getBytes());
-
-        // Create mock report response
-        JSONObject reportResponseJson = new JSONObject();
+        // Set up mock to return valid responses instead of empty ones
         try {
+            // Create mock issues response
+            JSONArray issuesArray = new JSONArray();
+            JSONObject issue = new JSONObject();
+            issue.put("id", "test-issue-1");
+            issue.put("name", "Test Issue 1");
+            issue.put("slug", "test-issue-1");
+            issue.put("reason", "This is a test issue");
+            issue.put("script", "This is a test script");
+            issue.put("active", true);
+            issue.put("link", "https://5calls.org");
+            issue.put("linkTitle", "Learn More");
+
+            // Add categories
+            JSONArray categoriesArray = new JSONArray();
+            JSONObject category = new JSONObject();
+            category.put("name", "Test Category");
+            category.put("slug", "test-category");
+            categoriesArray.put(category);
+            issue.put("categories", categoriesArray);
+
+            // Add stats
+            JSONObject stats = new JSONObject();
+            stats.put("calls", 100);
+            issue.put("stats", stats);
+
+            // Add contactAreas
+            JSONArray contactAreasArray = new JSONArray();
+            contactAreasArray.put("Senate");
+            issue.put("contactAreas", contactAreasArray);
+
+            issuesArray.put(issue);
+            HttpResponse issuesResponse = new HttpResponse(200, new ArrayList<>(), issuesArray.toString().getBytes());
+
+            // Create mock contacts response
+            JSONObject contactsResponseJson = new JSONObject();
+            contactsResponseJson.put("location", "Beverly Hills, CA 90210");
+            contactsResponseJson.put("normalizedLocation", "Beverly Hills, CA 90210");
+            contactsResponseJson.put("splitDistrict", false);
+            contactsResponseJson.put("state", "CA");
+            contactsResponseJson.put("district", "33");
+
+            JSONArray contactsArray = new JSONArray();
+            JSONObject contact = new JSONObject();
+            contact.put("id", "test-contact-1");
+            contact.put("name", "Test Representative");
+            contact.put("phone", "555-555-5555");
+            contact.put("photoURL", "https://example.com/photo.jpg");
+            contact.put("party", "Independent");
+            contact.put("state", "CA");
+            contact.put("reason", "This is your representative");
+            contact.put("area", "Senate");
+            contactsArray.put(contact);
+            contactsResponseJson.put("representatives", contactsArray);
+            HttpResponse contactsResponse = new HttpResponse(200, new ArrayList<>(), contactsResponseJson.toString().getBytes());
+
+            // Create mock report response
+            JSONObject reportResponseJson = new JSONObject();
             reportResponseJson.put("count", 5000);
             reportResponseJson.put("donateOn", false);
+            HttpResponse reportResponse = new HttpResponse(200, new ArrayList<>(), reportResponseJson.toString().getBytes());
+
+            // Set up the mock to handle all possible requests with appropriate responses
+            mHttpStack.clearUrlPatternResponses();
+            mHttpStack.setResponseForUrlPattern("issues", issuesResponse);
+            mHttpStack.setResponseForUrlPattern("reps", contactsResponse);
+            mHttpStack.setResponseForUrlPattern("report", reportResponse);
+
+            // Set a default response for any other requests
+            mHttpStack.setResponseToReturn(new HttpResponse(200, new ArrayList<>(), "{}".getBytes()));
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        HttpResponse reportResponse = new HttpResponse(200, new ArrayList<>(), reportResponseJson.toString().getBytes());
-
-        // Set up the mock to handle all possible requests with appropriate responses
-        mHttpStack.clearUrlPatternResponses();
-        mHttpStack.setResponseForUrlPattern("issues", emptyResponse);
-        mHttpStack.setResponseForUrlPattern("reps", emptyResponse);
-        mHttpStack.setResponseForUrlPattern("report", reportResponse);
-
-        // Set a default response for any other requests
-        mHttpStack.setResponseToReturn(emptyResponse);
 
         // Create a custom RequestQueue with our mock HTTP stack
         BasicNetwork basicNetwork = new BasicNetwork(mHttpStack);
@@ -318,9 +368,33 @@ public class MainActivityHappyPathTest {
             // Verify that the drawer layout is displayed
             onView(withId(R.id.drawer_layout)).check(matches(isDisplayed()));
 
-            // The navigation view might not be visible until we open the drawer
-            // So let's just verify the toolbar is displayed instead
+            // Verify that the toolbar is displayed
             onView(withId(R.id.toolbar)).check(matches(isDisplayed()));
+
+            // Open the drawer using the activity's drawer layout directly
+            scenario.onActivity(activity -> {
+                // Find the drawer layout by ID
+                DrawerLayout drawerLayout = activity.findViewById(R.id.drawer_layout);
+                // Open the drawer
+                drawerLayout.openDrawer(GravityCompat.START);
+            });
+
+            // Wait for drawer animation to complete
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            // Verify that the navigation view is now displayed
+            onView(withId(R.id.navigation_view)).check(matches(isDisplayed()));
+
+            // Verify that navigation menu items are displayed
+            onView(withText("About 5 Calls")).check(matches(isDisplayed()));
+            onView(withText("Your impact")).check(matches(isDisplayed()));
+            onView(withText("Settings")).check(matches(isDisplayed()));
+            onView(withText("FAQ")).check(matches(isDisplayed()));
+            onView(withText("Update location")).check(matches(isDisplayed()));
 
             // Close the activity
             scenario.close();
