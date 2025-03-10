@@ -11,6 +11,7 @@ import com.android.volley.toolbox.HttpResponse;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 
 import org.a5calls.android.a5calls.AppSingleton;
+import org.a5calls.android.a5calls.FakeJSONData;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.net.FakeRequestQueue;
@@ -122,65 +123,16 @@ public class MainActivityHappyPathTest {
      * Sets up mock responses for API calls
      */
     private void setupMockResponses() throws JSONException {
-        // Create mock issues response
-        JSONArray issuesArray = new JSONArray();
-        JSONObject issue = new JSONObject();
-        issue.put("id", "test-issue-1");
-        issue.put("name", "Test Issue 1");
-        issue.put("slug", "test-issue-1");
-        issue.put("reason", "This is a test issue");
-        issue.put("script", "This is a test script");
-        issue.put("active", true);
-        issue.put("link", "https://5calls.org");
-        issue.put("linkTitle", "Learn More");
-
-        // Add categories
-        JSONArray categoriesArray = new JSONArray();
-        JSONObject category = new JSONObject();
-        category.put("name", "Test Category");
-        category.put("slug", "test-category");
-        categoriesArray.put(category);
-        issue.put("categories", categoriesArray);
-
-        // Add stats
-        JSONObject stats = new JSONObject();
-        stats.put("calls", 100);
-        issue.put("stats", stats);
-
-        // Add contactAreas
-        JSONArray contactAreasArray = new JSONArray();
-        contactAreasArray.put("Senate");
-        issue.put("contactAreas", contactAreasArray);
-
-        issuesArray.put(issue);
+        // Use FakeJSONData for mock issues response
+        JSONArray issuesArray = FakeJSONData.getSimpleIssuesJSON();
         HttpResponse issuesResponse = new HttpResponse(200, new ArrayList<>(), issuesArray.toString().getBytes());
 
-        // Create mock contacts response
-        JSONObject contactsResponseJson = new JSONObject();
-        contactsResponseJson.put("location", "Beverly Hills, CA 90210");
-        contactsResponseJson.put("normalizedLocation", "Beverly Hills, CA 90210");
-        contactsResponseJson.put("splitDistrict", false);
-        contactsResponseJson.put("state", "CA");
-        contactsResponseJson.put("district", "33");
-
-        JSONArray contactsArray = new JSONArray();
-        JSONObject contact = new JSONObject();
-        contact.put("id", "test-contact-1");
-        contact.put("name", "Test Representative");
-        contact.put("phone", "555-555-5555");
-        contact.put("photoURL", "https://example.com/photo.jpg");
-        contact.put("party", "Independent");
-        contact.put("state", "CA");
-        contact.put("reason", "This is your representative");
-        contact.put("area", "Senate");
-        contactsArray.put(contact);
-        contactsResponseJson.put("representatives", contactsArray);
+        // Use FakeJSONData for mock contacts response
+        JSONObject contactsResponseJson = FakeJSONData.getRepsJSON();
         HttpResponse contactsResponse = new HttpResponse(200, new ArrayList<>(), contactsResponseJson.toString().getBytes());
 
-        // Create mock report response
-        JSONObject reportResponseJson = new JSONObject();
-        reportResponseJson.put("count", 5000);
-        reportResponseJson.put("donateOn", false);
+        // Use FakeJSONData for mock report response
+        JSONObject reportResponseJson = FakeJSONData.getReportJSON();
         HttpResponse reportResponse = new HttpResponse(200, new ArrayList<>(), reportResponseJson.toString().getBytes());
 
         // Set up the mock to handle all possible requests with appropriate responses
@@ -267,7 +219,7 @@ public class MainActivityHappyPathTest {
         // Check that the collapsing toolbar is displayed and contains the location text
         onView(withId(R.id.collapsing_toolbar))
             .check(matches(isDisplayed()))
-            .check(matches(withCollapsingToolbarTitle(containsString("Beverly Hills"))));
+            .check(matches(withCollapsingToolbarTitle(containsString("BOWLING GREEN"))));
     }
 
     @Test

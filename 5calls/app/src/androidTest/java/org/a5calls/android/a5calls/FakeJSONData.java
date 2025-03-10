@@ -2,6 +2,7 @@ package org.a5calls.android.a5calls;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONArray;
 
 public class FakeJSONData {
     // A snapshot of real issue data, used for testing.
@@ -12,4 +13,83 @@ public class FakeJSONData {
 
     // A snapshot of real report data, used for testing.
     public static final String REPORT_DATA = "{\"count\":4627301,\"donateOn\":true}";
+
+    /**
+     * Returns the full issue data as a JSONArray.
+     */
+    public static JSONArray getIssueJSON() {
+        try {
+            return new JSONArray(ISSUE_DATA);
+        } catch (JSONException e) {
+            // Shouldn't happen since all the JSON data is static strings above.
+            return new JSONArray();
+        }
+    }
+
+    /**
+     * Returns a simplified issue JSON array with a single test issue.
+     * Useful for tests that need a more controlled and simpler dataset.
+     */
+    public static JSONArray getSimpleIssuesJSON() {
+        try {
+            JSONArray issuesArray = new JSONArray();
+            JSONObject issue = new JSONObject();
+            issue.put("id", "test-issue-1");
+            issue.put("name", "Test Issue 1");
+            issue.put("slug", "test-issue-1");
+            issue.put("reason", "This is a test issue");
+            issue.put("script", "This is a test script");
+            issue.put("active", true);
+            issue.put("link", "https://5calls.org");
+            issue.put("linkTitle", "Learn More");
+
+            // Add categories
+            JSONArray categoriesArray = new JSONArray();
+            JSONObject category = new JSONObject();
+            category.put("name", "Test Category");
+            category.put("slug", "test-category");
+            categoriesArray.put(category);
+            issue.put("categories", categoriesArray);
+
+            // Add stats
+            JSONObject stats = new JSONObject();
+            stats.put("calls", 100);
+            issue.put("stats", stats);
+
+            // Add contactAreas
+            JSONArray contactAreasArray = new JSONArray();
+            contactAreasArray.put("Senate");
+            issue.put("contactAreas", contactAreasArray);
+
+            issuesArray.put(issue);
+            return issuesArray;
+        } catch (JSONException e) {
+            // Shouldn't happen since we're constructing the JSON manually.
+            return new JSONArray();
+        }
+    }
+
+    /**
+     * Returns the reps data as a JSONObject.
+     */
+    public static JSONObject getRepsJSON() {
+        try {
+            return new JSONObject(REPS_DATA);
+        } catch (JSONException e) {
+            // Shouldn't happen since all the JSON data is static strings above.
+            return new JSONObject();
+        }
+    }
+
+    /**
+     * Returns the report data as a JSONObject.
+     */
+    public static JSONObject getReportJSON() {
+        try {
+            return new JSONObject(REPORT_DATA);
+        } catch (JSONException e) {
+            // Shouldn't happen since all the JSON data is static strings above.
+            return new JSONObject();
+        }
+    }
 }
