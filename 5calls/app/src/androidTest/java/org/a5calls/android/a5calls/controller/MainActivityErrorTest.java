@@ -1,5 +1,7 @@
 package org.a5calls.android.a5calls.controller;
 
+import android.view.View;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -14,6 +16,9 @@ import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.net.FakeRequestQueue;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
 import org.a5calls.android.a5calls.net.MockHttpStack;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -127,6 +132,27 @@ public class MainActivityErrorTest {
     }
 
     /**
+     * Custom matcher to check if a RecyclerView has at least one item
+     */
+    public static Matcher<View> hasAtLeastOneItem() {
+        return new TypeSafeMatcher<View>() {
+            @Override
+            protected boolean matchesSafely(View view) {
+                if (!(view instanceof RecyclerView)) {
+                    return false;
+                }
+                RecyclerView recyclerView = (RecyclerView) view;
+                return recyclerView.getAdapter() != null && recyclerView.getAdapter().getItemCount() > 0;
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("RecyclerView with at least one item");
+            }
+        };
+    }
+
+    /**
      * Verifies that error UI is displayed correctly
      */
     private void verifyErrorUI() {
@@ -134,8 +160,10 @@ public class MainActivityErrorTest {
         onView(withText(R.string.request_error))
                 .check(matches(isDisplayed()));
 
-        // Also verify that the RecyclerView is displayed (but empty)
-        onView(withId(R.id.issues_recycler_view)).check(matches(isDisplayed()));
+        // Verify that the RecyclerView is displayed and has at least one item
+        onView(withId(R.id.issues_recycler_view))
+                .check(matches(isDisplayed()))
+                .check(matches(hasAtLeastOneItem()));
     }
 
     @Test
