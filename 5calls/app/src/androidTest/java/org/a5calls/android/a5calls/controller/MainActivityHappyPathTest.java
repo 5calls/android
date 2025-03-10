@@ -1,8 +1,6 @@
 package org.a5calls.android.a5calls.controller;
 
 import androidx.test.core.app.ActivityScenario;
-import androidx.test.espresso.IdlingRegistry;
-import androidx.test.espresso.IdlingResource;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
@@ -25,7 +23,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
@@ -33,7 +30,6 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import androidx.core.view.GravityCompat;
-import android.view.View;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 /**
@@ -46,36 +42,6 @@ public class MainActivityHappyPathTest {
     private RequestQueue mOriginalRequestQueue;
     private FiveCallsApi mOriginalApi;
     private String mOriginalAddress;
-
-    /**
-     * A simple IdlingResource that waits for a condition to be true.
-     */
-    private static class ConditionIdlingResource implements IdlingResource {
-        private final AtomicBoolean mIsIdle = new AtomicBoolean(false);
-        private ResourceCallback mResourceCallback;
-
-        public void setIdle(boolean isIdle) {
-            mIsIdle.set(isIdle);
-            if (isIdle && mResourceCallback != null) {
-                mResourceCallback.onTransitionToIdle();
-            }
-        }
-
-        @Override
-        public String getName() {
-            return ConditionIdlingResource.class.getName();
-        }
-
-        @Override
-        public boolean isIdleNow() {
-            return mIsIdle.get();
-        }
-
-        @Override
-        public void registerIdleTransitionCallback(ResourceCallback callback) {
-            mResourceCallback = callback;
-        }
-    }
 
     @Before
     public void setUp() {
@@ -202,54 +168,42 @@ public class MainActivityHappyPathTest {
                 InstrumentationRegistry.getInstrumentation().getTargetContext())
                 .setFiveCallsApi(api);
 
-        // Create an idling resource to wait for the UI to load
-        final ConditionIdlingResource idlingResource = new ConditionIdlingResource();
-        IdlingRegistry.getInstance().register(idlingResource);
+        // Set up the mock to handle all possible requests with appropriate responses
+        mHttpStack.clearUrlPatternResponses();
+        mHttpStack.setResponseForUrlPattern("issues", issuesResponse);
+        mHttpStack.setResponseForUrlPattern("reps", contactsResponse);
+        mHttpStack.setResponseForUrlPattern("report", reportResponse);
 
+        // Set a default response for any other requests
+        mHttpStack.setResponseToReturn(new HttpResponse(200, new ArrayList<>(), "{}".getBytes()));
+
+        // Launch the activity
+        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
+
+        // Wait for all requests to complete and UI to update
         try {
-            // Set up the mock to handle all possible requests with appropriate responses
-            mHttpStack.clearUrlPatternResponses();
-            mHttpStack.setResponseForUrlPattern("issues", issuesResponse);
-            mHttpStack.setResponseForUrlPattern("reps", contactsResponse);
-            mHttpStack.setResponseForUrlPattern("report", reportResponse);
-
-            // Set a default response for any other requests
-            mHttpStack.setResponseToReturn(new HttpResponse(200, new ArrayList<>(), "{}".getBytes()));
-
-            // Launch the activity
-            ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
-
-            // Wait for all requests to complete and UI to update
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            // Set the idling resource to idle
-            idlingResource.setIdle(true);
-
-            // Verify that the toolbar is displayed
-            onView(withId(R.id.toolbar)).check(matches(isDisplayed()));
-
-            // Verify that the issues recycler view is displayed
-            onView(withId(R.id.issues_recycler_view)).check(matches(isDisplayed()));
-
-            // Verify that the filter spinner is displayed
-            onView(withId(R.id.filter)).check(matches(isDisplayed()));
-
-            // Verify that our test issue is displayed
-            onView(withText("Test Issue 1")).check(matches(isDisplayed()));
-
-            // The subtitle might not contain the exact location string, so let's just verify it's displayed
-            onView(withId(R.id.action_bar_subtitle)).check(matches(isDisplayed()));
-
-            // Close the activity
-            scenario.close();
-        } finally {
-            // Unregister the idling resource
-            IdlingRegistry.getInstance().unregister(idlingResource);
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+
+        // Verify that the toolbar is displayed
+        onView(withId(R.id.toolbar)).check(matches(isDisplayed()));
+
+        // Verify that the issues recycler view is displayed
+        onView(withId(R.id.issues_recycler_view)).check(matches(isDisplayed()));
+
+        // Verify that the filter spinner is displayed
+        onView(withId(R.id.filter)).check(matches(isDisplayed()));
+
+        // Verify that our test issue is displayed
+        onView(withText("Test Issue 1")).check(matches(isDisplayed()));
+
+        // The subtitle might not contain the exact location string, so let's just verify it's displayed
+        onView(withId(R.id.action_bar_subtitle)).check(matches(isDisplayed()));
+
+        // Close the activity
+        scenario.close();
     }
 
     @Test
@@ -347,60 +301,48 @@ public class MainActivityHappyPathTest {
                 InstrumentationRegistry.getInstrumentation().getTargetContext())
                 .setFiveCallsApi(api);
 
-        // Create an idling resource to wait for the UI to load
-        final ConditionIdlingResource idlingResource = new ConditionIdlingResource();
-        IdlingRegistry.getInstance().register(idlingResource);
+        // Launch the activity
+        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
 
+        // Wait for all requests to complete and UI to update
         try {
-            // Launch the activity
-            ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
-
-            // Wait for all requests to complete and UI to update
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            // Set the idling resource to idle
-            idlingResource.setIdle(true);
-
-            // Verify that the drawer layout is displayed
-            onView(withId(R.id.drawer_layout)).check(matches(isDisplayed()));
-
-            // Verify that the toolbar is displayed
-            onView(withId(R.id.toolbar)).check(matches(isDisplayed()));
-
-            // Open the drawer using the activity's drawer layout directly
-            scenario.onActivity(activity -> {
-                // Find the drawer layout by ID
-                DrawerLayout drawerLayout = activity.findViewById(R.id.drawer_layout);
-                // Open the drawer
-                drawerLayout.openDrawer(GravityCompat.START);
-            });
-
-            // Wait for drawer animation to complete
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            // Verify that the navigation view is now displayed
-            onView(withId(R.id.navigation_view)).check(matches(isDisplayed()));
-
-            // Verify that navigation menu items are displayed
-            onView(withText("About 5 Calls")).check(matches(isDisplayed()));
-            onView(withText("Your impact")).check(matches(isDisplayed()));
-            onView(withText("Settings")).check(matches(isDisplayed()));
-            onView(withText("FAQ")).check(matches(isDisplayed()));
-            onView(withText("Update location")).check(matches(isDisplayed()));
-
-            // Close the activity
-            scenario.close();
-        } finally {
-            // Unregister the idling resource
-            IdlingRegistry.getInstance().unregister(idlingResource);
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+
+        // Verify that the drawer layout is displayed
+        onView(withId(R.id.drawer_layout)).check(matches(isDisplayed()));
+
+        // Verify that the toolbar is displayed
+        onView(withId(R.id.toolbar)).check(matches(isDisplayed()));
+
+        // Open the drawer using the activity's drawer layout directly
+        scenario.onActivity(activity -> {
+            // Find the drawer layout by ID
+            DrawerLayout drawerLayout = activity.findViewById(R.id.drawer_layout);
+            // Open the drawer
+            drawerLayout.openDrawer(GravityCompat.START);
+        });
+
+        // Wait for drawer animation to complete
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // Verify that the navigation view is now displayed
+        onView(withId(R.id.navigation_view)).check(matches(isDisplayed()));
+
+        // Verify that navigation menu items are displayed
+        onView(withText("About 5 Calls")).check(matches(isDisplayed()));
+        onView(withText("Your impact")).check(matches(isDisplayed()));
+        onView(withText("Settings")).check(matches(isDisplayed()));
+        onView(withText("FAQ")).check(matches(isDisplayed()));
+        onView(withText("Update location")).check(matches(isDisplayed()));
+
+        // Close the activity
+        scenario.close();
     }
 }

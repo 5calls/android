@@ -1,8 +1,6 @@
 package org.a5calls.android.a5calls.controller;
 
 import androidx.test.core.app.ActivityScenario;
-import androidx.test.espresso.IdlingRegistry;
-import androidx.test.espresso.IdlingResource;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
@@ -24,7 +22,6 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
@@ -43,36 +40,6 @@ public class MainActivityErrorTest {
     private RequestQueue mOriginalRequestQueue;
     private FiveCallsApi mOriginalApi;
     private String mOriginalAddress;
-
-    /**
-     * A simple IdlingResource that waits for a condition to be true.
-     */
-    private static class ConditionIdlingResource implements IdlingResource {
-        private final AtomicBoolean mIsIdle = new AtomicBoolean(false);
-        private ResourceCallback mResourceCallback;
-
-        public void setIdle(boolean isIdle) {
-            mIsIdle.set(isIdle);
-            if (isIdle && mResourceCallback != null) {
-                mResourceCallback.onTransitionToIdle();
-            }
-        }
-
-        @Override
-        public String getName() {
-            return ConditionIdlingResource.class.getName();
-        }
-
-        @Override
-        public boolean isIdleNow() {
-            return mIsIdle.get();
-        }
-
-        @Override
-        public void registerIdleTransitionCallback(ResourceCallback callback) {
-            mResourceCallback = callback;
-        }
-    }
 
     @Before
     public void setUp() {
@@ -139,38 +106,26 @@ public class MainActivityErrorTest {
                 InstrumentationRegistry.getInstrumentation().getTargetContext())
                 .setFiveCallsApi(api);
 
-        // Create an idling resource to wait for the error to be displayed
-        final ConditionIdlingResource idlingResource = new ConditionIdlingResource();
-        IdlingRegistry.getInstance().register(idlingResource);
+        // Launch the activity
+        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
 
+        // The activity will automatically make a request for issues
+        // Wait longer for the error to be processed and Snackbar to be displayed
         try {
-            // Launch the activity
-            ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
-
-            // The activity will automatically make a request for issues
-            // Wait longer for the error to be processed and Snackbar to be displayed
-            try {
-                Thread.sleep(3000); // Increased wait time from 2000 to 3000ms
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            // Set the idling resource to idle
-            idlingResource.setIdle(true);
-
-            // Check that the error message is displayed
-            onView(withText(R.string.request_error))
-                    .check(matches(isDisplayed()));
-
-            // Also verify that the RecyclerView is displayed (but empty)
-            onView(withId(R.id.issues_recycler_view)).check(matches(isDisplayed()));
-
-            // Close the activity
-            scenario.close();
-        } finally {
-            // Unregister the idling resource
-            IdlingRegistry.getInstance().unregister(idlingResource);
+            Thread.sleep(3000); // Increased wait time from 2000 to 3000ms
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+
+        // Check that the error message is displayed
+        onView(withText(R.string.request_error))
+                .check(matches(isDisplayed()));
+
+        // Also verify that the RecyclerView is displayed (but empty)
+        onView(withId(R.id.issues_recycler_view)).check(matches(isDisplayed()));
+
+        // Close the activity
+        scenario.close();
     }
 
     @Test
@@ -197,38 +152,26 @@ public class MainActivityErrorTest {
                 InstrumentationRegistry.getInstrumentation().getTargetContext())
                 .setFiveCallsApi(api);
 
-        // Create an idling resource to wait for the error to be displayed
-        final ConditionIdlingResource idlingResource = new ConditionIdlingResource();
-        IdlingRegistry.getInstance().register(idlingResource);
+        // Launch the activity
+        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
 
+        // The activity will automatically make a request for issues
+        // Wait longer for the error to be processed and Snackbar to be displayed
         try {
-            // Launch the activity
-            ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
-
-            // The activity will automatically make a request for issues
-            // Wait longer for the error to be processed and Snackbar to be displayed
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            // Set the idling resource to idle
-            idlingResource.setIdle(true);
-
-            // Since we observed the same Snackbar appearing for both tests,
-            // let's check for the request_error message instead
-            onView(withText(R.string.request_error))
-                    .check(matches(isDisplayed()));
-
-            // Also verify that the RecyclerView is displayed (but empty)
-            onView(withId(R.id.issues_recycler_view)).check(matches(isDisplayed()));
-
-            // Close the activity
-            scenario.close();
-        } finally {
-            // Unregister the idling resource
-            IdlingRegistry.getInstance().unregister(idlingResource);
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+
+        // Since we observed the same Snackbar appearing for both tests,
+        // let's check for the request_error message instead
+        onView(withText(R.string.request_error))
+                .check(matches(isDisplayed()));
+
+        // Also verify that the RecyclerView is displayed (but empty)
+        onView(withId(R.id.issues_recycler_view)).check(matches(isDisplayed()));
+
+        // Close the activity
+        scenario.close();
     }
 }
