@@ -149,12 +149,20 @@ public class MainActivityHappyPathTest {
         stats.put("calls", 100);
         issue.put("stats", stats);
 
+        // Add contactAreas
+        JSONArray contactAreasArray = new JSONArray();
+        contactAreasArray.put("Senate");
+        issue.put("contactAreas", contactAreasArray);
+
         issuesArray.put(issue);
 
         // Create mock contacts response
         JSONObject contactsResponseJson = new JSONObject();
+        contactsResponseJson.put("location", "Beverly Hills, CA 90210");
         contactsResponseJson.put("normalizedLocation", "Beverly Hills, CA 90210");
         contactsResponseJson.put("splitDistrict", false);
+        contactsResponseJson.put("state", "CA");
+        contactsResponseJson.put("district", "33");
 
         JSONArray contactsArray = new JSONArray();
         JSONObject contact = new JSONObject();
@@ -167,7 +175,7 @@ public class MainActivityHappyPathTest {
         contact.put("reason", "This is your representative");
         contact.put("area", "Senate");
         contactsArray.put(contact);
-        contactsResponseJson.put("officials", contactsArray);
+        contactsResponseJson.put("representatives", contactsArray);
 
         // Create mock report response
         JSONObject reportResponseJson = new JSONObject();
@@ -347,6 +355,11 @@ public class MainActivityHappyPathTest {
         stats1.put("calls", 100);
         issue1.put("stats", stats1);
 
+        // Add contactAreas
+        JSONArray contactAreas1 = new JSONArray();
+        contactAreas1.put("Senate");
+        issue1.put("contactAreas", contactAreas1);
+
         issuesArray.put(issue1);
 
         // Second issue with category "Test Category 2"
@@ -369,20 +382,33 @@ public class MainActivityHappyPathTest {
         stats2.put("calls", 200);
         issue2.put("stats", stats2);
 
+        // Add contactAreas
+        JSONArray contactAreas2 = new JSONArray();
+        contactAreas2.put("House");
+        issue2.put("contactAreas", contactAreas2);
+
         issuesArray.put(issue2);
 
         // Create mock contacts response
         JSONObject contactsResponseJson = new JSONObject();
+        contactsResponseJson.put("location", "Beverly Hills, CA 90210");
         contactsResponseJson.put("normalizedLocation", "Beverly Hills, CA 90210");
         contactsResponseJson.put("splitDistrict", false);
+        contactsResponseJson.put("state", "CA");
+        contactsResponseJson.put("district", "33");
 
         JSONArray contactsArray = new JSONArray();
         JSONObject contact = new JSONObject();
         contact.put("id", "test-contact-1");
         contact.put("name", "Test Representative");
         contact.put("phone", "555-555-5555");
+        contact.put("photoURL", "https://example.com/photo.jpg");
+        contact.put("party", "Independent");
+        contact.put("state", "CA");
+        contact.put("reason", "This is your representative");
+        contact.put("area", "Senate");
         contactsArray.put(contact);
-        contactsResponseJson.put("officials", contactsArray);
+        contactsResponseJson.put("representatives", contactsArray);
 
         // Create mock report response
         JSONObject reportResponseJson = new JSONObject();
