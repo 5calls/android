@@ -35,6 +35,9 @@ public class MockHttpStack extends BaseHttpStack {
     private Map<String, String> mLastHeaders;
     private byte[] mLastPostBody;
 
+    // Add a map to store responses for different URL patterns
+    private Map<String, HttpResponse> mUrlPatternResponses = new HashMap<>();
+
     public String getLastUrl() {
         return mLastUrl;
     }
@@ -55,6 +58,16 @@ public class MockHttpStack extends BaseHttpStack {
         mExceptionToThrow = exception;
     }
 
+    // Add a method to set responses for specific URL patterns
+    public void setResponseForUrlPattern(String urlPattern, HttpResponse response) {
+        mUrlPatternResponses.put(urlPattern, response);
+    }
+
+    // Add a method to clear all URL pattern responses
+    public void clearUrlPatternResponses() {
+        mUrlPatternResponses.clear();
+    }
+
     @Override
     public com.android.volley.toolbox.HttpResponse executeRequest(Request<?> request, Map<String, String> additionalHeaders) throws IOException, AuthFailureError {
         if (mExceptionToThrow != null) {
@@ -73,6 +86,15 @@ public class MockHttpStack extends BaseHttpStack {
         } catch (AuthFailureError e) {
             mLastPostBody = null;
         }
+
+        // Check if we have a response for this URL pattern
+        for (Map.Entry<String, HttpResponse> entry : mUrlPatternResponses.entrySet()) {
+            if (mLastUrl.contains(entry.getKey())) {
+                return entry.getValue();
+            }
+        }
+
+        // Fall back to the default response
         return mResponseToReturn;
     }
 }
