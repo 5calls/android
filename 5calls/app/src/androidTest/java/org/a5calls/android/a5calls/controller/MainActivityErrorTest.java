@@ -110,7 +110,7 @@ public class MainActivityErrorTest {
         // The activity will automatically make a request for issues
         // Wait longer for the error to be processed and Snackbar to be displayed
         try {
-            Thread.sleep(3000); // Increased wait time from 2000 to 3000ms
+            Thread.sleep(3000); // Allow sufficient time for error processing
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
