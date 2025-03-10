@@ -169,9 +169,15 @@ public class MainActivityHappyPathTest {
         contactsArray.put(contact);
         contactsResponseJson.put("officials", contactsArray);
 
+        // Create mock report response
+        JSONObject reportResponseJson = new JSONObject();
+        reportResponseJson.put("count", 5000);
+        reportResponseJson.put("donateOn", false);
+
         // Set up mock to return our test data
         HttpResponse issuesResponse = new HttpResponse(200, new ArrayList<>(), issuesArray.toString().getBytes());
         HttpResponse contactsResponse = new HttpResponse(200, new ArrayList<>(), contactsResponseJson.toString().getBytes());
+        HttpResponse reportResponse = new HttpResponse(200, new ArrayList<>(), reportResponseJson.toString().getBytes());
 
         // Create a custom RequestQueue with our mock HTTP stack
         BasicNetwork basicNetwork = new BasicNetwork(mHttpStack);
@@ -196,25 +202,21 @@ public class MainActivityHappyPathTest {
         IdlingRegistry.getInstance().register(idlingResource);
 
         try {
-            // Set up the mock to return issues response first
-            mHttpStack.setResponseToReturn(issuesResponse);
+            // Set up the mock to handle all possible requests with appropriate responses
+            mHttpStack.clearUrlPatternResponses();
+            mHttpStack.setResponseForUrlPattern("issues", issuesResponse);
+            mHttpStack.setResponseForUrlPattern("reps", contactsResponse);
+            mHttpStack.setResponseForUrlPattern("report", reportResponse);
+
+            // Set a default response for any other requests
+            mHttpStack.setResponseToReturn(new HttpResponse(200, new ArrayList<>(), "{}".getBytes()));
 
             // Launch the activity
             ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
 
-            // Wait for the issues request to complete
+            // Wait for all requests to complete and UI to update
             try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            // Now set up the mock to return contacts response for the second request
-            mHttpStack.setResponseToReturn(contactsResponse);
-
-            // Wait for the contacts request to complete and UI to update
-            try {
-                Thread.sleep(2000);
+                Thread.sleep(3000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -249,6 +251,24 @@ public class MainActivityHappyPathTest {
     public void testNavigationDrawerOpens() {
         // Set up mock to return empty responses (we don't care about the data for this test)
         HttpResponse emptyResponse = new HttpResponse(200, new ArrayList<>(), "[]".getBytes());
+
+        // Create mock report response
+        JSONObject reportResponseJson = new JSONObject();
+        try {
+            reportResponseJson.put("count", 5000);
+            reportResponseJson.put("donateOn", false);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        HttpResponse reportResponse = new HttpResponse(200, new ArrayList<>(), reportResponseJson.toString().getBytes());
+
+        // Set up the mock to handle all possible requests with appropriate responses
+        mHttpStack.clearUrlPatternResponses();
+        mHttpStack.setResponseForUrlPattern("issues", emptyResponse);
+        mHttpStack.setResponseForUrlPattern("reps", emptyResponse);
+        mHttpStack.setResponseForUrlPattern("report", reportResponse);
+
+        // Set a default response for any other requests
         mHttpStack.setResponseToReturn(emptyResponse);
 
         // Create a custom RequestQueue with our mock HTTP stack
@@ -277,9 +297,9 @@ public class MainActivityHappyPathTest {
             // Launch the activity
             ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
 
-            // Wait for the activity to load
+            // Wait for all requests to complete and UI to update
             try {
-                Thread.sleep(1000);
+                Thread.sleep(3000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -364,9 +384,24 @@ public class MainActivityHappyPathTest {
         contactsArray.put(contact);
         contactsResponseJson.put("officials", contactsArray);
 
+        // Create mock report response
+        JSONObject reportResponseJson = new JSONObject();
+        reportResponseJson.put("count", 5000);
+        reportResponseJson.put("donateOn", false);
+
         // Set up mock to return our test data
         HttpResponse issuesResponse = new HttpResponse(200, new ArrayList<>(), issuesArray.toString().getBytes());
         HttpResponse contactsResponse = new HttpResponse(200, new ArrayList<>(), contactsResponseJson.toString().getBytes());
+        HttpResponse reportResponse = new HttpResponse(200, new ArrayList<>(), reportResponseJson.toString().getBytes());
+
+        // Set up the mock to handle all possible requests with appropriate responses
+        mHttpStack.clearUrlPatternResponses();
+        mHttpStack.setResponseForUrlPattern("issues", issuesResponse);
+        mHttpStack.setResponseForUrlPattern("reps", contactsResponse);
+        mHttpStack.setResponseForUrlPattern("report", reportResponse);
+
+        // Set a default response for any other requests
+        mHttpStack.setResponseToReturn(new HttpResponse(200, new ArrayList<>(), "{}".getBytes()));
 
         // Create a custom RequestQueue with our mock HTTP stack
         BasicNetwork basicNetwork = new BasicNetwork(mHttpStack);
@@ -391,25 +426,12 @@ public class MainActivityHappyPathTest {
         IdlingRegistry.getInstance().register(idlingResource);
 
         try {
-            // Set up the mock to return issues response first
-            mHttpStack.setResponseToReturn(issuesResponse);
-
             // Launch the activity
             ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
 
-            // Wait for the issues request to complete
+            // Wait for all requests to complete and UI to update
             try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            // Now set up the mock to return contacts response for the second request
-            mHttpStack.setResponseToReturn(contactsResponse);
-
-            // Wait for the contacts request to complete and UI to update
-            try {
-                Thread.sleep(2000);
+                Thread.sleep(3000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
