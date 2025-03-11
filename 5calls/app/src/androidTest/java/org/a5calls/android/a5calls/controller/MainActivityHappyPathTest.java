@@ -177,7 +177,7 @@ public class MainActivityHappyPathTest {
 
         // Wait for all requests to complete and UI to update
         try {
-            Thread.sleep(3000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
