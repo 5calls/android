@@ -185,13 +185,10 @@ public class MainActivityHappyPathTest {
 
     @Test
     public void testMainUILoadsCorrectly() throws JSONException {
-        // Set up mock responses
         setupMockResponses();
 
-        // Set up mock request queue
         setupMockRequestQueue();
 
-        // Launch the activity
         launchMainActivity();
 
         // Verify that the toolbar is displayed
@@ -217,13 +214,10 @@ public class MainActivityHappyPathTest {
 
     @Test
     public void testNavigationDrawerOpens() throws JSONException {
-        // Set up mock responses
         setupMockResponses();
 
-        // Set up mock request queue
         setupMockRequestQueue();
 
-        // Launch the activity
         launchMainActivity();
 
         // Verify that the drawer layout is displayed
@@ -234,9 +228,7 @@ public class MainActivityHappyPathTest {
 
         // Open the drawer using the activity's drawer layout directly
         scenario.onActivity(activity -> {
-            // Find the drawer layout by ID
             DrawerLayout drawerLayout = activity.findViewById(R.id.drawer_layout);
-            // Open the drawer
             drawerLayout.openDrawer(GravityCompat.START);
         });
 
