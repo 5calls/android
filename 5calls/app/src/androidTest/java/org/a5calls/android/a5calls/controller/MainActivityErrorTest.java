@@ -132,9 +132,9 @@ public class MainActivityErrorTest {
     }
 
     /**
-     * Custom matcher to check if a RecyclerView has at least one item
+     * Custom matcher to check if a RecyclerView has exactly one item
      */
-    public static Matcher<View> hasAtLeastOneItem() {
+    public static Matcher<View> hasExactlyOneItem() {
         return new TypeSafeMatcher<View>() {
             @Override
             protected boolean matchesSafely(View view) {
@@ -142,12 +142,12 @@ public class MainActivityErrorTest {
                     return false;
                 }
                 RecyclerView recyclerView = (RecyclerView) view;
-                return recyclerView.getAdapter() != null && recyclerView.getAdapter().getItemCount() > 0;
+                return recyclerView.getAdapter() != null && recyclerView.getAdapter().getItemCount() == 1;
             }
 
             @Override
             public void describeTo(Description description) {
-                description.appendText("RecyclerView with at least one item");
+                description.appendText("RecyclerView with exactly one item");
             }
         };
     }
@@ -163,7 +163,7 @@ public class MainActivityErrorTest {
         // Verify that the RecyclerView is displayed and has at least one item
         onView(withId(R.id.issues_recycler_view))
                 .check(matches(isDisplayed()))
-                .check(matches(hasAtLeastOneItem()));
+                .check(matches(hasExactlyOneItem()));
     }
 
     @Test
