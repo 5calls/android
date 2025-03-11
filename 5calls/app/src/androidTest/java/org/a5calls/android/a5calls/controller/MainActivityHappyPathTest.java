@@ -171,13 +171,13 @@ public class MainActivityHappyPathTest {
     /**
      * Launches the MainActivity and waits for it to load
      */
-    private void launchMainActivity() {
+    private void launchMainActivity(int waitTimeMs) {
         // Launch the activity
         scenario = ActivityScenario.launch(MainActivity.class);
 
         // Wait for all requests to complete and UI to update
         try {
-            Thread.sleep(1000);
+            Thread.sleep(waitTimeMs);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -189,7 +189,7 @@ public class MainActivityHappyPathTest {
 
         setupMockRequestQueue();
 
-        launchMainActivity();
+        launchMainActivity(1000);
 
         // Verify that the toolbar is displayed
         onView(withId(R.id.toolbar)).check(matches(isDisplayed()));
@@ -218,7 +218,7 @@ public class MainActivityHappyPathTest {
 
         setupMockRequestQueue();
 
-        launchMainActivity();
+        launchMainActivity(1000);
 
         // Verify that the drawer layout is displayed
         onView(withId(R.id.drawer_layout)).check(matches(isDisplayed()));
