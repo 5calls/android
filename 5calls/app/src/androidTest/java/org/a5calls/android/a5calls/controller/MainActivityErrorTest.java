@@ -174,7 +174,7 @@ public class MainActivityErrorTest {
         setupMockRequestQueue();
 
         // TODO: rather than hard-coding the wait time, we should wait for the error to be processed
-        launchMainActivity(3000);
+        launchMainActivity(1000);
 
         verifyErrorUI();
     }
