@@ -206,13 +206,6 @@ public class MainActivityHappyPathTest {
         // Verify that a real issue is displayed (using the first issue from the real data)
         onView(withText("Condemn a US Takeover of Gaza")).check(matches(isDisplayed()));
 
-        // Wait a bit longer to ensure the title is fully loaded
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         // Check that the toolbar is displayed
         onView(withId(R.id.toolbar)).check(matches(isDisplayed()));
 
