@@ -299,10 +299,10 @@ public class RepCallActivity extends AppCompatActivity {
                 }
             }
             if (numContacted > 0) {
-                result += numContacted + ": " + Outcome.getDisplayString(context, Outcome.Status.VOICEMAIL) + "\n";
+                result += numContacted + ": " + Outcome.getDisplayString(context, Outcome.Status.CONTACT) + "\n";
             }
             if (numVoicemail > 0) {
-                result += numVoicemail + ": " + Outcome.getDisplayString(context, Outcome.Status.CONTACT) + "\n";
+                result += numVoicemail + ": " + Outcome.getDisplayString(context, Outcome.Status.VOICEMAIL) + "\n";
             }
             if (numUnavailable > 0) {
                 result += numUnavailable + ": " + Outcome.getDisplayString(context, Outcome.Status.UNAVAILABLE);
