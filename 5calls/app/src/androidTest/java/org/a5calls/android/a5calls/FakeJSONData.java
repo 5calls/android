@@ -2,6 +2,7 @@ package org.a5calls.android.a5calls;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONArray;
 
 public class FakeJSONData {
     // A snapshot of real issue data, used for testing.
@@ -12,4 +13,40 @@ public class FakeJSONData {
 
     // A snapshot of real report data, used for testing.
     public static final String REPORT_DATA = "{\"count\":4627301,\"donateOn\":true}";
+
+    /**
+     * Returns the full issue data as a JSONArray.
+     */
+    public static JSONArray getIssueJSON() {
+        try {
+            return new JSONArray(ISSUE_DATA);
+        } catch (JSONException e) {
+            // Shouldn't happen since all the JSON data is static strings above.
+            return new JSONArray();
+        }
+    }
+
+    /**
+     * Returns the reps data as a JSONObject.
+     */
+    public static JSONObject getRepsJSON() {
+        try {
+            return new JSONObject(REPS_DATA);
+        } catch (JSONException e) {
+            // Shouldn't happen since all the JSON data is static strings above.
+            return new JSONObject();
+        }
+    }
+
+    /**
+     * Returns the report data as a JSONObject.
+     */
+    public static JSONObject getReportJSON() {
+        try {
+            return new JSONObject(REPORT_DATA);
+        } catch (JSONException e) {
+            // Shouldn't happen since all the JSON data is static strings above.
+            return new JSONObject();
+        }
+    }
 }
