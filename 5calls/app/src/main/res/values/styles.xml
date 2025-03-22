@@ -64,6 +64,10 @@
         <item name="android:textStyle">italic</item>
     </style>
 
+    <style name="spacedParagraphTextStyleErrorHighlight" parent="spacedParagraphTextStyleHighlight">
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
     <style name="zipEditTextStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>

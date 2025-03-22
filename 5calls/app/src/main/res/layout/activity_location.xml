@@ -39,6 +39,13 @@
             android:text="@string/location_address_prompt"
             />
 
+        <TextView
+            style="@style/spacedParagraphTextStyleErrorHighlight"
+            android:id="@+id/low_accuracy_suggestion"
+            android:text="@string/low_accuracy_suggestion"
+            android:visibility="gone"
+            />
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

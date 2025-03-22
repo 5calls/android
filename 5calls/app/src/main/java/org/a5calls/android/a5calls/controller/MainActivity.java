@@ -4,11 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import androidx.core.view.GravityCompat;
@@ -17,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.DisplayMetrics;
@@ -61,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     public static final String EXTRA_FROM_NOTIFICATION = "extraFromNotification";
     private static final String KEY_FILTER_ITEM_SELECTED = "filterItemSelected";
     private static final String KEY_SEARCH_TEXT = "searchText";
+    private static final String KEY_SHOW_LOW_ACCURACY_WARNING = "showLowAccuracyWarning";
     private final AccountManager accountManager = AccountManager.Instance;
 
     private ArrayAdapter<String> mFilterAdapter;
@@ -76,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     private String mLongitude;
     private String mLocationName;
     private boolean mIsLowAccuracy = false;
+    private boolean mShowLowAccuracyWarning = true;
     private boolean mDonateIsOn = false;
     private FirebaseAuth mAuth = null;
 
@@ -189,6 +196,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         if (savedInstanceState != null) {
             mFilterText = savedInstanceState.getString(KEY_FILTER_ITEM_SELECTED);
             mSearchText = savedInstanceState.getString(KEY_SEARCH_TEXT);
+            mShowLowAccuracyWarning = savedInstanceState.getBoolean(KEY_SHOW_LOW_ACCURACY_WARNING);
             if (TextUtils.isEmpty(mSearchText)) {
                 binding.searchBar.setVisibility(View.GONE);
                 binding.filter.setVisibility(VISIBLE);
@@ -224,7 +232,8 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
 
         binding.swipeContainer.setColorSchemeResources(R.color.colorPrimary);
         binding.swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override public void onRefresh() {
+            @Override
+            public void onRefresh() {
                 refreshIssues();
             }
         });
@@ -283,7 +292,8 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         // Note that refreshing issues will also refresh the contacts list when it runs
         // on resume.
         binding.swipeContainer.post(new Runnable() {
-            @Override public void run() {
+            @Override
+            public void run() {
                 binding.swipeContainer.setRefreshing(true);
                 refreshIssues();
             }
@@ -294,6 +304,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putString(KEY_FILTER_ITEM_SELECTED, mFilterText);
         outState.putString(KEY_SEARCH_TEXT, mSearchText);
+        outState.putBoolean(KEY_SHOW_LOW_ACCURACY_WARNING, mShowLowAccuracyWarning);
         super.onSaveInstanceState(outState);
     }
 
@@ -309,10 +320,10 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         if (item.getItemId() == android.R.id.home) {
             binding.drawerLayout.openDrawer(GravityCompat.START);
             return true;
-        }
-        else if (item.getItemId() == R.id.menu_refresh) {
+        } else if (item.getItemId() == R.id.menu_refresh) {
             binding.swipeContainer.post(new Runnable() {
-                @Override public void run() {
+                @Override
+                public void run() {
                     binding.swipeContainer.setRefreshing(true);
                     refreshIssues();
                 }
@@ -379,8 +390,12 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     public void launchLocationActivity() {
         // Clear it in case they change they location.
         mIssuesAdapter.setContacts(new ArrayList<Contact>(), IssuesAdapter.NO_ERROR);
+        // We can show the warning again next time, because the location may have changed.
+        mShowLowAccuracyWarning = true;
+
         Intent intent = new Intent(this, LocationActivity.class);
         intent.putExtra(LocationActivity.ALLOW_HOME_UP_KEY, true);
+        intent.putExtra(IssueActivity.KEY_IS_LOW_ACCURACY, mIsLowAccuracy);
         startActivity(intent);
     }
 
@@ -453,42 +468,45 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
 
                 hideSnackbars();
 
-                // Check if this is a split district by seeing if there are >2 reps in the house.
-                int houseCount = 0;
-                for (Contact contact : contacts) {
-                    if (TextUtils.equals(contact.area, "US House")) {
-                        houseCount++;
-                    }
-                }
-                if (houseCount > 1 || mIsLowAccuracy) {
-                    int warning = houseCount > 1 ? R.string.split_district_warning :
-                            R.string.low_accuracy_warning;
-                    mSnackbar = Snackbar.make(binding.swipeContainer, warning,
-                            Snackbar.LENGTH_INDEFINITE)
-                            .setAction(R.string.update, new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    launchLocationActivity();
-                                }
-                            });
-                    mSnackbar.addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
-                        @Override
-                        public void onDismissed(Snackbar transientBottomBar, int event) {
-                            super.onDismissed(transientBottomBar, event);
-                            mSnackbar = null;
+                if (mShowLowAccuracyWarning) {
+                    // Check if this is a split district by seeing if there are >2 reps in the house.
+                    int houseCount = 0;
+                    for (Contact contact : contacts) {
+                        if (TextUtils.equals(contact.area, "US House")) {
+                            houseCount++;
                         }
-                    });
-                    mSnackbar.show();
+                    }
+                    if (houseCount > 1 || mIsLowAccuracy) {
+                        int warning = houseCount > 1 ? R.string.split_district_warning :
+                                R.string.low_accuracy_warning;
+                        mSnackbar = Snackbar.make(binding.drawerLayout, warning,
+                                        Snackbar.LENGTH_INDEFINITE)
+                                .setAction(R.string.update, view -> launchLocationActivity());
+                        mSnackbar.setActionTextColor(getResources().getColor(
+                                R.color.colorAccentLight));
+                        mSnackbar.addCallback(new BaseTransientBottomBar.BaseCallback<>() {
+                            @Override
+                            public void onDismissed(Snackbar transientBottomBar, int event) {
+                                super.onDismissed(transientBottomBar, event);
+                                mSnackbar = null;
+                            }
+                        });
+                        mSnackbar.show();
+                        // Only show it once.
+                        mShowLowAccuracyWarning = false;
+                    }
                 }
             }
         };
 
         mReportListener = new FiveCallsApi.CallRequestListener() {
             @Override
-            public void onRequestError() {}
+            public void onRequestError() {
+            }
 
             @Override
-            public void onJsonError() {}
+            public void onJsonError() {
+            }
 
             @Override
             public void onReportReceived(int count, boolean donateOn) {
@@ -496,7 +514,8 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             }
 
             @Override
-            public void onCallReported() {}
+            public void onCallReported() {
+            }
         };
 
         FiveCallsApi api = AppSingleton.getInstance(getApplicationContext()).getJsonController();
@@ -683,7 +702,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     }
 
     private void constructSnackbar(int message, int length) {
-        mSnackbar = Snackbar.make(findViewById(R.id.activity_main),
+        mSnackbar = Snackbar.make(binding.drawerLayout,
                 getResources().getString(message),
                 length);
         mSnackbar.addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {

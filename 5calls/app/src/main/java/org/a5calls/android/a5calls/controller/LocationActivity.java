@@ -7,12 +7,12 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -24,6 +24,8 @@ import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.databinding.ActivityLocationBinding;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.util.AnalyticsManager;
+
+import static org.a5calls.android.a5calls.controller.IssueActivity.KEY_IS_LOW_ACCURACY;
 
 public class LocationActivity extends AppCompatActivity {
     private static final String TAG = "LocationActivity";
@@ -51,7 +53,7 @@ public class LocationActivity extends AppCompatActivity {
         binding = ActivityLocationBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // Allow home up if required
+        // Allow home up if required.
         Intent intent = getIntent();
         if (intent != null) {
             if (intent.getBooleanExtra(ALLOW_HOME_UP_KEY, false)) {
@@ -64,6 +66,10 @@ public class LocationActivity extends AppCompatActivity {
                     supportActionBar.setTitle(R.string.menu_location);
                 }
                 allowsHomeUp = true;
+            }
+            boolean isLowAccuracy = intent.getBooleanExtra(KEY_IS_LOW_ACCURACY, false);
+            if (isLowAccuracy) {
+                binding.lowAccuracySuggestion.setVisibility(View.VISIBLE);
             }
         }
 
@@ -170,7 +176,7 @@ public class LocationActivity extends AppCompatActivity {
     }
 
     /**
-     * @return the last know best location
+     * Calls onReceiveLocation with the last know best location
      */
     private void tryGettingLocation() {
         if (ActivityCompat.checkSelfPermission(this,
@@ -178,10 +184,8 @@ public class LocationActivity extends AppCompatActivity {
                 PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_COARSE_LOCATION) !=
                 PackageManager.PERMISSION_GRANTED) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_PERMISSION_REQUEST);
-            }
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_PERMISSION_REQUEST);
             return;
         }
 

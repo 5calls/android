@@ -2,7 +2,6 @@ package org.a5calls.android.a5calls.controller;
 
 import android.view.View;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.volley.toolbox.HttpResponse;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
@@ -21,6 +20,7 @@ import org.junit.runner.RunWith;
 import java.util.ArrayList;
 
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
@@ -59,13 +59,13 @@ public class MainActivityHappyPathTest extends MainActivityBaseTest {
     /**
      * Sets up mock responses for API calls
      */
-    private void setupMockResponses() throws JSONException {
+    private void setupMockResponses(boolean isSplit)  {
         // Use FakeJSONData for mock issues response
         JSONArray issuesArray = FakeJSONData.getIssueJSON();
         HttpResponse issuesResponse = new HttpResponse(200, new ArrayList<>(), issuesArray.toString().getBytes());
 
         // Use FakeJSONData for mock contacts response
-        JSONObject contactsResponseJson = FakeJSONData.getRepsJSON();
+        JSONObject contactsResponseJson = FakeJSONData.getRepsJSON(isSplit);
         HttpResponse contactsResponse = new HttpResponse(200, new ArrayList<>(), contactsResponseJson.toString().getBytes());
 
         // Use FakeJSONData for mock report response
@@ -84,7 +84,7 @@ public class MainActivityHappyPathTest extends MainActivityBaseTest {
 
     @Test
     public void testMainUILoadsCorrectly() throws JSONException {
-        setupMockResponses();
+        setupMockResponses(/*isSplit=*/false);
 
         setupMockRequestQueue();
 
@@ -102,18 +102,33 @@ public class MainActivityHappyPathTest extends MainActivityBaseTest {
         // Verify that a real issue is displayed (using the first issue from the real data)
         onView(withText("Condemn a US Takeover of Gaza")).check(matches(isDisplayed()));
 
-        // Check that the toolbar is displayed
-        onView(withId(R.id.toolbar)).check(matches(isDisplayed()));
-
         // Check that the collapsing toolbar is displayed and contains the location text
         onView(withId(R.id.collapsing_toolbar))
             .check(matches(isDisplayed()))
             .check(matches(withCollapsingToolbarTitle(containsString("BOWLING GREEN"))));
+
+        // Check that no location error was shown.
+        onView(withText(R.string.low_accuracy_warning)).check(doesNotExist());
+    }
+
+    @Test
+    public void testMainUILoadsCorrectly_SplitWarning() throws JSONException {
+        setupMockResponses(/*isSplit=*/true);
+
+        setupMockRequestQueue();
+
+        launchMainActivity(1000);
+
+        // Verify that a real issue is displayed (using the first issue from the real data)
+        onView(withText("Condemn a US Takeover of Gaza")).check(matches(isDisplayed()));
+
+        // Check that the location error was shown.
+        onView(withText(R.string.low_accuracy_warning)).check(matches(isDisplayed()));
     }
 
     @Test
     public void testNavigationDrawerOpens() throws JSONException {
-        setupMockResponses();
+        setupMockResponses(/*isSplit=*/ false);
 
         setupMockRequestQueue();
 
