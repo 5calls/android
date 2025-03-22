@@ -84,10 +84,6 @@ public class MainActivityHappyPathTest extends MainActivityBaseTest {
 
     @Test
     public void testMainUILoadsCorrectly() throws JSONException {
-        // TODO: Snackbars seem to cause constant UI refresh until they disappear,
-        // so this test will fail if the snackbar is shown with indefinite length.
-        // Need to figure out how to fix the constant UI refresh so that snackbars
-        // themselves can be tested.
         setupMockResponses(/*isSplit=*/false);
 
         setupMockRequestQueue();
@@ -113,6 +109,21 @@ public class MainActivityHappyPathTest extends MainActivityBaseTest {
 
         // Check that no location error was shown.
         onView(withText(R.string.low_accuracy_warning)).check(doesNotExist());
+    }
+
+    @Test
+    public void testMainUILoadsCorrectly_SplitWarning() throws JSONException {
+        setupMockResponses(/*isSplit=*/true);
+
+        setupMockRequestQueue();
+
+        launchMainActivity(1000);
+
+        // Verify that a real issue is displayed (using the first issue from the real data)
+        onView(withText("Condemn a US Takeover of Gaza")).check(matches(isDisplayed()));
+
+        // Check that the location error was shown.
+        onView(withText(R.string.low_accuracy_warning)).check(matches(isDisplayed()));
     }
 
     @Test

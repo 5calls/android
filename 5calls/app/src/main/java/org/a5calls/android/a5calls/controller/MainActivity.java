@@ -479,7 +479,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                     if (houseCount > 1 || mIsLowAccuracy) {
                         int warning = houseCount > 1 ? R.string.split_district_warning :
                                 R.string.low_accuracy_warning;
-                        mSnackbar = Snackbar.make(findViewById(R.id.activity_main), warning,
+                        mSnackbar = Snackbar.make(binding.drawerLayout, warning,
                                         Snackbar.LENGTH_INDEFINITE)
                                 .setAction(R.string.update, view -> launchLocationActivity());
                         mSnackbar.setActionTextColor(getResources().getColor(
@@ -702,7 +702,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     }
 
     private void constructSnackbar(int message, int length) {
-        mSnackbar = Snackbar.make(findViewById(R.id.activity_main),
+        mSnackbar = Snackbar.make(binding.drawerLayout,
                 getResources().getString(message),
                 length);
         mSnackbar.addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {

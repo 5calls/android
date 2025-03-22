@@ -26,9 +26,14 @@ import java.util.ArrayList;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.startsWith;
 
 /**
  * Integration test for MainActivity that tests error handling.
@@ -59,12 +64,14 @@ public class MainActivityErrorTest extends MainActivityBaseTest {
 
     /**
      * Verifies that error UI is displayed correctly.
-     * This tests the error UI in the RecyclerView and only runs
-     * after the snackbars are dismissed.
      */
     private void verifyErrorUI() {
-        // Check that the error message is displayed
-        onView(withText(R.string.request_error))
+        // Check that the error message is displayed in the RecyclerView.
+        onView(allOf(withText(R.string.request_error), isDescendantOfA(withId(R.id.issues_recycler_view))))
+                .check(matches(isDisplayed()));
+
+        // And in a snackbar.
+        onView(allOf(withText(R.string.request_error), withId(com.google.android.material.R.id.snackbar_text)))
                 .check(matches(isDisplayed()));
 
         // Verify that the RecyclerView is displayed and has at least one item
