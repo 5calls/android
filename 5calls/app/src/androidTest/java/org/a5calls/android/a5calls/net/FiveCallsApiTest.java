@@ -21,7 +21,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import static org.a5calls.android.a5calls.FakeJSONData.ISSUE_DATA;
 import static org.a5calls.android.a5calls.FakeJSONData.REPORT_DATA;
-import static org.a5calls.android.a5calls.FakeJSONData.REPS_DATA;
+import static org.a5calls.android.a5calls.FakeJSONData.REPS_DATA_SUFFIX;
+import static org.a5calls.android.a5calls.FakeJSONData.REPS_DATA_NOT_SPLIT_PREFIX;
+import static org.a5calls.android.a5calls.FakeJSONData.REPS_DATA_SPLIT_PREFIX;
 import static org.junit.Assert.*;
 
 @RunWith(AndroidJUnit4.class)
@@ -266,7 +268,7 @@ public class FiveCallsApiTest {
 
     @Test
     public void testGetContacts() {
-        byte[] bytes = REPS_DATA.getBytes();
+        byte[] bytes = (REPS_DATA_NOT_SPLIT_PREFIX + REPS_DATA_SUFFIX).getBytes();
         ArrayList<Header> headers = new ArrayList<>();
         headers.add(new Header("Content-Type", "text/json"));
         HttpResponse response = new HttpResponse(200, headers, bytes);
@@ -287,6 +289,26 @@ public class FiveCallsApiTest {
     }
 
     @Test
+    public void testGetContactsSplit() {
+        byte[] bytes = (REPS_DATA_SPLIT_PREFIX + REPS_DATA_SUFFIX).getBytes();
+        ArrayList<Header> headers = new ArrayList<>();
+        headers.add(new Header("Content-Type", "text/json"));
+        HttpResponse response = new HttpResponse(200, headers, bytes);
+        mHttpStack.setResponseToReturn(response);
+
+        TestContactsListener testContactsListener = new TestContactsListener();
+        mApi.registerContactsRequestListener(testContactsListener);
+        mApi.getContacts("New York, New York");
+        waitForHttpRequestComplete();
+
+        assertEquals(0, testContactsListener.mContactsError);
+        assertEquals(0, testContactsListener.mAddressError);
+        assertEquals(0, testContactsListener.mContactsJsonError);
+        assertTrue(testContactsListener.mLowAccuracy);
+
+    }
+
+    @Test
     public void testGetContacts_serverError() {
         mHttpStack.setExceptionToThrow(new IOException("HTTP Stack exception"));
 
@@ -304,7 +326,7 @@ public class FiveCallsApiTest {
 
     @Test
     public void testGetContacts_malformedJson() {
-        byte[] bytes = REPS_DATA.substring(10, 200).getBytes();
+        byte[] bytes = "{Malformed".getBytes();
         ArrayList<Header> headers = new ArrayList<>();
         headers.add(new Header("Content-Type", "text/json"));
         HttpResponse response = new HttpResponse(200, headers, bytes);

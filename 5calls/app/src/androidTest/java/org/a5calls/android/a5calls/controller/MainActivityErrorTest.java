@@ -58,7 +58,9 @@ public class MainActivityErrorTest extends MainActivityBaseTest {
     }
 
     /**
-     * Verifies that error UI is displayed correctly
+     * Verifies that error UI is displayed correctly.
+     * This tests the error UI in the RecyclerView and only runs
+     * after the snackbars are dismissed.
      */
     private void verifyErrorUI() {
         // Check that the error message is displayed
@@ -72,7 +74,7 @@ public class MainActivityErrorTest extends MainActivityBaseTest {
     }
 
     @Test
-    public void testNetworkErrorDisplaysSnackbar() {
+    public void testNetworkErrorDisplaysError() {
         // Set up mock to throw network error
         mHttpStack.setExceptionToThrow(new IOException("Network error"));
 
@@ -85,7 +87,7 @@ public class MainActivityErrorTest extends MainActivityBaseTest {
     }
 
     @Test
-    public void testJsonErrorDisplaysSnackbar() {
+    public void testJsonErrorDisplaysError() {
         // Set up mock to return malformed JSON
         HttpResponse response = new HttpResponse(200, new ArrayList<>(), "Not valid JSON".getBytes());
         mHttpStack.setResponseToReturn(response);
