@@ -1,6 +1,7 @@
 package org.a5calls.android.a5calls.controller;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,6 +13,9 @@ import androidx.annotation.Nullable;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+
+import androidx.annotation.VisibleForTesting;
+import androidx.appcompat.app.AlertDialog;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.core.widget.NestedScrollView;
@@ -19,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -44,7 +49,11 @@ import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.util.AnalyticsManager;
 import org.a5calls.android.a5calls.util.MarkdownUtil;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * More details about an issue, including links to the phone app to call and buttons to record
@@ -62,6 +71,8 @@ public class IssueActivity extends AppCompatActivity {
     private static final int REP_CALL_REQUEST_CODE = 1;
 
     private static final String DONATE_URL = "https://secure.actblue.com/donate/5calls-donate?refcode=android&refcode2=";
+
+    private static final int MIN_CALLS_TO_SHOW_CALL_STATS = 10;
 
     private boolean mShowServerError = false;
 
@@ -266,13 +277,17 @@ public class IssueActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                returnToMain();
-                return true;
-            case R.id.menu_share:
-                sendShare();
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            returnToMain();
+            return true;
+        }
+        if (item.getItemId() == R.id.menu_share) {
+            sendShare();
+            return true;
+        }
+        if (item.getItemId() == R.id.menu_details) {
+            showIssueDetails();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -422,5 +437,63 @@ public class IssueActivity extends AppCompatActivity {
         if (resultCode == RESULT_SERVER_ERROR) {
             mShowServerError = true;
         }
+    }
+
+    private void showIssueDetails() {
+        new AlertDialog.Builder(IssueActivity.this)
+                .setTitle(R.string.details_btn)
+                .setMessage(getIssueDetailsMessage(IssueActivity.this, mIssue))
+                .setPositiveButton(android.R.string.ok,
+                        (dialog, which) -> {
+
+                        })
+                .show();
+    }
+
+    @VisibleForTesting
+    static String getIssueDetailsMessage(Context context, Issue issue) {
+        StringBuilder result = new StringBuilder();
+        if (issue.categories.length > 0) {
+            if (issue.categories.length == 1) {
+                result.append(context.getResources().getString(R.string.issue_category_one));
+            } else {
+                result.append(context.getResources().getString(R.string.issue_category_many));
+            }
+            for (int i = 0; i < issue.categories.length; i++) {
+                if (i > 0) {
+                    result.append(",");
+                }
+                result.append(" ").append(issue.categories[i].name);
+            }
+            result.append("\n\n");
+        }
+        if (issue.stats.calls >= MIN_CALLS_TO_SHOW_CALL_STATS) {
+            String callCount = String.format(Locale.getDefault(), "%,d", issue.stats.calls);
+            result.append(context.getResources().getString(R.string.done_issue_stats));
+            result.append(" ").append(callCount).append("\n\n");
+        }
+        // Define input format (ISO 8601)
+        SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
+        isoFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        try {
+            // Parse the date string into a Date object
+            Date date = isoFormat.parse(issue.createdAt);
+            if (date == null) {
+                return result.toString();
+            }
+
+            // Define output format
+            SimpleDateFormat outputFormat = new SimpleDateFormat("MMMM d, yyyy",
+                    Locale.getDefault());
+
+            // Format and print the date
+            String formattedDate = outputFormat.format(date);
+            result.append(context.getResources().getString(R.string.issue_date_created,
+                    formattedDate));
+        } catch (ParseException e) {
+            Log.d(TAG, "Unable to parse created date: " + issue.createdAt);
+        }
+        return result.toString();
     }
 }

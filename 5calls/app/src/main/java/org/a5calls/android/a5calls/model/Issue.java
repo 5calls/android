@@ -17,6 +17,7 @@ public class Issue implements Parcelable {
     public boolean active;
     public String link;
     public String linkTitle;
+    public String createdAt;
 
     public List<Contact> contacts;
     public List<String> contactAreas;
@@ -35,6 +36,7 @@ public class Issue implements Parcelable {
         linkTitle = in.readString();
         active = in.readInt() != 0;
         isSplit = in.readInt() != 0;
+        createdAt = in.readString();
         contacts = in.createTypedArrayList(Contact.CREATOR);
         contactAreas = in.createStringArrayList();
         outcomeModels = in.createTypedArrayList(Outcome.CREATOR);
@@ -70,6 +72,7 @@ public class Issue implements Parcelable {
         dest.writeString(linkTitle);
         dest.writeInt(active ? 1 : 0);
         dest.writeInt(isSplit ? 1 : 0);
+        dest.writeString(createdAt);
         dest.writeTypedList(contacts);
         dest.writeStringList(contactAreas);
         dest.writeTypedList(outcomeModels);

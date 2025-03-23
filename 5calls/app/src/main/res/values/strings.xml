@@ -625,4 +625,13 @@
     <!-- Description of a contact that has a name and state. -->
     <string name="contact_political_details_state"><xliff:g id="name">%1$s</xliff:g> is from <xliff:g id="state">%2$s</xliff:g>.</string>
 
+    <!-- Shows the date that an issue was first created (it may have been updated since then. -->
+    <string name="issue_date_created">First posted: <xliff:g id="date">%1$s</xliff:g></string>
+
+    <!-- The category an issue belongs to, when there is exactly one category. -->
+    <string name="issue_category_one">Category: </string>
+
+    <!-- The categories an issue belongs to, when there are more than one. -->
+    <string name="issue_category_many">Categories: </string>
+
 </resources>
