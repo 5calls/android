@@ -97,8 +97,14 @@
     <!-- Text shown to the user on the splash / tutorial screen letting them know about notifications and reminders [CHAR_LIMIT=NONE] -->
     <string name="about_splash_3">La aplicación 5 Calls puede enviárte recordatorios varias veces a la semana para ayudarte a mantener tu participación. Puedes activar y personalizar los recordatorios en configuración.</string>
 
+    <!-- Button shown to turn on reminders [CHAR_LIMIT=50] -->
+    <string name="tutorial_reminders_btn">Activar recordatorios</string>
+
     <!-- Text shown after reminders are enabled [CHAR_LIMIT=50] -->
     <string name="about_reminders_on">Puede personalizar o deactivar los recordatorios en la configuración.</string>
+
+    <!-- Text shown after notifications are declined [CHAR_LIMIT=50] -->
+    <string name="about_reminders_off">Si cambias de opinión, puedes activar los recordatorios en los ajustes.</string>
 
     <!-- Button shown to the user on the splash / tutorial screen to get to the next page of the tutorial [CHAR_LIMIT=30] -->
     <string name="next">Siguiente</string>
@@ -314,10 +320,10 @@
     <string name="share_content">He hecho <xliff:g id="call_count">%1$d</xliff:g> llamadas a mis representantes para dar mi opinión. Únase conmigo en 5calls.org. ¡Es fácil marcar una diferencia!</string>
 
     <!-- Subject for an email sent from an issue detail screen sharing an issue [CHAR_LIMIT=200] -->
-    <string name="issue_share_subject">Quiero avisarles de este asunto que encontré en 5 Calls.</string>
+    <string name="issue_share_subject">Quiero avisarles de este tema que encontré en 5 Calls.</string>
 
     <!-- Content of an email or message shared from an issue detail screen sharing an issue [CHAR_LIMIT=NONE] -->
-    <string name="issue_share_content">Acabo de llamar a mi representante sobre este asunto: <xliff:g id="issue_summary">%1$s</xliff:g>. Debe hacer lo mismo: http://5calls.org/issue/<xliff:g id="issue_id">%2$s</xliff:g></string>
+    <string name="issue_share_content">Acabo de llamar a mi representante sobre este tema: <xliff:g id="issue_summary">%1$s</xliff:g>. Debe hacer lo mismo: http://5calls.org/issue/<xliff:g id="issue_id">%2$s</xliff:g></string>
 
     <!-- Stats activity line chart header -->
     <string name="line_chart_title">Impacto a lo largo del tiempo</string>
@@ -424,7 +430,7 @@
     <string name="menu_search">Buscar</string>
 
     <!-- Title of a dialog to search issue titles [CHAR_LIMIT=25] -->
-    <string name="search_dialog_title">Encontrar un asunto</string>
+    <string name="search_dialog_title">Encontrar un tema</string>
 
     <!-- Hint text in a dialog to search issue titles -->
     <string name="search_hint">Buscar</string>
@@ -437,6 +443,9 @@
 
     <!-- Date format used for stats -->
     <string name="date_format">dd/MM/yy</string>
+
+    <!-- Toast shown when an Intent doesn't have an Activity that can handle it (e.g. sending an email) -->
+    <string name="intent_resolve_error">No se puede encontrar la aplicación instalada para abrir este enlace</string>
 
     <!-- Heading for buttons to learn more about 5 calls -->
     <string name="general_prompt">General</string>
@@ -496,7 +505,7 @@
     <string name="done_description2">Sus llamadas ayudan a sus representantes a decidir qué temas son más importantes para sus electores y pueden ayudar a orientar sus posiciones sobre políticas que marcan una diferencia en las vidas de todos los estadounidenses.</string>
 
     <!-- In the issue done section, a prompt to share the call. -->
-    <string name="done_share_prompt">Compartir este asunto</string>
+    <string name="done_share_prompt">Compartir este tema</string>
 
     <!-- Paragraph text describing that 5 Calls is a grassroots org, to explain why we may want donations. -->
     <string name="done_donate_description">5 Calls es una organización sin fines de lucro con apoyo popular.</string>
@@ -518,5 +527,14 @@
 
     <!-- Description of a contact that has a name and state. -->
     <string name="contact_political_details_state">%1$s es de %2$s.</string>
+
+    <!-- Shows the date that an issue was first created (it may have been updated since then. -->
+    <string name="issue_date_created">Primera publicación: %1$s</string>
+
+    <!-- The category an issue belongs to, when there is exactly one category. -->
+    <string name="issue_category_one">Categoría:</string>
+
+    <!-- The categories an issue belongs to, when there are more than one. -->
+    <string name="issue_category_many">Categorías:</string>
 
 </resources>
