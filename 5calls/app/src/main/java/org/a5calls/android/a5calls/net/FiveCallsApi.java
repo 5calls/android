@@ -1,5 +1,6 @@
 package org.a5calls.android.a5calls.net;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.volley.AuthFailureError;
@@ -183,18 +184,17 @@ public class FiveCallsApi {
                 public void onResponse(JSONObject response) {
                     if (response != null) {
                         String locationName = "";
+                        boolean lowAccuracy = false;
                         try {
                             locationName = response.getString("location");
+                            if (response.has("isSplit")) {
+                                lowAccuracy = response.getBoolean("isSplit");
+                            }
                         } catch (JSONException e) {
-                            e.printStackTrace();
+                            for (ContactsRequestListener listener : listeners) {
+                                listener.onJsonError();
+                            }
                         }
-                        boolean lowAccuracy = false;
-                        // TODO: Use lowAccuracy field once it's not just assigned to all zip codes.
-//                        try {
-//                            lowAccuracy = response.getBoolean("lowAccuracy");
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
                         JSONArray jsonArray = response.optJSONArray("representatives");
                         if (jsonArray == null) {
                             for (ContactsRequestListener listener : listeners) {
@@ -211,7 +211,7 @@ public class FiveCallsApi {
                         try {
                             String state = response.getString("state");
                             String district = response.getString("district");
-                            if (state != "" && district != "") {
+                            if (!TextUtils.isEmpty(state) && !TextUtils.isEmpty(district)) {
                                 OneSignal.getUser().addTag("districtID", state + "-" + district);
                             }
                         } catch (JSONException e) {
