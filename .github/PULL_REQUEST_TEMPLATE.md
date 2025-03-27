@@ -35,7 +35,7 @@ automatically close the issue.
 ## Were the changes tested?
 
 - [ ] Yes, automated tests in _please name test methods or files_
-- [ ] Yes, manually tested: _plesse provide steps performed to test changes_
+- [ ] Yes, manually tested: _please provide steps performed to test changes_
 - [ ] No, and this is why: _please replace this line with details on why tests
       have not been included_
 - [ ] I need help with writing tests

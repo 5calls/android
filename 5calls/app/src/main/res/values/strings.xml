@@ -188,6 +188,7 @@
     <string name="location_private">Your location stays private. We don\'t store it and we never
         sell data to third parties.</string>
 
+    <!-- Heading on location activity -->
     <string name="location_why">We\'ll figure out who you need to call</string>
 
     <!-- Title of the Your Impact activity showing a user their stats [CHAR_LIMIT=30] -->
@@ -308,7 +309,7 @@
     <string name="sunday">Sunday</string>
 
     <!-- DO NOT TRANSLATE This is an array of the weekdays in order -->
-    <string-array name="reminder_days_titles">
+    <string-array name="reminder_days_titles" translatable="false">
         <item>@string/monday</item>
         <item>@string/tuesday</item>
         <item>@string/wednesday</item>
@@ -319,7 +320,7 @@
     </string-array>
 
     <!-- DO NOT TRANSLATE This is the value of the weekdays in order. Monday is 2. -->
-    <string-array name="reminder_days_values">
+    <string-array name="reminder_days_values" translatable="false">
         <item>2</item>
         <item>3</item>
         <item>4</item>
@@ -412,6 +413,9 @@
     <!-- Warning that you have a low accuracy location [CHAR_LIMIT=90] -->
     <string name="low_accuracy_warning">Your location is not precise enough to ensure we\'ve got the right House representative.</string>
 
+    <!-- Shown on the set location page above the address text field if the zip is low accuracy [CHAR_LIMIT=NONE] -->
+    <string name="low_accuracy_suggestion">Use your zip + 4 or an address to get an accurate representative.</string>
+
     <!-- Action for a snackbar or button which brings you to the location update screen [CHAR_LIMIT=10] -->
     <string name="update">update</string>
 
@@ -490,10 +494,10 @@
     <string name="disable_new_issues_notification">No, thanks</string>
 
     <!-- Filter for only the most important issues [CHAR_LIMIT=50] -->
-    <string name="important_issues_filter">Yes, notify me</string>
+    <string name="notify_important_issues_filter">Yes, notify me</string>
 
     <string-array name="notification_options">
-        <item>@string/important_issues_filter</item>
+        <item>@string/notify_important_issues_filter</item>
         <item>@string/disable_new_issues_notification</item>
     </string-array>
 
@@ -623,5 +627,14 @@
 
     <!-- Description of a contact that has a name and state. -->
     <string name="contact_political_details_state"><xliff:g id="name">%1$s</xliff:g> is from <xliff:g id="state">%2$s</xliff:g>.</string>
+
+    <!-- Shows the date that an issue was first created (it may have been updated since then. -->
+    <string name="issue_date_created">First posted: <xliff:g id="date">%1$s</xliff:g></string>
+
+    <!-- The category an issue belongs to, when there is exactly one category. -->
+    <string name="issue_category_one">Category: </string>
+
+    <!-- The categories an issue belongs to, when there are more than one. -->
+    <string name="issue_category_many">Categories: </string>
 
 </resources>

@@ -2,6 +2,7 @@ package org.a5calls.android.a5calls;
 
 import android.content.Context;
 
+import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
 import org.a5calls.android.a5calls.model.AccountManager;
@@ -17,8 +18,16 @@ public class AppSingleton {
     private final Context mAppContext;
     private DatabaseHelper mDatabaseHelper;
     private FiveCallsApi mFiveCallsApi;
+    private RequestQueue mRequestQueue;
 
-    public static final AppSingleton getInstance(Context context) {
+    public static AppSingleton getInstance() {
+        if (sSingleton == null) {
+            throw new IllegalStateException("AppSingleton not initialized. Call getInstance(Context) first.");
+        }
+        return sSingleton;
+    }
+
+    public static AppSingleton getInstance(Context context) {
         if (sSingleton == null) {
             sSingleton = new AppSingleton(context.getApplicationContext());
         }
@@ -36,12 +45,27 @@ public class AppSingleton {
         return mDatabaseHelper;
     }
 
+    public RequestQueue getRequestQueue() {
+        if (mRequestQueue == null) {
+            mRequestQueue = Volley.newRequestQueue(mAppContext);
+        }
+        return mRequestQueue;
+    }
+
+    public void setRequestQueue(RequestQueue requestQueue) {
+        mRequestQueue = requestQueue;
+    }
+
     public FiveCallsApi getJsonController() {
         if (mFiveCallsApi == null) {
             mFiveCallsApi = new FiveCallsApi(
                     AccountManager.Instance.getCallerID(mAppContext),
-                    Volley.newRequestQueue(mAppContext));
+                    getRequestQueue());
         }
         return mFiveCallsApi;
+    }
+
+    public void setFiveCallsApi(FiveCallsApi api) {
+        mFiveCallsApi = api;
     }
 }

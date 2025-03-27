@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.google.android.material.snackbar.Snackbar;
 
+import androidx.annotation.VisibleForTesting;
 import androidx.core.app.NavUtils;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -282,7 +283,8 @@ public class RepCallActivity extends AppCompatActivity {
                 .show();
     }
 
-    private String getReportedActionsMessage(Context context, List<String> previousActions) {
+    @VisibleForTesting
+    static String getReportedActionsMessage(Context context, List<String> previousActions) {
         String result = "";
 
         if (previousActions != null) {
