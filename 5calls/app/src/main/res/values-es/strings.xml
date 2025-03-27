@@ -358,6 +358,9 @@
     <!-- Warning that you have a low accuracy location [CHAR_LIMIT=90] -->
     <string name="low_accuracy_warning">Su ubicación no es lo suficientemente precisa para garantizar que tengamos al representante de la Cámara adecuado.</string>
 
+    <!-- Shown on the set location page above the address text field if the zip is low accuracy [CHAR_LIMIT=NONE] -->
+    <string name="low_accuracy_suggestion">Utilice su código postal + 4 o una dirección para identificar a su representante exacto.</string>
+
     <!-- Action for a snackbar or button which brings you to the location update screen [CHAR_LIMIT=10] -->
     <string name="update">Actualización</string>
 
