@@ -356,7 +356,7 @@
     <string name="split_district_warning">Su código postal tiene varios representantes. Esta es nuestra mejor suposición.</string>
 
     <!-- Warning that you have a low accuracy location [CHAR_LIMIT=90] -->
-    <string name="low_accuracy_warning">Su ubicación no es lo suficientemente precisa para garantizar que tengamos al representante de la Cámara adecuado.</string>
+    <string name="low_accuracy_warning">Su código postal tiene varios representantes.</string>
 
     <!-- Shown on the set location page above the address text field if the zip is low accuracy [CHAR_LIMIT=NONE] -->
     <string name="low_accuracy_suggestion">Utilice su código postal + 4 o una dirección para identificar a su representante exacto.</string>

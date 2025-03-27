@@ -411,7 +411,7 @@
     <string name="split_district_warning">Your zip code has multiple house representatives. This is our best guess.</string>
 
     <!-- Warning that you have a low accuracy location [CHAR_LIMIT=90] -->
-    <string name="low_accuracy_warning">Your location is not precise enough to ensure we\'ve got the right House representative.</string>
+    <string name="low_accuracy_warning">Your zip is split across multiple house representatives.</string>
 
     <!-- Shown on the set location page above the address text field if the zip is low accuracy [CHAR_LIMIT=NONE] -->
     <string name="low_accuracy_suggestion">Use your zip + 4 or an address to get an accurate representative.</string>
