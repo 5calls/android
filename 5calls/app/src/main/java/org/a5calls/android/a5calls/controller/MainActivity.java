@@ -33,6 +33,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -491,6 +492,9 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                                 mSnackbar = null;
                             }
                         });
+                        // https://stackoverflow.com/questions/30705607/android-multiline-snackbar
+                        TextView textView = mSnackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
+                        textView.setMaxLines(5);
                         mSnackbar.show();
                         // Only show it once.
                         mShowLowAccuracyWarning = false;

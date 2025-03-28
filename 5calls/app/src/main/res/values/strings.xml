@@ -62,9 +62,7 @@
     <string name="about_p2">Spend 5 minutes, make 5 calls.</string>
 
     <!-- Body of text on the About 5 Calls screen, describing the app. \n\n is used to start the next paragraph. [CHAR_LIMIT=NONE] -->
-    <string name="about_p3">There\'s one simple and straightforward way to influence the Government that is supposed to represent you: Call them on the phone.
-                            \n\nCalling is the most effective way to influence your representative. 5 Calls gives you contacts and scripts so calling is quick and easy. We use your location to give you your local representatives so your calls are more impactful.
-                            \n\n5 Calls connects you directly with your representatives via phone numbers sourced from public government websites, we do not represent any specific government entity, regardless of political party.</string>
+    <string name="about_p3">5 Calls connects you directly with your representatives via phone numbers sourced from public government websites, we do not represent any specific government entity, regardless of political party.</string>
 
     <!-- Button linking to a page about Why calling works [CHAR_LIMIT=30] -->
     <string name="why_calling_btn">why calling works</string>
@@ -411,7 +409,7 @@
     <string name="split_district_warning">Your zip code has multiple house representatives. This is our best guess.</string>
 
     <!-- Warning that you have a low accuracy location [CHAR_LIMIT=90] -->
-    <string name="low_accuracy_warning">Your location is not precise enough to ensure we\'ve got the right House representative.</string>
+    <string name="low_accuracy_warning">Your zip is not precise enough to ensure we\'ve got the right House representative.</string>
 
     <!-- Shown on the set location page above the address text field if the zip is low accuracy [CHAR_LIMIT=NONE] -->
     <string name="low_accuracy_suggestion">Use your zip + 4 or an address to get an accurate representative.</string>
