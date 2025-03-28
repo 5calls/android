@@ -28,6 +28,11 @@
             />
 
         <TextView
+            style="@style/paragraphTextStyle"
+            android:text="@string/about_p3"
+            />
+
+        <TextView
             android:id="@+id/calls_to_date"
             style="@style/aboutSubtStyle"
             />
