@@ -209,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 binding.searchText.setText(mSearchText);
             }
         } else {
-            // Safe to use index as the top two filters are hard-coded strings.
+            // Safe to use index as the top three filters are hard-coded strings.
             mFilterText = mFilterAdapter.getItem(0);
         }
         binding.searchText.setOnClickListener(new View.OnClickListener() {
@@ -565,7 +565,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     }
 
     private void populateFilterAdapterIfNeeded(List<Issue> issues) {
-        if (mFilterAdapter.getCount() > 2) {
+        if (mFilterAdapter.getCount() > 3) {
             // Already populated. Don't try again.
             // This assumes that the categories won't change much during the course of a session.
             return;

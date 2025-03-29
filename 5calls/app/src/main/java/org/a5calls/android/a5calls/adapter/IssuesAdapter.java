@@ -130,7 +130,10 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             } else if (TextUtils.equals(filterText,
                     mActivity.getResources().getString(R.string.top_issues_filter))) {
                 mIssues = filterActiveIssues();
-            } else {
+            } else if (TextUtils.equals(filterText, mActivity.getResources().getString(R.string.starred_issues_filter))) {
+                mIssues = filterStarredIssues();
+            }
+            else {
                 // Filter by the category string.
                 mIssues = filterIssuesByCategory(filterText);
             }
@@ -177,6 +180,16 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         ArrayList<Issue> tempIssues = new ArrayList<>();
         for (Issue issue : mAllIssues) {
             if (issue.active) {
+                tempIssues.add(issue);
+            }
+        }
+        return tempIssues;
+    }
+
+    private ArrayList<Issue> filterStarredIssues() {
+        ArrayList<Issue> tempIssues = new ArrayList<>();
+        for (Issue issue : mAllIssues) {
+            if (starredIssueIds.contains(issue.id)) {
                 tempIssues.add(issue);
             }
         }
