@@ -350,6 +350,15 @@ public class DatabaseHelperTest {
     }
 
     @Test
+    public void starredIssues_DeletesIssue() {
+        String issue = "to-be-deleted";
+        mDatabase.addStarredIssue(issue);
+        assertTrue(mDatabase.getStarredIssues().contains(issue));
+        mDatabase.removeStarredIssue(issue);
+        assertFalse(mDatabase.getStarredIssues().contains(issue));
+    }
+
+    @Test
     public void starredIssues_TrimsIssues() {
         mDatabase.addStarredIssue("test-issue2");
         mDatabase.addStarredIssue("test-issue3");

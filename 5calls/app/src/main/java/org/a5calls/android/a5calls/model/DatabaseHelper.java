@@ -187,6 +187,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         getWritableDatabase().insert(STARRED_ISSUES_TABLE_NAME, null, values);
     }
 
+    public void removeStarredIssue(String issueId) {
+        getWritableDatabase().delete(
+                STARRED_ISSUES_TABLE_NAME,
+                StarredIssuesColumns.ID + " = ?",
+                List.of(issueId).toArray(new String[0])
+        );
+    }
+
     public String getIssueName(String issueId) {
         Cursor c = getReadableDatabase().rawQuery("SELECT " + IssuesColumns.ISSUE_NAME + " FROM " +
                 ISSUES_TABLE_NAME + " WHERE " + IssuesColumns.ISSUE_ID + " = '" + issueId + "'",
