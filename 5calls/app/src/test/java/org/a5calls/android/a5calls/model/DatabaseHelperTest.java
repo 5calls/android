@@ -346,7 +346,7 @@ public class DatabaseHelperTest {
     public void starredIssues_AddIssue() {
         mDatabase.addStarredIssue("test-issue");
         assertEquals(1, mDatabase.getStarredIssues().size());
-        assertEquals("test-issue", mDatabase.getStarredIssues().getFirst().first);
+        assertEquals("test-issue", mDatabase.getStarredIssues().getFirst());
     }
 
     @Test
@@ -356,7 +356,7 @@ public class DatabaseHelperTest {
         mDatabase.addStarredIssue("keep");
         mDatabase.trimStarredIssues(List.of("keep"));
         assertEquals(1, mDatabase.getStarredIssues().size());
-        assertEquals("keep", mDatabase.getStarredIssues().getFirst().first);
+        assertEquals("keep", mDatabase.getStarredIssues().getFirst());
     }
 
     @Test

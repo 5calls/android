@@ -356,14 +356,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result;
     }
 
-    public List<Pair<String, Integer>> getStarredIssues() {
+    public List<String> getStarredIssues() {
         Cursor c = getReadableDatabase().rawQuery(
-                "SELECT " + StarredIssuesColumns.ID + ", " + StarredIssuesColumns.TIMESTAMP
-                + " FROM " + STARRED_ISSUES_TABLE_NAME, null);
-        List<Pair<String, Integer>> result = new ArrayList<>();
+                "SELECT " + StarredIssuesColumns.ID + " FROM " + STARRED_ISSUES_TABLE_NAME
+                + " ORDER BY " + StarredIssuesColumns.TIMESTAMP, null);
+        List<String> result = new ArrayList<>();
         while (c.moveToNext()) {
-          Pair<String, Integer> next = new Pair<>(c.getString(0), c.getInt(1));
-          result.add(next);
+          result.add(c.getString(0));
         }
         c.close();
         return result;
