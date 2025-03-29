@@ -54,6 +54,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static android.view.View.VISIBLE;
 
@@ -86,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     private boolean mShowLowAccuracyWarning = true;
     private boolean mDonateIsOn = false;
     private FirebaseAuth mAuth = null;
+    private List<String> starredIssues;
 
     private ActivityMainBinding binding;
 
@@ -207,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 binding.searchText.setText(mSearchText);
             }
         } else {
-            // Safe to use index as the top two filters are hard-coded strings.
+            // Safe to use index as the top three filters are hard-coded strings.
             mFilterText = mFilterAdapter.getItem(0);
         }
         binding.searchText.setOnClickListener(new View.OnClickListener() {
@@ -279,6 +281,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         });
 
         loadStats();
+        loadStarredIssues();
 
         mAddress = accountManager.getAddress(this);
         mLatitude = accountManager.getLat(this);
@@ -352,6 +355,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         issueIntent.putExtra(RepCallActivity.KEY_LOCATION_NAME, mLocationName);
         issueIntent.putExtra(IssueActivity.KEY_IS_LOW_ACCURACY, mIsLowAccuracy);
         issueIntent.putExtra(IssueActivity.KEY_DONATE_IS_ON, mDonateIsOn);
+        issueIntent.putExtra(IssueActivity.KEY_IS_STARRED, starredIssues.contains(issue.id));
         startActivityForResult(issueIntent, ISSUE_DETAIL_REQUEST);
     }
 
@@ -428,6 +432,12 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 mIssuesAdapter.setAllIssues(issues, IssuesAdapter.NO_ERROR);
                 mIssuesAdapter.setFilterAndSearch(mFilterText, mSearchText);
                 binding.swipeContainer.setRefreshing(false);
+
+                List<String> ids = new ArrayList<>();
+                for (Issue i : issues) {
+                    ids.add(i.id);
+                }
+                AppSingleton.getInstance(getApplicationContext()).getDatabaseHelper().trimStarredIssues(ids);
             }
         };
 
@@ -555,7 +565,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     }
 
     private void populateFilterAdapterIfNeeded(List<Issue> issues) {
-        if (mFilterAdapter.getCount() > 2) {
+        if (mFilterAdapter.getCount() > 3) {
             // Already populated. Don't try again.
             // This assumes that the categories won't change much during the course of a session.
             return;
@@ -607,6 +617,13 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             binding.actionBarSubtitle.setText(String.format(
                     getResources().getString(R.string.your_call_count_summary), callCount));
         }
+    }
+
+    private void loadStarredIssues() {
+        starredIssues = AppSingleton.getInstance(getApplicationContext())
+                .getDatabaseHelper().getStarredIssues();
+        Log.d(TAG, starredIssues.toString());
+        mIssuesAdapter.setStarredIssues(starredIssues);
     }
 
     private void showStats() {
