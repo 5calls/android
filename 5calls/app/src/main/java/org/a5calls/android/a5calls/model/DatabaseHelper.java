@@ -22,13 +22,15 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
 
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
     @VisibleForTesting
     protected static final String CALLS_TABLE_NAME = "UserCallsDatabase";
     @VisibleForTesting
     protected static final String ISSUES_TABLE_NAME = "UserIssuesTable";
     @VisibleForTesting
     protected static final String CONTACTS_TABLE_NAME = "UserContactsTable";
+    @VisibleForTesting
+    protected static final String STARRED_ISSUES_TABLE_NAME = "StarredIssuesTable";
 
     // Can be used to control time in tests.
     private TimeProvider mTimeProvider;
@@ -82,6 +84,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "CREATE TABLE " + CONTACTS_TABLE_NAME + " (" + ContactColumns.CONTACT_ID + " STRING, " +
                     ContactColumns.CONTACT_NAME + " STRING);";
 
+    private static class StarredIssuesColumns {
+        public static String ID = "issueid";
+        public static String TIMESTAMP = "timestamp";
+    }
+
+    private static final String STARRED_ISSUES_TABLE_CREATE =
+            "CREATE TABLE " + STARRED_ISSUES_TABLE_NAME + " (" + StarredIssuesColumns.ID + " STRING, "
+            + StarredIssuesColumns.TIMESTAMP + " INTEGER);";
+
     public DatabaseHelper(Context context) {
         this(context, new DefaultTimeProvider());
     }
@@ -96,6 +107,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CALLS_TABLE_CREATE);
         db.execSQL(ISSUES_TABLE_CREATE);
         db.execSQL(CONTACTS_TABLE_CREATE);
+        db.execSQL(STARRED_ISSUES_TABLE_CREATE);
     }
 
     @Override
@@ -123,6 +135,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     CallsColumns.RESULT + " = ?",
                     new String[]{Outcome.Status.VM.toString()});
             currentDbVersion = 3;
+        }
+
+        if (oldVersion < 4 && currentDbVersion < newVersion) {
+            db.execSQL(STARRED_ISSUES_TABLE_CREATE);
         }
     }
 
@@ -162,6 +178,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // Insert it into the database if it isn't there yet.
         getWritableDatabase().insertWithOnConflict(CONTACTS_TABLE_NAME, null, values,
                 SQLiteDatabase.CONFLICT_IGNORE);
+    }
+
+    public void addStarredIssue(String issueId) {
+        ContentValues values = new ContentValues();
+        values.put(StarredIssuesColumns.ID, issueId);
+        values.put(StarredIssuesColumns.TIMESTAMP, mTimeProvider.currentTimeMillis());
+        getWritableDatabase().insert(STARRED_ISSUES_TABLE_NAME, null, values);
     }
 
     public String getIssueName(String issueId) {
@@ -333,6 +356,38 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result;
     }
 
+    public List<Pair<String, Integer>> getStarredIssues() {
+        Cursor c = getReadableDatabase().rawQuery(
+                "SELECT " + StarredIssuesColumns.ID + ", " + StarredIssuesColumns.TIMESTAMP
+                + " FROM " + STARRED_ISSUES_TABLE_NAME, null);
+        List<Pair<String, Integer>> result = new ArrayList<>();
+        while (c.moveToNext()) {
+          Pair<String, Integer> next = new Pair<>(c.getString(0), c.getInt(1));
+          result.add(next);
+        }
+        c.close();
+        return result;
+    }
+
+    // Delete any starred issues not present in the provided list of issue ids to prevent the
+    // table from filling up with issues that don't exist any more so the app doesn't have to look
+    // through as many items when seeing if the issue needs to be marked as starred
+    public int trimStarredIssues(List<String> ids) {
+        StringBuilder placeholders = new StringBuilder();
+        for (int i = 0; i < ids.size(); i++) {
+            placeholders.append("?");
+            if (i < ids.size() - 1) {
+                placeholders.append(", ");
+            }
+        }
+
+        String whereClause = StarredIssuesColumns.ID + " NOT IN ("
+                + placeholders + ")";
+        String[] whereArgs = ids.toArray(new String[0]);
+
+        return getWritableDatabase().delete(STARRED_ISSUES_TABLE_NAME, whereClause, whereArgs);
+    }
+
     @VisibleForTesting
     public static String sanitizeContactId(String contactId) {
         // TODO this only works on single quotes and not double quotes. Triple quotes are still
@@ -342,4 +397,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         return contactId;
     }
+
+
 }

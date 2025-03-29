@@ -1,7 +1,5 @@
 package org.a5calls.android.a5calls.model;
 
-import android.os.Parcel;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,6 +28,7 @@ public class DatabaseHelperTest {
         getApplicationContext().deleteDatabase(DatabaseHelper.CALLS_TABLE_NAME);
         getApplicationContext().deleteDatabase(DatabaseHelper.ISSUES_TABLE_NAME);
         getApplicationContext().deleteDatabase(DatabaseHelper.CONTACTS_TABLE_NAME);
+        getApplicationContext().deleteDatabase(DatabaseHelper.STARRED_ISSUES_TABLE_NAME);
 
         // Create a fake TimeProvider so we can control timestamps.
         mCalendar = new Calendar.Builder()
@@ -341,6 +340,28 @@ public class DatabaseHelperTest {
                 assertFalse(mDatabase.hasCalledToday(issue.id, contact.id));
             }
         }
+    }
+
+    @Test
+    public void starredIssues_AddIssue() {
+        mDatabase.addStarredIssue("test-issue");
+        assertEquals(1, mDatabase.getStarredIssues().size());
+        assertEquals("test-issue", mDatabase.getStarredIssues().getFirst().first);
+    }
+
+    @Test
+    public void starredIssues_TrimsIssues() {
+        mDatabase.addStarredIssue("test-issue2");
+        mDatabase.addStarredIssue("test-issue3");
+        mDatabase.addStarredIssue("keep");
+        mDatabase.trimStarredIssues(List.of("keep"));
+        assertEquals(1, mDatabase.getStarredIssues().size());
+        assertEquals("keep", mDatabase.getStarredIssues().getFirst().first);
+    }
+
+    @Test
+    public void starredIssue_TrimIssues() {
+
     }
 
     // Wrapper class for holding a pair of issues and contacts.
