@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -49,6 +48,8 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private final Activity mActivity;
     private final Callback mCallback;
 
+    private List<String> starredIssueIds = new ArrayList<>();
+
     public interface Callback {
 
         void refreshIssues();
@@ -79,6 +80,11 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             mIssues.clear();
             notifyDataSetChanged();
         }
+    }
+
+    public void setStarredIssues(List<String> issueIds) {
+        starredIssueIds = issueIds;
+        notifyDataSetChanged();
     }
 
     public void setAddressError(int error) {
@@ -232,6 +238,14 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             IssueViewHolder vh = (IssueViewHolder) holder;
             final Issue issue = mIssues.get(position);
             vh.name.setText(issue.name);
+
+            if (starredIssueIds.contains(issue.id)) {
+                vh.name.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_star_yellow_24dp, 0);
+            } else {
+                // To undo previously set drawable in the event of an issue being unstarred
+                vh.name.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0 ,0);
+            }
+
             vh.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

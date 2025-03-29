@@ -635,4 +635,9 @@
     <!-- The categories an issue belongs to, when there are more than one. -->
     <string name="issue_category_many">Categories: </string>
 
+    <!-- Action bar icon tooltip for starring an issue -->
+    <string name="action_star_issue">Star Issue</string>
+
+    <!-- Action bar icon tooltip for un-starring an issue -->
+    <string name="action_unstar_issue">Unstar Issue</string>
 </resources>

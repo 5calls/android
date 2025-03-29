@@ -64,6 +64,7 @@ public class IssueActivity extends AppCompatActivity {
     public static final String KEY_ISSUE = "key_issue";
     public static final String KEY_IS_LOW_ACCURACY = "key_is_low_accuracy";
     public static final String KEY_DONATE_IS_ON = "key_donate_is_on";
+    public static final String KEY_IS_STARRED = "key_is_starred";
 
     public static final int RESULT_OK = 1;
     public static final int RESULT_SERVER_ERROR = 2;
@@ -80,6 +81,7 @@ public class IssueActivity extends AppCompatActivity {
     private boolean mIsLowAccuracy = false;
     private boolean mDonateIsOn = false;
     private boolean mIsAnimating = false;
+    private boolean mIsStarred = false;
 
     private ActivityIssueBinding binding;
 
@@ -96,12 +98,14 @@ public class IssueActivity extends AppCompatActivity {
         }
         mIsLowAccuracy = getIntent().getBooleanExtra(KEY_IS_LOW_ACCURACY, false);
         mDonateIsOn = getIntent().getBooleanExtra(KEY_DONATE_IS_ON, false);
+        mIsStarred = getIntent().getBooleanExtra(KEY_IS_STARRED, false);
 
         setContentView(binding.getRoot());
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle(mIssue.name);
+            // getSupportActionBar().setTitle(mIssue.name);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
 
         binding.issueName.setText(mIssue.name);
@@ -202,6 +206,7 @@ public class IssueActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         outState.putParcelable(KEY_ISSUE, mIssue);
         outState.putBoolean(KEY_IS_LOW_ACCURACY, mIsLowAccuracy);
+        outState.putBoolean(KEY_IS_STARRED, mIsStarred);
     }
 
     @Override
@@ -272,6 +277,16 @@ public class IssueActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_issue, menu);
+
+        MenuItem starItem = menu.findItem(R.id.menu_star);
+        if (mIsStarred) {
+            starItem.setIcon(R.drawable.ic_star_white_24dp);
+            starItem.setTitle(R.string.action_unstar_issue);
+        } else {
+            starItem.setIcon(R.drawable.ic_star_outline_white_24dp);
+            starItem.setTitle(R.string.action_star_issue);
+        }
+
         return true;
     }
 
@@ -284,6 +299,17 @@ public class IssueActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.menu_share) {
             sendShare();
             return true;
+        }
+        if (item.getItemId() == R.id.menu_star) {
+            DatabaseHelper db = AppSingleton.getInstance(getApplicationContext()).getDatabaseHelper();
+            if (mIsStarred) {
+                db.removeStarredIssue(mIssue.id);
+                mIsStarred = false;
+            } else {
+                db.addStarredIssue(mIssue.id);
+                mIsStarred = true;
+            }
+            invalidateOptionsMenu();
         }
         if (item.getItemId() == R.id.menu_details) {
             showIssueDetails();
