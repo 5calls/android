@@ -212,7 +212,9 @@ public class FiveCallsApi {
                             String state = response.getString("state");
                             String district = response.getString("district");
                             if (!TextUtils.isEmpty(state) && !TextUtils.isEmpty(district)) {
-                                OneSignal.getUser().addTag("districtID", state + "-" + district);
+                                if (OneSignal.isInitialized()) {
+                                    OneSignal.getUser().addTag("districtID", state + "-" + district);
+                                }
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
