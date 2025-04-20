@@ -88,9 +88,6 @@ public class FiveCallsApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        // Initialize analytics
-        analyticsManager.init(this);
-
         // Set up OneSignal.
         OneSignal.initWithContext(this, ONESIGNAL_APP_ID);
 
