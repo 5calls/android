@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
+import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.databinding.ActivityLocationBinding;
 import org.a5calls.android.a5calls.model.AccountManager;
@@ -111,7 +112,7 @@ public class LocationActivity extends AppCompatActivity {
             binding.gpsButton.setVisibility(View.GONE);
         }
 
-        new AnalyticsManager().trackPageview("/location", this);
+        FiveCallsApplication.analyticsManager.trackPageview("/location", this);
     }
 
     @Override

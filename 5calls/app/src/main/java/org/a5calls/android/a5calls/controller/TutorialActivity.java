@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import org.a5calls.android.a5calls.AppSingleton;
+import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.databinding.ActivityTutorialBinding;
 import org.a5calls.android.a5calls.model.AccountManager;
@@ -60,7 +61,7 @@ public class TutorialActivity extends AppCompatActivity {
             }
         });
 
-        new AnalyticsManager().trackPageview("/tutorial", this);
+        FiveCallsApplication.analyticsManager.trackPageview("/tutorial", this);
     }
 
     public void onPreviousPagePressed() {

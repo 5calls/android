@@ -30,6 +30,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 import org.a5calls.android.a5calls.AppSingleton;
+import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.adapter.OutcomeAdapter;
 import org.a5calls.android.a5calls.databinding.ActivityRepCallBinding;
@@ -160,7 +161,7 @@ public class RepCallActivity extends AppCompatActivity {
         binding.outcomeList.addItemDecoration(new GridItemDecoration(gridPadding,
                 getSpanCount(RepCallActivity.this)));
 
-        new AnalyticsManager().trackPageview(String.format("/issue/%s/%s/", mIssue.slug, c.id), this);
+        FiveCallsApplication.analyticsManager.trackPageview(String.format("/issue/%s/%s/", mIssue.slug, c.id), this);
     }
 
     @Override

@@ -68,7 +68,7 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         if (getIntent().getBooleanExtra(EXTRA_FROM_NOTIFICATION, false)) {
-            new AnalyticsManager().trackPageview("/settings", this);
+            FiveCallsApplication.analyticsManager.trackPageview("/settings", this);
         }
 
         getSupportFragmentManager().beginTransaction().replace(R.id.content, new SettingsFragment())

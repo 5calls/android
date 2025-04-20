@@ -38,6 +38,7 @@ import android.widget.TextView;
 import com.google.firebase.auth.FirebaseAuth;
 
 import org.a5calls.android.a5calls.AppSingleton;
+import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.adapter.IssuesAdapter;
 import org.a5calls.android.a5calls.databinding.ActivityMainBinding;
@@ -124,10 +125,10 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         Intent intent = getIntent();
         if (intent != null && intent.getExtras() != null &&
                 intent.getExtras().getBoolean(EXTRA_FROM_NOTIFICATION, false)) {
-            new AnalyticsManager().trackPageviewWithProps("/", this,
+            FiveCallsApplication.analyticsManager.trackPageviewWithProps("/", this,
                     Map.of("fromNotification", "true"));
         } else {
-            new AnalyticsManager().trackPageview("/", this);
+            FiveCallsApplication.analyticsManager.trackPageview("/", this);
         }
 
         setContentView(binding.getRoot());

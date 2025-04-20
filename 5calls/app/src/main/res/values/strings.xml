@@ -2,7 +2,6 @@
 
     <!-- The application name [CHAR_LIMIT=25] -->
     <string name="app_name">5 Calls</string>
-    <string name="plausible_domain" translatable="false">5calls.org</string>
 
     <!-- The prompt on the location page to have a user set their location [CHAR_LIMIT=NONE] -->
     <string name="location_prompt">Set your location to find your local representatives.</string>

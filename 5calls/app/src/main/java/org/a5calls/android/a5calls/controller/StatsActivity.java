@@ -26,6 +26,7 @@ import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
 import org.a5calls.android.a5calls.AppSingleton;
+import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.databinding.ActivityStatsBinding;
 import org.a5calls.android.a5calls.model.DatabaseHelper;
@@ -74,7 +75,7 @@ public class StatsActivity extends AppCompatActivity {
         DatabaseHelper db = AppSingleton.getInstance(this).getDatabaseHelper();
         initializeUI(db);
 
-        new AnalyticsManager().trackPageview("/stats", this);
+        FiveCallsApplication.analyticsManager.trackPageview("/stats", this);
     }
 
     private void initializeUI(DatabaseHelper db) {
