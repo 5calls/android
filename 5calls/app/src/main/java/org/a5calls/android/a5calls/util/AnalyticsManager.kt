@@ -11,11 +11,14 @@ class AnalyticsManager {
     private val staticProps: Map<String, String> = mapOf(
         "isAndroidApp" to "true",
         "androidAppVersion" to BuildConfig.VERSION_CODE.toString())
+    companion object {
+        const val PLAUSIBLE_DOMAIN = "5calls.org"
+    }
     
     @Synchronized
     private fun getPlausible(context: Context): Plausible {
         if (!::plausible.isInitialized) {
-            plausible = Plausible(context, "5calls.org")
+            plausible = Plausible(context, AnalyticsManager.PLAUSIBLE_DOMAIN)
         }
         return plausible
     }
