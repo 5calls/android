@@ -112,7 +112,7 @@ public class LocationActivity extends AppCompatActivity {
             binding.gpsButton.setVisibility(View.GONE);
         }
 
-        FiveCallsApplication.analyticsManager.trackPageview("/location", this);
+        FiveCallsApplication.analyticsManager().trackPageview("/location", this);
     }
 
     @Override

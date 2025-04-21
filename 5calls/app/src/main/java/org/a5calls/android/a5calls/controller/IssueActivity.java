@@ -188,7 +188,7 @@ public class IssueActivity extends AppCompatActivity {
             }
         });
 
-        FiveCallsApplication.analyticsManager.trackPageview(String.format("/issue/%s/", mIssue.slug), this);
+        FiveCallsApplication.analyticsManager().trackPageview(String.format("/issue/%s/", mIssue.slug), this);
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override

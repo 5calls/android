@@ -125,10 +125,10 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         Intent intent = getIntent();
         if (intent != null && intent.getExtras() != null &&
                 intent.getExtras().getBoolean(EXTRA_FROM_NOTIFICATION, false)) {
-            FiveCallsApplication.analyticsManager.trackPageviewWithProps("/", this,
+            FiveCallsApplication.analyticsManager().trackPageviewWithProps("/", this,
                     Map.of("fromNotification", "true"));
         } else {
-            FiveCallsApplication.analyticsManager.trackPageview("/", this);
+            FiveCallsApplication.analyticsManager().trackPageview("/", this);
         }
 
         setContentView(binding.getRoot());

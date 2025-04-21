@@ -61,7 +61,7 @@ public class TutorialActivity extends AppCompatActivity {
             }
         });
 
-        FiveCallsApplication.analyticsManager.trackPageview("/tutorial", this);
+        FiveCallsApplication.analyticsManager().trackPageview("/tutorial", this);
     }
 
     public void onPreviousPagePressed() {

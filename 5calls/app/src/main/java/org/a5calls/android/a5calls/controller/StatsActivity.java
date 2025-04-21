@@ -75,7 +75,7 @@ public class StatsActivity extends AppCompatActivity {
         DatabaseHelper db = AppSingleton.getInstance(this).getDatabaseHelper();
         initializeUI(db);
 
-        FiveCallsApplication.analyticsManager.trackPageview("/stats", this);
+        FiveCallsApplication.analyticsManager().trackPageview("/stats", this);
     }
 
     private void initializeUI(DatabaseHelper db) {

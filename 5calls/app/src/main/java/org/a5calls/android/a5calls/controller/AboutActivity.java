@@ -183,7 +183,7 @@ public class AboutActivity extends AppCompatActivity {
         controller.registerCallRequestListener(mStatusListener);
         controller.getReport();
 
-        FiveCallsApplication.analyticsManager.trackPageview("/about", this);
+        FiveCallsApplication.analyticsManager().trackPageview("/about", this);
     }
 
     @Override
