@@ -41,12 +41,6 @@ android {
     }
 }
 
-repositories {
-    maven {
-        url 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
-    }
-}
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -100,7 +94,7 @@ dependencies {
     implementation 'com.onesignal:OneSignal:5.1.28'
 
     // Plausible
-    implementation 'com.wbrawner.plausible:plausible-android:0.1.0-SNAPSHOT'
+    implementation 'com.github.OneBusAway:plausible-android-sdk:3.3'
 
     // If you add any other open-source libraries, make sure to update assets/licenses.html
     // with the appropriate license information.

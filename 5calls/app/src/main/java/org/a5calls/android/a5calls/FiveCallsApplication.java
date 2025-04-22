@@ -29,6 +29,7 @@ import com.onesignal.OneSignal;
 import org.a5calls.android.a5calls.controller.SettingsActivity;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.NotificationUtils;
+import org.a5calls.android.a5calls.util.AnalyticsManager;
 
 import java.util.UUID;
 
@@ -37,6 +38,11 @@ import java.util.UUID;
  */
 public class FiveCallsApplication extends Application {
     private int mRunningActivities;
+    private static AnalyticsManager mAnalyticsManager = new AnalyticsManager();
+
+    public static AnalyticsManager analyticsManager() {
+        return mAnalyticsManager;
+    }
 
     private static final String ONESIGNAL_APP_ID = "5fd4ca41-9f6c-4149-a312-ae3e71b35c0e";
 
