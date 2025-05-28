@@ -351,12 +351,19 @@ public class IssueActivity extends AppCompatActivity {
 
     private void populateRepView(View repView, Contact contact, final int index,
                                  boolean hasCalledToday) {
-        TextView contactName = repView.findViewById(R.id.contact_name);
+        final TextView contactName = repView.findViewById(R.id.contact_name);
         final ImageView repImage = repView.findViewById(R.id.rep_image);
-        ImageView contactChecked = repView.findViewById(R.id.contact_done_img);
-        TextView contactReason = repView.findViewById(R.id.contact_reason);
-        TextView contactWarning = repView.findViewById(R.id.contact_warning);
-        contactName.setText(contact.name);
+        final ImageView contactChecked = repView.findViewById(R.id.contact_done_img);
+        final TextView contactReason = repView.findViewById(R.id.contact_reason);
+        final TextView contactWarning = repView.findViewById(R.id.contact_warning);
+
+        String displayName;
+        if (!TextUtils.isEmpty(contact.party)) {
+            displayName = String.format("%s (%s-%s)", contact.name, contact.party.charAt(0), contact.state);
+        } else {
+            displayName = contact.name;
+        }
+        contactName.setText(displayName);
         contactWarning.setVisibility(View.GONE);
         if (!TextUtils.isEmpty(contact.reason)) {
             contactReason.setText(contact.reason);
