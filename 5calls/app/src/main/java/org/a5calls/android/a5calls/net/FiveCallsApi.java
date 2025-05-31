@@ -295,7 +295,6 @@ public class FiveCallsApi {
                 params.put("issueid", issueId);
                 params.put("result", result);
                 params.put("contactid", contactId);
-                params.put("location", zip);
                 params.put("via", (BuildConfig.DEBUG && TESTING) ? "test" : "android");
                 params.put("callerid", mCallerId);
                 return params;
