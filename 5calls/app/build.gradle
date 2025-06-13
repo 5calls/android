@@ -23,7 +23,6 @@ android {
     }
     namespace 'org.a5calls.android.a5calls'
     lint {
-        abortOnError false // Temporary until build errors are resolved, see issue #208
     }
 
     compileOptions {
