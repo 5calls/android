@@ -63,7 +63,7 @@ public class AboutActivity extends AppCompatActivity {
 
         setSupportActionBar(binding.toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.about_title));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         // Apply insets for edge-to-edge mode.
         ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, windowInsets) -> {

@@ -12,7 +12,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -26,6 +29,8 @@ import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.databinding.ActivityLocationBinding;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.util.AnalyticsManager;
+
+import java.util.Objects;
 
 import static org.a5calls.android.a5calls.controller.IssueActivity.KEY_IS_LOW_ACCURACY;
 
@@ -55,6 +60,18 @@ public class LocationActivity extends AppCompatActivity {
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         binding = ActivityLocationBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        setSupportActionBar(binding.toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.about_title));
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+
+        // Apply insets for edge-to-edge mode.
+        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, windowInsets) -> {
+            Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+            binding.appbar.setPadding(insets.left, binding.appbar.getPaddingTop() + insets.top, insets.right, 0);
+            binding.scrollView.setPadding(0, 0, 0, insets.bottom);
+            return WindowInsetsCompat.CONSUMED;
+        });
 
         // Allow home up if required.
         Intent intent = getIntent();
