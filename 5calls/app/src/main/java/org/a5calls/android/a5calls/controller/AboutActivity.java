@@ -65,14 +65,11 @@ public class AboutActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.about_title));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        // Apply insets for edge-to-edge mode.
         ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, windowInsets) -> {
             Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
-            // Apply the insets as padding to the view. This is a great way to layout
-            // your content inside the system bars.
-            v.setPadding(insets.left, insets.top, insets.right, insets.bottom);
-
-            // Return CONSUMED if you don't want want the window insets to keep being
-            // passed down to descendant views.
+            binding.appbar.setPadding(insets.left, binding.appbar.getPaddingTop() + insets.top, insets.right, 0);
+            binding.scrollView.setPadding(0, 0, 0, insets.bottom);
             return WindowInsetsCompat.CONSUMED;
         });
 

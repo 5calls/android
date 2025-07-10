@@ -16,10 +16,9 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme.NoBarTheme">
+        android:theme="@style/AppTheme">
         <activity android:name=".controller.MainActivity"
             android:launchMode="singleTop"
-            android:theme="@style/AppTheme.NoBarTheme.MainActivity"
             android:exported="true"
             >
             <intent-filter>
