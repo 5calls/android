@@ -9,6 +9,10 @@ import android.os.Bundle;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.google.android.gms.tasks.Task;
@@ -87,6 +91,7 @@ public class IssueActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         binding = ActivityIssueBinding.inflate(getLayoutInflater());
 
         mIssue = getIntent().getParcelableExtra(KEY_ISSUE);
@@ -100,10 +105,18 @@ public class IssueActivity extends AppCompatActivity {
 
         setContentView(binding.getRoot());
 
+        setSupportActionBar(binding.toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle(mIssue.name);
         }
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, windowInsets) -> {
+            Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+            binding.appBarLayout.setPadding(insets.left, insets.top, insets.right, 0);
+            binding.scrollView.setPadding(0, 0, 0, insets.bottom);
+            return WindowInsetsCompat.CONSUMED;
+        });
 
         binding.issueName.setText(mIssue.name);
         MarkdownUtil.setUpScript(binding.issueDescription, mIssue.reason, getApplicationContext());
