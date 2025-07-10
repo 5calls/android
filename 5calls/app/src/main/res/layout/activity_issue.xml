@@ -5,7 +5,7 @@
     style="@style/scrollViewStyle"
     >
 
-    <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/scroll_view"
         style="@style/nestedScrollViewStyleTop"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"

@@ -18,7 +18,9 @@ package org.a5calls.android.a5calls;
 
 import android.app.Activity;
 import android.app.Application;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 
 import androidx.core.app.NotificationManagerCompat;
 
@@ -91,6 +93,14 @@ public class FiveCallsApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        // DO NOT SUBMIT just to check sdk upgrade to 35 "safer intents"
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+                    .detectUnsafeIntentLaunch()
+                    .build()
+            );
+        }
 
         // Set up OneSignal.
         OneSignal.initWithContext(this, ONESIGNAL_APP_ID);
