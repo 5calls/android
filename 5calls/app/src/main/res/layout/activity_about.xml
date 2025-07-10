@@ -31,219 +31,219 @@
         <LinearLayout style="@style/mainLinearLayout"
             android:orientation="vertical">
 
-        <TextView
-            style="@style/tutorialHeadStyle"
-            android:layout_marginBottom="@dimen/text_layout_marginBottom16"
-            android:text="@string/about_header"
-            />
+            <TextView
+                style="@style/tutorialHeadStyle"
+                android:layout_marginBottom="@dimen/text_layout_marginBottom16"
+                android:text="@string/about_header"
+                />
 
-        <TextView
-            style="@style/subheadingTutorialStyle"
-            android:layout_marginBottom="@dimen/text_layout_marginBottom16"
-            android:text="@string/about_p2" />
+            <TextView
+                style="@style/subheadingTutorialStyle"
+                android:layout_marginBottom="@dimen/text_layout_marginBottom16"
+                android:text="@string/about_p2" />
 
-        <TextView
-            style="@style/paragraphTextStyle"
-            android:layout_marginBottom="@dimen/text_layout_marginBottom16"
-            android:text="@string/about_p1"
-            />
+            <TextView
+                style="@style/paragraphTextStyle"
+                android:layout_marginBottom="@dimen/text_layout_marginBottom16"
+                android:text="@string/about_p1"
+                />
 
-        <TextView
-            style="@style/paragraphTextStyle"
-            android:text="@string/about_p3"
-            />
+            <TextView
+                style="@style/paragraphTextStyle"
+                android:text="@string/about_p3"
+                />
 
-        <TextView
-            android:id="@+id/calls_to_date"
-            style="@style/aboutSubtStyle"
-            />
+            <TextView
+                android:id="@+id/calls_to_date"
+                style="@style/aboutSubtStyle"
+                />
 
-        <TextView
-            style="@style/aboutPrompt"
-            android:text="@string/general_prompt"
-            />
+            <TextView
+                style="@style/aboutPrompt"
+                android:text="@string/general_prompt"
+                />
 
-        <Button
-            android:id="@+id/about_us_button"
-            style="@style/fullWidthBtnStyle"
-            android:text="@string/about_us_btn"
-            />
+            <Button
+                android:id="@+id/about_us_button"
+                style="@style/fullWidthBtnStyle"
+                android:text="@string/about_us_btn"
+                />
 
-        <Button
-            android:id="@+id/why_calling_button"
-            style="@style/fullWidthBtnStyle"
-            android:text="@string/why_calling_btn"
-            />
+            <Button
+                android:id="@+id/why_calling_button"
+                style="@style/fullWidthBtnStyle"
+                android:text="@string/why_calling_btn"
+                />
 
-        <Button
-            android:id="@+id/contact_us_button"
-            style="@style/fullWidthBtnStyle"
-            android:text="@string/contact_us_btn"
-            />
+            <Button
+                android:id="@+id/contact_us_button"
+                style="@style/fullWidthBtnStyle"
+                android:text="@string/contact_us_btn"
+                />
 
-        <Button
-            android:id="@+id/privacy_button"
-            style="@style/fullWidthBtnStyle"
-            android:text="@string/privacy_btn"
-            />
+            <Button
+                android:id="@+id/privacy_button"
+                style="@style/fullWidthBtnStyle"
+                android:text="@string/privacy_btn"
+                />
 
-        <TextView
-            style="@style/aboutPrompt"
-            android:text="@string/social_prompt"
-            />
+            <TextView
+                style="@style/aboutPrompt"
+                android:text="@string/social_prompt"
+                />
 
-        <!-- Social media buttons. -->
+            <!-- Social media buttons. -->
 
-        <Button
-            style="@style/fullWidthBtnStyle"
-            android:layout_margin="0dp"
-            android:id="@+id/bluesky_button"
-            android:text="@string/bluesky_btn"
-            />
+            <Button
+                style="@style/fullWidthBtnStyle"
+                android:layout_margin="0dp"
+                android:id="@+id/bluesky_button"
+                android:text="@string/bluesky_btn"
+                />
 
-        <Button
-            android:id="@+id/facebook_button"
-            style="@style/fullWidthBtnStyle"
-            android:layout_margin="0dp"
-            android:text="@string/facebook_btn"
-            />
+            <Button
+                android:id="@+id/facebook_button"
+                style="@style/fullWidthBtnStyle"
+                android:layout_margin="0dp"
+                android:text="@string/facebook_btn"
+                />
 
-        <Button
-            android:id="@+id/instagram_button"
-            style="@style/fullWidthBtnStyle"
-            android:layout_margin="0dp"
-            android:text="@string/instagram_btn"
-            />
+            <Button
+                android:id="@+id/instagram_button"
+                style="@style/fullWidthBtnStyle"
+                android:layout_margin="0dp"
+                android:text="@string/instagram_btn"
+                />
 
-        <Button
-            android:id="@+id/threads_button"
-            style="@style/fullWidthBtnStyle"
-            android:layout_margin="0dp"
-            android:text="@string/threads_btn"
-            />
+            <Button
+                android:id="@+id/threads_button"
+                style="@style/fullWidthBtnStyle"
+                android:layout_margin="0dp"
+                android:text="@string/threads_btn"
+                />
 
-        <Button
-            android:id="@+id/mastodon_button"
-            style="@style/fullWidthBtnStyle"
-            android:layout_margin="0dp"
-            android:text="@string/mastodon_btn"
-            />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:id="@+id/newsletter_signup_view"
-            >
+            <Button
+                android:id="@+id/mastodon_button"
+                style="@style/fullWidthBtnStyle"
+                android:layout_margin="0dp"
+                android:text="@string/mastodon_btn"
+                />
 
             <LinearLayout
-                android:id="@+id/newsletter_card_result_success"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="gone"
+                android:id="@+id/newsletter_signup_view"
                 >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/newsletter_success_title"
-                    style="@style/aboutPrompt"
-                    />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/newsletter_success_description"
-                    style="@style/paragraphTextStyle"
-                    />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/newsletter_card"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                >
-
-                <TextView
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:text="@string/newsletter_signup_title"
-                    style="@style/aboutPrompt"
-                    />
-
-                <TextView
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:text="@string/newsletter_signup_description"
-                    style="@style/paragraphTextStyle"
-                    />
 
                 <LinearLayout
+                    android:id="@+id/newsletter_card_result_success"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
+                    android:visibility="gone"
                     >
 
-                    <EditText
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:minHeight="@dimen/accessibility_min_size"
-                        android:autofillHints="emailAddress"
-                        android:hint="@string/newsletter_signup_hint"
-                        android:inputType="textEmailAddress"
-                        android:id="@+id/newsletter_email"
-                        android:layout_weight="1"
+                        android:text="@string/newsletter_success_title"
+                        style="@style/aboutPrompt"
                         />
 
-                    <Button
-                        style="@style/genericButtonStyle"
-                        android:text="@string/newsletter_sign_up"
-                        android:id="@+id/newsletter_signup_button"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/newsletter_success_description"
+                        style="@style/paragraphTextStyle"
                         />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/newsletter_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    >
+
+                    <TextView
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:text="@string/newsletter_signup_title"
+                        style="@style/aboutPrompt"
+                        />
+
+                    <TextView
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:text="@string/newsletter_signup_description"
+                        style="@style/paragraphTextStyle"
+                        />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        >
+
+                        <EditText
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:minHeight="@dimen/accessibility_min_size"
+                            android:autofillHints="emailAddress"
+                            android:hint="@string/newsletter_signup_hint"
+                            android:inputType="textEmailAddress"
+                            android:id="@+id/newsletter_email"
+                            android:layout_weight="1"
+                            />
+
+                        <Button
+                            style="@style/genericButtonStyle"
+                            android:text="@string/newsletter_sign_up"
+                            android:id="@+id/newsletter_signup_button"
+                            />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
             </LinearLayout>
 
+            <TextView
+                style="@style/aboutPrompt"
+                android:text="@string/about_app_prompt"
+                />
+
+
+            <TextView
+                style="@style/paragraphTextStyle"
+                android:text="@string/rate_us_prompt"
+                />
+
+            <Button
+                android:id="@+id/rate_us_button"
+                style="@style/fullWidthBtnStyle"
+                android:text="@string/rate_us_btn"
+                />
+
+            <Button
+                android:id="@+id/license_button"
+                style="@style/fullWidthBtnStyle"
+                android:text="@string/license_btn"
+                />
+
+            <TextView
+                style="@style/paragraphTextStyle"
+                android:text="@string/open_source_info"
+                android:id="@+id/github_textview"
+                />
+
+            <TextView
+                android:id="@+id/version_info"
+                style="@style/paragraphTextStyle"
+                android:layout_marginTop="@dimen/margin_top16"
+                />
         </LinearLayout>
-
-        <TextView
-            style="@style/aboutPrompt"
-            android:text="@string/about_app_prompt"
-            />
-
-
-        <TextView
-            style="@style/paragraphTextStyle"
-            android:text="@string/rate_us_prompt"
-            />
-
-        <Button
-            android:id="@+id/rate_us_button"
-            style="@style/fullWidthBtnStyle"
-            android:text="@string/rate_us_btn"
-            />
-
-        <Button
-            android:id="@+id/license_button"
-            style="@style/fullWidthBtnStyle"
-            android:text="@string/license_btn"
-            />
-
-        <TextView
-            style="@style/paragraphTextStyle"
-            android:text="@string/open_source_info"
-            android:id="@+id/github_textview"
-            />
-
-        <TextView
-            android:id="@+id/version_info"
-            style="@style/paragraphTextStyle"
-            android:layout_marginTop="@dimen/margin_top16"
-            />
-    </LinearLayout>
     </ScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

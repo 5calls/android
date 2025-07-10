@@ -29,118 +29,118 @@
             style="@style/mainLinearLayout"
             android:orientation="vertical">
 
-        <TextView
-            style="@style/repCallTextStyle"
-            android:text="@string/call_count_today_one"
-            android:id="@+id/call_to_make_today_prompt"
-            />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_text"
-            >
-
-            <TextView
-                style="@style/issuePreviousCallStatsStyle"
-                android:layout_width="wrap_content"
-                android:layout_centerVertical="true"
-                android:id="@+id/previous_call_stats"
-                android:layout_alignParentStart="true"
-                app:drawableStartCompat="@drawable/checked_small"
-                />
-
-            <Button
-                style="@style/linkButtonStyle"
-                android:textAllCaps="false"
-                android:textAlignment="center"
-                android:id="@+id/previous_call_details"
-                android:layout_toEndOf="@id/previous_call_stats"
-                android:text="@string/details_btn"
-                />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/rep_info"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
-
-            <ImageView
-                android:id="@+id/rep_image"
-                style="@style/repImageStyle"
-                android:contentDescription="@null"
-                android:src="@drawable/baseline_person_52"
-                />
-
-            <TextView
-                android:id="@+id/contact_name"
-                style="@style/contactNameStyle"
-                android:layout_toEndOf="@id/rep_image"
-                />
-
-            <org.a5calls.android.a5calls.controller.SingleLineResizableTextView
-                android:id="@+id/phone_number"
-                style="@style/SingleLineResizableStyle"
-                />
-
-            <Button
-                android:id="@+id/local_office_button"
-                style="@style/localOffBtnRepCallStyle"
-                />
-
-        </RelativeLayout>
-
-        <LinearLayout
-            android:id="@+id/field_office_section"
-            style="@style/issueLinearLayout"
-            android:orientation="vertical"
-            android:layout_marginBottom="16dp"
-            >
-
-            <TextView
-                android:id="@+id/field_office_prompt"
-                style="@style/repCallTextStyle"
-                android:layout_width="wrap_content"
-                />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/script_section"
-            style="@style/issueLinearLayout"
-            android:orientation="vertical"
-
-            >
-
             <TextView
                 style="@style/repCallTextStyle"
-                android:text="@string/contact_reason_prompt"
+                android:text="@string/call_count_today_one"
+                android:id="@+id/call_to_make_today_prompt"
                 />
 
-            <TextView
-                android:id="@+id/contact_reason"
-                style="@style/splashTextStyle"
-                android:layout_marginTop="@dimen/margin_top4"
-                android:textSize="@dimen/text_size_paragraph"
-                />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_text"
+                >
 
-            <TextView
-                android:id="@+id/contact_details"
-                style="@style/splashTextStyle"
-                android:layout_marginTop="@dimen/margin_top4"
-                android:textSize="@dimen/text_size_paragraph"
-                />
+                <TextView
+                    style="@style/issuePreviousCallStatsStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:id="@+id/previous_call_stats"
+                    android:layout_alignParentStart="true"
+                    app:drawableStartCompat="@drawable/checked_small"
+                    />
 
-            <TextView
-                style="@style/repCallTextStyle"
-                android:layout_marginTop="@dimen/margin_top8"
-                android:text="@string/call_script_prompt"
-                />
+                <Button
+                    style="@style/linkButtonStyle"
+                    android:textAllCaps="false"
+                    android:textAlignment="center"
+                    android:id="@+id/previous_call_details"
+                    android:layout_toEndOf="@id/previous_call_stats"
+                    android:text="@string/details_btn"
+                    />
 
-            <TextView
-                android:id="@+id/call_script"
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rep_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <ImageView
+                    android:id="@+id/rep_image"
+                    style="@style/repImageStyle"
+                    android:contentDescription="@null"
+                    android:src="@drawable/baseline_person_52"
+                    />
+
+                <TextView
+                    android:id="@+id/contact_name"
+                    style="@style/contactNameStyle"
+                    android:layout_toEndOf="@id/rep_image"
+                    />
+
+                <org.a5calls.android.a5calls.controller.SingleLineResizableTextView
+                    android:id="@+id/phone_number"
+                    style="@style/SingleLineResizableStyle"
+                    />
+
+                <Button
+                    android:id="@+id/local_office_button"
+                    style="@style/localOffBtnRepCallStyle"
+                    />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/field_office_section"
+                style="@style/issueLinearLayout"
+                android:orientation="vertical"
+                android:layout_marginBottom="16dp"
+                >
+
+                <TextView
+                    android:id="@+id/field_office_prompt"
+                    style="@style/repCallTextStyle"
+                    android:layout_width="wrap_content"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/script_section"
+                style="@style/issueLinearLayout"
+                android:orientation="vertical"
+
+                >
+
+                <TextView
+                    style="@style/repCallTextStyle"
+                    android:text="@string/contact_reason_prompt"
+                    />
+
+                <TextView
+                    android:id="@+id/contact_reason"
+                    style="@style/splashTextStyle"
+                    android:layout_marginTop="@dimen/margin_top4"
+                    android:textSize="@dimen/text_size_paragraph"
+                    />
+
+                <TextView
+                    android:id="@+id/contact_details"
+                    style="@style/splashTextStyle"
+                    android:layout_marginTop="@dimen/margin_top4"
+                    android:textSize="@dimen/text_size_paragraph"
+                    />
+
+                <TextView
+                    style="@style/repCallTextStyle"
+                    android:layout_marginTop="@dimen/margin_top8"
+                    android:text="@string/call_script_prompt"
+                    />
+
+                <TextView
+                    android:id="@+id/call_script"
                 style="@style/callScriptTextStyle"
                 />
 
