@@ -8,6 +8,11 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.WindowInsetsCompat;
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AlertDialog;
@@ -51,12 +56,25 @@ public class AboutActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         binding = ActivityAboutBinding.inflate(getLayoutInflater());
 
         setContentView(binding.getRoot());
 
+        setSupportActionBar(binding.toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.about_title));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, windowInsets) -> {
+            Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+            // Apply the insets as padding to the view. This is a great way to layout
+            // your content inside the system bars.
+            v.setPadding(insets.left, insets.top, insets.right, insets.bottom);
+
+            // Return CONSUMED if you don't want want the window insets to keep being
+            // passed down to descendant views.
+            return WindowInsetsCompat.CONSUMED;
+        });
 
         binding.aboutUsButton.setOnClickListener(v -> CustomTabsUtil.launchUrl(
                 AboutActivity.this, Uri.parse(getString(R.string.about_url))));

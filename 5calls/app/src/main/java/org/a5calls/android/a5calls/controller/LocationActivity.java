@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.WindowCompat;
 
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -51,6 +52,7 @@ public class LocationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         binding = ActivityLocationBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -61,7 +63,7 @@ public class LocationActivity extends AppCompatActivity {
                 ActionBar supportActionBar = getSupportActionBar();
                 if (supportActionBar != null) {
                     supportActionBar.setDisplayHomeAsUpEnabled(true);
-                    
+
                     // Set the title to "update location" if we haven't come here
                     // from the tutorial.
                     supportActionBar.setTitle(R.string.menu_location);
