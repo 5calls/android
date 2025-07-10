@@ -16,13 +16,13 @@
 
 package org.a5calls.android.a5calls.controller;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
-import android.widget.TextView;
+
+import androidx.appcompat.widget.AppCompatTextView;
 
 import org.a5calls.android.a5calls.R;
 
@@ -36,7 +36,7 @@ import org.a5calls.android.a5calls.R;
  * totally different should be displayed in it.
  * This is from https://github.com/google/science-journal/blob/master/OpenScienceJournal/whistlepunk_library/src/main/java/com/google/android/apps/forscience/whistlepunk/SingleLineResizableTextView.java.
  */
-public class SingleLineResizableTextView extends TextView {
+public class SingleLineResizableTextView extends AppCompatTextView {
 
     private static final String TAG = "ResizableTextView";
 
@@ -58,13 +58,6 @@ public class SingleLineResizableTextView extends TextView {
 
     public SingleLineResizableTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
-    }
-
-    @TargetApi(21)
-    public SingleLineResizableTextView(Context context, AttributeSet attrs, int defStyleAttr,
-                                       int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
         init();
     }
 
