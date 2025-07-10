@@ -51,7 +51,6 @@ import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.DatabaseHelper;
 import org.a5calls.android.a5calls.model.Issue;
-import org.a5calls.android.a5calls.util.AnalyticsManager;
 import org.a5calls.android.a5calls.util.MarkdownUtil;
 
 import java.text.ParseException;
@@ -111,10 +110,14 @@ public class IssueActivity extends AppCompatActivity {
             getSupportActionBar().setTitle(mIssue.name);
         }
 
+        final BottomSheetBehavior<NestedScrollView> behavior = BottomSheetBehavior.from(binding.bottomSheet);
+        final int targetPeakHeight = behavior.getPeekHeight();
         ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, windowInsets) -> {
             Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
             binding.appBarLayout.setPadding(insets.left, insets.top, insets.right, 0);
             binding.scrollView.setPadding(0, 0, 0, insets.bottom);
+            binding.bottomSheet.setPadding(0, 0, 0, insets.bottom);
+            behavior.setPeekHeight(targetPeakHeight + insets.bottom);
             return WindowInsetsCompat.CONSUMED;
         });
 
@@ -133,8 +136,6 @@ public class IssueActivity extends AppCompatActivity {
             binding.link.setVisibility(View.GONE);
         }
 
-        final BottomSheetBehavior<NestedScrollView> behavior =
-                BottomSheetBehavior.from(binding.bottomSheet);
         binding.repPrompt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -192,12 +193,11 @@ public class IssueActivity extends AppCompatActivity {
                     return;
                 }
                 if (binding.scrollView.getHeight() + binding.scrollView.getScrollY() >=
-                        binding.issueSection.getMeasuredHeight()) {
+                        binding.issueSection.getMeasuredHeight() + binding.bottomSheet.getPaddingBottom()) {
                     if (behavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
                         behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                     }
                 }
-
             }
         });
 

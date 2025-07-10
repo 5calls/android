@@ -64,7 +64,7 @@
         style="@style/nestedScrollViewStyleDown"
         android.support.design:ignore="UnusedAttribute"
         app:behavior_hideable="false"
-        app:behavior_peekHeight="52dp"
+        app:behavior_peekHeight="@dimen/issue_height_relative_layout"
         app:layout_behavior="@string/bottom_sheet_behavior"
         >
 
