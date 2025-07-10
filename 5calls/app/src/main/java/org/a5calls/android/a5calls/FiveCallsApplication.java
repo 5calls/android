@@ -94,14 +94,6 @@ public class FiveCallsApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        // DO NOT SUBMIT just to check sdk upgrade to 35 "safer intents"
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
-                    .detectUnsafeIntentLaunch()
-                    .build()
-            );
-        }
-
         // Set up OneSignal.
         OneSignal.initWithContext(this, ONESIGNAL_APP_ID);
 
