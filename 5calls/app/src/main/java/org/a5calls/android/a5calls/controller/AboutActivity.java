@@ -12,7 +12,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.WindowInsetsCompat;
-import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AlertDialog;
@@ -33,7 +32,6 @@ import org.a5calls.android.a5calls.databinding.ActivityAboutBinding;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
 import org.a5calls.android.a5calls.R;
-import org.a5calls.android.a5calls.util.AnalyticsManager;
 import org.a5calls.android.a5calls.util.CustomTabsUtil;
 
 import java.text.NumberFormat;
@@ -67,9 +65,10 @@ public class AboutActivity extends AppCompatActivity {
 
         // Apply insets for edge-to-edge mode.
         ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, windowInsets) -> {
-            Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
-            binding.appbar.setPadding(insets.left, binding.appbar.getPaddingTop() + insets.top, insets.right, 0);
-            binding.scrollView.setPadding(0, 0, 0, insets.bottom);
+            Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars() |
+                    WindowInsetsCompat.Type.displayCutout());
+            binding.appbar.setPadding(insets.left, insets.top, insets.right, 0);
+            binding.scrollView.setPadding(insets.left, 0, insets.right, insets.bottom);;
             return WindowInsetsCompat.CONSUMED;
         });
 

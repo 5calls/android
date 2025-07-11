@@ -16,7 +16,6 @@ import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.databinding.ActivityTutorialBinding;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
-import org.a5calls.android.a5calls.util.AnalyticsManager;
 
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -52,7 +51,9 @@ public class TutorialActivity extends AppCompatActivity {
 
         binding.viewPager.setAdapter(new TutorialPagerAdapter(getSupportFragmentManager()));
         ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, windowInsets) -> {
-            Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+            Insets insets = windowInsets.getInsets(
+                    WindowInsetsCompat.Type.systemBars() |
+                            WindowInsetsCompat.Type.displayCutout());
             binding.viewPager.setPadding(insets.left, insets.top, insets.right, insets.bottom);
             return WindowInsetsCompat.CONSUMED;
         });

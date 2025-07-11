@@ -39,7 +39,6 @@ import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.NotificationUtils;
-import org.a5calls.android.a5calls.util.AnalyticsManager;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -74,7 +73,9 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.settings_root), (v, windowInsets) -> {
-            Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
+            Insets insets = windowInsets.getInsets(
+                    WindowInsetsCompat.Type.systemBars() |
+                            WindowInsetsCompat.Type.displayCutout());
             findViewById(R.id.appbar).setPadding(insets.left, insets.top, insets.right, 0);
             findViewById(R.id.contentFrame).setPadding(insets.left, 0, insets.right, insets.bottom);
             return WindowInsetsCompat.CONSUMED;

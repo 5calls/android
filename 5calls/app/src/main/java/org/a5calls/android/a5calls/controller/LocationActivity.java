@@ -28,7 +28,6 @@ import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.databinding.ActivityLocationBinding;
 import org.a5calls.android.a5calls.model.AccountManager;
-import org.a5calls.android.a5calls.util.AnalyticsManager;
 
 import java.util.Objects;
 
@@ -67,9 +66,10 @@ public class LocationActivity extends AppCompatActivity {
 
         // Apply insets for edge-to-edge mode.
         ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, windowInsets) -> {
-            Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
-            binding.appbar.setPadding(insets.left, binding.appbar.getPaddingTop() + insets.top, insets.right, 0);
-            binding.scrollView.setPadding(0, 0, 0, insets.bottom);
+            Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars() |
+                    WindowInsetsCompat.Type.displayCutout());
+            binding.appbar.setPadding(insets.left, insets.top, insets.right, 0);
+            binding.scrollView.setPadding(insets.left, 0, insets.right, insets.bottom);
             return WindowInsetsCompat.CONSUMED;
         });
 

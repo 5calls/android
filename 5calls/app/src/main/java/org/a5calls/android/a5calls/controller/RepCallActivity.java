@@ -95,9 +95,11 @@ public class RepCallActivity extends AppCompatActivity {
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, windowInsets) -> {
-            Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+            Insets insets = windowInsets.getInsets(
+                    WindowInsetsCompat.Type.systemBars() |
+                            WindowInsetsCompat.Type.displayCutout());
             binding.appBarLayout.setPadding(insets.left, insets.top, insets.right, 0);
-            binding.scrollView.setPadding(0, 0, 0, insets.bottom);
+            binding.scrollView.setPadding(insets.left, 0, insets.right, insets.bottom);
             return WindowInsetsCompat.CONSUMED;
         });
 

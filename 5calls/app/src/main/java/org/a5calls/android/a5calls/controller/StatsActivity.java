@@ -31,7 +31,6 @@ import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.databinding.ActivityStatsBinding;
 import org.a5calls.android.a5calls.model.DatabaseHelper;
 import org.a5calls.android.a5calls.model.Outcome;
-import org.a5calls.android.a5calls.util.AnalyticsManager;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -79,9 +78,11 @@ public class StatsActivity extends AppCompatActivity {
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, windowInsets) -> {
-            Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+            Insets insets = windowInsets.getInsets(
+                    WindowInsetsCompat.Type.systemBars() |
+                            WindowInsetsCompat.Type.displayCutout());
             binding.appbar.setPadding(insets.left, insets.top, insets.right, 0);
-            binding.scrollView.setPadding(0, 0, 0, insets.bottom);
+            binding.scrollView.setPadding(insets.left, 0, insets.right, insets.bottom);
             return WindowInsetsCompat.CONSUMED;
         });
 

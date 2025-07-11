@@ -113,10 +113,26 @@ public class IssueActivity extends AppCompatActivity {
         final BottomSheetBehavior<NestedScrollView> behavior = BottomSheetBehavior.from(binding.bottomSheet);
         final int targetPeakHeight = behavior.getPeekHeight();
         ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, windowInsets) -> {
-            Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+            Insets insets = windowInsets.getInsets(
+                    WindowInsetsCompat.Type.systemBars() |
+                            WindowInsetsCompat.Type.displayCutout());
             binding.appBarLayout.setPadding(insets.left, insets.top, insets.right, 0);
-            binding.scrollView.setPadding(0, 0, 0, insets.bottom);
+            binding.scrollView.setPadding(insets.left, 0, insets.right, insets.bottom);
             binding.bottomSheet.setPadding(0, 0, 0, insets.bottom);
+            final int activityPadding = getResources().getDimensionPixelSize(
+                    R.dimen.activity_horizontal_padding);
+            binding.repPrompt.setPadding(activityPadding + insets.left, 0,
+                    activityPadding + insets.right, 0);
+            int numChildren = binding.repList.getChildCount();
+            final int repItemHorizontalPadding = getResources().getDimensionPixelSize(
+                    R.dimen.rep_list_dimens_left_right);
+            final int repItemVerticalPadding = getResources().getDimensionPixelSize(
+                    R.dimen.rep_list_dimens);
+            for (int i = 0; i < numChildren; i++) {
+                View child = binding.repList.getChildAt(i);
+                child.setPadding(repItemHorizontalPadding + insets.left, repItemVerticalPadding,
+                        repItemHorizontalPadding + insets.right, repItemVerticalPadding);
+            }
             behavior.setPeekHeight(targetPeakHeight + insets.bottom);
             return WindowInsetsCompat.CONSUMED;
         });
