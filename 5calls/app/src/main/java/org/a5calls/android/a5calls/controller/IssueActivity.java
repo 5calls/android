@@ -110,7 +110,8 @@ public class IssueActivity extends AppCompatActivity {
             getSupportActionBar().setTitle(mIssue.name);
         }
 
-        final BottomSheetBehavior<NestedScrollView> behavior = BottomSheetBehavior.from(binding.bottomSheet);
+        final BottomSheetBehavior<NestedScrollView> behavior =
+                BottomSheetBehavior.from(binding.bottomSheet);
         final int targetPeakHeight = behavior.getPeekHeight();
         ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, windowInsets) -> {
             Insets insets = windowInsets.getInsets(
@@ -163,15 +164,17 @@ public class IssueActivity extends AppCompatActivity {
                 }
             }
         });
-        final int collapsedSize = getResources().getDimensionPixelSize(R.dimen.accessibility_min_size);
-        behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+        final int collapsedSize =
+                getResources().getDimensionPixelSize(R.dimen.accessibility_min_size);
+        behavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             private boolean wasAtBottom = false;
 
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 if (newState == BottomSheetBehavior.STATE_SETTLING ||
                         newState == BottomSheetBehavior.STATE_DRAGGING) {
-                    wasAtBottom = binding.scrollView.getHeight() + binding.scrollView.getScrollY() >=
+                    wasAtBottom = binding.scrollView.getHeight() +
+                            binding.scrollView.getScrollY() >=
                             binding.issueSection.getMeasuredHeight();
                     mIsAnimating = true;
                 } else {
