@@ -38,6 +38,7 @@ import android.widget.TextView;
 import com.google.firebase.auth.FirebaseAuth;
 
 import org.a5calls.android.a5calls.AppSingleton;
+import org.a5calls.android.a5calls.BuildConfig;
 import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.adapter.IssuesAdapter;
@@ -653,10 +654,12 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             return;
         }
         
-        // report the search to the server
-        FiveCallsApi api = AppSingleton.getInstance(getApplicationContext()).getJsonController();
-        api.reportSearch(searchText.trim());
-        
+        // report the search to the server if not a debug build
+        if (!BuildConfig.DEBUG) {
+            FiveCallsApi api = AppSingleton.getInstance(getApplicationContext()).getJsonController();
+            api.reportSearch(searchText.trim());
+        }
+
         binding.filter.setVisibility(View.GONE);
         binding.searchBar.setVisibility(VISIBLE);
         setSearchText(searchText);

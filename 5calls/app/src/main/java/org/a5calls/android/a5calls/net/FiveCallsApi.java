@@ -351,14 +351,13 @@ public class FiveCallsApi {
         try {
             JSONObject jsonBody = new JSONObject();
             jsonBody.put("query", searchTerm);
-            
-            JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, SEARCH_TRACKING, jsonBody,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            // Search report successful - no action needed
-                        }
-                    }, new Response.ErrorListener() {
+
+            JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, SEARCH_TRACKING, jsonBody, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    // Search report successful - no action needed
+                }
+            }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.w(TAG, "Search tracking failed: " + error.getMessage());
