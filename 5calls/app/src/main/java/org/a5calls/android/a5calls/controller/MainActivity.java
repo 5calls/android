@@ -652,6 +652,11 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             onIssueSearchCleared();
             return;
         }
+        
+        // report the search to the server
+        FiveCallsApi api = AppSingleton.getInstance(getApplicationContext()).getJsonController();
+        api.reportSearch(searchText.trim());
+        
         binding.filter.setVisibility(View.GONE);
         binding.searchBar.setVisibility(VISIBLE);
         setSearchText(searchText);
