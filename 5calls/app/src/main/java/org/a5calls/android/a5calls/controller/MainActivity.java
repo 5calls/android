@@ -10,10 +10,11 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.activity.OnBackPressedCallback;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.core.view.GravityCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -48,7 +49,6 @@ import org.a5calls.android.a5calls.model.Category;
 import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
 import org.a5calls.android.a5calls.model.Issue;
-import org.a5calls.android.a5calls.util.AnalyticsManager;
 import org.a5calls.android.a5calls.util.CustomTabsUtil;
 
 import java.util.ArrayList;
@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     protected void onCreate(Bundle savedInstanceState) {
         // TODO: Consider using fragments
         super.onCreate(savedInstanceState);
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
 
         try {
@@ -139,6 +140,19 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
         }
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, windowInsets) -> {
+            Insets insets = windowInsets.getInsets(
+                    WindowInsetsCompat.Type.systemBars() |
+                            WindowInsetsCompat.Type.displayCutout());
+            binding.appbar.setPadding(insets.left, insets.top, insets.right, 0);
+            binding.issuesRecyclerView.setPadding(insets.left, 0, insets.right, insets.bottom);
+            final int paddingSpinner = getResources().getDimensionPixelSize(R.dimen.padding_spinner);
+            binding.filter.setPadding(paddingSpinner + insets.left, 0,
+                    paddingSpinner + insets.right, 0);
+            binding.searchBar.setPadding(insets.left, 0, insets.right, 0);
+            return WindowInsetsCompat.CONSUMED;
+        });
 
         setupDrawerContent(binding.navigationView);
 

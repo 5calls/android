@@ -8,6 +8,10 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AlertDialog;
@@ -28,7 +32,6 @@ import org.a5calls.android.a5calls.databinding.ActivityAboutBinding;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
 import org.a5calls.android.a5calls.R;
-import org.a5calls.android.a5calls.util.AnalyticsManager;
 import org.a5calls.android.a5calls.util.CustomTabsUtil;
 
 import java.text.NumberFormat;
@@ -51,12 +54,23 @@ public class AboutActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         binding = ActivityAboutBinding.inflate(getLayoutInflater());
 
         setContentView(binding.getRoot());
 
+        setSupportActionBar(binding.toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.about_title));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+
+        // Apply insets for edge-to-edge mode.
+        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, windowInsets) -> {
+            Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars() |
+                    WindowInsetsCompat.Type.displayCutout());
+            binding.appbar.setPadding(insets.left, insets.top, insets.right, 0);
+            binding.scrollView.setPadding(insets.left, 0, insets.right, insets.bottom);;
+            return WindowInsetsCompat.CONSUMED;
+        });
 
         binding.aboutUsButton.setOnClickListener(v -> CustomTabsUtil.launchUrl(
                 AboutActivity.this, Uri.parse(getString(R.string.about_url))));

@@ -12,6 +12,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -24,7 +28,8 @@ import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.databinding.ActivityLocationBinding;
 import org.a5calls.android.a5calls.model.AccountManager;
-import org.a5calls.android.a5calls.util.AnalyticsManager;
+
+import java.util.Objects;
 
 import static org.a5calls.android.a5calls.controller.IssueActivity.KEY_IS_LOW_ACCURACY;
 
@@ -51,8 +56,22 @@ public class LocationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         binding = ActivityLocationBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        setSupportActionBar(binding.toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.first_location_title);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(false);
+
+        // Apply insets for edge-to-edge mode.
+        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, windowInsets) -> {
+            Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars() |
+                    WindowInsetsCompat.Type.displayCutout());
+            binding.appbar.setPadding(insets.left, insets.top, insets.right, 0);
+            binding.scrollView.setPadding(insets.left, 0, insets.right, insets.bottom);
+            return WindowInsetsCompat.CONSUMED;
+        });
 
         // Allow home up if required.
         Intent intent = getIntent();
@@ -61,7 +80,7 @@ public class LocationActivity extends AppCompatActivity {
                 ActionBar supportActionBar = getSupportActionBar();
                 if (supportActionBar != null) {
                     supportActionBar.setDisplayHomeAsUpEnabled(true);
-                    
+
                     // Set the title to "update location" if we haven't come here
                     // from the tutorial.
                     supportActionBar.setTitle(R.string.menu_location);

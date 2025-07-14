@@ -2,10 +2,26 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:android.support.design="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/coordinator_layout"
     style="@style/scrollViewStyle"
     >
 
-    <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/scroll_view"
         style="@style/nestedScrollViewStyleTop"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -48,7 +64,7 @@
         style="@style/nestedScrollViewStyleDown"
         android.support.design:ignore="UnusedAttribute"
         app:behavior_hideable="false"
-        app:behavior_peekHeight="52dp"
+        app:behavior_peekHeight="@dimen/issue_height_relative_layout"
         app:layout_behavior="@string/bottom_sheet_behavior"
         >
 

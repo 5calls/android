@@ -16,6 +16,10 @@ import androidx.core.app.TaskStackBuilder;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.preference.ListPreference;
 import androidx.preference.MultiSelectListPreference;
@@ -35,7 +39,6 @@ import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.NotificationUtils;
-import org.a5calls.android.a5calls.util.AnalyticsManager;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -58,14 +61,25 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
 
         setContentView(R.layout.activity_settings);
 
+        setSupportActionBar(findViewById(R.id.toolbar));
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle(R.string.settings);
         }
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.settings_root), (v, windowInsets) -> {
+            Insets insets = windowInsets.getInsets(
+                    WindowInsetsCompat.Type.systemBars() |
+                            WindowInsetsCompat.Type.displayCutout());
+            findViewById(R.id.appbar).setPadding(insets.left, insets.top, insets.right, 0);
+            findViewById(R.id.contentFrame).setPadding(insets.left, 0, insets.right, insets.bottom);
+            return WindowInsetsCompat.CONSUMED;
+        });
 
         if (getIntent().getBooleanExtra(EXTRA_FROM_NOTIFICATION, false)) {
             FiveCallsApplication.analyticsManager().trackPageview("/settings", this);
