@@ -17,6 +17,7 @@
             android:entryValues="@array/notification_options_values"
             android:defaultValue="0"
             app:iconSpaceReserved="false"
+            app:singleLineTitle="false"
             />
 
     </PreferenceCategory>
@@ -33,6 +34,7 @@
             android:summary="@string/settings_reminders_enable_summary"
             android:disableDependentsState="false"
             app:iconSpaceReserved="false"
+            app:singleLineTitle="false"
             />
 
         <MultiSelectListPreference
@@ -42,6 +44,7 @@
             android:entries="@array/reminder_days_titles"
             android:entryValues="@array/reminder_days_values"
             app:iconSpaceReserved="false"
+            app:singleLineTitle="false"
             />
 
         <Preference
@@ -49,6 +52,7 @@
             android:key="prefsKeyReminderTimePlaceholder"
             android:dependency="prefsKeyEnableReminders"
             app:iconSpaceReserved="false"
+            app:singleLineTitle="false"
             />
 
     </PreferenceCategory>
@@ -64,6 +68,7 @@
             android:summary="@string/settings_name_description"
             android:title="@string/settings_name"
             app:iconSpaceReserved="false"
+            app:singleLineTitle="false"
             />
 
         <ListPreference
@@ -74,6 +79,7 @@
             android:defaultValue="@string/script_text_size_normal_sp"
             android:summary="%s"
             app:iconSpaceReserved="false"
+            app:singleLineTitle="false"
             />
 
     </PreferenceCategory>
@@ -89,6 +95,7 @@
             android:summary="@string/settings_usage_summary"
             android:key="prefsKeyAllowAnalytics"
             app:iconSpaceReserved="false"
+            android:singleLineTitle="false"
             />
 
     </PreferenceCategory>
