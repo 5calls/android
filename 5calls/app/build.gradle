@@ -10,8 +10,8 @@ android {
         applicationId "org.a5calls.android.a5calls"
         minSdkVersion 23
         targetSdkVersion 36
-        versionCode 69
-        versionName '2.3.11'
+        versionCode 70
+        versionName '2.3.12'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         signingConfig signingConfigs.debug
     }

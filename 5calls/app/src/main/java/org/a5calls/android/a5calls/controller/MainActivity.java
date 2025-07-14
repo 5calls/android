@@ -151,6 +151,12 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             binding.filter.setPadding(paddingSpinner + insets.left, 0,
                     paddingSpinner + insets.right, 0);
             binding.searchBar.setPadding(insets.left, 0, insets.right, 0);
+            final int sidePadding = getResources().getDimensionPixelSize(
+                    R.dimen.activity_horizontal_margin);
+            final int bottomPadding = getResources().getDimensionPixelSize(
+                    R.dimen.activity_vertical_margin);
+            binding.newsletterSignupView.setPadding(insets.left + sidePadding, 0,
+                    insets.right + sidePadding, bottomPadding);
             return WindowInsetsCompat.CONSUMED;
         });
 
