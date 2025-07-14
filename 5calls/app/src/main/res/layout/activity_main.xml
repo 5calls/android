@@ -40,7 +40,7 @@
                     android:layout_height="?attr/actionBarSize"
                     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
                     app:layout_collapseMode="pin"
-                    app:popupTheme="@style/AppTheme.NoBarTheme.MainActivity" />
+                    app:popupTheme="@style/AppTheme" />
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
 
@@ -110,6 +110,7 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/issues_recycler_view"
                         android:layout_width="match_parent"
+                        android:background="@color/issue_background_color"
                         android:layout_height="match_parent" />
 
                 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

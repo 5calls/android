@@ -363,7 +363,7 @@ public class FiveCallsApiTest {
         assertEquals(0, testCallListener.mCallJsonError);
 
         assertEquals(new String(mHttpStack.getLastPostBody()),
-                "result=unavailable&issueid=myIssue&contactid=myRep&location=myLocation&callerid=itMe&via=" +
+                "result=unavailable&issueid=myIssue&contactid=myRep&callerid=itMe&via=" +
                         (FiveCallsApi.TESTING ? "test&" : "android&"));
 
         mApi.unregisterCallRequestListener(testCallListener);

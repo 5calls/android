@@ -9,6 +9,10 @@ import android.os.Bundle;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.google.android.gms.tasks.Task;
@@ -40,13 +44,13 @@ import com.google.android.play.core.review.ReviewManagerFactory;
 
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.BuildConfig;
+import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.databinding.ActivityIssueBinding;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.DatabaseHelper;
 import org.a5calls.android.a5calls.model.Issue;
-import org.a5calls.android.a5calls.util.AnalyticsManager;
 import org.a5calls.android.a5calls.util.MarkdownUtil;
 
 import java.text.ParseException;
@@ -86,6 +90,7 @@ public class IssueActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         binding = ActivityIssueBinding.inflate(getLayoutInflater());
 
         mIssue = getIntent().getParcelableExtra(KEY_ISSUE);
@@ -99,10 +104,39 @@ public class IssueActivity extends AppCompatActivity {
 
         setContentView(binding.getRoot());
 
+        setSupportActionBar(binding.toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle(mIssue.name);
         }
+
+        final BottomSheetBehavior<NestedScrollView> behavior =
+                BottomSheetBehavior.from(binding.bottomSheet);
+        final int targetPeakHeight = behavior.getPeekHeight();
+        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, windowInsets) -> {
+            Insets insets = windowInsets.getInsets(
+                    WindowInsetsCompat.Type.systemBars() |
+                            WindowInsetsCompat.Type.displayCutout());
+            binding.appBarLayout.setPadding(insets.left, insets.top, insets.right, 0);
+            binding.scrollView.setPadding(insets.left, 0, insets.right, insets.bottom);
+            binding.bottomSheet.setPadding(0, 0, 0, insets.bottom);
+            final int activityPadding = getResources().getDimensionPixelSize(
+                    R.dimen.activity_horizontal_padding);
+            binding.repPrompt.setPadding(activityPadding + insets.left, 0,
+                    activityPadding + insets.right, 0);
+            int numChildren = binding.repList.getChildCount();
+            final int repItemHorizontalPadding = getResources().getDimensionPixelSize(
+                    R.dimen.rep_list_dimens_left_right);
+            final int repItemVerticalPadding = getResources().getDimensionPixelSize(
+                    R.dimen.rep_list_dimens);
+            for (int i = 0; i < numChildren; i++) {
+                View child = binding.repList.getChildAt(i);
+                child.setPadding(repItemHorizontalPadding + insets.left, repItemVerticalPadding,
+                        repItemHorizontalPadding + insets.right, repItemVerticalPadding);
+            }
+            behavior.setPeekHeight(targetPeakHeight + insets.bottom);
+            return WindowInsetsCompat.CONSUMED;
+        });
 
         binding.issueName.setText(mIssue.name);
         MarkdownUtil.setUpScript(binding.issueDescription, mIssue.reason, getApplicationContext());
@@ -119,8 +153,6 @@ public class IssueActivity extends AppCompatActivity {
             binding.link.setVisibility(View.GONE);
         }
 
-        final BottomSheetBehavior<NestedScrollView> behavior =
-                BottomSheetBehavior.from(binding.bottomSheet);
         binding.repPrompt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -132,15 +164,17 @@ public class IssueActivity extends AppCompatActivity {
                 }
             }
         });
-        final int collapsedSize = getResources().getDimensionPixelSize(R.dimen.accessibility_min_size);
-        behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+        final int collapsedSize =
+                getResources().getDimensionPixelSize(R.dimen.accessibility_min_size);
+        behavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             private boolean wasAtBottom = false;
 
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 if (newState == BottomSheetBehavior.STATE_SETTLING ||
                         newState == BottomSheetBehavior.STATE_DRAGGING) {
-                    wasAtBottom = binding.scrollView.getHeight() + binding.scrollView.getScrollY() >=
+                    wasAtBottom = binding.scrollView.getHeight() +
+                            binding.scrollView.getScrollY() >=
                             binding.issueSection.getMeasuredHeight();
                     mIsAnimating = true;
                 } else {
@@ -178,16 +212,15 @@ public class IssueActivity extends AppCompatActivity {
                     return;
                 }
                 if (binding.scrollView.getHeight() + binding.scrollView.getScrollY() >=
-                        binding.issueSection.getMeasuredHeight()) {
+                        binding.issueSection.getMeasuredHeight() + binding.bottomSheet.getPaddingBottom()) {
                     if (behavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
                         behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                     }
                 }
-
             }
         });
 
-        new AnalyticsManager().trackPageview(String.format("/issue/%s/", mIssue.slug), this);
+        FiveCallsApplication.analyticsManager().trackPageview(String.format("/issue/%s/", mIssue.slug), this);
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -350,12 +383,19 @@ public class IssueActivity extends AppCompatActivity {
 
     private void populateRepView(View repView, Contact contact, final int index,
                                  boolean hasCalledToday) {
-        TextView contactName = repView.findViewById(R.id.contact_name);
+        final TextView contactName = repView.findViewById(R.id.contact_name);
         final ImageView repImage = repView.findViewById(R.id.rep_image);
-        ImageView contactChecked = repView.findViewById(R.id.contact_done_img);
-        TextView contactReason = repView.findViewById(R.id.contact_reason);
-        TextView contactWarning = repView.findViewById(R.id.contact_warning);
-        contactName.setText(contact.name);
+        final ImageView contactChecked = repView.findViewById(R.id.contact_done_img);
+        final TextView contactReason = repView.findViewById(R.id.contact_reason);
+        final TextView contactWarning = repView.findViewById(R.id.contact_warning);
+
+        String displayName;
+        if (!TextUtils.isEmpty(contact.party)) {
+            displayName = String.format("%s (%s-%s)", contact.name, contact.party.charAt(0), contact.state);
+        } else {
+            displayName = contact.name;
+        }
+        contactName.setText(displayName);
         contactWarning.setVisibility(View.GONE);
         if (!TextUtils.isEmpty(contact.reason)) {
             contactReason.setText(contact.reason);

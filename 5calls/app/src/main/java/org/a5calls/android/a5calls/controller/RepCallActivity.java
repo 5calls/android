@@ -7,6 +7,10 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.google.android.material.snackbar.Snackbar;
@@ -30,6 +34,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 import org.a5calls.android.a5calls.AppSingleton;
+import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.adapter.OutcomeAdapter;
 import org.a5calls.android.a5calls.databinding.ActivityRepCallBinding;
@@ -70,6 +75,7 @@ public class RepCallActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         binding = ActivityRepCallBinding.inflate(getLayoutInflater());
 
         final String address = getIntent().getStringExtra(KEY_ADDRESS);
@@ -82,10 +88,20 @@ public class RepCallActivity extends AppCompatActivity {
 
         setContentView(binding.getRoot());
 
+        setSupportActionBar(binding.toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle(mIssue.name);
         }
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, windowInsets) -> {
+            Insets insets = windowInsets.getInsets(
+                    WindowInsetsCompat.Type.systemBars() |
+                            WindowInsetsCompat.Type.displayCutout());
+            binding.appBarLayout.setPadding(insets.left, insets.top, insets.right, 0);
+            binding.scrollView.setPadding(insets.left, 0, insets.right, insets.bottom);
+            return WindowInsetsCompat.CONSUMED;
+        });
 
         mStatusListener = new FiveCallsApi.CallRequestListener() {
             @Override
@@ -160,7 +176,7 @@ public class RepCallActivity extends AppCompatActivity {
         binding.outcomeList.addItemDecoration(new GridItemDecoration(gridPadding,
                 getSpanCount(RepCallActivity.this)));
 
-        new AnalyticsManager().trackPageview(String.format("/issue/%s/%s/", mIssue.slug, c.id), this);
+        FiveCallsApplication.analyticsManager().trackPageview(String.format("/issue/%s/%s/", mIssue.slug, c.id), this);
     }
 
     @Override

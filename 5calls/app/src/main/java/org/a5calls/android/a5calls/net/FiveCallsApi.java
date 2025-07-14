@@ -49,6 +49,8 @@ public class FiveCallsApi {
 
     private static final String NEWSLETTER_SUBSCRIBE = "https://buttondown.com/api/emails/embed-subscribe/5calls";
 
+    private static final String SEARCH_TRACKING = "https://api.5calls.org/v1/users/search";
+
     public interface CallRequestListener {
         void onRequestError();
 
@@ -212,7 +214,9 @@ public class FiveCallsApi {
                             String state = response.getString("state");
                             String district = response.getString("district");
                             if (!TextUtils.isEmpty(state) && !TextUtils.isEmpty(district)) {
-                                OneSignal.getUser().addTag("districtID", state + "-" + district);
+                                if (OneSignal.isInitialized()) {
+                                    OneSignal.getUser().addTag("districtID", state + "-" + district);
+                                }
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -293,7 +297,6 @@ public class FiveCallsApi {
                 params.put("issueid", issueId);
                 params.put("result", result);
                 params.put("contactid", contactId);
-                params.put("location", zip);
                 params.put("via", (BuildConfig.DEBUG && TESTING) ? "test" : "android");
                 params.put("callerid", mCallerId);
                 return params;
@@ -342,6 +345,30 @@ public class FiveCallsApi {
         request.setTag(TAG);
         // Add the request to the RequestQueue.
         mRequestQueue.add(request);
+    }
+
+    public void reportSearch(String searchTerm) {
+        try {
+            JSONObject jsonBody = new JSONObject();
+            jsonBody.put("query", searchTerm);
+
+            JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, SEARCH_TRACKING, jsonBody, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    // Search report successful - no action needed
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.w(TAG, "Search tracking failed: " + error.getMessage());
+                }
+            });
+            request.setTag(TAG);
+            // Add the request to the RequestQueue.
+            mRequestQueue.add(request);
+        } catch (JSONException e) {
+            Log.w(TAG, "Failed to create search tracking JSON: " + e.getMessage());
+        }
     }
 
     private void onRequestError(VolleyError error) {

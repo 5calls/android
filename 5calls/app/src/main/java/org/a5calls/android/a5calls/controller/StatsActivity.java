@@ -26,11 +26,11 @@ import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
 import org.a5calls.android.a5calls.AppSingleton;
+import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.databinding.ActivityStatsBinding;
 import org.a5calls.android.a5calls.model.DatabaseHelper;
 import org.a5calls.android.a5calls.model.Outcome;
-import org.a5calls.android.a5calls.util.AnalyticsManager;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -44,7 +44,11 @@ import java.util.Locale;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
+import androidx.core.graphics.Insets;
 import androidx.core.util.Pair;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 /**
  * Tell the user how great they are!
@@ -62,19 +66,30 @@ public class StatsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         binding = ActivityStatsBinding.inflate(getLayoutInflater());
 
         setContentView(binding.getRoot());
         dateFormat = new SimpleDateFormat(getResources().getString(R.string.date_format), Locale.US);
 
+        setSupportActionBar(binding.toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
+        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, windowInsets) -> {
+            Insets insets = windowInsets.getInsets(
+                    WindowInsetsCompat.Type.systemBars() |
+                            WindowInsetsCompat.Type.displayCutout());
+            binding.appbar.setPadding(insets.left, insets.top, insets.right, 0);
+            binding.scrollView.setPadding(insets.left, 0, insets.right, insets.bottom);
+            return WindowInsetsCompat.CONSUMED;
+        });
+
         DatabaseHelper db = AppSingleton.getInstance(this).getDatabaseHelper();
         initializeUI(db);
 
-        new AnalyticsManager().trackPageview("/stats", this);
+        FiveCallsApplication.analyticsManager().trackPageview("/stats", this);
     }
 
     private void initializeUI(DatabaseHelper db) {
