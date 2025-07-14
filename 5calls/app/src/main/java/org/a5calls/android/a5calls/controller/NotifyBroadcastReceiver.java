@@ -82,43 +82,41 @@ public class NotifyBroadcastReceiver extends BroadcastReceiver {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             builder.setChannelId(CHANNEL_ID); // O and above require Notification Channels.
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            builder.setColor(context.getResources().getColor(R.color.colorPrimary));
-            // Set up a snooze action, which when clicked notifies this same broadcast receiver
-            Intent snoozeIntent = new Intent(context, NotifyBroadcastReceiver.class)
-                    .setAction(ACTION_DO_SNOOZE);
-            PendingIntent pendingSnooze = PendingIntent.getBroadcast(context,
-                    SNOOZE_REQUEST_CODE, snoozeIntent,  PendingIntent.FLAG_IMMUTABLE);
-            Notification.Action snoozeAction = new Notification.Action.Builder(
-                    R.drawable.ic_snooze_white_24dp,
-                    context.getResources().getString(R.string.snooze),
-                    pendingSnooze)
-                    .build();
-            builder.addAction(snoozeAction);
-            // Add a link to get to settings
-            Intent settingsIntent = new Intent(context, SettingsActivity.class);
-            settingsIntent.putExtra(SettingsActivity.EXTRA_FROM_NOTIFICATION, true);
-            settingsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            PendingIntent pendingSettings = PendingIntent.getActivity(context,
-                    GO_TO_SETTINGS_REQUEST_CODE, settingsIntent,  PendingIntent.FLAG_IMMUTABLE);
-            Notification.Action settingsAction = new Notification.Action.Builder(
-                    R.drawable.ic_settings_black_24dp,
-                    context.getResources().getString(R.string.settings),
-                    pendingSettings)
-                    .build();
-            builder.addAction(settingsAction);
-            // Add a cancel action too
-            Intent cancelIntent = new Intent(context, NotifyBroadcastReceiver.class)
-                    .setAction(ACTION_CANCEL_NOTIFY);
-            PendingIntent pendingCancel = PendingIntent.getBroadcast(context,
-                    CANCEL_REQUEST_CODE, cancelIntent, PendingIntent.FLAG_IMMUTABLE);
-            Notification.Action cancelAction = new Notification.Action.Builder(
-                    R.drawable.ic_close_white_24dp,
-                    context.getResources().getString(R.string.dismiss),
-                    pendingCancel)
-                    .build();
-            builder.addAction(cancelAction);
-        }
+        builder.setColor(context.getResources().getColor(R.color.colorPrimary));
+        // Set up a snooze action, which when clicked notifies this same broadcast receiver
+        Intent snoozeIntent = new Intent(context, NotifyBroadcastReceiver.class)
+                .setAction(ACTION_DO_SNOOZE);
+        PendingIntent pendingSnooze = PendingIntent.getBroadcast(context,
+                SNOOZE_REQUEST_CODE, snoozeIntent,  PendingIntent.FLAG_IMMUTABLE);
+        Notification.Action snoozeAction = new Notification.Action.Builder(
+                R.drawable.ic_snooze_white_24dp,
+                context.getResources().getString(R.string.snooze),
+                pendingSnooze)
+                .build();
+        builder.addAction(snoozeAction);
+        // Add a link to get to settings
+        Intent settingsIntent = new Intent(context, SettingsActivity.class);
+        settingsIntent.putExtra(SettingsActivity.EXTRA_FROM_NOTIFICATION, true);
+        settingsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent pendingSettings = PendingIntent.getActivity(context,
+                GO_TO_SETTINGS_REQUEST_CODE, settingsIntent,  PendingIntent.FLAG_IMMUTABLE);
+        Notification.Action settingsAction = new Notification.Action.Builder(
+                R.drawable.ic_settings_black_24dp,
+                context.getResources().getString(R.string.settings),
+                pendingSettings)
+                .build();
+        builder.addAction(settingsAction);
+        // Add a cancel action too
+        Intent cancelIntent = new Intent(context, NotifyBroadcastReceiver.class)
+                .setAction(ACTION_CANCEL_NOTIFY);
+        PendingIntent pendingCancel = PendingIntent.getBroadcast(context,
+                CANCEL_REQUEST_CODE, cancelIntent, PendingIntent.FLAG_IMMUTABLE);
+        Notification.Action cancelAction = new Notification.Action.Builder(
+                R.drawable.ic_close_white_24dp,
+                context.getResources().getString(R.string.dismiss),
+                pendingCancel)
+                .build();
+        builder.addAction(cancelAction);
         Notification notification = builder.build();
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);

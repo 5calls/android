@@ -175,6 +175,9 @@
     <!-- Menu option to update the location for the app [CHAR_LIMIT=25] -->
     <string name="menu_location">Update location</string>
 
+    <!-- Title of the location activity after coming through the tutorial [CHAR_LIMIT=25] -->
+    <string name="first_location_title">Set location</string>
+
     <!-- Title for issues list page, starts with the app name and specifies the user's location [CHAR_LIMIT=30] -->
     <string name="title_main">5 Calls for <xliff:g id="location">%1$s</xliff:g></string>
 

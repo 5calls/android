@@ -148,6 +148,7 @@
     <string name="menu_location">Actualizar ubicación</string>
 
     <!-- Title for issues list page, starts with the app name and specifies the user's location [CHAR_LIMIT=30] -->
+    <string name="first_location_title">Indique ubicación</string>
     <string name="title_main">5 Calls para <xliff:g id="location">%1$s</xliff:g></string>
 
     <!-- Button that will use the user's device location to set the location in the app [CHAR_LIMIT=30] -->

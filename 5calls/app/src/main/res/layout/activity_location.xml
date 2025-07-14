@@ -1,67 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_location"
-    style="@style/scrollViewStyle"
-    >
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_color"
+    style="@style/scrollViewStyle">
 
-    <LinearLayout
-        style="@style/mainLinearLayout"
-        android:orientation="vertical"
-        tools:context="org.a5calls.android.a5calls.controller.LocationActivity"
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        android:id="@+id/appbar">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ScrollView
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/scroll_view"
+        style="@style/scrollViewStyle"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         >
 
-        <TextView
-            android:id="@+id/location_prompt"
-            style="@style/headingStyle"
-            android:text="@string/location_why"
-            />
-
-        <TextView
-            android:id="@+id/location_why"
-            style="@style/spacedParagraphTextStyle"
-            android:text="@string/location_prompt"
-            />
-
-        <TextView
-            style="@style/spacedParagraphTextStyleHighlight"
-            android:text="@string/location_private"
-            />
-
-        <Button
-            android:id="@+id/gps_button"
-            style="@style/locationGpsBtnStyle"
-            android:text="@string/btn_gps"
-            />
-
-        <TextView
-            style="@style/spacedParagraphTextStyle"
-            android:text="@string/location_address_prompt"
-            />
-
-        <TextView
-            style="@style/spacedParagraphTextStyleErrorHighlight"
-            android:id="@+id/low_accuracy_suggestion"
-            android:text="@string/low_accuracy_suggestion"
-            android:visibility="gone"
-            />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+        <LinearLayout
+            style="@style/mainLinearLayout"
+            android:orientation="vertical"
+            tools:context="org.a5calls.android.a5calls.controller.LocationActivity"
             >
 
-            <EditText
-                android:id="@+id/address_edit"
-                style="@style/zipEditTextStyle"
+            <TextView
+                android:id="@+id/location_prompt"
+                style="@style/headingStyle"
+                android:text="@string/location_why"
+                />
+
+            <TextView
+                android:id="@+id/location_why"
+                style="@style/spacedParagraphTextStyle"
+                android:text="@string/location_prompt"
+                />
+
+            <TextView
+                style="@style/spacedParagraphTextStyleHighlight"
+                android:text="@string/location_private"
                 />
 
             <Button
-                android:id="@+id/address_submit"
-                style="@style/submitBtn"
+                android:id="@+id/gps_button"
+                style="@style/locationGpsBtnStyle"
+                android:text="@string/btn_gps"
                 />
-        </RelativeLayout>
 
-    </LinearLayout>
-</ScrollView>
+            <TextView
+                style="@style/spacedParagraphTextStyle"
+                android:text="@string/location_address_prompt"
+                />
+
+            <TextView
+                style="@style/spacedParagraphTextStyleErrorHighlight"
+                android:id="@+id/low_accuracy_suggestion"
+                android:text="@string/low_accuracy_suggestion"
+                android:visibility="gone"
+                />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                >
+
+                <EditText
+                    android:id="@+id/address_edit"
+                    style="@style/zipEditTextStyle"
+                    />
+
+                <Button
+                    android:id="@+id/address_submit"
+                    style="@style/submitBtn"
+                    />
+            </RelativeLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

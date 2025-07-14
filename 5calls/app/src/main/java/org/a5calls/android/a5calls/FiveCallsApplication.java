@@ -22,8 +22,6 @@ import android.os.Bundle;
 
 import androidx.core.app.NotificationManagerCompat;
 
-import com.google.firebase.auth.FirebaseAuth;
-
 import com.onesignal.OneSignal;
 
 import org.a5calls.android.a5calls.controller.SettingsActivity;
