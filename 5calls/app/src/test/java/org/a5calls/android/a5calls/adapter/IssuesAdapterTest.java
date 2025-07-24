@@ -123,6 +123,21 @@ public class IssuesAdapterTest {
         }
     ]""";
 
+    /**
+     * 2025-07-19 XXX: this test is a companion to
+     * {@link #testFilterIssuesBySearchText_matchesReason_doesNotMatchIfNotStartOfWord()}
+     * that demonstrates that different criteria are used for matching
+     * searchText against titles and reasons.
+     */
+    @Test
+    public void testFilterIssuesBySearchText_matchesTitle_doesMatchEndOfWord() {
+        Gson gson = new GsonBuilder().serializeNulls().create();
+        Type listType = new TypeToken<ArrayList<Issue>>(){}.getType();
+        List<Issue> issues = gson.fromJson(REGEX_TEST_ISSUE_DATA, listType);
+        List<Issue> filtered = IssuesAdapter.filterIssuesBySearchText("over", issues);
+        assertEquals(1, filtered.size());
+    }
+
     @Test
     public void testFilterIssuesBySearchText_matchesReason_matchesStartOfFirstWord() {
         Gson gson = new GsonBuilder().serializeNulls().create();
@@ -133,12 +148,26 @@ public class IssuesAdapterTest {
     }
 
     @Test
+    public void testFilterIssuesBySearchText_matchesReason_matchesWordPrefixes() {
+        Gson gson = new GsonBuilder().serializeNulls().create();
+        Type listType = new TypeToken<ArrayList<Issue>>(){}.getType();
+        List<Issue> issues = gson.fromJson(REGEX_TEST_ISSUE_DATA, listType);
+        List<Issue> filtered = IssuesAdapter.filterIssuesBySearchText("Press Conf", issues);
+        assertEquals(1, filtered.size());
+    }
+
+    @Test
     public void testFilterIssuesBySearchText_matchesReason_noCrashIfSearchTextIsInvalidRegex() {
         Gson gson = new GsonBuilder().serializeNulls().create();
         Type listType = new TypeToken<ArrayList<Issue>>(){}.getType();
         List<Issue> issues = gson.fromJson(REGEX_TEST_ISSUE_DATA, listType);
         List<Issue> filtered = IssuesAdapter.filterIssuesBySearchText("[", issues);
         assertEquals(0, filtered.size());
+        String regexQuotePattern = "\\E[";
+        List<Issue> secondFilterAttempt = IssuesAdapter.filterIssuesBySearchText(
+            regexQuotePattern, issues
+        );
+        assertEquals(0, secondFilterAttempt.size());
     }
 
     @Test
