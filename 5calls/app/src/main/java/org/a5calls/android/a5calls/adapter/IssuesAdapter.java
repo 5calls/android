@@ -137,6 +137,39 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         ArrayList<Issue> tempIssues = new ArrayList<>();
         // Should we .trim() the whitespace?
         String lowerSearchText = searchText.toLowerCase();
+
+        /*
+         * When name and category fields are searched, String#contains is used.
+         * However, searching reason fields uses a different strategy: searching
+         * for words (or sequences of words) that start with searchText
+         * Motivating example:
+         * """
+         * "ice" [shouldn't] match "averice" but [should match] just ICE"
+         * """
+         * In the JDK's regex implementation, \b expresses "word boundary".
+         * https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html
+         * However, different regex interpretations may have subtly different
+         * definitions of "word boundary"; see
+         * https://www.rexegg.com/regex-boundaries.php#wordboundary
+         *
+         * {@link Pattern#quote} is used to quote searchText.
+         * Motivating example:
+         * if searchText := "[", the old implementation would attempt to create
+         * a regex pattern through Pattern.compile("\\s[") and then throw an
+         * exception because "\\s[" is not a valid regex.
+         * Another motivating example:
+         * if searchText := "land.", the old pattern would create regex pattern
+         * Pattern.compile("\\sland."), which will match " lands", " lander",
+         * " land-swap", etc.
+         * XXX TODO: Search texts like "[" and ")" may match Markdown for links
+         *      (example: "[a link](www.example.com)"), which is not visible in
+         *      rendered text; is this acceptable?
+         */
+        Pattern pattern = Pattern.compile(
+                String.format("\\b%s", Pattern.quote(searchText)),
+                Pattern.CASE_INSENSITIVE
+        );
+
         for (Issue issue : allIssues) {
             // Search the name and the categories for the search term.
             if (issue.name.toLowerCase().contains(lowerSearchText)) {
@@ -156,8 +189,6 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 // Search through the issue's reason for words that start with the
                 // search text. This is better than substring matching so that text
                 // like "ice" doesn't match "averice" but just ICE.
-                Pattern pattern = Pattern.compile("\\s" + searchText,
-                        Pattern.CASE_INSENSITIVE);
                 if (pattern.matcher(issue.reason).find()) {
                     tempIssues.add(issue);
                 }

@@ -22,6 +22,7 @@ import static org.junit.Assert.assertEquals;
  */
 @RunWith(AndroidJUnit4.class)
 public class IssuesAdapterTest {
+
     @Test
     public void testFilterIssuesBySearchText_noMatches() {
         Gson gson = new GsonBuilder().serializeNulls().create();
@@ -93,6 +94,88 @@ public class IssuesAdapterTest {
         Type listType = new TypeToken<ArrayList<Issue>>(){}.getType();
         List<Issue> issues = gson.fromJson(FakeJSONData.ISSUE_DATA, listType);
         List<Issue> filtered = IssuesAdapter.filterIssuesBySearchText("isplacement", issues);
+        assertEquals(0, filtered.size());
+    }
+
+    private static final String REGEX_TEST_ISSUE_DATA = """
+    [
+        {
+            "id": 35700,
+            "createdAt": "2025-02-05T18:01:44Z",
+            "name": "Condemn a US Takeover of Gaza",
+            "reason": "During a press conference alongside,",
+            "script": "Hi, my name is **[NAME]** and ... from [].\\n\\n",
+            "categories": [{"name": "Foreign Affairs"}],
+            "contactType": "REPS",
+            "contacts": null,
+            "contactAreas": ["US House","US Senate"],
+            "outcomeModels": [
+                {"label": "unavailable","status": "unavailable"},
+                {"label": "voicemail","status": "voicemail"},
+                {"label": "contact","status": "contact"},
+                {"label": "skip","status": "skip"}
+            ],
+            "stats": { "calls": 0 },
+            "slug": "trump-us-gaza-palestinian-occupation",
+            "active": true,
+            "hidden": false,
+            "meta": ""
+        }
+    ]""";
+
+    /**
+     * 2025-07-19 XXX: this test is a companion to
+     * {@link #testFilterIssuesBySearchText_matchesReason_doesNotMatchIfNotStartOfWord()}
+     * that demonstrates that different criteria are used for matching
+     * searchText against titles and reasons.
+     */
+    @Test
+    public void testFilterIssuesBySearchText_matchesTitle_doesMatchEndOfWord() {
+        Gson gson = new GsonBuilder().serializeNulls().create();
+        Type listType = new TypeToken<ArrayList<Issue>>(){}.getType();
+        List<Issue> issues = gson.fromJson(REGEX_TEST_ISSUE_DATA, listType);
+        List<Issue> filtered = IssuesAdapter.filterIssuesBySearchText("over", issues);
+        assertEquals(1, filtered.size());
+    }
+
+    @Test
+    public void testFilterIssuesBySearchText_matchesReason_matchesStartOfFirstWord() {
+        Gson gson = new GsonBuilder().serializeNulls().create();
+        Type listType = new TypeToken<ArrayList<Issue>>(){}.getType();
+        List<Issue> issues = gson.fromJson(REGEX_TEST_ISSUE_DATA, listType);
+        List<Issue> filtered = IssuesAdapter.filterIssuesBySearchText("During", issues);
+        assertEquals(1, filtered.size());
+    }
+
+    @Test
+    public void testFilterIssuesBySearchText_matchesReason_matchesWordPrefixes() {
+        Gson gson = new GsonBuilder().serializeNulls().create();
+        Type listType = new TypeToken<ArrayList<Issue>>(){}.getType();
+        List<Issue> issues = gson.fromJson(REGEX_TEST_ISSUE_DATA, listType);
+        List<Issue> filtered = IssuesAdapter.filterIssuesBySearchText("Press Conf", issues);
+        assertEquals(1, filtered.size());
+    }
+
+    @Test
+    public void testFilterIssuesBySearchText_matchesReason_noCrashIfSearchTextIsInvalidRegex() {
+        Gson gson = new GsonBuilder().serializeNulls().create();
+        Type listType = new TypeToken<ArrayList<Issue>>(){}.getType();
+        List<Issue> issues = gson.fromJson(REGEX_TEST_ISSUE_DATA, listType);
+        List<Issue> filtered = IssuesAdapter.filterIssuesBySearchText("[", issues);
+        assertEquals(0, filtered.size());
+        String regexQuotePattern = "\\E[";
+        List<Issue> secondFilterAttempt = IssuesAdapter.filterIssuesBySearchText(
+            regexQuotePattern, issues
+        );
+        assertEquals(0, secondFilterAttempt.size());
+    }
+
+    @Test
+    public void testFilterIssuesBySearchText_matchesReason_searchTextNotInterpretedAsRegexPattern() {
+        Gson gson = new GsonBuilder().serializeNulls().create();
+        Type listType = new TypeToken<ArrayList<Issue>>(){}.getType();
+        List<Issue> issues = gson.fromJson(REGEX_TEST_ISSUE_DATA, listType);
+        List<Issue> filtered = IssuesAdapter.filterIssuesBySearchText(".", issues);
         assertEquals(0, filtered.size());
     }
 }
