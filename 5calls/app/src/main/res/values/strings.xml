@@ -75,6 +75,9 @@
     <!-- Button linking to the 5calls.org about page [CHAR_LIMIT=30] -->
     <string name="about_us_btn">about us</string>
 
+    <!-- Button linking to the 5calls.org dashboard [CHAR_LIMIT=30] -->
+    <string name="dashboard_btn">Recent calling stats</string>
+
     <!-- Button that allows users to send 5 Calls an email [CHAR_LIMIT=30] -->
     <string name="contact_us_btn">contact us</string>
 
@@ -433,6 +436,9 @@
 
     <!-- URL for the 5 Calls Threads account -->
     <string name="threads_url" translatable="false">https://www.threads.net/@5calls</string>
+
+    <!-- URL for the 5 Calls dashboard -->
+    <string name="dashboard_url" translatable="false">"https://www.5calls.org/dashboard"</string>
 
     <!-- URL for the 5 Calls About page [CHAR_LIMIT=NONE] -->
     <string name="about_url" translatable="false">https://5calls.org/about-us/</string>

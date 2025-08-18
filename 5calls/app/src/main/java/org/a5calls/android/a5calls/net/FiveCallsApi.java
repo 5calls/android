@@ -76,7 +76,7 @@ public class FiveCallsApi {
 
         void onAddressError();
 
-        void onContactsReceived(String locationName, boolean isLowAccuracy, List<Contact> contacts);
+        void onContactsReceived(String locationName, String locationCode, boolean isLowAccuracy, List<Contact> contacts);
     }
 
     public interface NewsletterSubscribeCallback {
@@ -126,12 +126,6 @@ public class FiveCallsApi {
 
     public void unregisterContactsRequestListener(ContactsRequestListener contactsRequestListener) {
         mContactsRequestListeners.remove(contactsRequestListener);
-    }
-
-    public void onDestroy() {
-        mRequestQueue.cancelAll(TAG);
-        mRequestQueue.stop();
-        mRequestQueue = null;
     }
 
     public void getIssues() {
@@ -204,22 +198,26 @@ public class FiveCallsApi {
                             }
                             return;
                         }
+
                         Type listType = new TypeToken<ArrayList<Contact>>(){}.getType();
                         List<Contact> contacts = mGson.fromJson(jsonArray.toString(), listType);
-                        for (ContactsRequestListener listener : listeners) {
-                            listener.onContactsReceived(locationName, lowAccuracy, contacts);
-                        }
 
+                        String locationCode = "";
                         try {
                             String state = response.getString("state");
                             String district = response.getString("district");
                             if (!TextUtils.isEmpty(state) && !TextUtils.isEmpty(district)) {
+                                locationCode = state + "-" + district;
                                 if (OneSignal.isInitialized()) {
-                                    OneSignal.getUser().addTag("districtID", state + "-" + district);
+                                    OneSignal.getUser().addTag("districtID", locationCode);
                                 }
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
+                        }
+
+                        for (ContactsRequestListener listener : listeners) {
+                            listener.onContactsReceived(locationName, locationCode, lowAccuracy, contacts);
                         }
                     }
                 }

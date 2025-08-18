@@ -86,6 +86,7 @@ public class FiveCallsApiTest {
         protected List<Contact> mContacts = null;
         protected boolean mLowAccuracy = false;
         protected String mLocationName = null;
+        protected String mLocationCode = null;
 
         @Override
         public void onRequestError() {
@@ -103,9 +104,10 @@ public class FiveCallsApiTest {
         }
 
         @Override
-        public void onContactsReceived(String locationName, boolean isLowAccuracy,
-                                       List<Contact> contacts) {
+        public void onContactsReceived(String locationName, String locationCode,
+                                       boolean isLowAccuracy, List<Contact> contacts) {
             mLocationName = locationName;
+            mLocationCode = locationCode;
             mLowAccuracy = isLowAccuracy;
             mContacts = contacts;
         }
@@ -286,6 +288,7 @@ public class FiveCallsApiTest {
         assertFalse(testContactsListener.mContacts.isEmpty());
         assertEquals(6, testContactsListener.mContacts.size());
         assertEquals("BOWLING GREEN", testContactsListener.mLocationName);
+        assertEquals("NY-10", testContactsListener.mLocationCode);
     }
 
     @Test
@@ -322,6 +325,7 @@ public class FiveCallsApiTest {
         assertEquals(0, testContactsListener.mContactsJsonError);
         assertNull(testContactsListener.mContacts);
         assertNull(testContactsListener.mLocationName);
+        assertNull(testContactsListener.mLocationCode);
     }
 
     @Test
@@ -342,6 +346,7 @@ public class FiveCallsApiTest {
         assertEquals(0, testContactsListener.mContactsJsonError);
         assertNull(testContactsListener.mContacts);
         assertNull(testContactsListener.mLocationName);
+        assertNull(testContactsListener.mLocationCode);
     }
 
     @Test
