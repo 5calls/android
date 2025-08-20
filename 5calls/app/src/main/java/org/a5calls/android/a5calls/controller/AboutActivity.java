@@ -17,6 +17,7 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.util.Patterns;
 import android.view.LayoutInflater;
@@ -45,6 +46,7 @@ import static android.view.View.VISIBLE;
  */
 public class AboutActivity extends AppCompatActivity {
     private static final String TAG = "AboutActivity";
+    public static final String KEY_DISTRICT_ID = "key_district_id";
 
     private final AccountManager accountManager = AccountManager.Instance;
     private FiveCallsApi.CallRequestListener mStatusListener;
@@ -80,6 +82,11 @@ public class AboutActivity extends AppCompatActivity {
 
         binding.privacyButton.setOnClickListener(v -> CustomTabsUtil.launchUrl(
                 AboutActivity.this, Uri.parse("https://5calls.org/privacy")));
+
+        final String districtId = getIntent().getStringExtra(KEY_DISTRICT_ID);
+        binding.dashboardButton.setOnClickListener(v -> CustomTabsUtil.launchUrl(
+                AboutActivity.this, Uri.parse(getString(R.string.dashboard_url) +
+                        (TextUtils.isEmpty(districtId) ? "" : "?district=" + districtId))));
 
         setOpenIntentWithChooserOnClick(
                 binding.contactUsButton, getSendEmailIntent(getResources()), getString(R.string.send_email)

@@ -58,6 +58,12 @@
                 style="@style/aboutSubtStyle"
                 />
 
+            <Button
+                android:id="@+id/dashboard_button"
+                style="@style/fullWidthBtnStyle"
+                android:text="@string/dashboard_btn"
+                />
+
             <TextView
                 style="@style/aboutPrompt"
                 android:text="@string/general_prompt"
