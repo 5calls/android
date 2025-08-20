@@ -46,7 +46,7 @@ import static android.view.View.VISIBLE;
  */
 public class AboutActivity extends AppCompatActivity {
     private static final String TAG = "AboutActivity";
-    public static final String KEY_LOCATION_CODE = "key_location_code";
+    public static final String KEY_DISTRICT_ID = "key_district_id";
 
     private final AccountManager accountManager = AccountManager.Instance;
     private FiveCallsApi.CallRequestListener mStatusListener;
@@ -83,10 +83,10 @@ public class AboutActivity extends AppCompatActivity {
         binding.privacyButton.setOnClickListener(v -> CustomTabsUtil.launchUrl(
                 AboutActivity.this, Uri.parse("https://5calls.org/privacy")));
 
-        final String locationCode = getIntent().getStringExtra(KEY_LOCATION_CODE);
+        final String districtId = getIntent().getStringExtra(KEY_DISTRICT_ID);
         binding.dashboardButton.setOnClickListener(v -> CustomTabsUtil.launchUrl(
                 AboutActivity.this, Uri.parse(getString(R.string.dashboard_url) +
-                        (TextUtils.isEmpty(locationCode) ? "" : "?district=" + locationCode))));
+                        (TextUtils.isEmpty(districtId) ? "" : "?district=" + districtId))));
 
         setOpenIntentWithChooserOnClick(
                 binding.contactUsButton, getSendEmailIntent(getResources()), getString(R.string.send_email)

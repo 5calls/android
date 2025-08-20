@@ -76,7 +76,8 @@ public class FiveCallsApi {
 
         void onAddressError();
 
-        void onContactsReceived(String locationName, String locationCode, boolean isLowAccuracy, List<Contact> contacts);
+        void onContactsReceived(String locationName, String districtId, boolean isLowAccuracy,
+                                List<Contact> contacts);
     }
 
     public interface NewsletterSubscribeCallback {
@@ -202,14 +203,14 @@ public class FiveCallsApi {
                         Type listType = new TypeToken<ArrayList<Contact>>(){}.getType();
                         List<Contact> contacts = mGson.fromJson(jsonArray.toString(), listType);
 
-                        String locationCode = "";
+                        String districtId = "";
                         try {
                             String state = response.getString("state");
                             String district = response.getString("district");
                             if (!TextUtils.isEmpty(state) && !TextUtils.isEmpty(district)) {
-                                locationCode = state + "-" + district;
+                                districtId = state + "-" + district;
                                 if (OneSignal.isInitialized()) {
-                                    OneSignal.getUser().addTag("districtID", locationCode);
+                                    OneSignal.getUser().addTag("districtID", districtId);
                                 }
                             }
                         } catch (JSONException e) {
@@ -217,7 +218,8 @@ public class FiveCallsApi {
                         }
 
                         for (ContactsRequestListener listener : listeners) {
-                            listener.onContactsReceived(locationName, locationCode, lowAccuracy, contacts);
+                            listener.onContactsReceived(locationName, districtId, lowAccuracy,
+                                    contacts);
                         }
                     }
                 }
