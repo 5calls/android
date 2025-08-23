@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -49,6 +48,8 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private final Activity mActivity;
     private final Callback mCallback;
 
+    private List<String> starredIssueIds = new ArrayList<>();
+
     public interface Callback {
 
         void refreshIssues();
@@ -79,6 +80,11 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             mIssues.clear();
             notifyDataSetChanged();
         }
+    }
+
+    public void setStarredIssues(List<String> issueIds) {
+        starredIssueIds = issueIds;
+        notifyDataSetChanged();
     }
 
     public void setAddressError(int error) {
@@ -124,7 +130,10 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             } else if (TextUtils.equals(filterText,
                     mActivity.getResources().getString(R.string.top_issues_filter))) {
                 mIssues = filterActiveIssues();
-            } else {
+            } else if (TextUtils.equals(filterText, mActivity.getResources().getString(R.string.starred_issues_filter))) {
+                mIssues = filterStarredIssues();
+            }
+            else {
                 // Filter by the category string.
                 mIssues = filterIssuesByCategory(filterText);
             }
@@ -208,6 +217,16 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return tempIssues;
     }
 
+    private ArrayList<Issue> filterStarredIssues() {
+        ArrayList<Issue> tempIssues = new ArrayList<>();
+        for (Issue issue : mAllIssues) {
+            if (starredIssueIds.contains(issue.id)) {
+                tempIssues.add(issue);
+            }
+        }
+        return tempIssues;
+    }
+
     private ArrayList<Issue> filterIssuesByCategory(String activeCategory) {
         ArrayList<Issue> tempIssues = new ArrayList<>();
         for (Issue issue : mAllIssues) {
@@ -263,6 +282,14 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             IssueViewHolder vh = (IssueViewHolder) holder;
             final Issue issue = mIssues.get(position);
             vh.name.setText(issue.name);
+
+            if (starredIssueIds.contains(issue.id)) {
+                vh.name.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_star_yellow_24dp, 0);
+            } else {
+                // To undo previously set drawable in the event of an issue being unstarred
+                vh.name.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0 ,0);
+            }
+
             vh.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

@@ -485,9 +485,13 @@
     <!-- Filter for showing all issues [CHAR_LIMIT=50] -->
     <string name="all_issues_filter">All issues</string>
 
+    <!-- Filter for showing starred issue [CHAR_LIMIT=50] -->
+    <string name="starred_issues_filter">Starred issues</string>
+
     <string-array name="default_filters">
         <item>@string/top_issues_filter</item>
         <item>@string/all_issues_filter</item>
+        <item>@string/starred_issues_filter</item>
     </string-array>
 
     <!-- Title of a section in settings about notifications [CHAR_LIMIT=50] -->
@@ -643,4 +647,9 @@
     <!-- The categories an issue belongs to, when there are more than one. -->
     <string name="issue_category_many">Categories: </string>
 
+    <!-- Action bar icon tooltip for starring an issue -->
+    <string name="action_star_issue">Star Issue</string>
+
+    <!-- Action bar icon tooltip for un-starring an issue -->
+    <string name="action_unstar_issue">Unstar Issue</string>
 </resources>
