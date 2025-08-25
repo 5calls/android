@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import static org.a5calls.android.a5calls.FakeJSONData.ISSUE_DATA;
 import static org.a5calls.android.a5calls.FakeJSONData.REPORT_DATA;
@@ -139,7 +140,8 @@ public class FiveCallsApiTest {
         mHttpStack = new MockHttpStack();
         BasicNetwork basicNetwork = new BasicNetwork(mHttpStack);
         mRequestQueue = new FakeRequestQueue(basicNetwork);
-        mApi = new FiveCallsApi("itMe", mRequestQueue);
+        mApi = new FiveCallsApi("itMe", mRequestQueue, 
+                InstrumentationRegistry.getInstrumentation().getTargetContext());
     }
 
     @After

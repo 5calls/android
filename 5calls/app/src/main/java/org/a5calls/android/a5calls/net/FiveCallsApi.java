@@ -1,5 +1,6 @@
 package org.a5calls.android.a5calls.net;
 
+import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -17,6 +18,7 @@ import com.google.gson.reflect.TypeToken;
 import com.onesignal.OneSignal;
 
 import org.a5calls.android.a5calls.BuildConfig;
+import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.model.Outcome;
@@ -92,11 +94,13 @@ public class FiveCallsApi {
     private List<ContactsRequestListener> mContactsRequestListeners = new ArrayList<>();
 
     private final String mCallerId;
+    private final Context mContext;
 
-    public FiveCallsApi(String callerId, RequestQueue requestQueue) {
+    public FiveCallsApi(String callerId, RequestQueue requestQueue, Context context) {
         // TODO: Using OkHttpClient and OkHttpStack cause failures on multiple types of Samsung
         // Galaxy devices.
         mCallerId = callerId;
+        mContext = context;
         //mRequestQueue = Volley.newRequestQueue(context, new OkHttpStack(new OkHttpClient()));
         mRequestQueue = requestQueue;
         mGson = new GsonBuilder()
@@ -208,6 +212,10 @@ public class FiveCallsApi {
                             String state = response.getString("state");
                             String district = response.getString("district");
                             if (!TextUtils.isEmpty(state) && !TextUtils.isEmpty(district)) {
+                                // Store state and district separately
+                                AccountManager.Instance.setState(mContext, state);
+                                AccountManager.Instance.setDistrict(mContext, district);
+                                
                                 districtId = state + "-" + district;
                                 if (OneSignal.isInitialized()) {
                                     OneSignal.getUser().addTag("districtID", districtId);

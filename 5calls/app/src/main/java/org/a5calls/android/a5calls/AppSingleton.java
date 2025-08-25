@@ -60,7 +60,8 @@ public class AppSingleton {
         if (mFiveCallsApi == null) {
             mFiveCallsApi = new FiveCallsApi(
                     AccountManager.Instance.getCallerID(mAppContext),
-                    getRequestQueue());
+                    getRequestQueue(),
+                    mAppContext);
         }
         return mFiveCallsApi;
     }
