@@ -18,8 +18,10 @@ import org.a5calls.android.a5calls.model.Category;
 import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.DatabaseHelper;
 import org.a5calls.android.a5calls.model.Issue;
+import org.a5calls.android.a5calls.util.StateMapping;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -110,7 +112,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             mErrorType = NO_ERROR;
         }
         if (!TextUtils.isEmpty(searchText)) {
-            mIssues = filterIssuesBySearchText(searchText, mAllIssues);
+            mIssues = sortIssuesWithMetaPriority(filterIssuesBySearchText(searchText, mAllIssues));
             // If there's no other error, show a search error.
             if (mIssues.isEmpty() && mErrorType == NO_ERROR) {
                 mErrorType = ERROR_SEARCH_NO_MATCH;
@@ -120,13 +122,13 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             if (TextUtils.equals(filterText,
                     mActivity.getResources().getString(R.string.all_issues_filter))) {
                 // Include everything
-                mIssues = mAllIssues;
+                mIssues = sortIssuesWithMetaPriority(mAllIssues);
             } else if (TextUtils.equals(filterText,
                     mActivity.getResources().getString(R.string.top_issues_filter))) {
-                mIssues = filterActiveIssues();
+                mIssues = sortIssuesWithMetaPriority(filterActiveIssues());
             } else {
                 // Filter by the category string.
-                mIssues = filterIssuesByCategory(filterText);
+                mIssues = sortIssuesWithMetaPriority(filterIssuesByCategory(filterText));
             }
         }
         notifyDataSetChanged();
@@ -263,6 +265,20 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             IssueViewHolder vh = (IssueViewHolder) holder;
             final Issue issue = mIssues.get(position);
             vh.name.setText(issue.name);
+            
+            // Show state indicator if issue has meta (state abbreviation) and we can map it to a state name
+            if (!TextUtils.isEmpty(issue.meta)) {
+                String stateName = StateMapping.getStateName(issue.meta);
+                if (stateName != null) {
+                    vh.stateIndicator.setText(stateName);
+                    vh.stateIndicator.setVisibility(View.VISIBLE);
+                } else {
+                    vh.stateIndicator.setVisibility(View.GONE);
+                }
+            } else {
+                vh.stateIndicator.setVisibility(View.GONE);
+            }
+            
             vh.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -423,12 +439,14 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public TextView name;
     public TextView numCalls;
     public TextView previousCallStats;
+    public TextView stateIndicator;
 
     public IssueViewHolder(View itemView) {
         super(itemView);
         name = (TextView) itemView.findViewById(R.id.issue_name);
         numCalls = (TextView) itemView.findViewById(R.id.issue_call_count);
         previousCallStats = (TextView) itemView.findViewById(R.id.previous_call_stats);
+        stateIndicator = (TextView) itemView.findViewById(R.id.state_indicator);
     }
 }
 
@@ -472,4 +490,33 @@ private static class EmptySearchViewHolder extends RecyclerView.ViewHolder {
     }
 }
 
+    /**
+     * Sorts a list of issues to prioritize those with meta values (state abbreviations) at the top,
+     * then sorts the remaining issues. Both groups maintain their internal sort order.
+     */
+    @VisibleForTesting
+    ArrayList<Issue> sortIssuesWithMetaPriority(List<Issue> issues) {
+        ArrayList<Issue> withMeta = new ArrayList<>();
+        ArrayList<Issue> withoutMeta = new ArrayList<>();
+        
+        // Separate issues with and without meta values
+        for (Issue issue : issues) {
+            if (!TextUtils.isEmpty(issue.meta)) {
+                withMeta.add(issue);
+            } else {
+                withoutMeta.add(issue);
+            }
+        }
+        
+        // Sort each group independently by sort field (maintaining consistent order)
+        Collections.sort(withMeta, (a, b) -> Integer.compare(a.sort, b.sort));
+        Collections.sort(withoutMeta, (a, b) -> Integer.compare(a.sort, b.sort));
+        
+        // Combine: meta issues first, then regular issues
+        ArrayList<Issue> result = new ArrayList<>();
+        result.addAll(withMeta);
+        result.addAll(withoutMeta);
+        
+        return result;
+    }
 }

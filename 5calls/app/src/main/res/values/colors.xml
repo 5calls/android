@@ -17,4 +17,7 @@
     <color name="unavailable_color">@color/colorPrimaryDark</color>
     <color name="graph_legend_background_color">#9EEE</color>
     <color name="navigation_view_background_color">#EEE</color>
+    <color name="state_indicator_background">#E3F2FD</color>
+    <color name="state_indicator_border">#BBDEFB</color>
+    <color name="state_indicator_text">#1565C0</color>
 </resources>

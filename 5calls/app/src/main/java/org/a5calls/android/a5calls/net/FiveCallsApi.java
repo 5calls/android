@@ -134,7 +134,15 @@ public class FiveCallsApi {
     }
 
     public void getIssues() {
-        buildIssuesRequest(GET_ISSUES_REQUEST, mIssuesRequestListeners);
+        String url = GET_ISSUES_REQUEST;
+        
+        // Include state parameter if we have it stored
+        String state = AccountManager.Instance.getState(mContext);
+        if (!TextUtils.isEmpty(state)) {
+            url += "?state=" + URLEncoder.encode(state);
+        }
+        
+        buildIssuesRequest(url, mIssuesRequestListeners);
     }
 
     public void getContacts(String address) {
