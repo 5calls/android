@@ -106,7 +106,7 @@ public class FiveCallsApiTest {
 
         @Override
         public void onContactsReceived(String locationName, String districtId,
-                                       boolean isLowAccuracy, List<Contact> contacts) {
+                                       boolean isLowAccuracy, List<Contact> contacts, boolean stateChanged) {
             mLocationName = locationName;
             mDistrictId = districtId;
             mLowAccuracy = isLowAccuracy;

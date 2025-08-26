@@ -79,7 +79,7 @@ public class FiveCallsApi {
         void onAddressError();
 
         void onContactsReceived(String locationName, String districtId, boolean isLowAccuracy,
-                                List<Contact> contacts);
+                                List<Contact> contacts, boolean stateChanged);
     }
 
     public interface NewsletterSubscribeCallback {
@@ -216,10 +216,15 @@ public class FiveCallsApi {
                         List<Contact> contacts = mGson.fromJson(jsonArray.toString(), listType);
 
                         String districtId = "";
+                        boolean stateChanged = false;
                         try {
                             String state = response.getString("state");
                             String district = response.getString("district");
                             if (!TextUtils.isEmpty(state) && !TextUtils.isEmpty(district)) {
+                                // Check if state has changed
+                                String currentState = AccountManager.Instance.getState(mContext);
+                                stateChanged = !state.equals(currentState);
+                                
                                 // Store state and district separately
                                 AccountManager.Instance.setState(mContext, state);
                                 AccountManager.Instance.setDistrict(mContext, district);
@@ -235,7 +240,7 @@ public class FiveCallsApi {
 
                         for (ContactsRequestListener listener : listeners) {
                             listener.onContactsReceived(locationName, districtId, lowAccuracy,
-                                    contacts);
+                                    contacts, stateChanged);
                         }
                     }
                 }
