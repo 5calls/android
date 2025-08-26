@@ -31,6 +31,7 @@ import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.databinding.ActivityStatsBinding;
 import org.a5calls.android.a5calls.model.DatabaseHelper;
 import org.a5calls.android.a5calls.model.Outcome;
+import org.a5calls.android.a5calls.util.CustomTabsUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -54,6 +55,7 @@ import androidx.core.view.WindowInsetsCompat;
  * Tell the user how great they are!
  */
 public class StatsActivity extends AppCompatActivity {
+    public static final String KEY_DISTRICT_ID = "key_district_id";
     private static final String TAG = "StatsActivity";
     private static final int NUM_CONTACTS_TO_SHOW = 3;
     private static final int NUM_ISSUES_TO_SHOW = 5;
@@ -88,6 +90,11 @@ public class StatsActivity extends AppCompatActivity {
 
         DatabaseHelper db = AppSingleton.getInstance(this).getDatabaseHelper();
         initializeUI(db);
+
+        final String districtId = getIntent().getStringExtra(KEY_DISTRICT_ID);
+        binding.dashboardButton.setOnClickListener(v -> CustomTabsUtil.launchUrl(
+                StatsActivity.this, Uri.parse(getString(R.string.dashboard_url) +
+                        (TextUtils.isEmpty(districtId) ? "" : "?district=" + districtId))));
 
         FiveCallsApplication.analyticsManager().trackPageview("/stats", this);
     }

@@ -636,6 +636,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
 
     private void showStats() {
         Intent intent = new Intent(this, StatsActivity.class);
+        intent.putExtra(StatsActivity.KEY_DISTRICT_ID, mDistrictId);
         startActivity(intent);
     }
 
