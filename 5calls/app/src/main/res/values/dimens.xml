@@ -55,4 +55,6 @@
     <dimen name="rep_list_linear_dimens">42dp</dimen>
     <dimen name="layout_margin_top">32dp</dimen>
     <dimen name="drawable_padding">8dp</dimen>
+    <dimen name="state_indicator_corner_radius">12dp</dimen>
+    <dimen name="state_indicator_stroke_width">1dp</dimen>
 </resources>
