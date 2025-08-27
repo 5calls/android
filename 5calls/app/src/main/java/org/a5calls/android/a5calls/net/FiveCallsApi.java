@@ -28,6 +28,7 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -139,14 +140,14 @@ public class FiveCallsApi {
         // Include state parameter if we have it stored
         String state = AccountManager.Instance.getState(mContext);
         if (!TextUtils.isEmpty(state)) {
-            url += "?state=" + URLEncoder.encode(state);
+            url += "?state=" + URLEncoder.encode(state, StandardCharsets.UTF_8);
         }
         
         buildIssuesRequest(url, mIssuesRequestListeners);
     }
 
     public void getContacts(String address) {
-        buildContactsRequest(GET_CONTACTS_REQUEST + URLEncoder.encode(address), mContactsRequestListeners);
+        buildContactsRequest(GET_CONTACTS_REQUEST + URLEncoder.encode(address, StandardCharsets.UTF_8), mContactsRequestListeners);
     }
 
     private void buildIssuesRequest(String url, final List<IssuesRequestListener> listeners) {
