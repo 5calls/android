@@ -1,6 +1,7 @@
 package org.a5calls.android.a5calls.net;
 
 import android.content.Context;
+import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -45,6 +46,7 @@ public class FiveCallsApi {
     protected static final boolean TESTING = true;
 
     private static final String GET_ISSUES_REQUEST = "https://api.5calls.org/v1/issues";
+    private static final String GET_ISSUES_REQUEST_PARAM_STATE = "state";
 
     private static final String GET_CONTACTS_REQUEST = "https://api.5calls.org/v1/reps?location=";
 
@@ -135,14 +137,15 @@ public class FiveCallsApi {
     }
 
     public void getIssues() {
-        String url = GET_ISSUES_REQUEST;
+        Uri.Builder urlBuilder = Uri.parse(GET_ISSUES_REQUEST).buildUpon();
         
         // Include state parameter if we have it stored
         String state = AccountManager.Instance.getState(mContext);
         if (!TextUtils.isEmpty(state)) {
-            url += "?state=" + URLEncoder.encode(state, StandardCharsets.UTF_8);
+            urlBuilder.appendQueryParameter(GET_ISSUES_REQUEST_PARAM_STATE, state);
         }
         
+        String url = urlBuilder.build().toString();
         buildIssuesRequest(url, mIssuesRequestListeners);
     }
 
