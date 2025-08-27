@@ -8,31 +8,18 @@
         android:id="@+id/issue_name"
         style="@style/issueViewTextStyle"
         android:layout_alignParentTop="true"
-        android:layout_toStartOf="@+id/state_indicator"
+        android:layout_width="match_parent"
         />
 
     <TextView
         android:id="@+id/state_indicator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignTop="@id/issue_name"
-        android:layout_marginStart="8dp"
-        android:background="@drawable/state_indicator_background"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:paddingTop="2dp"
-        android:paddingBottom="2dp"
-        android:textColor="@color/state_indicator_text"
-        android:textSize="11sp"
-        android:visibility="gone"
-        android:fontFamily="sans-serif-medium"
+        style="@style/stateIndicatorStyle"
         />
 
     <TextView
         android:id="@+id/issue_call_count"
         style="@style/issueCallCountStyle"
-        android:layout_below="@id/issue_name"
+        android:layout_below="@id/state_indicator"
         />
 
     <TextView

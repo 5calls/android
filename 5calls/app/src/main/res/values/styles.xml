@@ -715,4 +715,22 @@
         <item name="android:textSize">@dimen/text_size_paragraph</item>
     </style>
 
+    <style name="stateIndicatorStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_below">@id/issue_name</item>
+        <item name="android:layout_alignParentEnd">true</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+        <item name="android:background">@drawable/state_indicator_background</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:paddingEnd">8dp</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:textColor">@color/state_indicator_text</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:visibility">gone</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
 </resources>
