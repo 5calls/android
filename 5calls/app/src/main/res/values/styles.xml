@@ -728,7 +728,7 @@
         <item name="android:paddingTop">2dp</item>
         <item name="android:paddingBottom">2dp</item>
         <item name="android:textColor">@color/state_indicator_text</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">@dimen/min_resizable_text_size</item>
         <item name="android:visibility">gone</item>
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
