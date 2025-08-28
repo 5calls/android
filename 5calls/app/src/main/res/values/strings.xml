@@ -75,6 +75,9 @@
     <!-- Button linking to the 5calls.org about page [CHAR_LIMIT=30] -->
     <string name="about_us_btn">about us</string>
 
+    <!-- Text shown above a button linking to the 5calls.org dashboard -->
+    <string name="dashboard_prompt">Local and nationwide impact</string>
+
     <!-- Button linking to the 5calls.org dashboard [CHAR_LIMIT=30] -->
     <string name="dashboard_btn">Recent calling stats</string>
 

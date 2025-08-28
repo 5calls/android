@@ -25,24 +25,27 @@
     <ScrollView
         android:id="@+id/scrollView"
         style="@style/scrollViewStyle"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         >
 
-        <FrameLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
+            style="@style/statsContentsStyle"
             >
 
             <TextView
+                style="@style/noCallsMessageStyle"
                 android:id="@+id/no_calls_message"
-                style="@style/noCallsMsgStyle"
                 android:text="@string/no_calls_impact_message"
                 />
 
             <LinearLayout
                 android:id="@+id/stats_holder"
-                style="@style/noCallsMsgStyle"
                 android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:clipChildren="false"
                 >
 
@@ -101,9 +104,30 @@
                     android:id="@+id/rep_stats"
                     >
                 </LinearLayout>
+
             </LinearLayout>
 
-        </FrameLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                >
+
+                <TextView
+                    style="@style/topContactTextStyle"
+                    android:text="@string/dashboard_prompt"
+                    />
+
+                <Button
+                    android:id="@+id/dashboard_button"
+                    style="@style/fullWidthBtnStyle"
+                    android:text="@string/dashboard_btn"
+                    />
+
+            </LinearLayout>
+
+        </LinearLayout>
 
     </ScrollView>
 
