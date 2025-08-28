@@ -178,4 +178,175 @@ public class IssuesAdapterTest {
         List<Issue> filtered = IssuesAdapter.filterIssuesBySearchText(".", issues);
         assertEquals(0, filtered.size());
     }
+
+    // Test data for issue ordering tests
+    private static final String ORDERING_TEST_ISSUE_DATA = """
+    [
+        {
+            "id": "100",
+            "name": "Regular Issue A",
+            "reason": "Regular issue without meta",
+            "script": "Test script",
+            "categories": [{"name": "Test"}],
+            "contactType": "REPS",
+            "contactAreas": ["US House"],
+            "outcomeModels": [],
+            "stats": { "calls": 0 },
+            "active": true,
+            "meta": "",
+            "sort": 300
+        },
+        {
+            "id": "200",
+            "name": "State Issue B",
+            "reason": "Issue with CA meta",
+            "script": "Test script",
+            "categories": [{"name": "Test"}],
+            "contactType": "REPS",
+            "contactAreas": ["US House"],
+            "outcomeModels": [],
+            "stats": { "calls": 0 },
+            "active": true,
+            "meta": "CA",
+            "sort": 100
+        },
+        {
+            "id": "300",
+            "name": "Regular Issue C",
+            "reason": "Another regular issue",
+            "script": "Test script",
+            "categories": [{"name": "Test"}],
+            "contactType": "REPS",
+            "contactAreas": ["US House"],
+            "outcomeModels": [],
+            "stats": { "calls": 0 },
+            "active": true,
+            "meta": "",
+            "sort": 400
+        },
+        {
+            "id": "400",
+            "name": "State Issue D",
+            "reason": "Issue with NY meta",
+            "script": "Test script",
+            "categories": [{"name": "Test"}],
+            "contactType": "REPS",
+            "contactAreas": ["US House"],
+            "outcomeModels": [],
+            "stats": { "calls": 0 },
+            "active": true,
+            "meta": "NY",
+            "sort": 200
+        }
+    ]""";
+
+    @Test
+    public void testSortIssuesWithMetaPriority_emptyList() {
+        IssuesAdapter adapter = new IssuesAdapter(null, null);
+        List<Issue> emptyList = new ArrayList<>();
+        ArrayList<Issue> result = adapter.sortIssuesWithMetaPriority(emptyList);
+        assertEquals(0, result.size());
+    }
+
+    @Test
+    public void testSortIssuesWithMetaPriority_allWithoutMeta() {
+        Gson gson = new GsonBuilder().serializeNulls().create();
+        Type listType = new TypeToken<ArrayList<Issue>>(){}.getType();
+        List<Issue> issues = gson.fromJson(ORDERING_TEST_ISSUE_DATA, listType);
+        
+        // Remove meta from all issues
+        for (Issue issue : issues) {
+            issue.meta = "";
+        }
+        
+        IssuesAdapter adapter = new IssuesAdapter(null, null);
+        ArrayList<Issue> result = adapter.sortIssuesWithMetaPriority(issues);
+        
+        assertEquals(4, result.size());
+        // Should be sorted by sort field: 100(sort=300), 200(sort=100), 300(sort=400), 400(sort=200)
+        // Expected order by sort: 200, 400, 100, 300
+        assertEquals("200", result.get(0).id);
+        assertEquals("400", result.get(1).id);
+        assertEquals("100", result.get(2).id);
+        assertEquals("300", result.get(3).id);
+    }
+
+    @Test
+    public void testSortIssuesWithMetaPriority_allWithMeta() {
+        Gson gson = new GsonBuilder().serializeNulls().create();
+        Type listType = new TypeToken<ArrayList<Issue>>(){}.getType();
+        List<Issue> issues = gson.fromJson(ORDERING_TEST_ISSUE_DATA, listType);
+        
+        // Add meta to all issues
+        issues.get(0).meta = "TX";
+        issues.get(2).meta = "FL";
+        
+        IssuesAdapter adapter = new IssuesAdapter(null, null);
+        ArrayList<Issue> result = adapter.sortIssuesWithMetaPriority(issues);
+        
+        assertEquals(4, result.size());
+        // All should have meta, sorted by sort field: 200(100), 400(200), 100(300), 300(400)
+        assertEquals("200", result.get(0).id);
+        assertEquals("CA", result.get(0).meta);
+        assertEquals("400", result.get(1).id);
+        assertEquals("NY", result.get(1).meta);
+        assertEquals("100", result.get(2).id);
+        assertEquals("TX", result.get(2).meta);
+        assertEquals("300", result.get(3).id);
+        assertEquals("FL", result.get(3).meta);
+    }
+
+    @Test
+    public void testSortIssuesWithMetaPriority_mixedMetaValues() {
+        Gson gson = new GsonBuilder().serializeNulls().create();
+        Type listType = new TypeToken<ArrayList<Issue>>(){}.getType();
+        List<Issue> issues = gson.fromJson(ORDERING_TEST_ISSUE_DATA, listType);
+        
+        IssuesAdapter adapter = new IssuesAdapter(null, null);
+        ArrayList<Issue> result = adapter.sortIssuesWithMetaPriority(issues);
+        
+        assertEquals(4, result.size());
+        
+        // First two should have meta values (sorted by sort field: 200(100), 400(200))
+        assertEquals("200", result.get(0).id);
+        assertEquals("CA", result.get(0).meta);
+        assertEquals(100, result.get(0).sort);
+        assertEquals("400", result.get(1).id);
+        assertEquals("NY", result.get(1).meta);
+        assertEquals(200, result.get(1).sort);
+        
+        // Last two should not have meta values (sorted by sort field: 100(300), 300(400))
+        assertEquals("100", result.get(2).id);
+        assertEquals("", result.get(2).meta);
+        assertEquals(300, result.get(2).sort);
+        assertEquals("300", result.get(3).id);
+        assertEquals("", result.get(3).meta);
+        assertEquals(400, result.get(3).sort);
+    }
+
+    @Test
+    public void testSortIssuesWithMetaPriority_nullMetaHandling() {
+        Gson gson = new GsonBuilder().serializeNulls().create();
+        Type listType = new TypeToken<ArrayList<Issue>>(){}.getType();
+        List<Issue> issues = gson.fromJson(ORDERING_TEST_ISSUE_DATA, listType);
+        
+        // Set some meta to null
+        issues.get(0).meta = null;
+        issues.get(2).meta = null;
+        
+        IssuesAdapter adapter = new IssuesAdapter(null, null);
+        ArrayList<Issue> result = adapter.sortIssuesWithMetaPriority(issues);
+        
+        assertEquals(4, result.size());
+        
+        // Issues with non-empty meta come first (sorted by sort: 200(100), 400(200))
+        assertEquals("200", result.get(0).id);
+        assertEquals("CA", result.get(0).meta);
+        assertEquals("400", result.get(1).id);
+        assertEquals("NY", result.get(1).meta);
+        
+        // Issues with null/empty meta come last (sorted by sort: 100(300), 300(400))
+        assertEquals("100", result.get(2).id);
+        assertEquals("300", result.get(3).id);
+    }
 }

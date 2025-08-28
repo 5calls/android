@@ -483,7 +483,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
 
             @Override
             public void onContactsReceived(String locationName, String districtId,
-                                           boolean isLowAccuracy, List<Contact> contacts) {
+                                           boolean isLowAccuracy, List<Contact> contacts, boolean stateChanged) {
                 mLocationName = TextUtils.isEmpty(locationName) ?
                         getResources().getString(R.string.unknown_location) : locationName;
                 mDistrictId = districtId;
@@ -524,6 +524,12 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                         // Only show it once.
                         mShowLowAccuracyWarning = false;
                     }
+                }
+                
+                // If the state changed, refresh issues to get state-specific issues
+                if (stateChanged) {
+                    FiveCallsApi api = AppSingleton.getInstance(getApplicationContext()).getJsonController();
+                    api.getIssues();
                 }
             }
         };

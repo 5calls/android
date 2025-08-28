@@ -8,12 +8,18 @@
         android:id="@+id/issue_name"
         style="@style/issueViewTextStyle"
         android:layout_alignParentTop="true"
+        android:layout_width="match_parent"
+        />
+
+    <TextView
+        android:id="@+id/state_indicator"
+        style="@style/stateIndicatorStyle"
         />
 
     <TextView
         android:id="@+id/issue_call_count"
         style="@style/issueCallCountStyle"
-        android:layout_below="@id/issue_name"
+        android:layout_below="@id/state_indicator"
         />
 
     <TextView

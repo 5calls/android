@@ -720,4 +720,22 @@
         <item name="android:textSize">@dimen/text_size_paragraph</item>
     </style>
 
+    <style name="stateIndicatorStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_below">@id/issue_name</item>
+        <item name="android:layout_alignParentEnd">true</item>
+        <item name="android:layout_marginTop">@dimen/state_indicator_margin_vertical</item>
+        <item name="android:layout_marginBottom">@dimen/state_indicator_margin_vertical</item>
+        <item name="android:background">@drawable/state_indicator_background</item>
+        <item name="android:paddingStart">@dimen/state_indicator_padding_horizontal</item>
+        <item name="android:paddingEnd">@dimen/state_indicator_padding_horizontal</item>
+        <item name="android:paddingTop">@dimen/state_indicator_padding_vertical</item>
+        <item name="android:paddingBottom">@dimen/state_indicator_padding_vertical</item>
+        <item name="android:textColor">@color/state_indicator_text</item>
+        <item name="android:textSize">@dimen/min_resizable_text_size</item>
+        <item name="android:visibility">gone</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
 </resources>

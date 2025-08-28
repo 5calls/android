@@ -101,3 +101,10 @@ dependencies {
 
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'org.jetbrains.kotlin.android'
+
+// Configure Kotlin compilation options
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
+    kotlinOptions {
+        jvmTarget = '21'
+    }
+}

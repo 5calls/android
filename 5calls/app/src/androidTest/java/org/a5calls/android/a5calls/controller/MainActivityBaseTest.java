@@ -92,7 +92,8 @@ public abstract class MainActivityBaseTest {
         // Create a new FiveCallsApi with our mock RequestQueue
         String callerId = AccountManager.Instance.getCallerID(
                 InstrumentationRegistry.getInstrumentation().getTargetContext());
-        FiveCallsApi api = new FiveCallsApi(callerId, requestQueue);
+        FiveCallsApi api = new FiveCallsApi(callerId, requestQueue, 
+                InstrumentationRegistry.getInstrumentation().getTargetContext());
         AppSingleton.getInstance(
                 InstrumentationRegistry.getInstrumentation().getTargetContext())
                 .setFiveCallsApi(api);
