@@ -57,4 +57,7 @@
     <dimen name="drawable_padding">8dp</dimen>
     <dimen name="state_indicator_corner_radius">12dp</dimen>
     <dimen name="state_indicator_stroke_width">1dp</dimen>
+    <dimen name="state_indicator_margin_vertical">4dp</dimen>
+    <dimen name="state_indicator_padding_horizontal">8dp</dimen>
+    <dimen name="state_indicator_padding_vertical">2dp</dimen>
 </resources>

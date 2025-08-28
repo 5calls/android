@@ -27,9 +27,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +44,8 @@ public class FiveCallsApi {
     // Set TESTING "true" to set a parameter to the count call request which marks it as a test
     // request on the server. This will only work on debug builds.
     protected static final boolean TESTING = true;
+
+    private static final String REQUEST_URL_ENCODING_CHARSET = "UTF-8";
 
     private static final String GET_ISSUES_REQUEST = "https://api.5calls.org/v1/issues";
     private static final String GET_ISSUES_REQUEST_PARAM_STATE = "state";
@@ -150,7 +152,12 @@ public class FiveCallsApi {
     }
 
     public void getContacts(String address) {
-        buildContactsRequest(GET_CONTACTS_REQUEST + URLEncoder.encode(address, StandardCharsets.UTF_8), mContactsRequestListeners);
+        try {
+            buildContactsRequest(GET_CONTACTS_REQUEST + URLEncoder.encode(address, REQUEST_URL_ENCODING_CHARSET), mContactsRequestListeners);
+        } catch (UnsupportedEncodingException e) {
+            // UTF-8 is always supported, this should never happen but fall back anyway
+            buildContactsRequest(GET_CONTACTS_REQUEST + address, mContactsRequestListeners);
+        }
     }
 
     private void buildIssuesRequest(String url, final List<IssuesRequestListener> listeners) {
