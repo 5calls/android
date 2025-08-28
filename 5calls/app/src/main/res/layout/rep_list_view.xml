@@ -11,6 +11,7 @@
         android:layout_width="@dimen/rep_list_img_dimens"
         android:layout_height="@dimen/rep_list_img_dimens"
         android:layout_centerVertical="true"
+        android:src="@drawable/baseline_person_52"
         />
 
     <LinearLayout
