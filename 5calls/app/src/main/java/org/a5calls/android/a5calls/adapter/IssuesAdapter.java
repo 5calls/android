@@ -8,8 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.a5calls.android.a5calls.AppSingleton;
@@ -27,6 +25,7 @@ import java.util.regex.Pattern;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -252,7 +251,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     R.layout.empty_issues_search_view, parent, false);
             return new EmptySearchViewHolder(empty);
         } else {
-            RelativeLayout v = (RelativeLayout) LayoutInflater.from(parent.getContext())
+            ConstraintLayout v = (ConstraintLayout) LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.issue_view, parent, false);
             return new IssueViewHolder(v);
         }
@@ -265,13 +264,14 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             IssueViewHolder vh = (IssueViewHolder) holder;
             final Issue issue = mIssues.get(position);
             vh.name.setText(issue.name);
-            
+
             // Show state indicator if issue has meta (state abbreviation) and we can map it to a state name
             if (!TextUtils.isEmpty(issue.meta)) {
                 String stateName = StateMapping.getStateName(issue.meta);
-                if (stateName != null) {
+                if (!TextUtils.isEmpty(stateName)) {
                     vh.stateIndicator.setText(stateName);
                     vh.stateIndicator.setVisibility(View.VISIBLE);
+
                 } else {
                     vh.stateIndicator.setVisibility(View.GONE);
                 }

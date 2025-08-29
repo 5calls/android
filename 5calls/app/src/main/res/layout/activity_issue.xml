@@ -36,6 +36,15 @@
             >
 
             <TextView
+                android:id="@+id/state_indicator"
+                style="@style/stateIndicatorStyle"
+                android:layout_marginStart="@dimen/activity_vertical_margin"
+                android:layout_marginEnd="@dimen/activity_vertical_margin"
+                android:visibility="gone"
+                android:layout_gravity="end"
+                />
+
+            <TextView
                 android:id="@+id/issue_name"
                 style="@style/issueHeadStyle"
                 />

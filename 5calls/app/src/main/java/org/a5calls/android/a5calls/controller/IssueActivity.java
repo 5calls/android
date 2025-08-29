@@ -52,6 +52,7 @@ import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.DatabaseHelper;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.util.MarkdownUtil;
+import org.a5calls.android.a5calls.util.StateMapping;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -137,6 +138,14 @@ public class IssueActivity extends AppCompatActivity {
             behavior.setPeekHeight(targetPeakHeight + insets.bottom);
             return WindowInsetsCompat.CONSUMED;
         });
+
+        if (!TextUtils.isEmpty(mIssue.meta)) {
+            String stateName = StateMapping.getStateName(mIssue.meta);
+            if (!TextUtils.isEmpty(stateName)) {
+                binding.stateIndicator.setText(stateName);
+                binding.stateIndicator.setVisibility(View.VISIBLE);
+            }
+        }
 
         binding.issueName.setText(mIssue.name);
         MarkdownUtil.setUpScript(binding.issueDescription, mIssue.reason, getApplicationContext());

@@ -511,7 +511,7 @@
         <item name="android:maxLines">1</item>
     </style>
 
-    <style name="viewRelativeLayoutStyle">
+    <style name="issueViewStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:padding">@dimen/activity_horizontal_padding</item>

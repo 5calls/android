@@ -2,6 +2,7 @@ package org.a5calls.android.a5calls.net;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -153,7 +154,12 @@ public class FiveCallsApi {
 
     public void getContacts(String address) {
         try {
-            buildContactsRequest(GET_CONTACTS_REQUEST + URLEncoder.encode(address, REQUEST_URL_ENCODING_CHARSET), mContactsRequestListeners);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA) {
+                buildContactsRequest(GET_CONTACTS_REQUEST + URLEncoder.encode(address, REQUEST_URL_ENCODING_CHARSET), mContactsRequestListeners);
+            } else {
+                // Older SDK versions.
+                buildContactsRequest(GET_CONTACTS_REQUEST + address, mContactsRequestListeners);
+            }
         } catch (UnsupportedEncodingException e) {
             // UTF-8 is always supported, this should never happen but fall back anyway
             buildContactsRequest(GET_CONTACTS_REQUEST + address, mContactsRequestListeners);
