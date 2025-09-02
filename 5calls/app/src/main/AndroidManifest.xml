@@ -54,7 +54,7 @@
                 android:value=".controller.MainActivity" />
         </activity>
         <activity android:name=".controller.LocationActivity"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity android:name=".controller.StatsActivity"
             android:label="@string/stats_activity"
             android:parentActivityName=".controller.MainActivity">
