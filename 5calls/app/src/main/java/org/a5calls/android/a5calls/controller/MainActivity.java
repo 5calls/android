@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     private String mLatitude;
     private String mLongitude;
     private String mLocationName;
+    private String mDistrictId;
     private boolean mIsLowAccuracy = false;
     private boolean mShowLowAccuracyWarning = true;
     private boolean mDonateIsOn = false;
@@ -387,6 +388,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
 
                         if (item.getItemId() == R.id.menu_about) {
                             Intent intent = new Intent(MainActivity.this, AboutActivity.class);
+                            intent.putExtra(AboutActivity.KEY_DISTRICT_ID, mDistrictId);
                             startActivity(intent);
                             return true;
                         } else if (item.getItemId() == R.id.menu_stats) {
@@ -480,10 +482,11 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             }
 
             @Override
-            public void onContactsReceived(String locationName, boolean isLowAccuracy,
-                                           List<Contact> contacts) {
+            public void onContactsReceived(String locationName, String districtId,
+                                           boolean isLowAccuracy, List<Contact> contacts, boolean stateChanged) {
                 mLocationName = TextUtils.isEmpty(locationName) ?
                         getResources().getString(R.string.unknown_location) : locationName;
+                mDistrictId = districtId;
                 binding.collapsingToolbar.setTitle(String.format(getResources().getString(
                         R.string.title_main), mLocationName));
                 mIssuesAdapter.setContacts(contacts, IssuesAdapter.NO_ERROR);
@@ -521,6 +524,12 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                         // Only show it once.
                         mShowLowAccuracyWarning = false;
                     }
+                }
+                
+                // If the state changed, refresh issues to get state-specific issues
+                if (stateChanged) {
+                    FiveCallsApi api = AppSingleton.getInstance(getApplicationContext()).getJsonController();
+                    api.getIssues();
                 }
             }
         };
@@ -633,6 +642,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
 
     private void showStats() {
         Intent intent = new Intent(this, StatsActivity.class);
+        intent.putExtra(StatsActivity.KEY_DISTRICT_ID, mDistrictId);
         startActivity(intent);
     }
 

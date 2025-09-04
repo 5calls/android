@@ -8,8 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.a5calls.android.a5calls.AppSingleton;
@@ -18,13 +16,16 @@ import org.a5calls.android.a5calls.model.Category;
 import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.DatabaseHelper;
 import org.a5calls.android.a5calls.model.Issue;
+import org.a5calls.android.a5calls.util.StateMapping;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -110,7 +111,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             mErrorType = NO_ERROR;
         }
         if (!TextUtils.isEmpty(searchText)) {
-            mIssues = filterIssuesBySearchText(searchText, mAllIssues);
+            mIssues = sortIssuesWithMetaPriority(filterIssuesBySearchText(searchText, mAllIssues));
             // If there's no other error, show a search error.
             if (mIssues.isEmpty() && mErrorType == NO_ERROR) {
                 mErrorType = ERROR_SEARCH_NO_MATCH;
@@ -120,13 +121,13 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             if (TextUtils.equals(filterText,
                     mActivity.getResources().getString(R.string.all_issues_filter))) {
                 // Include everything
-                mIssues = mAllIssues;
+                mIssues = sortIssuesWithMetaPriority(mAllIssues);
             } else if (TextUtils.equals(filterText,
                     mActivity.getResources().getString(R.string.top_issues_filter))) {
-                mIssues = filterActiveIssues();
+                mIssues = sortIssuesWithMetaPriority(filterActiveIssues());
             } else {
                 // Filter by the category string.
-                mIssues = filterIssuesByCategory(filterText);
+                mIssues = sortIssuesWithMetaPriority(filterIssuesByCategory(filterText));
             }
         }
         notifyDataSetChanged();
@@ -137,6 +138,39 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         ArrayList<Issue> tempIssues = new ArrayList<>();
         // Should we .trim() the whitespace?
         String lowerSearchText = searchText.toLowerCase();
+
+        /*
+         * When name and category fields are searched, String#contains is used.
+         * However, searching reason fields uses a different strategy: searching
+         * for words (or sequences of words) that start with searchText
+         * Motivating example:
+         * """
+         * "ice" [shouldn't] match "averice" but [should match] just ICE"
+         * """
+         * In the JDK's regex implementation, \b expresses "word boundary".
+         * https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html
+         * However, different regex interpretations may have subtly different
+         * definitions of "word boundary"; see
+         * https://www.rexegg.com/regex-boundaries.php#wordboundary
+         *
+         * {@link Pattern#quote} is used to quote searchText.
+         * Motivating example:
+         * if searchText := "[", the old implementation would attempt to create
+         * a regex pattern through Pattern.compile("\\s[") and then throw an
+         * exception because "\\s[" is not a valid regex.
+         * Another motivating example:
+         * if searchText := "land.", the old pattern would create regex pattern
+         * Pattern.compile("\\sland."), which will match " lands", " lander",
+         * " land-swap", etc.
+         * XXX TODO: Search texts like "[" and ")" may match Markdown for links
+         *      (example: "[a link](www.example.com)"), which is not visible in
+         *      rendered text; is this acceptable?
+         */
+        Pattern pattern = Pattern.compile(
+                String.format("\\b%s", Pattern.quote(searchText)),
+                Pattern.CASE_INSENSITIVE
+        );
+
         for (Issue issue : allIssues) {
             // Search the name and the categories for the search term.
             if (issue.name.toLowerCase().contains(lowerSearchText)) {
@@ -156,8 +190,6 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 // Search through the issue's reason for words that start with the
                 // search text. This is better than substring matching so that text
                 // like "ice" doesn't match "averice" but just ICE.
-                Pattern pattern = Pattern.compile("\\s" + searchText,
-                        Pattern.CASE_INSENSITIVE);
                 if (pattern.matcher(issue.reason).find()) {
                     tempIssues.add(issue);
                 }
@@ -219,7 +251,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     R.layout.empty_issues_search_view, parent, false);
             return new EmptySearchViewHolder(empty);
         } else {
-            RelativeLayout v = (RelativeLayout) LayoutInflater.from(parent.getContext())
+            ConstraintLayout v = (ConstraintLayout) LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.issue_view, parent, false);
             return new IssueViewHolder(v);
         }
@@ -232,6 +264,21 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             IssueViewHolder vh = (IssueViewHolder) holder;
             final Issue issue = mIssues.get(position);
             vh.name.setText(issue.name);
+
+            // Show state indicator if issue has meta (state abbreviation) and we can map it to a state name
+            if (!TextUtils.isEmpty(issue.meta)) {
+                String stateName = StateMapping.getStateName(issue.meta);
+                if (!TextUtils.isEmpty(stateName)) {
+                    vh.stateIndicator.setText(stateName);
+                    vh.stateIndicator.setVisibility(View.VISIBLE);
+
+                } else {
+                    vh.stateIndicator.setVisibility(View.GONE);
+                }
+            } else {
+                vh.stateIndicator.setVisibility(View.GONE);
+            }
+            
             vh.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -392,12 +439,14 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public TextView name;
     public TextView numCalls;
     public TextView previousCallStats;
+    public TextView stateIndicator;
 
     public IssueViewHolder(View itemView) {
         super(itemView);
         name = (TextView) itemView.findViewById(R.id.issue_name);
         numCalls = (TextView) itemView.findViewById(R.id.issue_call_count);
         previousCallStats = (TextView) itemView.findViewById(R.id.previous_call_stats);
+        stateIndicator = (TextView) itemView.findViewById(R.id.state_indicator);
     }
 }
 
@@ -441,4 +490,33 @@ private static class EmptySearchViewHolder extends RecyclerView.ViewHolder {
     }
 }
 
+    /**
+     * Sorts a list of issues to prioritize those with meta values (state abbreviations) at the top,
+     * then sorts the remaining issues. Both groups maintain their internal sort order.
+     */
+    @VisibleForTesting
+    ArrayList<Issue> sortIssuesWithMetaPriority(List<Issue> issues) {
+        ArrayList<Issue> withMeta = new ArrayList<>();
+        ArrayList<Issue> withoutMeta = new ArrayList<>();
+        
+        // Separate issues with and without meta values
+        for (Issue issue : issues) {
+            if (!TextUtils.isEmpty(issue.meta)) {
+                withMeta.add(issue);
+            } else {
+                withoutMeta.add(issue);
+            }
+        }
+        
+        // Sort each group independently by sort field (maintaining consistent order)
+        Collections.sort(withMeta, (a, b) -> Integer.compare(a.sort, b.sort));
+        Collections.sort(withoutMeta, (a, b) -> Integer.compare(a.sort, b.sort));
+        
+        // Combine: meta issues first, then regular issues
+        ArrayList<Issue> result = new ArrayList<>();
+        result.addAll(withMeta);
+        result.addAll(withoutMeta);
+        
+        return result;
+    }
 }

@@ -1,5 +1,8 @@
 package org.a5calls.android.a5calls.net;
 
+import android.content.Context;
+import android.net.Uri;
+import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -17,6 +20,7 @@ import com.google.gson.reflect.TypeToken;
 import com.onesignal.OneSignal;
 
 import org.a5calls.android.a5calls.BuildConfig;
+import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.model.Outcome;
@@ -24,6 +28,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -41,7 +46,10 @@ public class FiveCallsApi {
     // request on the server. This will only work on debug builds.
     protected static final boolean TESTING = true;
 
+    private static final String REQUEST_URL_ENCODING_CHARSET = "UTF-8";
+
     private static final String GET_ISSUES_REQUEST = "https://api.5calls.org/v1/issues";
+    private static final String GET_ISSUES_REQUEST_PARAM_STATE = "state";
 
     private static final String GET_CONTACTS_REQUEST = "https://api.5calls.org/v1/reps?location=";
 
@@ -76,7 +84,8 @@ public class FiveCallsApi {
 
         void onAddressError();
 
-        void onContactsReceived(String locationName, boolean isLowAccuracy, List<Contact> contacts);
+        void onContactsReceived(String locationName, String districtId, boolean isLowAccuracy,
+                                List<Contact> contacts, boolean stateChanged);
     }
 
     public interface NewsletterSubscribeCallback {
@@ -91,11 +100,13 @@ public class FiveCallsApi {
     private List<ContactsRequestListener> mContactsRequestListeners = new ArrayList<>();
 
     private final String mCallerId;
+    private final Context mContext;
 
-    public FiveCallsApi(String callerId, RequestQueue requestQueue) {
+    public FiveCallsApi(String callerId, RequestQueue requestQueue, Context context) {
         // TODO: Using OkHttpClient and OkHttpStack cause failures on multiple types of Samsung
         // Galaxy devices.
         mCallerId = callerId;
+        mContext = context;
         //mRequestQueue = Volley.newRequestQueue(context, new OkHttpStack(new OkHttpClient()));
         mRequestQueue = requestQueue;
         mGson = new GsonBuilder()
@@ -128,18 +139,31 @@ public class FiveCallsApi {
         mContactsRequestListeners.remove(contactsRequestListener);
     }
 
-    public void onDestroy() {
-        mRequestQueue.cancelAll(TAG);
-        mRequestQueue.stop();
-        mRequestQueue = null;
-    }
-
     public void getIssues() {
-        buildIssuesRequest(GET_ISSUES_REQUEST, mIssuesRequestListeners);
+        Uri.Builder urlBuilder = Uri.parse(GET_ISSUES_REQUEST).buildUpon();
+        
+        // Include state parameter if we have it stored
+        String state = AccountManager.Instance.getState(mContext);
+        if (!TextUtils.isEmpty(state)) {
+            urlBuilder.appendQueryParameter(GET_ISSUES_REQUEST_PARAM_STATE, state);
+        }
+        
+        String url = urlBuilder.build().toString();
+        buildIssuesRequest(url, mIssuesRequestListeners);
     }
 
     public void getContacts(String address) {
-        buildContactsRequest(GET_CONTACTS_REQUEST + URLEncoder.encode(address), mContactsRequestListeners);
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA) {
+                buildContactsRequest(GET_CONTACTS_REQUEST + URLEncoder.encode(address, REQUEST_URL_ENCODING_CHARSET), mContactsRequestListeners);
+            } else {
+                // Older SDK versions.
+                buildContactsRequest(GET_CONTACTS_REQUEST + address, mContactsRequestListeners);
+            }
+        } catch (UnsupportedEncodingException e) {
+            // UTF-8 is always supported, this should never happen but fall back anyway
+            buildContactsRequest(GET_CONTACTS_REQUEST + address, mContactsRequestListeners);
+        }
     }
 
     private void buildIssuesRequest(String url, final List<IssuesRequestListener> listeners) {
@@ -204,22 +228,36 @@ public class FiveCallsApi {
                             }
                             return;
                         }
+
                         Type listType = new TypeToken<ArrayList<Contact>>(){}.getType();
                         List<Contact> contacts = mGson.fromJson(jsonArray.toString(), listType);
-                        for (ContactsRequestListener listener : listeners) {
-                            listener.onContactsReceived(locationName, lowAccuracy, contacts);
-                        }
 
+                        String districtId = "";
+                        boolean stateChanged = false;
                         try {
                             String state = response.getString("state");
                             String district = response.getString("district");
                             if (!TextUtils.isEmpty(state) && !TextUtils.isEmpty(district)) {
+                                // Check if state has changed
+                                String currentState = AccountManager.Instance.getState(mContext);
+                                stateChanged = !state.equals(currentState);
+                                
+                                // Store state and district separately
+                                AccountManager.Instance.setState(mContext, state);
+                                AccountManager.Instance.setDistrict(mContext, district);
+                                
+                                districtId = state + "-" + district;
                                 if (OneSignal.isInitialized()) {
-                                    OneSignal.getUser().addTag("districtID", state + "-" + district);
+                                    OneSignal.getUser().addTag("districtID", districtId);
                                 }
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
+                        }
+
+                        for (ContactsRequestListener listener : listeners) {
+                            listener.onContactsReceived(locationName, districtId, lowAccuracy,
+                                    contacts, stateChanged);
                         }
                     }
                 }

@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import static org.a5calls.android.a5calls.FakeJSONData.ISSUE_DATA;
 import static org.a5calls.android.a5calls.FakeJSONData.REPORT_DATA;
@@ -86,6 +87,7 @@ public class FiveCallsApiTest {
         protected List<Contact> mContacts = null;
         protected boolean mLowAccuracy = false;
         protected String mLocationName = null;
+        protected String mDistrictId = null;
 
         @Override
         public void onRequestError() {
@@ -103,9 +105,10 @@ public class FiveCallsApiTest {
         }
 
         @Override
-        public void onContactsReceived(String locationName, boolean isLowAccuracy,
-                                       List<Contact> contacts) {
+        public void onContactsReceived(String locationName, String districtId,
+                                       boolean isLowAccuracy, List<Contact> contacts, boolean stateChanged) {
             mLocationName = locationName;
+            mDistrictId = districtId;
             mLowAccuracy = isLowAccuracy;
             mContacts = contacts;
         }
@@ -137,7 +140,8 @@ public class FiveCallsApiTest {
         mHttpStack = new MockHttpStack();
         BasicNetwork basicNetwork = new BasicNetwork(mHttpStack);
         mRequestQueue = new FakeRequestQueue(basicNetwork);
-        mApi = new FiveCallsApi("itMe", mRequestQueue);
+        mApi = new FiveCallsApi("itMe", mRequestQueue, 
+                InstrumentationRegistry.getInstrumentation().getTargetContext());
     }
 
     @After
@@ -286,6 +290,7 @@ public class FiveCallsApiTest {
         assertFalse(testContactsListener.mContacts.isEmpty());
         assertEquals(6, testContactsListener.mContacts.size());
         assertEquals("BOWLING GREEN", testContactsListener.mLocationName);
+        assertEquals("NY-10", testContactsListener.mDistrictId);
     }
 
     @Test
@@ -322,6 +327,7 @@ public class FiveCallsApiTest {
         assertEquals(0, testContactsListener.mContactsJsonError);
         assertNull(testContactsListener.mContacts);
         assertNull(testContactsListener.mLocationName);
+        assertNull(testContactsListener.mDistrictId);
     }
 
     @Test
@@ -342,6 +348,7 @@ public class FiveCallsApiTest {
         assertEquals(0, testContactsListener.mContactsJsonError);
         assertNull(testContactsListener.mContacts);
         assertNull(testContactsListener.mLocationName);
+        assertNull(testContactsListener.mDistrictId);
     }
 
     @Test

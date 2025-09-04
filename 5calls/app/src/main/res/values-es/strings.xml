@@ -75,6 +75,12 @@
     <!-- Button linking to the 5calls.org about page [CHAR_LIMIT=30] -->
     <string name="about_us_btn">sobre nosotros</string>
 
+    <!-- Text shown above a button linking to the 5calls.org dashboard -->
+    <string name="dashboard_prompt">Impacto local y nacional</string>
+
+    <!-- Button linking to the 5calls.org dashboard [CHAR_LIMIT=30] -->
+    <string name="dashboard_btn">Estadísticas recientes</string>
+
     <!-- Button that allows users to send 5 Calls an email [CHAR_LIMIT=30] -->
     <string name="contact_us_btn">contáctenos</string>
 

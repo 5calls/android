@@ -3,6 +3,7 @@ package org.a5calls.android.a5calls.controller;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Rect;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -68,9 +69,19 @@ public class LocationActivity extends AppCompatActivity {
         ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, windowInsets) -> {
             Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars() |
                     WindowInsetsCompat.Type.displayCutout());
+            Insets ime = windowInsets.getInsets(WindowInsetsCompat.Type.ime());
+
             binding.appbar.setPadding(insets.left, insets.top, insets.right, 0);
-            binding.scrollView.setPadding(insets.left, 0, insets.right, insets.bottom);
-            return WindowInsetsCompat.CONSUMED;
+
+            int bottomInset = Math.max(insets.bottom, ime.bottom);
+            binding.scrollView.setPadding(insets.left, 0, insets.right, bottomInset);
+
+            if (ime.bottom > 0) { // Only scroll if the keyboard is up
+                // Post to the message queue to ensure the layout has time to re-draw
+                binding.scrollView.post(() -> binding.scrollView.fullScroll(View.FOCUS_DOWN));
+            }
+
+            return windowInsets;
         });
 
         // Allow home up if required.

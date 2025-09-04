@@ -38,6 +38,8 @@ public enum AccountManager {
     private static final String KEY_NEWSLETTER_SIGNUP_DONE = "prefsKeyNewsletterSignup";
     public static final String KEY_USER_NAME = "prefsKeyUserName";
     public static final String KEY_SCRIPT_TEXT_SIZE_SP = "prefsKeyScriptTextSize";
+    private static final String KEY_USER_STATE = "prefsKeyUserState";
+    private static final String KEY_USER_DISTRICT = "prefsKeyUserDistrict";
 
     // Default to 11 am.
     public static final int DEFAULT_REMINDER_MINUTES = 60 * 11;
@@ -97,6 +99,22 @@ public enum AccountManager {
 
     public void setLng(Context context, String lng) {
         getSharedPrefs(context).edit().putString(KEY_LONGITUDE, lng).apply();
+    }
+
+    public String getState(Context context) {
+        return getSharedPrefs(context).getString(KEY_USER_STATE, "");
+    }
+
+    public void setState(Context context, String state) {
+        getSharedPrefs(context).edit().putString(KEY_USER_STATE, state).apply();
+    }
+
+    public String getDistrict(Context context) {
+        return getSharedPrefs(context).getString(KEY_USER_DISTRICT, "");
+    }
+
+    public void setDistrict(Context context, String district) {
+        getSharedPrefs(context).edit().putString(KEY_USER_DISTRICT, district).apply();
     }
 
     // Defaults to true
