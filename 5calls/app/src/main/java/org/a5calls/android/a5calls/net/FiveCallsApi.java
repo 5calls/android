@@ -142,12 +142,11 @@ public class FiveCallsApi {
     public void getIssues() {
         Uri.Builder urlBuilder = Uri.parse(GET_ISSUES_REQUEST).buildUpon();
 
-        // TODO: Re-enable state issues by sending address when they are ready for launch.
-//        // Include state parameter if we have it stored
-//        String state = AccountManager.Instance.getState(mContext);
-//        if (!TextUtils.isEmpty(state)) {
-//            urlBuilder.appendQueryParameter(GET_ISSUES_REQUEST_PARAM_STATE, state);
-//        }
+        // Include state parameter if we have it stored
+        String state = AccountManager.Instance.getState(mContext);
+        if (!TextUtils.isEmpty(state)) {
+            urlBuilder.appendQueryParameter(GET_ISSUES_REQUEST_PARAM_STATE, state);
+        }
         
         String url = urlBuilder.build().toString();
         buildIssuesRequest(url, mIssuesRequestListeners);
