@@ -98,6 +98,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         if (!mAllIssues.isEmpty() && mContacts.isEmpty()) {
             notify = true;
         }
+
         mContacts = contacts;
         if (notify) {
             notifyDataSetChanged();
@@ -308,7 +309,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 for (Contact contact : mContacts) {
                     if (TextUtils.equals(contact.area, contactArea) &&
                             !issue.contacts.contains(contact)) {
-                        if (TextUtils.equals(contact.area, "US House")) {
+                        if (TextUtils.equals(contact.area, Contact.AREA_HOUSE)) {
                             houseCount++;
                             if (houseCount > 1) {
                                 issue.isSplit = true;

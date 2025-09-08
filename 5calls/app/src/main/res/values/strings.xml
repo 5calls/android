@@ -646,4 +646,10 @@
     <!-- The categories an issue belongs to, when there are more than one. -->
     <string name="issue_category_many">Categories: </string>
 
+    <!-- The name of a vacant seat (shown when there is no house or senate rep because of a vacancy) -->
+    <string name="vacant_seat_rep_name">Vacant Seat</string>
+
+    <!-- The reason for a vacant seat being shown in the rep call list -->
+    <string name="vacant_seat_rep_reason">This <xliff:g id="area">%1$s</xliff:g> seat is currently vacant</string>
+
 </resources>
