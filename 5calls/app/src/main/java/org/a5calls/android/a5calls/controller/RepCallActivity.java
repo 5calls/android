@@ -134,9 +134,10 @@ public class RepCallActivity extends AppCompatActivity {
         binding.scrollView.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
 
         Contact c = mIssue.contacts.get(mActiveContactIndex);
+        String baseScript = mIssue.getScriptForContact(c.id);
         String script = ScriptReplacements.replacing(
                 this,
-                mIssue.script,
+                baseScript,
                 c,
                 getIntent().getStringExtra(KEY_LOCATION_NAME),
                 AccountManager.Instance.getUserName(this)

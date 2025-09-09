@@ -22,6 +22,7 @@ import com.onesignal.OneSignal;
 import org.a5calls.android.a5calls.BuildConfig;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.Contact;
+import org.a5calls.android.a5calls.model.CustomizedContactScript;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.model.Outcome;
 import org.json.JSONArray;
@@ -58,6 +59,8 @@ public class FiveCallsApi {
     private static final String NEWSLETTER_SUBSCRIBE = "https://buttondown.com/api/emails/embed-subscribe/5calls";
 
     private static final String SEARCH_TRACKING = "https://api.5calls.org/v1/users/search";
+    
+    private static final String GET_CUSTOMIZED_SCRIPTS = "https://api.5calls.org/v1/issue/%s/script";
 
     public interface CallRequestListener {
         void onRequestError();
@@ -93,11 +96,20 @@ public class FiveCallsApi {
         void onError();
     }
 
+    public interface ScriptsRequestListener {
+        void onRequestError();
+
+        void onJsonError();
+
+        void onScriptsReceived(List<CustomizedContactScript> scripts);
+    }
+
     private RequestQueue mRequestQueue;
     private Gson mGson;
     private List<CallRequestListener> mCallRequestListeners = new ArrayList<>();
     private List<IssuesRequestListener> mIssuesRequestListeners = new ArrayList<>();
     private List<ContactsRequestListener> mContactsRequestListeners = new ArrayList<>();
+    private List<ScriptsRequestListener> mScriptsRequestListeners = new ArrayList<>();
 
     private final String mCallerId;
     private final Context mContext;
@@ -139,6 +151,14 @@ public class FiveCallsApi {
         mContactsRequestListeners.remove(contactsRequestListener);
     }
 
+    public void registerScriptsRequestListener(ScriptsRequestListener scriptsRequestListener) {
+        mScriptsRequestListeners.add(scriptsRequestListener);
+    }
+
+    public void unregisterScriptsRequestListener(ScriptsRequestListener scriptsRequestListener) {
+        mScriptsRequestListeners.remove(scriptsRequestListener);
+    }
+
     public void getIssues() {
         Uri.Builder urlBuilder = Uri.parse(GET_ISSUES_REQUEST).buildUpon();
         
@@ -154,15 +174,51 @@ public class FiveCallsApi {
 
     public void getContacts(String address) {
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA) {
-                buildContactsRequest(GET_CONTACTS_REQUEST + URLEncoder.encode(address, REQUEST_URL_ENCODING_CHARSET), mContactsRequestListeners);
-            } else {
-                // Older SDK versions.
-                buildContactsRequest(GET_CONTACTS_REQUEST + address, mContactsRequestListeners);
-            }
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA) {
+                buildContactsRequest(GET_CONTACTS_REQUEST + URLEncoder.encode(address, "UTF-8"), mContactsRequestListeners);
+//            } else {
+//                // Older SDK versions.
+//                buildContactsRequest(GET_CONTACTS_REQUEST + address, mContactsRequestListeners);
+//            }
         } catch (UnsupportedEncodingException e) {
             // UTF-8 is always supported, this should never happen but fall back anyway
             buildContactsRequest(GET_CONTACTS_REQUEST + address, mContactsRequestListeners);
+        }
+    }
+
+    public void getCustomizedScripts(String issueId, List<String> contactIds, String location, String name) {
+        try {
+            String url = String.format(GET_CUSTOMIZED_SCRIPTS, issueId);
+            Uri.Builder urlBuilder = Uri.parse(url).buildUpon();
+            
+            // Add contact IDs as comma-separated parameter
+            if (contactIds != null && !contactIds.isEmpty()) {
+                StringBuilder contactIdBuilder = new StringBuilder();
+                for (int i = 0; i < contactIds.size(); i++) {
+                    if (i > 0) {
+                        contactIdBuilder.append(",");
+                    }
+                    contactIdBuilder.append(contactIds.get(i));
+                }
+                urlBuilder.appendQueryParameter("contact_ids", contactIdBuilder.toString());
+            }
+            
+            // Add location parameter
+            if (location != null && !location.isEmpty()) {
+                urlBuilder.appendQueryParameter("location", URLEncoder.encode(location, REQUEST_URL_ENCODING_CHARSET));
+            }
+            
+            // Add optional name parameter
+            if (name != null && !name.isEmpty()) {
+                urlBuilder.appendQueryParameter("name", URLEncoder.encode(name, REQUEST_URL_ENCODING_CHARSET));
+            }
+            
+            buildScriptsRequest(urlBuilder.build().toString(), mScriptsRequestListeners);
+        } catch (UnsupportedEncodingException e) {
+            // UTF-8 is always supported, this should never happen but handle gracefully
+            for (ScriptsRequestListener listener : mScriptsRequestListeners) {
+                listener.onRequestError();
+            }
         }
     }
 
@@ -279,6 +335,36 @@ public class FiveCallsApi {
             contactsRequest.setTag(TAG);
             // Add the request to the RequestQueue.
             mRequestQueue.add(contactsRequest);
+    }
+
+    private void buildScriptsRequest(String url, final List<ScriptsRequestListener> listeners) {
+        JsonArrayRequest scriptsRequest = new JsonArrayRequest(
+                Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                if (response == null) {
+                    for (ScriptsRequestListener listener : listeners) {
+                        listener.onJsonError();
+                    }
+                    return;
+                }
+                Type listType = new TypeToken<ArrayList<CustomizedContactScript>>(){}.getType();
+                List<CustomizedContactScript> scripts = mGson.fromJson(response.toString(), listType);
+
+                for (ScriptsRequestListener listener : listeners) {
+                    listener.onScriptsReceived(scripts);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                for (ScriptsRequestListener listener : listeners) {
+                    listener.onRequestError();
+                }
+            }
+        });
+        scriptsRequest.setTag(TAG);
+        mRequestQueue.add(scriptsRequest);
     }
 
     public void getReport() {
