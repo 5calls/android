@@ -21,15 +21,9 @@ public class ScriptReplacements {
             Pattern.compile("\\[\\s?CITY[,/]\\s?ZIP\\s?]|\\[\\s?CITY[,/]\\s?STATE\\s?]", Pattern.CASE_INSENSITIVE);
     private static final Pattern NAME_PATTERN = Pattern.compile("\\[\\s*NAME\\s*]", Pattern.CASE_INSENSITIVE);
 
-    private static final String US_HOUSE = "US House";
+    // Other ways writers might mention the contact area in string replacements.
     private static final String HOUSE = "House";
-    private static final String US_SENATE = "US Senate";
     private static final String SENATE = "Senate";
-    private static final String STATE_UPPER = "StateUpper";
-    private static final String STATE_LOWER = "StateLower";
-    private static final String GOVERNOR = "Governor";
-    private static final String ATTORNEY_GENERAL = "AttorneyGeneral";
-    private static final String SECRETARY_OF_STATE = "SecretaryOfState";
 
     public static String replacing(Context context, String script, Contact contact,
                                    @Nullable String location, @Nullable String userName) {
@@ -50,10 +44,10 @@ public class ScriptReplacements {
     private static String chooseSubscript(String script, Contact contact) {
         String area = contact.area;
 
-        if (area.equals(US_HOUSE) || area.equals(HOUSE)) {
+        if (area.equals(Contact.AREA_HOUSE) || area.equals(HOUSE)) {
             String replacedScript = HOUSE_INTRO_PATTERN.matcher(script).replaceAll("");
             return wholeRegex(SENATE_INTRO_PATTERN).matcher(replacedScript).replaceAll("");
-        } else if (area.equals(US_SENATE) || area.equals(SENATE)) {
+        } else if (area.equals(Contact.AREA_SENATE) || area.equals(SENATE)) {
             String replacedScript = SENATE_INTRO_PATTERN.matcher(script).replaceAll("");
             return wholeRegex(HOUSE_INTRO_PATTERN).matcher(replacedScript).replaceAll("");
         }
@@ -86,12 +80,12 @@ public class ScriptReplacements {
 
     private static @Nullable String getTitle(Context context, String area) {
         return switch (area) {
-            case US_HOUSE, HOUSE -> context.getString(R.string.title_us_house);
-            case US_SENATE, SENATE -> context.getString(R.string.title_us_senate);
-            case STATE_LOWER, STATE_UPPER -> context.getString(R.string.title_state_rep);
-            case GOVERNOR -> context.getString(R.string.title_governor);
-            case ATTORNEY_GENERAL -> context.getString(R.string.title_attorney_general);
-            case SECRETARY_OF_STATE -> context.getString(R.string.title_secretary_of_state);
+            case Contact.AREA_HOUSE, HOUSE -> context.getString(R.string.title_us_house);
+            case Contact.AREA_SENATE, SENATE -> context.getString(R.string.title_us_senate);
+            case Contact.AREA_STATE_LOWER, Contact.AREA_STATE_UPPER -> context.getString(R.string.title_state_rep);
+            case Contact.AREA_GOVERNOR -> context.getString(R.string.title_governor);
+            case Contact.AREA_ATTORNEY_GENERAL -> context.getString(R.string.title_attorney_general);
+            case Contact.AREA_SECRETARY_OF_STATE -> context.getString(R.string.title_secretary_of_state);
             default -> null;
         };
     }

@@ -15,6 +15,11 @@ import org.a5calls.android.a5calls.R;
 public class Contact implements Parcelable {
     public static final String AREA_HOUSE = "US House";
     public static final String AREA_SENATE = "US Senate";
+    public static final String AREA_STATE_LOWER = "StateLower";
+    public static final String AREA_STATE_UPPER = "StateUpper";
+    public static final String AREA_GOVERNOR = "Governor";
+    public static final String AREA_ATTORNEY_GENERAL = "AttorneyGeneral";
+    public static final String AREA_SECRETARY_OF_STATE = "SecretaryOfState";
 
     public String id;
     public String name;
