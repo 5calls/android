@@ -229,7 +229,7 @@ public class IssueActivity extends AppCompatActivity {
             }
         });
 
-        FiveCallsApplication.analyticsManager().trackPageview(String.format("/issue/%s/", mIssue.slug), this);
+        FiveCallsApplication.analyticsManager().trackPageview(String.format(mIssue.permalink), this);
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -353,7 +353,7 @@ public class IssueActivity extends AppCompatActivity {
                 R.string.issue_share_subject));
         shareIntent.putExtra(Intent.EXTRA_TEXT,
                 String.format(getResources().getString(R.string.issue_share_content), mIssue.name,
-                        mIssue.slug));
+                        mIssue.permalink));
         shareIntent.setType("text/plain");
 
         // Could send analytics on share event.
