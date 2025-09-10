@@ -498,7 +498,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                     // Check if this is a split district by seeing if there are >2 reps in the house.
                     int houseCount = 0;
                     for (Contact contact : contacts) {
-                        if (TextUtils.equals(contact.area, "US House")) {
+                        if (TextUtils.equals(contact.area, Contact.AREA_HOUSE)) {
                             houseCount++;
                         }
                     }
