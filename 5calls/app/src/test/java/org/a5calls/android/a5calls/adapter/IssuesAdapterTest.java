@@ -117,6 +117,7 @@ public class IssuesAdapterTest {
             ],
             "stats": { "calls": 0 },
             "slug": "trump-us-gaza-palestinian-occupation",
+            "permalink": "/issue/trump-us-gaza-palestinian-occupation",
             "active": true,
             "hidden": false,
             "meta": ""
