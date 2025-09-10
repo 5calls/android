@@ -176,7 +176,8 @@ public class RepCallActivity extends AppCompatActivity {
         binding.outcomeList.addItemDecoration(new GridItemDecoration(gridPadding,
                 getSpanCount(RepCallActivity.this)));
 
-        FiveCallsApplication.analyticsManager().trackPageview(String.format(mIssue.permalink, c.id), this);
+        FiveCallsApplication.analyticsManager().trackPageview(
+                String.format("%s%s", mIssue.permalink, c.id), this);
     }
 
     @Override

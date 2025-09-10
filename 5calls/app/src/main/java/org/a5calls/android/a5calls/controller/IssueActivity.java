@@ -230,7 +230,7 @@ public class IssueActivity extends AppCompatActivity {
             }
         });
 
-        FiveCallsApplication.analyticsManager().trackPageview(String.format(mIssue.permalink), this);
+        FiveCallsApplication.analyticsManager().trackPageview(mIssue.permalink, this);
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
