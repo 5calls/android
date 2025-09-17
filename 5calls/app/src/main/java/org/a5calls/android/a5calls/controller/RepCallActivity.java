@@ -172,7 +172,7 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
 
         Contact activeContact = mIssue.contacts.get(mActiveContactIndex);
         FiveCallsApplication.analyticsManager().trackPageview(
-                String.format("%s%s", mIssue.permalink, c.id), this);
+                mIssue.permalink, this);
     }
 
     @Override
