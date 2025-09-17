@@ -48,7 +48,7 @@ public class IssueTest {
             Issue actual = reconstructedIssues.get(i);
             assertEquals(expected.id, actual.id);
             assertEquals(expected.name, actual.name);
-            assertEquals(expected.slug, actual.slug);
+            assertEquals(expected.permalink, actual.permalink);
             assertEquals(expected.reason, actual.reason);
             assertEquals(expected.script, actual.script);
             assertEquals(expected.link, actual.link);

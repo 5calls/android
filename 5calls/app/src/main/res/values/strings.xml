@@ -384,7 +384,7 @@
     <string name="issue_share_subject">I want you to know about this issue I found on 5 Calls</string>
 
     <!-- Content of an email or message shared from an issue detail screen sharing an issue [CHAR_LIMIT=NONE] -->
-    <string name="issue_share_content">I just called my reps to <xliff:g id="issue_summary">%1$s</xliff:g> — you should too: http://5calls.org/issue/<xliff:g id="issue_id">%2$s</xliff:g></string>
+    <string name="issue_share_content">I just called my reps to <xliff:g id="issue_summary">%1$s</xliff:g> — you should too: http://5calls.org<xliff:g id="issue_id">%2$s</xliff:g></string>
 
     <!-- Stats activity line chart title [CHAR_LIMIT=100] -->
     <string name="line_chart_title">Impact over time</string>
@@ -645,5 +645,11 @@
 
     <!-- The categories an issue belongs to, when there are more than one. -->
     <string name="issue_category_many">Categories: </string>
+
+    <!-- The name of a vacant seat (shown when there is no house or senate rep because of a vacancy) -->
+    <string name="vacant_seat_rep_name">Vacant Seat</string>
+
+    <!-- The reason for a vacant seat being shown in the rep call list -->
+    <string name="vacant_seat_rep_reason">This <xliff:g id="area">%1$s</xliff:g> seat is currently vacant</string>
 
 </resources>

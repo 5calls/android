@@ -161,7 +161,7 @@ public class FiveCallsApi {
 
     public void getIssues() {
         Uri.Builder urlBuilder = Uri.parse(GET_ISSUES_REQUEST).buildUpon();
-        
+
         // Include state parameter if we have it stored
         String state = AccountManager.Instance.getState(mContext);
         if (!TextUtils.isEmpty(state)) {

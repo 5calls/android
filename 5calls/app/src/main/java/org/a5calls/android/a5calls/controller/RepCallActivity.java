@@ -171,7 +171,8 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
                 getSpanCount(RepCallActivity.this)));
 
         Contact activeContact = mIssue.contacts.get(mActiveContactIndex);
-        FiveCallsApplication.analyticsManager().trackPageview(String.format("/issue/%s/%s/", mIssue.slug, activeContact.id), this);
+        FiveCallsApplication.analyticsManager().trackPageview(
+                String.format("%s%s", mIssue.permalink, c.id), this);
     }
 
     @Override

@@ -11,7 +11,7 @@ import java.util.List;
 public class Issue implements Parcelable {
     public String id;
     public String name;
-    public String slug;
+    public String permalink;
     public String reason;
     public String script;
     public boolean active;
@@ -33,7 +33,7 @@ public class Issue implements Parcelable {
     protected Issue(Parcel in) {
         id = in.readString();
         name = in.readString();
-        slug = in.readString();
+        permalink = in.readString();
         reason = in.readString();
         script = in.readString();
         link = in.readString();
@@ -75,7 +75,7 @@ public class Issue implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
         dest.writeString(name);
-        dest.writeString(slug);
+        dest.writeString(permalink);
         dest.writeString(reason);
         dest.writeString(script);
         dest.writeString(link);
