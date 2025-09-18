@@ -175,12 +175,8 @@ public class FiveCallsApi {
 
     public void getContacts(String address) {
         try {
-           if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA) {
-                buildContactsRequest(GET_CONTACTS_REQUEST + URLEncoder.encode(address, REQUEST_URL_ENCODING_CHARSET), mContactsRequestListeners);
-           } else {
-               // Older SDK versions.
-               buildContactsRequest(GET_CONTACTS_REQUEST + address, mContactsRequestListeners);
-           }
+            // URL encode the address parameter for safe transmission
+            buildContactsRequest(GET_CONTACTS_REQUEST + URLEncoder.encode(address, REQUEST_URL_ENCODING_CHARSET), mContactsRequestListeners);
         } catch (UnsupportedEncodingException e) {
             // UTF-8 is always supported, this should never happen but fall back anyway
             buildContactsRequest(GET_CONTACTS_REQUEST + address, mContactsRequestListeners);
