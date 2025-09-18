@@ -66,7 +66,7 @@ public class RepCallActivityUnitTest {
 
         CustomizedContactScript customScript = new CustomizedContactScript();
         customScript.id = testContactId;
-        customScript.script = "Customized script: Hi [NAME], this is about [ISSUE]";
+        customScript.script = "Hi [NAME], I'm your constituent from [CITY, ZIP]. This is a personalized script for testing.";
 
         testIssue.customizedScripts = new ArrayList<>();
         testIssue.customizedScripts.add(customScript);
@@ -75,7 +75,7 @@ public class RepCallActivityUnitTest {
         String script = testIssue.getScriptForContact(testContactId);
 
         // Then: Returns customized script
-        assertEquals("Customized script: Hi [NAME], this is about [ISSUE]", script);
+        assertEquals("Hi [NAME], I'm your constituent from [CITY, ZIP]. This is a personalized script for testing.", script);
     }
 
     @Test

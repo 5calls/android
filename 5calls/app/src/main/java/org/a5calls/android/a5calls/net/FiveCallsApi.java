@@ -34,6 +34,7 @@ import java.lang.reflect.Type;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -187,39 +188,32 @@ public class FiveCallsApi {
     }
 
     public void getCustomizedScripts(String issueId, List<String> contactIds, String location, String name) {
-        try {
-            String url = String.format(GET_CUSTOMIZED_SCRIPTS, issueId);
-            Uri.Builder urlBuilder = Uri.parse(url).buildUpon();
-            
-            // Add contact IDs as comma-separated parameter
-            if (contactIds != null && !contactIds.isEmpty()) {
-                StringBuilder contactIdBuilder = new StringBuilder();
-                for (int i = 0; i < contactIds.size(); i++) {
-                    if (i > 0) {
-                        contactIdBuilder.append(",");
-                    }
-                    contactIdBuilder.append(contactIds.get(i));
+        String url = String.format(GET_CUSTOMIZED_SCRIPTS, issueId);
+        Uri.Builder urlBuilder = Uri.parse(url).buildUpon();
+
+        // Add contact IDs as comma-separated parameter
+        if (contactIds != null && !contactIds.isEmpty()) {
+            StringBuilder contactIdBuilder = new StringBuilder();
+            for (int i = 0; i < contactIds.size(); i++) {
+                if (i > 0) {
+                    contactIdBuilder.append(",");
                 }
-                urlBuilder.appendQueryParameter("contact_ids", contactIdBuilder.toString());
+                contactIdBuilder.append(contactIds.get(i));
             }
-            
-            // Add location parameter
-            if (location != null && !location.isEmpty()) {
-                urlBuilder.appendQueryParameter("location", URLEncoder.encode(location, REQUEST_URL_ENCODING_CHARSET));
-            }
-            
-            // Add optional name parameter
-            if (name != null && !name.isEmpty()) {
-                urlBuilder.appendQueryParameter("name", URLEncoder.encode(name, REQUEST_URL_ENCODING_CHARSET));
-            }
-            
-            buildScriptsRequest(urlBuilder.build().toString(), mScriptsRequestListeners);
-        } catch (UnsupportedEncodingException e) {
-            // UTF-8 is always supported, this should never happen but handle gracefully
-            for (ScriptsRequestListener listener : mScriptsRequestListeners) {
-                listener.onRequestError();
-            }
+            urlBuilder.appendQueryParameter("contact_ids", contactIdBuilder.toString());
         }
+
+        // Add location parameter (appendQueryParameter handles URL encoding automatically)
+        if (location != null && !location.isEmpty()) {
+            urlBuilder.appendQueryParameter("location", location);
+        }
+
+        // Add optional name parameter (appendQueryParameter handles URL encoding automatically)
+        if (name != null && !name.isEmpty()) {
+            urlBuilder.appendQueryParameter("name", name);
+        }
+
+        buildScriptsRequest(urlBuilder.build().toString(), mScriptsRequestListeners);
     }
 
     private void buildIssuesRequest(String url, final List<IssuesRequestListener> listeners) {
@@ -338,27 +332,45 @@ public class FiveCallsApi {
     }
 
     private void buildScriptsRequest(String url, final List<ScriptsRequestListener> listeners) {
-        JsonArrayRequest scriptsRequest = new JsonArrayRequest(
-                Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+        JsonObjectRequest scriptsRequest = new JsonObjectRequest(
+                Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
-            public void onResponse(JSONArray response) {
+            public void onResponse(JSONObject response) {
                 if (response == null) {
                     for (ScriptsRequestListener listener : listeners) {
                         listener.onJsonError();
                     }
                     return;
                 }
-                Type listType = new TypeToken<ArrayList<CustomizedContactScript>>(){}.getType();
-                List<CustomizedContactScript> scripts = mGson.fromJson(response.toString(), listType);
 
-                for (ScriptsRequestListener listener : listeners) {
+                // Parse the map of contactId -> script string
+                List<CustomizedContactScript> scripts = new ArrayList<>();
+                Iterator<String> keys = response.keys();
+                while (keys.hasNext()) {
+                    String contactId = keys.next();
+                    try {
+                        String scriptText = response.getString(contactId);
+                        CustomizedContactScript script = new CustomizedContactScript();
+                        script.id = contactId;
+                        script.script = scriptText;
+                        scripts.add(script);
+                    } catch (JSONException e) {
+                        // Skip this contact if there's a parsing error
+                    }
+                }
+
+                // Create a copy to avoid ConcurrentModificationException when listeners unregister themselves
+                List<ScriptsRequestListener> listenersCopy = new ArrayList<>(listeners);
+                for (ScriptsRequestListener listener : listenersCopy) {
                     listener.onScriptsReceived(scripts);
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                for (ScriptsRequestListener listener : listeners) {
+                // Create a copy to avoid ConcurrentModificationException when listeners unregister themselves
+                List<ScriptsRequestListener> listenersCopy = new ArrayList<>(listeners);
+                for (ScriptsRequestListener listener : listenersCopy) {
                     listener.onRequestError();
                 }
             }

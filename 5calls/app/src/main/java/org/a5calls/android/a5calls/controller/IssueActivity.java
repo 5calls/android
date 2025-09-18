@@ -625,22 +625,22 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
         if (mIssue == null || mIssue.contacts == null || mIssue.contacts.isEmpty()) {
             return;
         }
-        
+
         String address = getIntent().getStringExtra(RepCallActivity.KEY_ADDRESS);
         String locationName = getIntent().getStringExtra(RepCallActivity.KEY_LOCATION_NAME);
-        
+
         if (address == null && locationName == null) {
             return;
         }
-        
+
         List<String> contactIds = new ArrayList<>();
         for (Contact contact : mIssue.contacts) {
             contactIds.add(contact.id);
         }
-        
+
         FiveCallsApi api = AppSingleton.getInstance(this).getJsonController();
         api.registerScriptsRequestListener(this);
-        
+
         String userName = AccountManager.Instance.getUserName(this);
         api.getCustomizedScripts(mIssue.id, contactIds, locationName != null ? locationName : address, userName);
     }
@@ -657,7 +657,7 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
     public void onScriptsReceived(List<CustomizedContactScript> scripts) {
         FiveCallsApi api = AppSingleton.getInstance(this).getJsonController();
         api.unregisterScriptsRequestListener(this);
-        
+
         mIssue.customizedScripts = scripts;
     }
 

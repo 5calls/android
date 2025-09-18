@@ -152,6 +152,9 @@ public class RepCallActivityScriptLoadingTest {
     }
 
     private void waitForHttpRequestComplete() {
+        // Start the request queue to process the request
+        mRequestQueue.start();
+
         // Wait for network request to complete (similar to existing tests)
         // Use a simple sleep since this is a test environment
         SystemClock.sleep(500);
