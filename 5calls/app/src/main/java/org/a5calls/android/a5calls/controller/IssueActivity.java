@@ -90,7 +90,6 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
     private boolean mIsLowAccuracy = false;
     private boolean mDonateIsOn = false;
     private boolean mIsAnimating = false;
-    private boolean mScriptsRequested = false;
 
     private ActivityIssueBinding binding;
 
@@ -623,10 +622,6 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
     }
 
     private void fetchCustomizedScripts() {
-        if (mScriptsRequested) {
-            return; // Already requested, don't re-request
-        }
-
         if (mIssue == null || mIssue.contacts == null || mIssue.contacts.isEmpty()) {
             return;
         }
@@ -638,7 +633,6 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
             return;
         }
 
-        mScriptsRequested = true;
 
         List<String> contactIds = new ArrayList<>();
         for (Contact contact : mIssue.contacts) {
@@ -653,26 +647,33 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
     }
 
     @Override
-    public void onRequestError() {
-        FiveCallsApi api = AppSingleton.getInstance(this).getJsonController();
-        api.unregisterScriptsRequestListener(this);
-        mScriptsRequested = false; // Reset to allow retry
+    public void onRequestError(String issueId) {
+        // Only process errors for the current issue to prevent race conditions
+        if (mIssue != null && mIssue.id != null && mIssue.id.equals(issueId)) {
+            FiveCallsApi api = AppSingleton.getInstance(this).getJsonController();
+            api.unregisterScriptsRequestListener(this);
+        }
     }
 
     @Override
-    public void onJsonError() {
-        FiveCallsApi api = AppSingleton.getInstance(this).getJsonController();
-        api.unregisterScriptsRequestListener(this);
-        mScriptsRequested = false; // Reset to allow retry
+    public void onJsonError(String issueId) {
+        // Only process errors for the current issue to prevent race conditions
+        if (mIssue != null && mIssue.id != null && mIssue.id.equals(issueId)) {
+            FiveCallsApi api = AppSingleton.getInstance(this).getJsonController();
+            api.unregisterScriptsRequestListener(this);
+        }
     }
 
     @Override
-    public void onScriptsReceived(List<CustomizedContactScript> scripts) {
-        FiveCallsApi api = AppSingleton.getInstance(this).getJsonController();
-        api.unregisterScriptsRequestListener(this);
+    public void onScriptsReceived(String issueId, List<CustomizedContactScript> scripts) {
+        // Only process scripts for the current issue to prevent race conditions
+        if (mIssue != null && mIssue.id != null && mIssue.id.equals(issueId)) {
+            FiveCallsApi api = AppSingleton.getInstance(this).getJsonController();
+            api.unregisterScriptsRequestListener(this);
 
-        mIssue.customizedScripts = scripts;
-        mScriptsRequested = false; // Reset for potential future requests
+            // Apply the scripts to the current issue
+            mIssue.customizedScripts = scripts;
+        }
     }
 
     @Override

@@ -98,11 +98,11 @@ public class FiveCallsApi {
     }
 
     public interface ScriptsRequestListener {
-        void onRequestError();
+        void onRequestError(String issueId);
 
-        void onJsonError();
+        void onJsonError(String issueId);
 
-        void onScriptsReceived(List<CustomizedContactScript> scripts);
+        void onScriptsReceived(String issueId, List<CustomizedContactScript> scripts);
     }
 
     private RequestQueue mRequestQueue;
@@ -209,7 +209,7 @@ public class FiveCallsApi {
             urlBuilder.appendQueryParameter("name", name);
         }
 
-        buildScriptsRequest(urlBuilder.build().toString(), mScriptsRequestListeners);
+        buildScriptsRequest(issueId, urlBuilder.build().toString(), mScriptsRequestListeners);
     }
 
     private void buildIssuesRequest(String url, final List<IssuesRequestListener> listeners) {
@@ -327,14 +327,14 @@ public class FiveCallsApi {
             mRequestQueue.add(contactsRequest);
     }
 
-    private void buildScriptsRequest(String url, final List<ScriptsRequestListener> listeners) {
+    private void buildScriptsRequest(final String issueId, String url, final List<ScriptsRequestListener> listeners) {
         JsonObjectRequest scriptsRequest = new JsonObjectRequest(
                 Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 if (response == null) {
                     for (ScriptsRequestListener listener : listeners) {
-                        listener.onJsonError();
+                        listener.onJsonError(issueId);
                     }
                     return;
                 }
@@ -358,7 +358,7 @@ public class FiveCallsApi {
                 // Create a copy to avoid ConcurrentModificationException when listeners unregister themselves
                 List<ScriptsRequestListener> listenersCopy = new ArrayList<>(listeners);
                 for (ScriptsRequestListener listener : listenersCopy) {
-                    listener.onScriptsReceived(scripts);
+                    listener.onScriptsReceived(issueId, scripts);
                 }
             }
         }, new Response.ErrorListener() {
@@ -367,7 +367,7 @@ public class FiveCallsApi {
                 // Create a copy to avoid ConcurrentModificationException when listeners unregister themselves
                 List<ScriptsRequestListener> listenersCopy = new ArrayList<>(listeners);
                 for (ScriptsRequestListener listener : listenersCopy) {
-                    listener.onRequestError();
+                    listener.onRequestError(issueId);
                 }
             }
         });

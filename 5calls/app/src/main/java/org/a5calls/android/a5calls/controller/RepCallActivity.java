@@ -126,10 +126,10 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
                 returnToIssue();
             }
         };
-        FiveCallsApi controller = AppSingleton.getInstance(getApplicationContext())
+        FiveCallsApi api = AppSingleton.getInstance(getApplicationContext())
                 .getJsonController();
-        controller.registerCallRequestListener(mStatusListener);
-        controller.registerScriptsRequestListener(this);
+        api.registerCallRequestListener(mStatusListener);
+        api.registerScriptsRequestListener(this);
 
         // The markdown view gets focus unless we let the scrollview take it back.
         binding.scrollView.setFocusableInTouchMode(true);
@@ -176,9 +176,9 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
 
     @Override
     protected void onDestroy() {
-        FiveCallsApi controller = AppSingleton.getInstance(getApplicationContext()).getJsonController();
-        controller.unregisterCallRequestListener(mStatusListener);
-        controller.unregisterScriptsRequestListener(this);
+        FiveCallsApi api = AppSingleton.getInstance(getApplicationContext()).getJsonController();
+        api.unregisterCallRequestListener(mStatusListener);
+        api.unregisterScriptsRequestListener(this);
         super.onDestroy();
     }
 
@@ -413,16 +413,32 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
     }
 
     @Override
-    public void onRequestError() {
+    public void onRequestError(String issueId) {
+        // Only process errors for the current issue to prevent race conditions
+        if (mIssue != null && mIssue.id != null && mIssue.id.equals(issueId)) {
+            FiveCallsApi api = AppSingleton.getInstance(this).getJsonController();
+            api.unregisterScriptsRequestListener(this);
+        }
     }
 
     @Override
-    public void onJsonError() {
+    public void onJsonError(String issueId) {
+        // Only process errors for the current issue to prevent race conditions
+        if (mIssue != null && mIssue.id != null && mIssue.id.equals(issueId)) {
+            FiveCallsApi api = AppSingleton.getInstance(this).getJsonController();
+            api.unregisterScriptsRequestListener(this);
+        }
     }
 
     @Override
-    public void onScriptsReceived(List<CustomizedContactScript> scripts) {
-        mIssue.customizedScripts = scripts;
-        updateScriptDisplay();
+    public void onScriptsReceived(String issueId, List<CustomizedContactScript> scripts) {
+        // Only process scripts for the current issue to prevent race conditions
+        if (mIssue != null && mIssue.id != null && mIssue.id.equals(issueId)) {
+            FiveCallsApi api = AppSingleton.getInstance(this).getJsonController();
+            api.unregisterScriptsRequestListener(this);
+
+            mIssue.customizedScripts = scripts;
+            updateScriptDisplay();
+        }
     }
 }
