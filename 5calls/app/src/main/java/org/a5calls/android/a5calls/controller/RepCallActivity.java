@@ -170,7 +170,6 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
         binding.outcomeList.addItemDecoration(new GridItemDecoration(gridPadding,
                 getSpanCount(RepCallActivity.this)));
 
-        Contact activeContact = mIssue.contacts.get(mActiveContactIndex);
         FiveCallsApplication.analyticsManager().trackPageview(
                 mIssue.permalink, this);
     }
