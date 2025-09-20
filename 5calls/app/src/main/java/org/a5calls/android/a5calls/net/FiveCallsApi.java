@@ -84,7 +84,7 @@ public class FiveCallsApi {
 
         void onAddressError();
 
-        void onContactsReceived(String locationName, String districtId, boolean isLowAccuracy,
+        void onContactsReceived(String locationName, String districtId, boolean isDistrictSplit,
                                 List<Contact> contacts, boolean stateChanged);
     }
 
@@ -210,11 +210,11 @@ public class FiveCallsApi {
                 public void onResponse(JSONObject response) {
                     if (response != null) {
                         String locationName = "";
-                        boolean lowAccuracy = false;
+                        boolean isDistrictSplit = false;
                         try {
                             locationName = response.getString("location");
                             if (response.has("isSplit")) {
-                                lowAccuracy = response.getBoolean("isSplit");
+                                isDistrictSplit = response.getBoolean("isSplit");
                             }
                         } catch (JSONException e) {
                             for (ContactsRequestListener listener : listeners) {
@@ -256,7 +256,7 @@ public class FiveCallsApi {
                         }
 
                         for (ContactsRequestListener listener : listeners) {
-                            listener.onContactsReceived(locationName, districtId, lowAccuracy,
+                            listener.onContactsReceived(locationName, districtId, isDistrictSplit,
                                     contacts, stateChanged);
                         }
                     }

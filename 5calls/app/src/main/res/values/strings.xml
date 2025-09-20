@@ -420,7 +420,7 @@
     <string name="low_accuracy_warning">Your zip is not precise enough to ensure we\'ve got the right House representative.</string>
 
     <!-- Shown on the set location page above the address text field if the zip is low accuracy [CHAR_LIMIT=NONE] -->
-    <string name="low_accuracy_suggestion">Use your zip + 4 or an address to get an accurate representative.</string>
+    <string name="split_district_suggestion">Use your zip + 4 or an address to get an accurate representative.</string>
 
     <!-- Action for a snackbar or button which brings you to the location update screen [CHAR_LIMIT=10] -->
     <string name="update">update</string>

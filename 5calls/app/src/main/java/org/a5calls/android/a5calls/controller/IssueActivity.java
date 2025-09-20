@@ -68,7 +68,7 @@ import java.util.TimeZone;
 public class IssueActivity extends AppCompatActivity {
     private static final String TAG = "IssueActivity";
     public static final String KEY_ISSUE = "key_issue";
-    public static final String KEY_IS_LOW_ACCURACY = "key_is_low_accuracy";
+    public static final String KEY_IS_DISTRICT_SPLIT = "key_is_district_split";
     public static final String KEY_DONATE_IS_ON = "key_donate_is_on";
 
     public static final int RESULT_OK = 1;
@@ -83,7 +83,7 @@ public class IssueActivity extends AppCompatActivity {
     private boolean mShowServerError = false;
 
     private Issue mIssue;
-    private boolean mIsLowAccuracy = false;
+    private boolean mIsDistrictSplit = false;
     private boolean mDonateIsOn = false;
     private boolean mIsAnimating = false;
 
@@ -101,7 +101,7 @@ public class IssueActivity extends AppCompatActivity {
             finish();
             return;
         }
-        mIsLowAccuracy = getIntent().getBooleanExtra(KEY_IS_LOW_ACCURACY, false);
+        mIsDistrictSplit = getIntent().getBooleanExtra(KEY_IS_DISTRICT_SPLIT, false);
         mDonateIsOn = getIntent().getBooleanExtra(KEY_DONATE_IS_ON, false);
 
         setContentView(binding.getRoot());
@@ -244,7 +244,7 @@ public class IssueActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(KEY_ISSUE, mIssue);
-        outState.putBoolean(KEY_IS_LOW_ACCURACY, mIsLowAccuracy);
+        outState.putBoolean(KEY_IS_DISTRICT_SPLIT, mIsDistrictSplit);
     }
 
     @Override
@@ -459,7 +459,7 @@ public class IssueActivity extends AppCompatActivity {
         contactWarning.setVisibility(View.GONE);
         if (!TextUtils.isEmpty(contact.reason)) {
             contactReason.setText(contact.reason);
-            if (TextUtils.equals(contact.area, Contact.AREA_HOUSE) && mIsLowAccuracy) {
+            if (TextUtils.equals(contact.area, Contact.AREA_HOUSE) && mIsDistrictSplit) {
                 contactWarning.setVisibility(View.VISIBLE);
                 contactWarning.setText(R.string.low_accuracy_warning);
             }

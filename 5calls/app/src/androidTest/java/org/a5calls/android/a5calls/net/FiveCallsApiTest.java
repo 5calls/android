@@ -85,7 +85,7 @@ public class FiveCallsApiTest {
         protected int mContactsJsonError = 0;
         protected int mAddressError = 0;
         protected List<Contact> mContacts = null;
-        protected boolean mLowAccuracy = false;
+        protected boolean mIsDistrictSplit = false;
         protected String mLocationName = null;
         protected String mDistrictId = null;
 
@@ -106,10 +106,10 @@ public class FiveCallsApiTest {
 
         @Override
         public void onContactsReceived(String locationName, String districtId,
-                                       boolean isLowAccuracy, List<Contact> contacts, boolean stateChanged) {
+                                       boolean isDistrictSplit, List<Contact> contacts, boolean stateChanged) {
             mLocationName = locationName;
             mDistrictId = districtId;
-            mLowAccuracy = isLowAccuracy;
+            mIsDistrictSplit = isDistrictSplit;
             mContacts = contacts;
         }
     }
@@ -309,7 +309,7 @@ public class FiveCallsApiTest {
         assertEquals(0, testContactsListener.mContactsError);
         assertEquals(0, testContactsListener.mAddressError);
         assertEquals(0, testContactsListener.mContactsJsonError);
-        assertTrue(testContactsListener.mLowAccuracy);
+        assertTrue(testContactsListener.mIsDistrictSplit);
 
     }
 

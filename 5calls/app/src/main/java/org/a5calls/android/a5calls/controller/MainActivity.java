@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     private String mLongitude;
     private String mLocationName;
     private String mDistrictId;
-    private boolean mIsLowAccuracy = false;
+    private boolean mIsDistrictSplit = false;
     private boolean mShowLowAccuracyWarning = true;
     private boolean mDonateIsOn = false;
     private FirebaseAuth mAuth = null;
@@ -373,7 +373,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         issueIntent.putExtra(IssueActivity.KEY_ISSUE, issue);
         issueIntent.putExtra(RepCallActivity.KEY_ADDRESS, getLocationString());
         issueIntent.putExtra(RepCallActivity.KEY_LOCATION_NAME, mLocationName);
-        issueIntent.putExtra(IssueActivity.KEY_IS_LOW_ACCURACY, mIsLowAccuracy);
+        issueIntent.putExtra(IssueActivity.KEY_IS_DISTRICT_SPLIT, mIsDistrictSplit);
         issueIntent.putExtra(IssueActivity.KEY_DONATE_IS_ON, mDonateIsOn);
         startActivityForResult(issueIntent, ISSUE_DETAIL_REQUEST);
     }
@@ -420,7 +420,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
 
         Intent intent = new Intent(this, LocationActivity.class);
         intent.putExtra(LocationActivity.ALLOW_HOME_UP_KEY, true);
-        intent.putExtra(IssueActivity.KEY_IS_LOW_ACCURACY, mIsLowAccuracy);
+        intent.putExtra(IssueActivity.KEY_IS_DISTRICT_SPLIT, mIsDistrictSplit);
         startActivity(intent);
     }
 
@@ -483,14 +483,14 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
 
             @Override
             public void onContactsReceived(String locationName, String districtId,
-                                           boolean isLowAccuracy, List<Contact> contacts, boolean stateChanged) {
+                                           boolean isDistrictSplit, List<Contact> contacts, boolean stateChanged) {
                 mLocationName = TextUtils.isEmpty(locationName) ?
                         getResources().getString(R.string.unknown_location) : locationName;
                 mDistrictId = districtId;
                 binding.collapsingToolbar.setTitle(String.format(getResources().getString(
                         R.string.title_main), mLocationName));
                 mIssuesAdapter.setContacts(contacts, IssuesAdapter.NO_ERROR);
-                mIsLowAccuracy = isLowAccuracy;
+                mIsDistrictSplit = isDistrictSplit;
 
                 hideSnackbars();
 
@@ -502,7 +502,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                             houseCount++;
                         }
                     }
-                    if (houseCount > 1 || mIsLowAccuracy) {
+                    if (houseCount > 1 || mIsDistrictSplit) {
                         int warning = houseCount > 1 ? R.string.split_district_warning :
                                 R.string.low_accuracy_warning;
                         mSnackbar = Snackbar.make(binding.drawerLayout, warning,
