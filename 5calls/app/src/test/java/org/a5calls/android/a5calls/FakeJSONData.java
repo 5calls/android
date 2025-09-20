@@ -14,8 +14,17 @@ public class FakeJSONData {
     // A snapshot of real report data, used for testing.
     public static final String REPORT_DATA = "{\"count\":4627301,\"donateOn\":true}";
 
-    // Fake customized scripts data for testing - matches API format (contactId -> script)
-    public static final String CUSTOMIZED_SCRIPTS_DATA = "{\"G000599\":\"Hi [NAME], I'm your constituent from [CITY, ZIP]. I'm calling about this urgent issue that affects our community directly. As Dan Goldman, you've shown leadership on similar issues before.\",\"G000555\":\"Hi [NAME], this is a personalized message for Senator Gillibrand about this specific issue. Your past work on healthcare makes your voice crucial on this matter.\"}";
+    // Mock customized scripts data for testing
+    public static final String CUSTOMIZED_SCRIPTS_DATA = "{\"contact1\":\"Hello, this is a customized script for contact 1. Please call about the issue and express your concerns.\",\"contact2\":\"This is a personalized script for contact 2. Make sure to mention your zip code and state your position clearly.\"}";
+
+    // Mock customized scripts data with special characters for testing
+    public static final String CUSTOMIZED_SCRIPTS_SPECIAL_CHARS_DATA = "{\"contact_special\":\"Script with special chars: ñáéíóú 中文 🎉 \\n\\t\\r\",\"contact-with-dashes\":\"Script for contact with dashes in ID\"}";
+
+    // Mock empty customized scripts response for testing
+    public static final String EMPTY_CUSTOMIZED_SCRIPTS_DATA = "{}";
+
+    // Mock single customized script for testing
+    public static final String SINGLE_CUSTOMIZED_SCRIPT_DATA = "{\"G000555\":\"Senator Gillibrand, as your constituent from New York, I urge you to support this important legislation. Thank you for your time.\"}";
 
     public static JSONArray GetIssueJSON() {
         try {
@@ -38,6 +47,42 @@ public class FakeJSONData {
     public static JSONObject GetReportJSON() {
         try {
             return new JSONObject(REPORT_DATA);
+        } catch (JSONException e) {
+            // Shouldn't happen since all the JSON data is static strings above.
+            return new JSONObject();
+        }
+    }
+
+    public static JSONObject GetCustomizedScriptsJSON() {
+        try {
+            return new JSONObject(CUSTOMIZED_SCRIPTS_DATA);
+        } catch (JSONException e) {
+            // Shouldn't happen since all the JSON data is static strings above.
+            return new JSONObject();
+        }
+    }
+
+    public static JSONObject GetCustomizedScriptsSpecialCharsJSON() {
+        try {
+            return new JSONObject(CUSTOMIZED_SCRIPTS_SPECIAL_CHARS_DATA);
+        } catch (JSONException e) {
+            // Shouldn't happen since all the JSON data is static strings above.
+            return new JSONObject();
+        }
+    }
+
+    public static JSONObject GetEmptyCustomizedScriptsJSON() {
+        try {
+            return new JSONObject(EMPTY_CUSTOMIZED_SCRIPTS_DATA);
+        } catch (JSONException e) {
+            // Shouldn't happen since all the JSON data is static strings above.
+            return new JSONObject();
+        }
+    }
+
+    public static JSONObject GetSingleCustomizedScriptJSON() {
+        try {
+            return new JSONObject(SINGLE_CUSTOMIZED_SCRIPT_DATA);
         } catch (JSONException e) {
             // Shouldn't happen since all the JSON data is static strings above.
             return new JSONObject();

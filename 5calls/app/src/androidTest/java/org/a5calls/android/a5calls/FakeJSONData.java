@@ -16,9 +16,6 @@ public class FakeJSONData {
     // A snapshot of real report data, used for testing.
     public static final String REPORT_DATA = "{\"count\":4627301,\"donateOn\":true}";
 
-    // Fake customized scripts data for testing - matches API format (contactId -> script)
-    public static final String CUSTOMIZED_SCRIPTS_DATA = "{\"G000599\":\"Hi [NAME], I'm your constituent from [CITY, ZIP]. I'm calling about this urgent issue that affects our community directly. As Dan Goldman, you've shown leadership on similar issues before.\",\"G000555\":\"Hi [NAME], this is a personalized message for Senator Gillibrand about this specific issue. Your past work on healthcare makes your voice crucial on this matter.\"}";
-
     /**
      * Returns the full issue data as a JSONArray.
      */

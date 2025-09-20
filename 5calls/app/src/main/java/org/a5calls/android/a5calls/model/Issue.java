@@ -96,7 +96,7 @@ public class Issue implements Parcelable {
     public String getScriptForContact(String contactId) {
         if (customizedScripts != null) {
             for (CustomizedContactScript customizedScript : customizedScripts) {
-                if (contactId.equals(customizedScript.id)) {
+                if (contactId != null && contactId.equals(customizedScript.id)) {
                     return customizedScript.script;
                 }
             }
