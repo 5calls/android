@@ -236,6 +236,13 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
 
         FiveCallsApplication.analyticsManager().trackPageview(mIssue.permalink, this);
 
+        // Register scripts request listener once
+        FiveCallsApi api = AppSingleton.getInstance(this).getJsonController();
+        api.registerScriptsRequestListener(this);
+
+        // Fetch customized scripts once on create
+        fetchCustomizedScripts();
+
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -328,9 +335,6 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
             return;
         }
 
-        // Fetch customized scripts for this issue
-        fetchCustomizedScripts();
-        
         // Maybe show the notification dialog if everyone in this issue has been called.
         boolean allCalled = loadRepList();
         int callCount = AppSingleton.getInstance(this).getDatabaseHelper()
@@ -640,37 +644,22 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
         }
 
         FiveCallsApi api = AppSingleton.getInstance(this).getJsonController();
-        api.registerScriptsRequestListener(this);
-
         String userName = AccountManager.Instance.getUserName(this);
         api.getCustomizedScripts(mIssue.id, contactIds, locationName != null ? locationName : address, userName);
     }
 
     @Override
     public void onRequestError(String issueId) {
-        // Only process errors for the current issue to prevent race conditions
-        if (mIssue != null && mIssue.id != null && mIssue.id.equals(issueId)) {
-            FiveCallsApi api = AppSingleton.getInstance(this).getJsonController();
-            api.unregisterScriptsRequestListener(this);
-        }
     }
 
     @Override
     public void onJsonError(String issueId) {
-        // Only process errors for the current issue to prevent race conditions
-        if (mIssue != null && mIssue.id != null && mIssue.id.equals(issueId)) {
-            FiveCallsApi api = AppSingleton.getInstance(this).getJsonController();
-            api.unregisterScriptsRequestListener(this);
-        }
     }
 
     @Override
     public void onScriptsReceived(String issueId, List<CustomizedContactScript> scripts) {
         // Only process scripts for the current issue to prevent race conditions
         if (mIssue != null && mIssue.id != null && mIssue.id.equals(issueId)) {
-            FiveCallsApi api = AppSingleton.getInstance(this).getJsonController();
-            api.unregisterScriptsRequestListener(this);
-
             // Apply the scripts to the current issue
             mIssue.customizedScripts = scripts;
         }
