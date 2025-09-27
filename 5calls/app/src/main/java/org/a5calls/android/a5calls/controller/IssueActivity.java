@@ -69,6 +69,7 @@ public class IssueActivity extends AppCompatActivity {
     private static final String TAG = "IssueActivity";
     public static final String KEY_ISSUE = "key_issue";
     public static final String KEY_IS_DISTRICT_SPLIT = "key_is_district_split";
+    public static final String KEY_IS_LOW_ACCURACY = "key_is_low_accuracy";
     public static final String KEY_DONATE_IS_ON = "key_donate_is_on";
 
     public static final int RESULT_OK = 1;
@@ -84,6 +85,7 @@ public class IssueActivity extends AppCompatActivity {
 
     private Issue mIssue;
     private boolean mIsDistrictSplit = false;
+    private boolean mIsLowAccuracy = false;
     private boolean mDonateIsOn = false;
     private boolean mIsAnimating = false;
 
@@ -102,6 +104,7 @@ public class IssueActivity extends AppCompatActivity {
             return;
         }
         mIsDistrictSplit = getIntent().getBooleanExtra(KEY_IS_DISTRICT_SPLIT, false);
+        mIsLowAccuracy = getIntent().getBooleanExtra(KEY_IS_LOW_ACCURACY, false);
         mDonateIsOn = getIntent().getBooleanExtra(KEY_DONATE_IS_ON, false);
 
         setContentView(binding.getRoot());
@@ -245,6 +248,7 @@ public class IssueActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         outState.putParcelable(KEY_ISSUE, mIssue);
         outState.putBoolean(KEY_IS_DISTRICT_SPLIT, mIsDistrictSplit);
+        outState.putBoolean(KEY_IS_LOW_ACCURACY, mIsLowAccuracy);
     }
 
     @Override
@@ -462,6 +466,10 @@ public class IssueActivity extends AppCompatActivity {
             if (TextUtils.equals(contact.area, Contact.AREA_HOUSE) && mIsDistrictSplit) {
                 contactWarning.setVisibility(View.VISIBLE);
                 contactWarning.setText(R.string.low_accuracy_warning);
+            } else if ((TextUtils.equals(contact.area, Contact.AREA_STATE_LOWER) ||
+                       TextUtils.equals(contact.area, Contact.AREA_STATE_UPPER)) && mIsLowAccuracy) {
+                contactWarning.setVisibility(View.VISIBLE);
+                contactWarning.setText(R.string.low_accuracy_state_rep_warning);
             }
             contactReason.setVisibility(View.VISIBLE);
         } else {

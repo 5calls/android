@@ -106,10 +106,10 @@ public class FiveCallsApiTest {
 
         @Override
         public void onContactsReceived(String locationName, String districtId,
-                                       boolean isDistrictSplit, List<Contact> contacts, boolean stateChanged) {
+                                       boolean isDistrictSplit, boolean isLowAccuracy, List<Contact> contacts, boolean stateChanged) {
             mLocationName = locationName;
             mDistrictId = districtId;
-            mIsDistrictSplit = isDistrictSplit;
+            mIsDistrictSplit = isDistrictSplit || isLowAccuracy;
             mContacts = contacts;
         }
     }

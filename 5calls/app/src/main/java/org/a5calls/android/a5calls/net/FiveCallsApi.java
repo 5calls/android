@@ -85,7 +85,7 @@ public class FiveCallsApi {
         void onAddressError();
 
         void onContactsReceived(String locationName, String districtId, boolean isDistrictSplit,
-                                List<Contact> contacts, boolean stateChanged);
+                                boolean isLowAccuracy, List<Contact> contacts, boolean stateChanged);
     }
 
     public interface NewsletterSubscribeCallback {
@@ -211,10 +211,14 @@ public class FiveCallsApi {
                     if (response != null) {
                         String locationName = "";
                         boolean isDistrictSplit = false;
+                        boolean isLowAccuracy = false;
                         try {
                             locationName = response.getString("location");
                             if (response.has("isSplit")) {
                                 isDistrictSplit = response.getBoolean("isSplit");
+                            }
+                            if (response.has("lowAccuracy")) {
+                                isLowAccuracy = response.getBoolean("lowAccuracy");
                             }
                         } catch (JSONException e) {
                             for (ContactsRequestListener listener : listeners) {
@@ -257,7 +261,7 @@ public class FiveCallsApi {
 
                         for (ContactsRequestListener listener : listeners) {
                             listener.onContactsReceived(locationName, districtId, isDistrictSplit,
-                                    contacts, stateChanged);
+                                    isLowAccuracy, contacts, stateChanged);
                         }
                     }
                 }

@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     private String mLocationName;
     private String mDistrictId;
     private boolean mIsDistrictSplit = false;
+    private boolean mIsLowAccuracy = false;
     private boolean mShowLowAccuracyWarning = true;
     private boolean mDonateIsOn = false;
     private FirebaseAuth mAuth = null;
@@ -374,6 +375,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         issueIntent.putExtra(RepCallActivity.KEY_ADDRESS, getLocationString());
         issueIntent.putExtra(RepCallActivity.KEY_LOCATION_NAME, mLocationName);
         issueIntent.putExtra(IssueActivity.KEY_IS_DISTRICT_SPLIT, mIsDistrictSplit);
+        issueIntent.putExtra(IssueActivity.KEY_IS_LOW_ACCURACY, mIsLowAccuracy);
         issueIntent.putExtra(IssueActivity.KEY_DONATE_IS_ON, mDonateIsOn);
         startActivityForResult(issueIntent, ISSUE_DETAIL_REQUEST);
     }
@@ -421,6 +423,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         Intent intent = new Intent(this, LocationActivity.class);
         intent.putExtra(LocationActivity.ALLOW_HOME_UP_KEY, true);
         intent.putExtra(IssueActivity.KEY_IS_DISTRICT_SPLIT, mIsDistrictSplit);
+        intent.putExtra(IssueActivity.KEY_IS_LOW_ACCURACY, mIsLowAccuracy);
         startActivity(intent);
     }
 
@@ -483,7 +486,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
 
             @Override
             public void onContactsReceived(String locationName, String districtId,
-                                           boolean isDistrictSplit, List<Contact> contacts, boolean stateChanged) {
+                                           boolean isDistrictSplit, boolean isLowAccuracy, List<Contact> contacts, boolean stateChanged) {
                 mLocationName = TextUtils.isEmpty(locationName) ?
                         getResources().getString(R.string.unknown_location) : locationName;
                 mDistrictId = districtId;
@@ -491,6 +494,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                         R.string.title_main), mLocationName));
                 mIssuesAdapter.setContacts(contacts, IssuesAdapter.NO_ERROR);
                 mIsDistrictSplit = isDistrictSplit;
+                mIsLowAccuracy = isLowAccuracy;
 
                 hideSnackbars();
 

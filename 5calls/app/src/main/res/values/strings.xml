@@ -419,6 +419,9 @@
     <!-- Warning that you have a low accuracy location [CHAR_LIMIT=90] -->
     <string name="low_accuracy_warning">Your zip is not precise enough to ensure we\'ve got the right House representative.</string>
 
+    <!-- Warning for low accuracy location in issue activity [CHAR_LIMIT=NONE] -->
+    <string name="low_accuracy_state_rep_warning">Warning: your location is set to a zip code or other approximate location, please enter an address or zip+4 for accurate state level reps.</string>
+
     <!-- Shown on the set location page above the address text field if the zip is low accuracy [CHAR_LIMIT=NONE] -->
     <string name="split_district_suggestion">Use your zip + 4 or an address to get an accurate representative.</string>
 
