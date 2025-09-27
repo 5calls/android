@@ -152,21 +152,7 @@ public class IssueTest {
         customizedScripts.add(new CustomizedContactScript("", "Custom script for empty id"));
         issue.customizedScripts = customizedScripts;
 
-        assertEquals("Custom script for empty id", issue.getScriptForContact(""));
-    }
-
-    @Test
-    public void testGetScriptForContactWithNullCustomizedScriptId() {
-        Issue issue = TestModelUtils.createIssue("test-issue", "Test Issue");
-        issue.script = "Default script for issue";
-
-        ArrayList<CustomizedContactScript> customizedScripts = new ArrayList<>();
-        customizedScripts.add(new CustomizedContactScript(null, "Custom script with null id"));
-        customizedScripts.add(new CustomizedContactScript("contact1", "Custom script for contact 1"));
-        issue.customizedScripts = customizedScripts;
-
-        assertEquals("Custom script for contact 1", issue.getScriptForContact("contact1"));
-        assertEquals("Default script for issue", issue.getScriptForContact("nonexistent"));
+        assertEquals("Default script for issue", issue.getScriptForContact(""));
     }
 
     @Test

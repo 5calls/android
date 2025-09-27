@@ -415,7 +415,7 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
     @Override
     public void onRequestError(String issueId) {
         // Only process errors for the current issue to prevent race conditions
-        if (mIssue != null && mIssue.id != null && mIssue.id.equals(issueId)) {
+        if (TextUtils.equals(mIssue.id, issueId)) {
             FiveCallsApi api = AppSingleton.getInstance(this).getJsonController();
             api.unregisterScriptsRequestListener(this);
         }
@@ -424,7 +424,7 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
     @Override
     public void onJsonError(String issueId) {
         // Only process errors for the current issue to prevent race conditions
-        if (mIssue != null && mIssue.id != null && mIssue.id.equals(issueId)) {
+        if (TextUtils.equals(mIssue.id, issueId)) {
             FiveCallsApi api = AppSingleton.getInstance(this).getJsonController();
             api.unregisterScriptsRequestListener(this);
         }
@@ -433,7 +433,7 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
     @Override
     public void onScriptsReceived(String issueId, List<CustomizedContactScript> scripts) {
         // Only process scripts for the current issue to prevent race conditions
-        if (mIssue != null && mIssue.id != null && mIssue.id.equals(issueId)) {
+        if (TextUtils.equals(mIssue.id, issueId)) {
             FiveCallsApi api = AppSingleton.getInstance(this).getJsonController();
             api.unregisterScriptsRequestListener(this);
 

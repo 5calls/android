@@ -633,7 +633,7 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
         String address = getIntent().getStringExtra(RepCallActivity.KEY_ADDRESS);
         String locationName = getIntent().getStringExtra(RepCallActivity.KEY_LOCATION_NAME);
 
-        if (address == null && locationName == null) {
+        if (TextUtils.isEmpty(address) && TextUtils.isEmpty(locationName)) {
             return;
         }
 
@@ -659,7 +659,7 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
     @Override
     public void onScriptsReceived(String issueId, List<CustomizedContactScript> scripts) {
         // Only process scripts for the current issue to prevent race conditions
-        if (mIssue != null && mIssue.id != null && mIssue.id.equals(issueId)) {
+        if (TextUtils.equals(mIssue.id, issueId)) {
             // Apply the scripts to the current issue
             mIssue.customizedScripts = scripts;
         }

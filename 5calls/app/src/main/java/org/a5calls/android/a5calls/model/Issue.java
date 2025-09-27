@@ -2,6 +2,7 @@ package org.a5calls.android.a5calls.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import java.util.List;
 
@@ -94,9 +95,9 @@ public class Issue implements Parcelable {
     }
     
     public String getScriptForContact(String contactId) {
-        if (customizedScripts != null) {
+        if (customizedScripts != null && !TextUtils.isEmpty(contactId)) {
             for (CustomizedContactScript customizedScript : customizedScripts) {
-                if (contactId != null && contactId.equals(customizedScript.id)) {
+                if (TextUtils.equals(customizedScript.id, contactId)) {
                     return customizedScript.script;
                 }
             }

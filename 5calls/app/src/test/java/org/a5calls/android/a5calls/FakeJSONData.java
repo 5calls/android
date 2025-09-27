@@ -11,81 +11,12 @@ public class FakeJSONData {
     // A snapshot of real reps data, used for testing.
     public static final String REPS_DATA = "{\"location\":\"BOWLING GREEN\",\"lowAccuracy\":true,\"isSplit\":true,\"state\":\"NY\",\"district\":\"10\",\"representatives\":[{\"id\":\"G000599\",\"name\":\"Dan Goldman\",\"phone\":\"202-225-7944\",\"url\":\"https://goldman.house.gov\",\"photoURL\":\"https://images.5calls.org/house/256/G000599.jpg\",\"party\":\"Democrat\",\"state\":\"NY\",\"district\":\"10\",\"reason\":\"This is your representative in the House.\",\"area\":\"US House\",\"field_offices\":[{\"phone\":\"212-822-7878\",\"city\":\"New York\"},{\"phone\":\"718-312-7575\",\"city\":\"Brooklyn\"}]},{\"id\":\"G000555\",\"name\":\"Kirsten Gillibrand\",\"phone\":\"202-224-4451\",\"url\":\"https://www.gillibrand.senate.gov\",\"photoURL\":\"https://images.5calls.org/senate/256/G000555.jpg\",\"party\":\"Democrat\",\"state\":\"NY\",\"reason\":\"This is one of your two Senators.\",\"area\":\"US Senate\",\"field_offices\":[{\"phone\":\"518-431-0120\",\"city\":\"Albany\"},{\"phone\":\"716-854-9725\",\"city\":\"Buffalo\"},{\"phone\":\"315-376-6118\",\"city\":\"Lowville\"},{\"phone\":\"212-688-6262\",\"city\":\"New York\"},{\"phone\":\"631-249-2825\",\"city\":\"Melville\"},{\"phone\":\"585-263-6250\",\"city\":\"Rochester\"},{\"phone\":\"315-448-0470\",\"city\":\"Syracuse\"},{\"phone\":\"845-875-4585\",\"city\":\"Yonkers\"}]},{\"id\":\"S000148\",\"name\":\"Chuck Schumer\",\"phone\":\"202-224-6542\",\"url\":\"https://www.schumer.senate.gov\",\"photoURL\":\"https://images.5calls.org/senate/256/S000148.jpg\",\"party\":\"Democrat\",\"state\":\"NY\",\"reason\":\"This is one of your two Senators.\",\"area\":\"US Senate\",\"field_offices\":[{\"phone\":\"585-263-5866\",\"city\":\"Rochester\"},{\"phone\":\"607-772-6792\",\"city\":\"Binghamton\"},{\"phone\":\"716-846-4111\",\"city\":\"Buffalo\"},{\"phone\":\"212-486-4430\",\"city\":\"New York\"},{\"phone\":\"914-734-1532\",\"city\":\"Peekskill\"},{\"phone\":\"315-423-5471\",\"city\":\"Syracuse\"},{\"phone\":\"518-431-4070\",\"city\":\"Albany\"},{\"phone\":\"631-753-0978\",\"city\":\"Melville\"}]},{\"id\":\"ny-james\",\"name\":\"Letitia A. James\",\"phone\":\"518-776-2000\",\"url\":\"\",\"photoURL\":\"https://images.5calls.org/ag/256/ny-james.jpg\",\"party\":\"\",\"state\":\"NY\",\"reason\":\"This is the Attorney General of your state\",\"area\":\"AttorneysGeneral\",\"field_offices\":[]},{\"id\":\"ny-hochul\",\"name\":\"Kathy Hochul\",\"phone\":\"518-474-8390\",\"url\":\"https://www.governor.ny.gov\",\"photoURL\":\"https://images.5calls.org/governor/256/ny-hochul.jpg\",\"party\":\"Democrat\",\"state\":\"NY\",\"reason\":\"This is the Governor of your state\",\"area\":\"Governor\",\"field_offices\":[]},{\"id\":\"ny-mosley\",\"name\":\"Walter T. Mosley\",\"phone\":\"212-417-5800\",\"url\":\"\",\"photoURL\":\"https://images.5calls.org/secstate/256/ny-mosley.jpg\",\"party\":\"\",\"state\":\"NY\",\"reason\":\"This is the Secretary of State of your state\",\"area\":\"SecState\",\"field_offices\":[]}]}";
 
-    // A snapshot of real report data, used for testing.
-    public static final String REPORT_DATA = "{\"count\":4627301,\"donateOn\":true}";
-
-    // Mock customized scripts data for testing
-    public static final String CUSTOMIZED_SCRIPTS_DATA = "{\"contact1\":\"Hello, this is a customized script for contact 1. Please call about the issue and express your concerns.\",\"contact2\":\"This is a personalized script for contact 2. Make sure to mention your zip code and state your position clearly.\"}";
-
-    // Mock customized scripts data with special characters for testing
-    public static final String CUSTOMIZED_SCRIPTS_SPECIAL_CHARS_DATA = "{\"contact_special\":\"Script with special chars: ñáéíóú 中文 🎉 \\n\\t\\r\",\"contact-with-dashes\":\"Script for contact with dashes in ID\"}";
-
-    // Mock empty customized scripts response for testing
-    public static final String EMPTY_CUSTOMIZED_SCRIPTS_DATA = "{}";
-
-    // Mock single customized script for testing
-    public static final String SINGLE_CUSTOMIZED_SCRIPT_DATA = "{\"G000555\":\"Senator Gillibrand, as your constituent from New York, I urge you to support this important legislation. Thank you for your time.\"}";
-
     public static JSONArray GetIssueJSON() {
         try {
             return new JSONArray(ISSUE_DATA);
         } catch (JSONException e) {
             // Shouldn't happen since all the JSON data is static strings above.
             return new JSONArray();
-        }
-    }
-
-    public static JSONObject GetRepsJSON() {
-        try {
-            return new JSONObject(REPS_DATA);
-        } catch (JSONException e) {
-            // Shouldn't happen since all the JSON data is static strings above.
-            return new JSONObject();
-        }
-    }
-
-    public static JSONObject GetReportJSON() {
-        try {
-            return new JSONObject(REPORT_DATA);
-        } catch (JSONException e) {
-            // Shouldn't happen since all the JSON data is static strings above.
-            return new JSONObject();
-        }
-    }
-
-    public static JSONObject GetCustomizedScriptsJSON() {
-        try {
-            return new JSONObject(CUSTOMIZED_SCRIPTS_DATA);
-        } catch (JSONException e) {
-            // Shouldn't happen since all the JSON data is static strings above.
-            return new JSONObject();
-        }
-    }
-
-    public static JSONObject GetCustomizedScriptsSpecialCharsJSON() {
-        try {
-            return new JSONObject(CUSTOMIZED_SCRIPTS_SPECIAL_CHARS_DATA);
-        } catch (JSONException e) {
-            // Shouldn't happen since all the JSON data is static strings above.
-            return new JSONObject();
-        }
-    }
-
-    public static JSONObject GetEmptyCustomizedScriptsJSON() {
-        try {
-            return new JSONObject(EMPTY_CUSTOMIZED_SCRIPTS_DATA);
-        } catch (JSONException e) {
-            // Shouldn't happen since all the JSON data is static strings above.
-            return new JSONObject();
-        }
-    }
-
-    public static JSONObject GetSingleCustomizedScriptJSON() {
-        try {
-            return new JSONObject(SINGLE_CUSTOMIZED_SCRIPT_DATA);
-        } catch (JSONException e) {
-            // Shouldn't happen since all the JSON data is static strings above.
-            return new JSONObject();
         }
     }
 }
