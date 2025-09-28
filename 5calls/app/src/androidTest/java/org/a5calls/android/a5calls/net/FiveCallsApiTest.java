@@ -109,7 +109,7 @@ public class FiveCallsApiTest {
                                        boolean isDistrictSplit, boolean isLowAccuracy, List<Contact> contacts, boolean stateChanged) {
             mLocationName = locationName;
             mDistrictId = districtId;
-            mIsDistrictSplit = isDistrictSplit || isLowAccuracy;
+            mIsDistrictSplit = isDistrictSplit;
             mContacts = contacts;
         }
     }
