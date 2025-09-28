@@ -414,7 +414,7 @@
     <string name="rep_section_prompt">Contacts to call today</string>
 
     <!-- Warning that you may be in a split district [CHAR_LIMIT=90] -->
-    <string name="split_district_warning">Your zip code has multiple house representatives. This is our best guess.</string>
+    <string name="split_district_warning">Your zip code matches multiple House districts, use a zip+4 or address for best results.</string>
 
     <!-- Warning that you have a low accuracy location [CHAR_LIMIT=90] -->
     <string name="low_accuracy_warning">Your zip is not precise enough to ensure we\'ve got the right House representative.</string>

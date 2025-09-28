@@ -359,7 +359,7 @@
     <string name="rep_section_prompt">Contactos para llamar hoy</string>
 
     <!-- Warning that you may be in a split district [CHAR_LIMIT=90] -->
-    <string name="split_district_warning">Su código postal tiene varios representantes. Esta es nuestra mejor suposición.</string>
+    <string name="split_district_warning">Su código postal abarca varios distritos, use código+4 o dirección completa.</string>
 
     <!-- Warning that you have a low accuracy location [CHAR_LIMIT=90] -->
     <string name="low_accuracy_warning">Su ubicación no es lo suficientemente precisa para garantizar que tengamos al representante de la Cámara adecuado.</string>

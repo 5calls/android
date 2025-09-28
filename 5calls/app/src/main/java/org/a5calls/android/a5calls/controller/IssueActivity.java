@@ -84,7 +84,9 @@ public class IssueActivity extends AppCompatActivity {
     private boolean mShowServerError = false;
 
     private Issue mIssue;
+    // indicates that the zip entered intersects with multiple congressional districts
     private boolean mIsDistrictSplit = false;
+    // low accuracy locations are zip codes or city names, we warn on state reps if you are using one
     private boolean mIsLowAccuracy = false;
     private boolean mDonateIsOn = false;
     private boolean mIsAnimating = false;
@@ -465,7 +467,7 @@ public class IssueActivity extends AppCompatActivity {
             contactReason.setText(contact.reason);
             if (TextUtils.equals(contact.area, Contact.AREA_HOUSE) && mIsDistrictSplit) {
                 contactWarning.setVisibility(View.VISIBLE);
-                contactWarning.setText(R.string.low_accuracy_warning);
+                contactWarning.setText(R.string.split_district_warning);
             } else if ((TextUtils.equals(contact.area, Contact.AREA_STATE_LOWER) ||
                        TextUtils.equals(contact.area, Contact.AREA_STATE_UPPER)) && mIsLowAccuracy) {
                 contactWarning.setVisibility(View.VISIBLE);
