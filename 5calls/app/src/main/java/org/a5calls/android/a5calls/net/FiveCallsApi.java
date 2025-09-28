@@ -22,6 +22,7 @@ import com.onesignal.OneSignal;
 import org.a5calls.android.a5calls.BuildConfig;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.Contact;
+import org.a5calls.android.a5calls.model.CustomizedContactScript;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.model.Outcome;
 import org.json.JSONArray;
@@ -33,6 +34,7 @@ import java.lang.reflect.Type;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -58,6 +60,8 @@ public class FiveCallsApi {
     private static final String NEWSLETTER_SUBSCRIBE = "https://buttondown.com/api/emails/embed-subscribe/5calls";
 
     private static final String SEARCH_TRACKING = "https://api.5calls.org/v1/users/search";
+    
+    private static final String GET_CUSTOMIZED_SCRIPTS = "https://api.5calls.org/v1/issue/%s/script";
 
     public interface CallRequestListener {
         void onRequestError();
@@ -93,11 +97,20 @@ public class FiveCallsApi {
         void onError();
     }
 
+    public interface ScriptsRequestListener {
+        void onRequestError(String issueId);
+
+        void onJsonError(String issueId);
+
+        void onScriptsReceived(String issueId, List<CustomizedContactScript> scripts);
+    }
+
     private RequestQueue mRequestQueue;
     private Gson mGson;
     private List<CallRequestListener> mCallRequestListeners = new ArrayList<>();
     private List<IssuesRequestListener> mIssuesRequestListeners = new ArrayList<>();
     private List<ContactsRequestListener> mContactsRequestListeners = new ArrayList<>();
+    private List<ScriptsRequestListener> mScriptsRequestListeners = new ArrayList<>();
 
     private final String mCallerId;
     private final Context mContext;
@@ -139,6 +152,14 @@ public class FiveCallsApi {
         mContactsRequestListeners.remove(contactsRequestListener);
     }
 
+    public void registerScriptsRequestListener(ScriptsRequestListener scriptsRequestListener) {
+        mScriptsRequestListeners.add(scriptsRequestListener);
+    }
+
+    public void unregisterScriptsRequestListener(ScriptsRequestListener scriptsRequestListener) {
+        mScriptsRequestListeners.remove(scriptsRequestListener);
+    }
+
     public void getIssues() {
         Uri.Builder urlBuilder = Uri.parse(GET_ISSUES_REQUEST).buildUpon();
 
@@ -154,16 +175,41 @@ public class FiveCallsApi {
 
     public void getContacts(String address) {
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA) {
-                buildContactsRequest(GET_CONTACTS_REQUEST + URLEncoder.encode(address, REQUEST_URL_ENCODING_CHARSET), mContactsRequestListeners);
-            } else {
-                // Older SDK versions.
-                buildContactsRequest(GET_CONTACTS_REQUEST + address, mContactsRequestListeners);
-            }
+            // URL encode the address parameter for safe transmission
+            buildContactsRequest(GET_CONTACTS_REQUEST + URLEncoder.encode(address, REQUEST_URL_ENCODING_CHARSET), mContactsRequestListeners);
         } catch (UnsupportedEncodingException e) {
             // UTF-8 is always supported, this should never happen but fall back anyway
             buildContactsRequest(GET_CONTACTS_REQUEST + address, mContactsRequestListeners);
         }
+    }
+
+    public void getCustomizedScripts(String issueId, List<String> contactIds, String location, String name) {
+        String url = String.format(GET_CUSTOMIZED_SCRIPTS, issueId);
+        Uri.Builder urlBuilder = Uri.parse(url).buildUpon();
+
+        // Add contact IDs as comma-separated parameter
+        if (contactIds != null && !contactIds.isEmpty()) {
+            StringBuilder contactIdBuilder = new StringBuilder();
+            for (int i = 0; i < contactIds.size(); i++) {
+                if (i > 0) {
+                    contactIdBuilder.append(",");
+                }
+                contactIdBuilder.append(contactIds.get(i));
+            }
+            urlBuilder.appendQueryParameter("contact_ids", contactIdBuilder.toString());
+        }
+
+        // Add location parameter (appendQueryParameter handles URL encoding automatically)
+        if (location != null && !location.isEmpty()) {
+            urlBuilder.appendQueryParameter("location", location);
+        }
+
+        // Add optional name parameter (appendQueryParameter handles URL encoding automatically)
+        if (name != null && !name.isEmpty()) {
+            urlBuilder.appendQueryParameter("name", name);
+        }
+
+        buildScriptsRequest(issueId, urlBuilder.build().toString(), mScriptsRequestListeners);
     }
 
     private void buildIssuesRequest(String url, final List<IssuesRequestListener> listeners) {
@@ -279,6 +325,54 @@ public class FiveCallsApi {
             contactsRequest.setTag(TAG);
             // Add the request to the RequestQueue.
             mRequestQueue.add(contactsRequest);
+    }
+
+    private void buildScriptsRequest(final String issueId, String url, final List<ScriptsRequestListener> listeners) {
+        JsonObjectRequest scriptsRequest = new JsonObjectRequest(
+                Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                if (response == null) {
+                    for (ScriptsRequestListener listener : listeners) {
+                        listener.onJsonError(issueId);
+                    }
+                    return;
+                }
+
+                // Parse the map of contactId -> script string
+                List<CustomizedContactScript> scripts = new ArrayList<>();
+                Iterator<String> keys = response.keys();
+                while (keys.hasNext()) {
+                    String contactId = keys.next();
+                    try {
+                        String scriptText = response.getString(contactId);
+                        CustomizedContactScript script = new CustomizedContactScript();
+                        script.id = contactId;
+                        script.script = scriptText;
+                        scripts.add(script);
+                    } catch (JSONException e) {
+                        // Skip this contact if there's a parsing error
+                    }
+                }
+
+                // Create a copy to avoid ConcurrentModificationException when listeners unregister themselves
+                List<ScriptsRequestListener> listenersCopy = new ArrayList<>(listeners);
+                for (ScriptsRequestListener listener : listenersCopy) {
+                    listener.onScriptsReceived(issueId, scripts);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // Create a copy to avoid ConcurrentModificationException when listeners unregister themselves
+                List<ScriptsRequestListener> listenersCopy = new ArrayList<>(listeners);
+                for (ScriptsRequestListener listener : listenersCopy) {
+                    listener.onRequestError(issueId);
+                }
+            }
+        });
+        scriptsRequest.setTag(TAG);
+        mRequestQueue.add(scriptsRequest);
     }
 
     public void getReport() {

@@ -50,14 +50,18 @@ import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.databinding.ActivityIssueBinding;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.Contact;
+import org.a5calls.android.a5calls.model.CustomizedContactScript;
 import org.a5calls.android.a5calls.model.DatabaseHelper;
 import org.a5calls.android.a5calls.model.Issue;
+import org.a5calls.android.a5calls.net.FiveCallsApi;
 import org.a5calls.android.a5calls.util.MarkdownUtil;
 import org.a5calls.android.a5calls.util.StateMapping;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -65,7 +69,7 @@ import java.util.TimeZone;
  * More details about an issue, including links to the phone app to call and buttons to record
  * your calls.
  */
-public class IssueActivity extends AppCompatActivity {
+public class IssueActivity extends AppCompatActivity implements FiveCallsApi.ScriptsRequestListener {
     private static final String TAG = "IssueActivity";
     public static final String KEY_ISSUE = "key_issue";
     public static final String KEY_IS_LOW_ACCURACY = "key_is_low_accuracy";
@@ -231,6 +235,13 @@ public class IssueActivity extends AppCompatActivity {
         });
 
         FiveCallsApplication.analyticsManager().trackPageview(mIssue.permalink, this);
+
+        // Register scripts request listener once
+        FiveCallsApi api = AppSingleton.getInstance(this).getJsonController();
+        api.registerScriptsRequestListener(this);
+
+        // Fetch customized scripts once on create
+        fetchCustomizedScripts();
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -612,5 +623,52 @@ public class IssueActivity extends AppCompatActivity {
             Log.d(TAG, "Unable to parse created date: " + issue.createdAt);
         }
         return result.toString();
+    }
+
+    private void fetchCustomizedScripts() {
+        if (mIssue == null || mIssue.contacts == null || mIssue.contacts.isEmpty()) {
+            return;
+        }
+
+        String address = getIntent().getStringExtra(RepCallActivity.KEY_ADDRESS);
+        String locationName = getIntent().getStringExtra(RepCallActivity.KEY_LOCATION_NAME);
+
+        if (TextUtils.isEmpty(address) && TextUtils.isEmpty(locationName)) {
+            return;
+        }
+
+
+        List<String> contactIds = new ArrayList<>();
+        for (Contact contact : mIssue.contacts) {
+            contactIds.add(contact.id);
+        }
+
+        FiveCallsApi api = AppSingleton.getInstance(this).getJsonController();
+        String userName = AccountManager.Instance.getUserName(this);
+        api.getCustomizedScripts(mIssue.id, contactIds, locationName != null ? locationName : address, userName);
+    }
+
+    @Override
+    public void onRequestError(String issueId) {
+    }
+
+    @Override
+    public void onJsonError(String issueId) {
+    }
+
+    @Override
+    public void onScriptsReceived(String issueId, List<CustomizedContactScript> scripts) {
+        // Only process scripts for the current issue to prevent race conditions
+        if (TextUtils.equals(mIssue.id, issueId)) {
+            // Apply the scripts to the current issue
+            mIssue.customizedScripts = scripts;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        FiveCallsApi api = AppSingleton.getInstance(this).getJsonController();
+        api.unregisterScriptsRequestListener(this);
     }
 }

@@ -59,6 +59,7 @@ public class IssueTest {
             assertEquals(expected.contactAreas, actual.contactAreas);
             assertEquals(expected.outcomeModels, actual.outcomeModels);
             assertArrayEquals(expected.categories, actual.categories);
+            assertEquals(expected.customizedScripts, actual.customizedScripts);
         }
     }
 
@@ -83,5 +84,100 @@ public class IssueTest {
         Gson gson = new GsonBuilder().serializeNulls().create();
         Type listType = new TypeToken<ArrayList<Issue>>(){}.getType();
         return gson.fromJson(initialIssues.toString(), listType);
+    }
+
+    @Test
+    public void testGetScriptForContactWithCustomizedScripts() {
+        Issue issue = TestModelUtils.createIssue("test-issue", "Test Issue");
+        issue.script = "Default script for issue";
+
+        ArrayList<CustomizedContactScript> customizedScripts = new ArrayList<>();
+        customizedScripts.add(new CustomizedContactScript("contact1", "Custom script for contact 1"));
+        customizedScripts.add(new CustomizedContactScript("contact2", "Custom script for contact 2"));
+        issue.customizedScripts = customizedScripts;
+
+        assertEquals("Custom script for contact 1", issue.getScriptForContact("contact1"));
+        assertEquals("Custom script for contact 2", issue.getScriptForContact("contact2"));
+    }
+
+    @Test
+    public void testGetScriptForContactFallbackToDefault() {
+        Issue issue = TestModelUtils.createIssue("test-issue", "Test Issue");
+        issue.script = "Default script for issue";
+
+        ArrayList<CustomizedContactScript> customizedScripts = new ArrayList<>();
+        customizedScripts.add(new CustomizedContactScript("contact1", "Custom script for contact 1"));
+        issue.customizedScripts = customizedScripts;
+
+        assertEquals("Default script for issue", issue.getScriptForContact("nonexistent_contact"));
+    }
+
+    @Test
+    public void testGetScriptForContactWithNullCustomizedScripts() {
+        Issue issue = TestModelUtils.createIssue("test-issue", "Test Issue");
+        issue.script = "Default script for issue";
+        issue.customizedScripts = null;
+
+        assertEquals("Default script for issue", issue.getScriptForContact("any_contact"));
+    }
+
+    @Test
+    public void testGetScriptForContactWithEmptyCustomizedScripts() {
+        Issue issue = TestModelUtils.createIssue("test-issue", "Test Issue");
+        issue.script = "Default script for issue";
+        issue.customizedScripts = new ArrayList<>();
+
+        assertEquals("Default script for issue", issue.getScriptForContact("any_contact"));
+    }
+
+    @Test
+    public void testGetScriptForContactWithNullContactId() {
+        Issue issue = TestModelUtils.createIssue("test-issue", "Test Issue");
+        issue.script = "Default script for issue";
+
+        ArrayList<CustomizedContactScript> customizedScripts = new ArrayList<>();
+        customizedScripts.add(new CustomizedContactScript("contact1", "Custom script for contact 1"));
+        issue.customizedScripts = customizedScripts;
+
+        assertEquals("Default script for issue", issue.getScriptForContact(null));
+    }
+
+    @Test
+    public void testGetScriptForContactWithEmptyContactId() {
+        Issue issue = TestModelUtils.createIssue("test-issue", "Test Issue");
+        issue.script = "Default script for issue";
+
+        ArrayList<CustomizedContactScript> customizedScripts = new ArrayList<>();
+        customizedScripts.add(new CustomizedContactScript("contact1", "Custom script for contact 1"));
+        customizedScripts.add(new CustomizedContactScript("", "Custom script for empty id"));
+        issue.customizedScripts = customizedScripts;
+
+        assertEquals("Default script for issue", issue.getScriptForContact(""));
+    }
+
+    @Test
+    public void testGetScriptForContactWithMultipleMatchingIds() {
+        Issue issue = TestModelUtils.createIssue("test-issue", "Test Issue");
+        issue.script = "Default script for issue";
+
+        ArrayList<CustomizedContactScript> customizedScripts = new ArrayList<>();
+        customizedScripts.add(new CustomizedContactScript("contact1", "First custom script"));
+        customizedScripts.add(new CustomizedContactScript("contact1", "Second custom script"));
+        issue.customizedScripts = customizedScripts;
+
+        assertEquals("First custom script", issue.getScriptForContact("contact1"));
+    }
+
+    @Test
+    public void testGetScriptForContactWithNullDefaultScript() {
+        Issue issue = TestModelUtils.createIssue("test-issue", "Test Issue");
+        issue.script = null;
+
+        ArrayList<CustomizedContactScript> customizedScripts = new ArrayList<>();
+        customizedScripts.add(new CustomizedContactScript("contact1", "Custom script for contact 1"));
+        issue.customizedScripts = customizedScripts;
+
+        assertEquals("Custom script for contact 1", issue.getScriptForContact("contact1"));
+        assertNull(issue.getScriptForContact("nonexistent_contact"));
     }
 }
