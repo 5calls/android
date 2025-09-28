@@ -65,8 +65,8 @@
 
             <TextView
                 style="@style/spacedParagraphTextStyleErrorHighlight"
-                android:id="@+id/low_accuracy_suggestion"
-                android:text="@string/low_accuracy_suggestion"
+                android:id="@+id/district_split_suggestion"
+                android:text="@string/split_district_suggestion"
                 android:visibility="gone"
                 />
 

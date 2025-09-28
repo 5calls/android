@@ -88,8 +88,8 @@ public class FiveCallsApi {
 
         void onAddressError();
 
-        void onContactsReceived(String locationName, String districtId, boolean isLowAccuracy,
-                                List<Contact> contacts, boolean stateChanged);
+        void onContactsReceived(String locationName, String districtId, boolean isDistrictSplit,
+                                boolean isLowAccuracy, List<Contact> contacts, boolean stateChanged);
     }
 
     public interface NewsletterSubscribeCallback {
@@ -256,11 +256,15 @@ public class FiveCallsApi {
                 public void onResponse(JSONObject response) {
                     if (response != null) {
                         String locationName = "";
-                        boolean lowAccuracy = false;
+                        boolean isDistrictSplit = false;
+                        boolean isLowAccuracy = false;
                         try {
                             locationName = response.getString("location");
                             if (response.has("isSplit")) {
-                                lowAccuracy = response.getBoolean("isSplit");
+                                isDistrictSplit = response.getBoolean("isSplit");
+                            }
+                            if (response.has("lowAccuracy")) {
+                                isLowAccuracy = response.getBoolean("lowAccuracy");
                             }
                         } catch (JSONException e) {
                             for (ContactsRequestListener listener : listeners) {
@@ -302,8 +306,8 @@ public class FiveCallsApi {
                         }
 
                         for (ContactsRequestListener listener : listeners) {
-                            listener.onContactsReceived(locationName, districtId, lowAccuracy,
-                                    contacts, stateChanged);
+                            listener.onContactsReceived(locationName, districtId, isDistrictSplit,
+                                    isLowAccuracy, contacts, stateChanged);
                         }
                     }
                 }

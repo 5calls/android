@@ -414,13 +414,16 @@
     <string name="rep_section_prompt">Contacts to call today</string>
 
     <!-- Warning that you may be in a split district [CHAR_LIMIT=90] -->
-    <string name="split_district_warning">Your zip code has multiple house representatives. This is our best guess.</string>
+    <string name="split_district_warning">Your zip code matches multiple House districts, use a zip+4 or address for best results.</string>
 
     <!-- Warning that you have a low accuracy location [CHAR_LIMIT=90] -->
     <string name="low_accuracy_warning">Your zip is not precise enough to ensure we\'ve got the right House representative.</string>
 
+    <!-- Warning for low accuracy location in issue activity [CHAR_LIMIT=NONE] -->
+    <string name="low_accuracy_state_rep_warning">Warning: your location is set to a zip code or other approximate location, please enter an address or zip+4 for accurate state level reps.</string>
+
     <!-- Shown on the set location page above the address text field if the zip is low accuracy [CHAR_LIMIT=NONE] -->
-    <string name="low_accuracy_suggestion">Use your zip + 4 or an address to get an accurate representative.</string>
+    <string name="split_district_suggestion">Use your zip + 4 or an address to get an accurate representative.</string>
 
     <!-- Action for a snackbar or button which brings you to the location update screen [CHAR_LIMIT=10] -->
     <string name="update">update</string>
