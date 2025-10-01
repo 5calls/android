@@ -40,6 +40,7 @@ import org.a5calls.android.a5calls.adapter.OutcomeAdapter;
 import org.a5calls.android.a5calls.databinding.ActivityRepCallBinding;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.Contact;
+import org.a5calls.android.a5calls.model.CustomizedContactScript;
 import org.a5calls.android.a5calls.model.DatabaseHelper;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.model.Outcome;
@@ -56,7 +57,7 @@ import static org.a5calls.android.a5calls.controller.IssueActivity.KEY_ISSUE;
 /**
  * Activity which handles showing a script for a rep and logging calls.
  */
-public class RepCallActivity extends AppCompatActivity {
+public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.ScriptsRequestListener {
     private static final String TAG = "RepCallActivity";
 
     public static final String KEY_ADDRESS = "key_address";
@@ -125,23 +126,16 @@ public class RepCallActivity extends AppCompatActivity {
                 returnToIssue();
             }
         };
-        FiveCallsApi controller = AppSingleton.getInstance(getApplicationContext())
+        FiveCallsApi api = AppSingleton.getInstance(getApplicationContext())
                 .getJsonController();
-        controller.registerCallRequestListener(mStatusListener);
+        api.registerCallRequestListener(mStatusListener);
+        api.registerScriptsRequestListener(this);
 
         // The markdown view gets focus unless we let the scrollview take it back.
         binding.scrollView.setFocusableInTouchMode(true);
         binding.scrollView.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
 
-        Contact c = mIssue.contacts.get(mActiveContactIndex);
-        String script = ScriptReplacements.replacing(
-                this,
-                mIssue.script,
-                c,
-                getIntent().getStringExtra(KEY_LOCATION_NAME),
-                AccountManager.Instance.getUserName(this)
-        );
-        MarkdownUtil.setUpScript(binding.callScript, script, getApplicationContext());
+        updateScriptDisplay();
         binding.callScript.setTextSize(AccountManager.Instance.getScriptTextSize(getApplicationContext()));
 
         boolean expandLocalOffices = false;
@@ -176,13 +170,15 @@ public class RepCallActivity extends AppCompatActivity {
         binding.outcomeList.addItemDecoration(new GridItemDecoration(gridPadding,
                 getSpanCount(RepCallActivity.this)));
 
-        FiveCallsApplication.analyticsManager().trackPageview(String.format("/issue/%s/%s/", mIssue.slug, c.id), this);
+        FiveCallsApplication.analyticsManager().trackPageview(
+                mIssue.permalink, this);
     }
 
     @Override
     protected void onDestroy() {
-        AppSingleton.getInstance(getApplicationContext()).getJsonController()
-                .unregisterCallRequestListener(mStatusListener);
+        FiveCallsApi api = AppSingleton.getInstance(getApplicationContext()).getJsonController();
+        api.unregisterCallRequestListener(mStatusListener);
+        api.unregisterScriptsRequestListener(this);
         super.onDestroy();
     }
 
@@ -401,5 +397,48 @@ public class RepCallActivity extends AppCompatActivity {
         Linkify.addLinks(textView, Patterns.PHONE, "tel:",
                 Linkify.sPhoneNumberMatchFilter,
                 Linkify.sPhoneNumberTransformFilter);
+    }
+
+    private void updateScriptDisplay() {
+        Contact c = mIssue.contacts.get(mActiveContactIndex);
+        String baseScript = mIssue.getScriptForContact(c.id);
+        String script = ScriptReplacements.replacing(
+                this,
+                baseScript,
+                c,
+                getIntent().getStringExtra(KEY_LOCATION_NAME),
+                AccountManager.Instance.getUserName(this)
+        );
+        MarkdownUtil.setUpScript(binding.callScript, script, getApplicationContext());
+    }
+
+    @Override
+    public void onRequestError(String issueId) {
+        // Only process errors for the current issue to prevent race conditions
+        if (TextUtils.equals(mIssue.id, issueId)) {
+            FiveCallsApi api = AppSingleton.getInstance(this).getJsonController();
+            api.unregisterScriptsRequestListener(this);
+        }
+    }
+
+    @Override
+    public void onJsonError(String issueId) {
+        // Only process errors for the current issue to prevent race conditions
+        if (TextUtils.equals(mIssue.id, issueId)) {
+            FiveCallsApi api = AppSingleton.getInstance(this).getJsonController();
+            api.unregisterScriptsRequestListener(this);
+        }
+    }
+
+    @Override
+    public void onScriptsReceived(String issueId, List<CustomizedContactScript> scripts) {
+        // Only process scripts for the current issue to prevent race conditions
+        if (TextUtils.equals(mIssue.id, issueId)) {
+            FiveCallsApi api = AppSingleton.getInstance(this).getJsonController();
+            api.unregisterScriptsRequestListener(this);
+
+            mIssue.customizedScripts = scripts;
+            updateScriptDisplay();
+        }
     }
 }

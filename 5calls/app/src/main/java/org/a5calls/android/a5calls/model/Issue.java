@@ -2,6 +2,7 @@ package org.a5calls.android.a5calls.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ import java.util.List;
 public class Issue implements Parcelable {
     public String id;
     public String name;
-    public String slug;
+    public String permalink;
     public String reason;
     public String script;
     public boolean active;
@@ -27,11 +28,13 @@ public class Issue implements Parcelable {
     public Category[] categories;
     public boolean isSplit;
     public IssueStats stats;
+    
+    public List<CustomizedContactScript> customizedScripts;
 
     protected Issue(Parcel in) {
         id = in.readString();
         name = in.readString();
-        slug = in.readString();
+        permalink = in.readString();
         reason = in.readString();
         script = in.readString();
         link = in.readString();
@@ -49,6 +52,7 @@ public class Issue implements Parcelable {
         outcomeModels = in.createTypedArrayList(Outcome.CREATOR);
         categories = in.createTypedArray(Category.CREATOR);
         stats = IssueStats.CREATOR.createFromParcel(in);
+        customizedScripts = in.createTypedArrayList(CustomizedContactScript.CREATOR);
     }
 
     public static final Creator<Issue> CREATOR = new Creator<Issue>() {
@@ -72,7 +76,7 @@ public class Issue implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
         dest.writeString(name);
-        dest.writeString(slug);
+        dest.writeString(permalink);
         dest.writeString(reason);
         dest.writeString(script);
         dest.writeString(link);
@@ -87,5 +91,17 @@ public class Issue implements Parcelable {
         dest.writeTypedList(outcomeModels);
         dest.writeTypedArray(categories, PARCELABLE_WRITE_RETURN_VALUE);
         stats.writeToParcel(dest, flags);
+        dest.writeTypedList(customizedScripts);
+    }
+    
+    public String getScriptForContact(String contactId) {
+        if (customizedScripts != null && !TextUtils.isEmpty(contactId)) {
+            for (CustomizedContactScript customizedScript : customizedScripts) {
+                if (TextUtils.equals(customizedScript.id, contactId)) {
+                    return customizedScript.script;
+                }
+            }
+        }
+        return script;
     }
 }

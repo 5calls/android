@@ -32,7 +32,7 @@ import org.a5calls.android.a5calls.model.AccountManager;
 
 import java.util.Objects;
 
-import static org.a5calls.android.a5calls.controller.IssueActivity.KEY_IS_LOW_ACCURACY;
+import static org.a5calls.android.a5calls.controller.IssueActivity.KEY_IS_DISTRICT_SPLIT;
 
 public class LocationActivity extends AppCompatActivity {
     private static final String TAG = "LocationActivity";
@@ -98,9 +98,9 @@ public class LocationActivity extends AppCompatActivity {
                 }
                 allowsHomeUp = true;
             }
-            boolean isLowAccuracy = intent.getBooleanExtra(KEY_IS_LOW_ACCURACY, false);
-            if (isLowAccuracy) {
-                binding.lowAccuracySuggestion.setVisibility(View.VISIBLE);
+            boolean isDistrictSplit = intent.getBooleanExtra(KEY_IS_DISTRICT_SPLIT, false);
+            if (isDistrictSplit) {
+                binding.districtSplitSuggestion.setVisibility(View.VISIBLE);
             }
         }
 

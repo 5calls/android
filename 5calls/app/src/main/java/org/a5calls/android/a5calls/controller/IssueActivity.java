@@ -9,6 +9,7 @@ import android.os.Bundle;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.graphics.Insets;
@@ -49,14 +50,18 @@ import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.databinding.ActivityIssueBinding;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.Contact;
+import org.a5calls.android.a5calls.model.CustomizedContactScript;
 import org.a5calls.android.a5calls.model.DatabaseHelper;
 import org.a5calls.android.a5calls.model.Issue;
+import org.a5calls.android.a5calls.net.FiveCallsApi;
 import org.a5calls.android.a5calls.util.MarkdownUtil;
 import org.a5calls.android.a5calls.util.StateMapping;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -64,9 +69,10 @@ import java.util.TimeZone;
  * More details about an issue, including links to the phone app to call and buttons to record
  * your calls.
  */
-public class IssueActivity extends AppCompatActivity {
+public class IssueActivity extends AppCompatActivity implements FiveCallsApi.ScriptsRequestListener {
     private static final String TAG = "IssueActivity";
     public static final String KEY_ISSUE = "key_issue";
+    public static final String KEY_IS_DISTRICT_SPLIT = "key_is_district_split";
     public static final String KEY_IS_LOW_ACCURACY = "key_is_low_accuracy";
     public static final String KEY_DONATE_IS_ON = "key_donate_is_on";
 
@@ -82,6 +88,9 @@ public class IssueActivity extends AppCompatActivity {
     private boolean mShowServerError = false;
 
     private Issue mIssue;
+    // indicates that the zip entered intersects with multiple congressional districts
+    private boolean mIsDistrictSplit = false;
+    // low accuracy locations are zip codes or city names, we warn on state reps if you are using one
     private boolean mIsLowAccuracy = false;
     private boolean mDonateIsOn = false;
     private boolean mIsAnimating = false;
@@ -100,6 +109,7 @@ public class IssueActivity extends AppCompatActivity {
             finish();
             return;
         }
+        mIsDistrictSplit = getIntent().getBooleanExtra(KEY_IS_DISTRICT_SPLIT, false);
         mIsLowAccuracy = getIntent().getBooleanExtra(KEY_IS_LOW_ACCURACY, false);
         mDonateIsOn = getIntent().getBooleanExtra(KEY_DONATE_IS_ON, false);
 
@@ -229,7 +239,14 @@ public class IssueActivity extends AppCompatActivity {
             }
         });
 
-        FiveCallsApplication.analyticsManager().trackPageview(String.format("/issue/%s/", mIssue.slug), this);
+        FiveCallsApplication.analyticsManager().trackPageview(mIssue.permalink, this);
+
+        // Register scripts request listener once
+        FiveCallsApi api = AppSingleton.getInstance(this).getJsonController();
+        api.registerScriptsRequestListener(this);
+
+        // Fetch customized scripts once on create
+        fetchCustomizedScripts();
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -243,6 +260,7 @@ public class IssueActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(KEY_ISSUE, mIssue);
+        outState.putBoolean(KEY_IS_DISTRICT_SPLIT, mIsDistrictSplit);
         outState.putBoolean(KEY_IS_LOW_ACCURACY, mIsLowAccuracy);
     }
 
@@ -260,7 +278,56 @@ public class IssueActivity extends AppCompatActivity {
             binding.noContactAreas.setVisibility(View.VISIBLE);
             return;
         }
-        if (mIssue.contacts == null || mIssue.contacts.isEmpty()) {
+        if (mIssue.contacts == null) {
+            // Probably an address error.
+            binding.noCallsLeft.setVisibility(View.VISIBLE);
+            binding.issueDone.getRoot().setVisibility(View.GONE);
+            binding.updateLocationButton.setOnClickListener(view -> {
+                Intent intent = new Intent(IssueActivity.this, LocationActivity.class);
+                startActivity(intent);
+            });
+            return;
+        }
+
+        // Check for vacancies:
+        // If there is only 1 contact in the senate, or no contact in the house, then
+        // that is a vacancy. Add a placeholder contact.
+        if (mIssue.contactAreas.contains(Contact.AREA_SENATE)) {
+            int senateCount = 0;
+            for (Contact contact : mIssue.contacts) {
+                if (TextUtils.equals(contact.area, Contact.AREA_SENATE)) {
+                    senateCount++;
+                }
+            }
+            if (senateCount == 1) {
+                mIssue.contacts.add(Contact.createPlaceholder(
+                        "placeholderSenate",
+                        getResources().getString(R.string.vacant_seat_rep_name),
+                        getResources().getString(R.string.vacant_seat_rep_reason, Contact.AREA_SENATE),
+                        Contact.AREA_SENATE));
+            }
+        }
+
+        if (mIssue.contactAreas.contains(Contact.AREA_HOUSE)) {
+            int houseCount = 0;
+            for (Contact contact : mIssue.contacts) {
+                if (TextUtils.equals(contact.area, Contact.AREA_HOUSE)) {
+                    houseCount++;
+                }
+            }
+            if (houseCount == 0) {
+                mIssue.contacts.add(Contact.createPlaceholder("placeholderHouse",
+                        getResources().getString(R.string.vacant_seat_rep_name),
+                        getResources().getString(R.string.vacant_seat_rep_reason, Contact.AREA_HOUSE),
+                        Contact.AREA_HOUSE));
+            }
+        }
+
+        // Still no reps after populating vacancies.
+        // TODO: Determine if this is ever due to invalid address or if it is always because
+        // of vacancies or districts without the type of rep (e.g. senate-only calls in house-only
+        // districts like DC).
+        if (mIssue.contacts.isEmpty()) {
             binding.noCallsLeft.setVisibility(View.VISIBLE);
             binding.issueDone.getRoot().setVisibility(View.GONE);
             binding.updateLocationButton.setOnClickListener(new View.OnClickListener() {
@@ -353,7 +420,7 @@ public class IssueActivity extends AppCompatActivity {
                 R.string.issue_share_subject));
         shareIntent.putExtra(Intent.EXTRA_TEXT,
                 String.format(getResources().getString(R.string.issue_share_content), mIssue.name,
-                        mIssue.slug));
+                        mIssue.permalink));
         shareIntent.setType("text/plain");
 
         // Could send analytics on share event.
@@ -377,13 +444,14 @@ public class IssueActivity extends AppCompatActivity {
         binding.repList.removeAllViews();
         boolean allCalled = true;
         DatabaseHelper dbHelper = AppSingleton.getInstance(this).getDatabaseHelper();
+
         for (int i = 0; i < mIssue.contacts.size(); i++) {
             Contact contact = mIssue.contacts.get(i);
             View repView = LayoutInflater.from(this).inflate(R.layout.rep_list_view, null);
             boolean hasCalledToday = dbHelper.hasCalledToday(mIssue.id, contact.id);
             populateRepView(repView, contact, i, hasCalledToday);
             binding.repList.addView(repView);
-            if (!hasCalledToday) {
+            if (!hasCalledToday && !contact.isPlaceholder) {
                 allCalled = false;
             }
         }
@@ -408,45 +476,56 @@ public class IssueActivity extends AppCompatActivity {
         contactWarning.setVisibility(View.GONE);
         if (!TextUtils.isEmpty(contact.reason)) {
             contactReason.setText(contact.reason);
-            if (TextUtils.equals(contact.area, "US House") && mIsLowAccuracy) {
+            if (TextUtils.equals(contact.area, Contact.AREA_HOUSE) && mIsDistrictSplit) {
                 contactWarning.setVisibility(View.VISIBLE);
-                contactWarning.setText(R.string.low_accuracy_warning);
+                contactWarning.setText(R.string.split_district_warning);
+            } else if ((TextUtils.equals(contact.area, Contact.AREA_STATE_LOWER) ||
+                       TextUtils.equals(contact.area, Contact.AREA_STATE_UPPER)) && mIsLowAccuracy) {
+                contactWarning.setVisibility(View.VISIBLE);
+                contactWarning.setText(R.string.low_accuracy_state_rep_warning);
             }
             contactReason.setVisibility(View.VISIBLE);
         } else {
             contactReason.setVisibility(View.GONE);
         }
-        if (!TextUtils.isEmpty(contact.photoURL)) {
+        if (!contact.isPlaceholder) {
+            if (!TextUtils.isEmpty(contact.photoURL)) {
             Glide.with(getApplicationContext())
                     .load(contact.photoURL)
                     .centerCrop()
                     .transform(new CircleCrop())
                     .placeholder(R.drawable.baseline_person_52)
                     .into(repImage);
-        }
-        // Show a bit about whether they've been contacted yet today.
-        if (hasCalledToday) {
-            contactChecked.setImageLevel(1);
-            contactChecked.setContentDescription(getResources().getString(
-                    R.string.contact_done_img_description));
-        } else {
-            contactChecked.setImageLevel(0);
-            contactChecked.setContentDescription(null);
-        }
-
-        repView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), RepCallActivity.class);
-                intent.putExtra(KEY_ISSUE, mIssue);
-                intent.putExtra(RepCallActivity.KEY_ADDRESS,
-                        getIntent().getStringExtra(RepCallActivity.KEY_ADDRESS));
-                intent.putExtra(RepCallActivity.KEY_LOCATION_NAME,
-                        getIntent().getStringExtra(RepCallActivity.KEY_LOCATION_NAME));
-                intent.putExtra(RepCallActivity.KEY_ACTIVE_CONTACT_INDEX, index);
-                startActivityForResult(intent, REP_CALL_REQUEST_CODE);
             }
-        });
+            // Show a bit about whether they've been contacted yet today.
+            if (hasCalledToday) {
+                contactChecked.setImageLevel(1);
+                contactChecked.setContentDescription(getResources().getString(
+                        R.string.contact_done_img_description));
+            } else {
+                contactChecked.setImageLevel(0);
+                contactChecked.setContentDescription(null);
+            }
+
+            repView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getApplicationContext(), RepCallActivity.class);
+                    intent.putExtra(KEY_ISSUE, mIssue);
+                    intent.putExtra(RepCallActivity.KEY_ADDRESS,
+                            getIntent().getStringExtra(RepCallActivity.KEY_ADDRESS));
+                    intent.putExtra(RepCallActivity.KEY_LOCATION_NAME,
+                            getIntent().getStringExtra(RepCallActivity.KEY_LOCATION_NAME));
+                    intent.putExtra(RepCallActivity.KEY_ACTIVE_CONTACT_INDEX, index);
+                    startActivityForResult(intent, REP_CALL_REQUEST_CODE);
+                }
+            });
+        } else {
+            // Placeholder.
+            contactChecked.setVisibility(View.GONE);
+            contactName.setTextColor(getColor(R.color.textColorDarkGrey));
+            repImage.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.grey_circle));
+        }
     }
 
     private void maybeShowIssueDone() {
@@ -456,11 +535,21 @@ public class IssueActivity extends AppCompatActivity {
             return;
         }
         final DatabaseHelper dbHelper = AppSingleton.getInstance(this).getDatabaseHelper();
+        int numPlaceholder = 0;
         for (Contact contact : mIssue.contacts) {
+            if (contact.isPlaceholder) {
+                numPlaceholder++;
+                continue;
+            }
             if (!dbHelper.hasCalledToday(mIssue.id, contact.id)) {
                 binding.issueDone.getRoot().setVisibility(View.GONE);
                 return;
             }
+        }
+        if (numPlaceholder == mIssue.contacts.size()) {
+            // All contacts are placeholders.
+            binding.issueDone.getRoot().setVisibility(View.GONE);
+            return;
         }
         // At this point, all the contacts have been contacted today.
         binding.issueDone.getRoot().setVisibility(View.VISIBLE);
@@ -544,5 +633,52 @@ public class IssueActivity extends AppCompatActivity {
             Log.d(TAG, "Unable to parse created date: " + issue.createdAt);
         }
         return result.toString();
+    }
+
+    private void fetchCustomizedScripts() {
+        if (mIssue == null || mIssue.contacts == null || mIssue.contacts.isEmpty()) {
+            return;
+        }
+
+        String address = getIntent().getStringExtra(RepCallActivity.KEY_ADDRESS);
+        String locationName = getIntent().getStringExtra(RepCallActivity.KEY_LOCATION_NAME);
+
+        if (TextUtils.isEmpty(address) && TextUtils.isEmpty(locationName)) {
+            return;
+        }
+
+
+        List<String> contactIds = new ArrayList<>();
+        for (Contact contact : mIssue.contacts) {
+            contactIds.add(contact.id);
+        }
+
+        FiveCallsApi api = AppSingleton.getInstance(this).getJsonController();
+        String userName = AccountManager.Instance.getUserName(this);
+        api.getCustomizedScripts(mIssue.id, contactIds, locationName != null ? locationName : address, userName);
+    }
+
+    @Override
+    public void onRequestError(String issueId) {
+    }
+
+    @Override
+    public void onJsonError(String issueId) {
+    }
+
+    @Override
+    public void onScriptsReceived(String issueId, List<CustomizedContactScript> scripts) {
+        // Only process scripts for the current issue to prevent race conditions
+        if (TextUtils.equals(mIssue.id, issueId)) {
+            // Apply the scripts to the current issue
+            mIssue.customizedScripts = scripts;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        FiveCallsApi api = AppSingleton.getInstance(this).getJsonController();
+        api.unregisterScriptsRequestListener(this);
     }
 }
