@@ -43,6 +43,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private List<Issue> mIssues = new ArrayList<>();
     private List<Issue> mAllIssues = new ArrayList<>();
+    private boolean mIsSplitDistrict = false;
     private int mErrorType = NO_ISSUES_YET;
     private int mAddressErrorType = NO_ISSUES_YET;
 
@@ -90,7 +91,8 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
-    public void setContacts(List<Contact> contacts, int error) {
+    public void setContacts(List<Contact> contacts, boolean isSplitDistrict, int error) {
+        mIsSplitDistrict = isSplitDistrict;
         // Check if the contacts have returned after the issues list. If so, notify data set
         // changed.
         mAddressErrorType = error;
@@ -304,17 +306,12 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             }
 
             issue.contacts = new ArrayList<Contact>();
-            int houseCount = 0;  // Only add the first contact in the house for each issue.
             for (String contactArea : issue.contactAreas) {
                 for (Contact contact : mContacts) {
                     if (TextUtils.equals(contact.area, contactArea) &&
                             !issue.contacts.contains(contact)) {
-                        if (TextUtils.equals(contact.area, Contact.AREA_HOUSE)) {
-                            houseCount++;
-                            if (houseCount > 1) {
-                                issue.isSplit = true;
-                                continue;
-                            }
+                        if (TextUtils.equals(contact.area, Contact.AREA_HOUSE) && mIsSplitDistrict) {
+                            issue.isSplit = true;
                         }
 
                         issue.contacts.add(contact);

@@ -416,7 +416,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     @Override
     public void launchLocationActivity() {
         // Clear it in case they change they location.
-        mIssuesAdapter.setContacts(new ArrayList<Contact>(), IssuesAdapter.NO_ERROR);
+        mIssuesAdapter.setContacts(new ArrayList<Contact>(), mIsDistrictSplit, IssuesAdapter.NO_ERROR);
         // We can show the warning again next time, because the location may have changed.
         mShowLowAccuracyWarning = true;
 
@@ -490,26 +490,18 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 mLocationName = TextUtils.isEmpty(locationName) ?
                         getResources().getString(R.string.unknown_location) : locationName;
                 mDistrictId = districtId;
-                binding.collapsingToolbar.setTitle(String.format(getResources().getString(
-                        R.string.title_main), mLocationName));
-                mIssuesAdapter.setContacts(contacts, IssuesAdapter.NO_ERROR);
                 mIsDistrictSplit = isDistrictSplit;
                 mIsLowAccuracy = isLowAccuracy;
+                binding.collapsingToolbar.setTitle(String.format(getResources().getString(
+                        R.string.title_main), mLocationName));
+
+                mIssuesAdapter.setContacts(contacts, mIsDistrictSplit, IssuesAdapter.NO_ERROR);
 
                 hideSnackbars();
 
                 if (mShowLowAccuracyWarning) {
-                    // Check if this is a split district by seeing if there are >2 reps in the house.
-                    int houseCount = 0;
-                    for (Contact contact : contacts) {
-                        if (TextUtils.equals(contact.area, Contact.AREA_HOUSE)) {
-                            houseCount++;
-                        }
-                    }
-                    if (houseCount > 1 || mIsDistrictSplit) {
-                        int warning = houseCount > 1 ? R.string.split_district_warning :
-                                R.string.low_accuracy_warning;
-                        mSnackbar = Snackbar.make(binding.drawerLayout, warning,
+                    if (mIsDistrictSplit) {
+                        mSnackbar = Snackbar.make(binding.drawerLayout, R.string.low_accuracy_warning,
                                         Snackbar.LENGTH_INDEFINITE)
                                 .setAction(R.string.update, view -> launchLocationActivity());
                         mSnackbar.setActionTextColor(getResources().getColor(
