@@ -1,6 +1,5 @@
 <resources>
 
-    <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -24,133 +23,178 @@
         <item name="android:singleLine">false</item>
     </style>
 
-    <style name="AppTheme.SpinnerTheme" parent="Base.Widget.AppCompat.Spinner.Underlined"></style>
+    <style name="AppTheme.SpinnerTheme" parent="Base.Widget.AppCompat.Spinner.Underlined" />
 
-    <style name="headingStyle">
-        <item name="android:layout_width">wrap_content</item>
+    <style name="BaseContainer">
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="BaseContainer.FullHeight" parent="BaseContainer">
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="BaseContainer.Padded" parent="BaseContainer">
+        <item name="android:paddingStart">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingEnd">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingTop">@dimen/activity_vertical_margin</item>
+        <item name="android:paddingBottom">@dimen/activity_vertical_margin</item>
+    </style>
+
+    <style name="BaseContainer.FullHeight.Padded" parent="BaseContainer.FullHeight">
+        <item name="android:paddingStart">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingEnd">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingTop">@dimen/activity_vertical_margin</item>
+        <item name="android:paddingBottom">@dimen/activity_vertical_margin</item>
+    </style>
+
+    <style name="BaseContainer.HorizontalPadded" parent="BaseContainer">
+        <item name="android:paddingStart">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingEnd">@dimen/activity_horizontal_margin</item>
+    </style>
+
+    <style name="BaseContainer.FullHeight.FitsSystemWindows" parent="BaseContainer.FullHeight">
+        <item name="android:fitsSystemWindows">true</item>
+    </style>
+
+    <style name="FiveCallsTextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="FiveCallsTextView.Primary" parent="FiveCallsTextView">
         <item name="android:textColor">@color/colorPrimary</item>
-        <item name="android:textSize">@dimen/h2_text_size</item>
     </style>
 
-    <style name="locationGpsBtnStyle" parent="genericButtonStyle">
-        <item name="android:layout_marginTop">@dimen/margin_top16</item>
+    <style name="FiveCallsTextView.PrimaryDark" parent="FiveCallsTextView">
         <item name="android:textColor">@color/colorPrimaryDark</item>
-        <item name="android:visibility">gone</item>
-        <item name="android:layout_gravity">center_horizontal</item>
-        <item name="android:drawableStart">@drawable/ic_gps_fixed_white_24dp</item>
-        <item name="android:drawableTint">@color/colorPrimaryDark</item>
-        <item name="android:drawablePadding">@dimen/drawable_padding</item>
     </style>
 
-    <style name="spacedParagraphTextStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">@dimen/text_layout_marginTop</item>
+    <style name="FiveCallsTextView.Heading" parent="FiveCallsTextView.Primary">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="FiveCallsTextView.Body" parent="FiveCallsTextView">
         <item name="android:textSize">@dimen/text_size_paragraph</item>
     </style>
 
-    <style name="spacedParagraphTextStyleHighlight">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">@dimen/text_layout_marginTop</item>
-        <item name="android:textSize">@dimen/text_size_paragraph</item>
-        <item name="android:textStyle">italic</item>
+    <style name="FiveCallsTextView.Body.PrimaryDark" parent="FiveCallsTextView.Body">
+        <item name="android:textColor">@color/colorPrimaryDark</item>
     </style>
 
-    <style name="spacedParagraphTextStyleErrorHighlight" parent="spacedParagraphTextStyleHighlight">
+    <style name="FiveCallsButton">
+        <item name="android:minHeight">@dimen/accessibility_min_size</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="FiveCallsButton.Colored" parent="FiveCallsButton">
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+    </style>
+
+    <style name="FiveCallsButton.Transparent" parent="FiveCallsButton">
+        <item name="android:background">@android:color/transparent</item>
         <item name="android:textColor">@color/colorAccent</item>
     </style>
 
-    <style name="zipEditTextStyle">
+    <style name="FiveCallsLinearLayout">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_alignParentStart">true</item>
-        <item name="android:layout_toStartOf">@id/address_submit</item>
-        <item name="android:hint">@string/address_hint</item>
-        <item name="android:imeOptions">actionDone</item>
-        <item name="android:minHeight">@dimen/accessibility_min_size</item>
     </style>
 
-    <style name="submitBtn" parent="genericButtonStyle">
-        <item name="android:layout_alignParentEnd">true</item>
-        <item name="android:layout_marginStart">@dimen/margin_text</item>
-        <item name="android:minWidth">@dimen/accessibility_min_size</item>
-        <item name="android:textColor">@color/colorPrimaryDark</item>
-        <item name="android:text">@string/submit</item>
+    <style name="FiveCallsImageView">
+        <item name="android:scaleType">fitCenter</item>
     </style>
 
-    <style name="scrollViewStyle">
+    <style name="FiveCallsScrollView">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:background">@color/background_color</item>
     </style>
 
-    <style name="mainLinearLayout">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingBottom">@dimen/activity_vertical_margin</item>
-        <item name="android:paddingStart">@dimen/activity_horizontal_margin</item>
-        <item name="android:paddingEnd">@dimen/activity_horizontal_margin</item>
-        <item name="android:paddingTop">@dimen/activity_vertical_margin</item>
-    </style>
-
-    <style name="issueLinearLayout">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
-
-    <style name="tutorialRelativeLayoutStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:paddingBottom">@dimen/activity_vertical_margin</item>
-        <item name="android:paddingEnd">@dimen/activity_horizontal_margin</item>
-        <item name="android:paddingStart">@dimen/activity_horizontal_margin</item>
-        <item name="android:paddingTop">@dimen/activity_vertical_margin</item>
-    </style>
-
-    <style name="tutorialLinearLayoutStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_centerVertical">true</item>
-    </style>
-
-    <style name="tutorialHeadStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
+    <style name="Widget.FiveCalls.TextView.H1" parent="FiveCallsTextView.Heading">
         <item name="android:layout_marginBottom">@dimen/text_layout_marginBottom</item>
         <item name="android:textSize">@dimen/h1_text_size</item>
         <item name="android:textAllCaps">true</item>
-        <item name="android:textColor">@color/colorPrimary</item>
-        <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="issueHeadStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginBottom">@dimen/text_layout_marginBottom16</item>\
-        <item name="android:paddingStart">@dimen/activity_horizontal_margin</item>
-        <item name="android:paddingEnd">@dimen/activity_horizontal_margin</item>
-        <item name="android:textAllCaps">true</item>
-        <item name="android:textColor">@color/colorPrimary</item>
-        <item name="android:textSize">@dimen/h1_text_size</item>
-        <item name="android:textStyle">bold</item>
+    <style name="Widget.FiveCalls.TextView.H2" parent="FiveCallsTextView.Heading">
+        <item name="android:textSize">@dimen/h2_text_size</item>
     </style>
 
-    <style name="subheadingTutorialStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginBottom">@dimen/text_layout_marginBottom</item>
+    <style name="Widget.FiveCalls.TextView.Subheading" parent="FiveCallsTextView">
         <item name="android:textColor">@color/colorAccent</item>
         <item name="android:textSize">@dimen/subheading_text_size</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="splashTextStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/colorPrimaryDark</item>
+    <style name="Widget.FiveCalls.TextView.Splash" parent="FiveCallsTextView.PrimaryDark">
         <item name="android:textSize">@dimen/splash_text_size</item>
+    </style>
+
+    <style name="Widget.FiveCalls.TextView.Splash.Bold" parent="Widget.FiveCalls.TextView.Splash">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Widget.FiveCalls.TextView.Paragraph" parent="FiveCallsTextView.Body" />
+
+    <style name="Widget.FiveCalls.TextView.Paragraph.PrimaryDark" parent="FiveCallsTextView.Body.PrimaryDark" />
+
+    <style name="genericParagraphStyle" parent="Widget.FiveCalls.TextView.Paragraph" />
+
+    <style name="splashTextStyle" parent="Widget.FiveCalls.TextView.Splash" />
+
+    <style name="genericButtonStyle" parent="FiveCallsButton.Colored" />
+
+    <style name="linkButtonStyle" parent="FiveCallsButton.Transparent" />
+
+    <style name="mainLinearLayout" parent="BaseContainer.Padded" />
+
+    <style name="issueLinearLayout" parent="BaseContainer" />
+
+    <style name="tutorialLinearLayoutStyle" parent="BaseContainer">
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+
+    <style name="simpleVerticalLinearLayout" parent="FiveCallsLinearLayout">
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="horizontalInPortraitStyle">
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="horizontalLinearLayoutStyle" parent="BaseContainer">
+        <item name="android:paddingStart">@dimen/activity_horizontal_padding</item>
+    </style>
+
+    <style name="scrollViewStyle" parent="FiveCallsScrollView" />
+
+    <style name="nestedScrollViewStyleTop" parent="FiveCallsScrollView">
+        <item name="android:layout_marginBottom">@dimen/nested_view_margin</item>
+        <item name="android:clipToPadding">false</item>
+    </style>
+
+    <style name="nestedScrollViewStyleDown" parent="BaseContainer">
+        <item name="android:elevation">@dimen/activity_vertical_margin</item>
+        <item name="android:background">@color/issue_background_color</item>
+    </style>
+
+    <style name="mainContainersStyle" parent="BaseContainer.FullHeight.FitsSystemWindows" />
+
+    <style name="statsContentsStyle" parent="BaseContainer">
+        <item name="android:layout_marginBottom">@dimen/activity_vertical_margin</item>
+        <item name="android:layout_marginEnd">@dimen/activity_horizontal_margin</item>
+        <item name="android:layout_marginStart">@dimen/activity_horizontal_margin</item>
+        <item name="android:layout_marginTop">@dimen/activity_vertical_margin</item>
+    </style>
+
+    <style name="tutorialRelativeLayoutStyle" parent="BaseContainer.FullHeight.Padded" />
+
+    <style name="tutorialHeadStyle" parent="Widget.FiveCalls.TextView.H1" />
+
+    <style name="subheadingTutorialStyle" parent="Widget.FiveCalls.TextView.Subheading">
+        <item name="android:layout_marginBottom">@dimen/text_layout_marginBottom</item>
     </style>
 
     <style name="nextBtnTutorialStyle" parent="linkButtonStyle">
@@ -163,87 +207,31 @@
         <item name="android:layout_alignParentBottom">true</item>
     </style>
 
-    <style name="genericParagraphStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">@dimen/text_size_paragraph</item>
+    <style name="issueHeadStyle" parent="Widget.FiveCalls.TextView.H1">
+        <item name="android:layout_marginBottom">@dimen/text_layout_marginBottom16</item>
+        <item name="android:paddingStart">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingEnd">@dimen/activity_horizontal_margin</item>
     </style>
 
-    <style name="paragraphTextStyle" parent="genericParagraphStyle">
-        <item name="android:textColor">@color/colorPrimary</item>
-    </style>
-
-    <style name="aboutPrompt">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">@dimen/splash_text_size</item>
-        <item name="android:layout_marginTop">@dimen/margin_text</item>
-        <item name="android:textColor">@color/colorPrimaryDark</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="aboutSubtStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/colorAccent</item>
-        <item name="android:textSize">@dimen/subheading_text_size</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="transparentBtnStyle" parent="linkButtonStyle">
-        <item name="android:layout_gravity">start</item>
-        <item name="android:layout_margin">@dimen/layout_margin_button</item>
-        <item name="android:textAlignment">textStart</item>
-    </style>
-
-    <style name="fullWidthBtnStyle" parent="genericButtonStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:textAlignment">textStart</item>
-        <item name="android:drawableEnd">@drawable/arrow_forward_24px</item>
-    </style>
-
-    <style name="nestedScrollViewStyleTop">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:layout_marginBottom">@dimen/nested_view_margin</item>
-        <item name="android:background">@color/background_color</item>
-        <item name="android:clipToPadding">false</item>
-    </style>
-
-    <style name="issueNameTextStyle">
+    <style name="issueNameTextStyle" parent="Widget.FiveCalls.TextView.H2">
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginBottom">@dimen/text_layout_marginBottom16</item>
         <item name="android:clickable">true</item>
         <item name="android:paddingStart">@dimen/activity_horizontal_margin</item>
         <item name="android:paddingEnd">@dimen/activity_horizontal_margin</item>
         <item name="android:textColor">@color/colorAccent</item>
-        <item name="android:textSize">@dimen/h2_text_size</item>
         <item name="android:visibility">gone</item>
     </style>
 
-    <style name="issueDescriptionTextStyle" parent="genericParagraphStyle">
+    <style name="issueDescriptionTextStyle" parent="Widget.FiveCalls.TextView.Paragraph.PrimaryDark">
         <item name="android:layout_marginBottom">@dimen/activity_vertical_margin</item>
         <item name="android:paddingStart">@dimen/activity_horizontal_margin</item>
         <item name="android:paddingEnd">@dimen/activity_horizontal_margin</item>
-        <item name="android:textColor">@color/colorPrimaryDark</item>
     </style>
 
-    <style name="nestedScrollViewStyleDown">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:elevation">@dimen/activity_vertical_margin</item>
-        <item name="android:background">@color/issue_background_color</item>
-    </style>
+    <style name="issueRelativeLayoutStyle" parent="BaseContainer.HorizontalPadded" />
 
-    <style name="issueRelativeLayoutStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingStart">@dimen/activity_horizontal_margin</item>
-        <item name="android:paddingEnd">@dimen/activity_horizontal_margin</item>
-    </style>
-
-    <style name="issueImageView">
+    <style name="issueImageView" parent="FiveCallsImageView">
         <item name="android:layout_width">@dimen/issue_image_layout</item>
         <item name="android:layout_height">@dimen/issue_image_layout</item>
         <item name="android:layout_alignParentEnd">true</item>
@@ -252,7 +240,6 @@
         <item name="android:scaleType">center</item>
         <item name="android:src">@drawable/ic_expand_more_white_24dp</item>
     </style>
-
 
     <style name="issueContactTextStyle" parent="genericParagraphStyle">
         <item name="android:layout_centerVertical">true</item>
@@ -263,23 +250,148 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="issueTextNoCallsStyle">
+    <style name="issueTextNoCallsStyle" parent="Widget.FiveCalls.TextView.Paragraph">
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_alignParentStart">true</item>
-        <item name="android:textSize">@dimen/text_size_paragraph</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="mainContainersStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:fitsSystemWindows">true</item>
+    <style name="issueViewStyle" parent="BaseContainer">
+        <item name="android:padding">@dimen/activity_horizontal_padding</item>
+        <item name="android:clickable">true</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
+        <item name="android:background">@color/issue_background_color</item>
     </style>
 
-    <style name="mainTitleStyle">
-        <item name="android:layout_width">match_parent</item>
+    <style name="issueViewTextStyle" parent="noCallsMessageStyle">
+        <item name="android:layout_alignParentTop">true</item>
+    </style>
+
+    <style name="issueCallCountStyle" parent="Widget.FiveCalls.TextView.Paragraph.PrimaryDark">
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="issuePreviousCallStatsStyle" parent="Widget.FiveCalls.TextView.Paragraph.PrimaryDark">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:drawablePadding">@dimen/drawable_padding</item>
+        <item name="android:fontFeatureSettings">smcp</item>
+    </style>
+
+    <style name="issueImageStyle" parent="FiveCallsImageView">
+        <item name="android:layout_width">@dimen/text_box_dimen</item>
+        <item name="android:layout_height">@dimen/text_box_dimen</item>
+        <item name="android:layout_alignParentStart">true</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_marginEnd">@dimen/margin_right</item>
+    </style>
+
+    <style name="repCallTextStyle" parent="Widget.FiveCalls.TextView.Splash">
+        <item name="android:layout_marginTop">@dimen/text_layout_marginBottom16</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textStyle">bold|italic</item>
+    </style>
+
+    <style name="repImageStyle" parent="FiveCallsImageView">
+        <item name="android:layout_width">@dimen/rep_image_size</item>
+        <item name="android:layout_height">@dimen/rep_image_size</item>
+        <item name="android:layout_alignParentStart">true</item>
+        <item name="android:layout_marginEnd">@dimen/margin_right</item>
+    </style>
+
+    <style name="contactNameStyle" parent="Widget.FiveCalls.TextView.Subheading">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_alignWithParentIfMissing">true</item>
+        <item name="android:layout_alignParentTop">true</item>
+        <item name="android:layout_alignParentEnd">true</item>
+        <item name="android:layout_marginBottom">@dimen/margin_bottom</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+    <style name="SingleLineResizableStyle" parent="Widget.FiveCalls.TextView.H1">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_alignWithParentIfMissing">true</item>
+        <item name="android:layout_below">@id/contact_name</item>
+        <item name="android:layout_toEndOf">@id/rep_image</item>
+        <item name="android:layout_marginBottom">0dp</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="localOffBtnRepCallStyle" parent="linkButtonStyle">
+        <item name="android:layout_alignWithParentIfMissing">true</item>
+        <item name="android:layout_below">@id/phone_number</item>
+        <item name="android:layout_toEndOf">@id/rep_image</item>
+        <item name="android:text">@string/local_office_link</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">@dimen/label_text_size</item>
+    </style>
+
+    <style name="callScriptTextStyle" parent="genericParagraphStyle">
+        <item name="android:layout_marginTop">@dimen/margin_top8</item>
+        <item name="android:background">@color/script_background_color</item>
+        <item name="android:padding">@dimen/padding_spinner</item>
+        <item name="android:textColor">@color/textColorDarkGrey</item>
+        <item name="android:textIsSelectable">true</item>
+    </style>
+
+    <style name="topContactTextStyle" parent="Widget.FiveCalls.TextView.Paragraph.PrimaryDark">
+        <item name="android:layout_marginTop">@dimen/text_layout_marginBottom16</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="fieldOfficeTextStyle" parent="Widget.FiveCalls.TextView.Splash">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:clickable">true</item>
+        <item name="android:minHeight">@dimen/text_layout_margin32</item>
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
+    <style name="fieldCityTextStyle" parent="Widget.FiveCalls.TextView.Splash">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/margin_top4</item>
+    </style>
+
+    <style name="repListRelativeStyle" parent="BaseContainer">
+        <item name="android:layout_height">@dimen/load_more_height</item>
+        <item name="android:minHeight">@dimen/accessibility_min_size</item>
+        <item name="android:paddingBottom">@dimen/rep_list_dimens</item>
+        <item name="android:paddingTop">@dimen/rep_list_dimens</item>
+        <item name="android:paddingStart">@dimen/rep_list_dimens_left_right</item>
+        <item name="android:paddingEnd">@dimen/rep_list_dimens_left_right</item>
+        <item name="android:background">@color/issue_background_color</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
+    </style>
+
+    <style name="repListLinearStyle">
+        <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_alignParentEnd">true</item>
+        <item name="android:layout_alignWithParentIfMissing">true</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_marginEnd">@dimen/rep_list_linear_dimens</item>
+    </style>
+
+    <style name="repListContactNameStyle" parent="Widget.FiveCalls.TextView.Splash.Bold">
+        <item name="android:layout_width">wrap_content</item>
+    </style>
+
+    <style name="repListReasonStyle" parent="FiveCallsTextView">
+        <item name="android:layout_marginTop">@dimen/margin_top4</item>
+        <item name="android:textColor">@color/textColorDarkGrey</item>
+        <item name="android:textSize">@dimen/min_resizable_text_size</item>
+    </style>
+
+    <style name="repListImageStyle" parent="FiveCallsImageView">
+        <item name="android:layout_width">@dimen/issue_image_layout</item>
+        <item name="android:layout_height">@dimen/issue_image_layout</item>
+        <item name="android:layout_alignParentEnd">true</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="mainTitleStyle" parent="BaseContainer">
         <item name="android:layout_gravity">bottom</item>
         <item name="android:layout_marginStart">@dimen/main_title_start_left_margin</item>
         <item name="android:layout_marginEnd">@dimen/main_title_end_right_margin</item>
@@ -288,29 +400,14 @@
         <item name="android:textSize">@dimen/abc_text_size_subhead_material</item>
     </style>
 
-    <style name="spinnerStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:minHeight">@dimen/accessibility_min_size</item>
-        <item name="android:background">@color/colorAccent</item>
-        <item name="android:elevation">@dimen/spinner_elevation</item>
-        <item name="android:paddingStart">@dimen/padding_spinner</item>
-        <item name="android:paddingEnd">@dimen/padding_spinner</item>
-        <item name="android:spinnerMode">dropdown</item>
-    </style>
-
-    <style name="mainSearchBarStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
+    <style name="mainSearchBarStyle" parent="BaseContainer">
         <item name="android:minHeight">@dimen/accessibility_min_size</item>
         <item name="android:background">@color/check_color</item>
         <item name="android:elevation">@dimen/spinner_elevation</item>
         <item name="android:visibility">gone</item>
     </style>
 
-    <style name="searchTextStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
+    <style name="searchTextStyle" parent="Widget.FiveCalls.TextView.Paragraph">
         <item name="android:minHeight">@dimen/accessibility_min_size</item>
         <item name="android:layout_alignParentStart">true</item>
         <item name="android:layout_marginStart">@dimen/text_layout_marginBottom16</item>
@@ -321,7 +418,6 @@
         <item name="android:gravity">center_vertical</item>
         <item name="android:singleLine">true</item>
         <item name="android:textColor">@android:color/white</item>
-        <item name="android:textSize">@dimen/text_size_paragraph</item>
         <item name="android:textStyle">bold</item>
     </style>
 
@@ -342,9 +438,7 @@
         <item name="android:fitsSystemWindows">true</item>
     </style>
 
-    <style name="filterItemStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
+    <style name="filterItemStyle" parent="Widget.FiveCalls.TextView.Paragraph">
         <item name="android:layout_marginEnd">@dimen/filter_item_margin</item>
         <item name="android:drawableEnd">@drawable/ic_filter_list_white_24dp</item>
         <item name="android:drawablePadding">@dimen/filter_item_padding</item>
@@ -353,157 +447,11 @@
         <item name="android:minHeight">@dimen/accessibility_min_size</item>
         <item name="android:singleLine">true</item>
         <item name="android:textColor">@android:color/white</item>
-        <item name="android:textSize">@dimen/text_size_paragraph</item>
         <item name="android:textStyle">bold</item>
         <item name="android:foreground">?android:attr/selectableItemBackground</item>
     </style>
 
-    <style name="repCallTextStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">@dimen/text_layout_marginBottom16</item>\
-        <item name="android:textColor">@color/colorPrimary</item>
-        <item name="android:textSize">@dimen/splash_text_size</item>
-        <item name="android:textStyle">bold|italic</item>
-    </style>
-
-    <style name="RecyclerViewStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:nestedScrollingEnabled">false</item>
-        <item name="android:paddingTop">@dimen/grid_padding</item>
-    </style>
-
-    <style name="ImageButtonStyle">
-        <item name="android:layout_width">@dimen/issue_image_layout</item>
-        <item name="android:layout_height">@dimen/issue_image_layout</item>
-        <item name="android:layout_alignParentTop">true</item>
-        <item name="android:layout_alignParentEnd">true</item>
-        <item name="android:background">@android:color/transparent</item>
-        <item name="android:scaleType">fitCenter</item>
-    </style>
-
-    <style name="repImageStyle">
-        <item name="android:layout_width">@dimen/rep_image_size</item>
-        <item name="android:layout_height">@dimen/rep_image_size</item>
-        <item name="android:layout_alignParentStart">true</item>
-        <item name="android:layout_marginEnd">@dimen/margin_right</item>
-    </style>
-
-    <style name="contactNameStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_alignWithParentIfMissing">true</item>
-        <item name="android:layout_alignParentTop">true</item>
-        <item name="android:layout_alignParentEnd">true</item>
-        <item name="android:layout_marginBottom">@dimen/margin_bottom</item>
-        <item name="android:textColor">@color/colorPrimary</item>
-        <item name="android:textSize">@dimen/subheading_text_size</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="SingleLineResizableStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_alignWithParentIfMissing">true</item>
-        <item name="android:textColor">@color/colorPrimary</item>
-        <item name="android:textSize">@dimen/h1_text_size</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:layout_below">@id/contact_name</item>
-        <item name="android:layout_toEndOf">@id/rep_image</item>
-    </style>
-
-    <style name="localOffBtnRepCallStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_alignWithParentIfMissing">true</item>
-        <item name="android:layout_below">@id/phone_number</item>
-        <item name="android:layout_toEndOf">@id/rep_image</item>
-        <item name="android:background">@android:color/transparent</item>
-        <item name="android:text">@string/local_office_link</item>
-        <item name="android:textAllCaps">false</item>
-        <item name="android:textColor">@color/colorAccent</item>
-        <item name="android:textSize">@dimen/label_text_size</item>
-    </style>
-
-    <style name="callScriptTextStyle" parent="genericParagraphStyle">
-        <item name="android:layout_marginTop">@dimen/margin_top8</item>
-        <item name="android:background">@color/script_background_color</item>
-        <item name="android:padding">@dimen/padding_spinner</item>
-        <item name="android:textColor">@color/textColorDarkGrey</item>
-        <item name="android:textIsSelectable">true</item>
-    </style>
-
-    <style name="statsContentsStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginBottom">@dimen/activity_vertical_margin</item>
-        <item name="android:layout_marginEnd">@dimen/activity_horizontal_margin</item>
-        <item name="android:layout_marginStart">@dimen/activity_horizontal_margin</item>
-        <item name="android:layout_marginTop">@dimen/activity_vertical_margin</item>
-    </style>
-
-    <style name="noCallsMessageStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/colorPrimaryDark</item>
-        <item name="android:textSize">@dimen/subheading_text_size</item>
-    </style>
-
-    <style name="graphViewStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_marginTop">@dimen/margin_top8</item>
-        <item name="android:padding">@dimen/padding_spinner</item>
-    </style>
-
-    <style name="topContactTextStyle" parent="genericParagraphStyle">
-        <item name="android:layout_marginTop">@dimen/text_layout_marginBottom16</item>\
-        <item name="android:textColor">@color/colorPrimaryDark</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="emptyInvalidStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_centerHorizontal">true</item>
-        <item name="android:layout_alignParentTop">true</item>
-        <item name="android:layout_marginEnd">@dimen/text_layout_margin32</item>
-        <item name="android:layout_marginTop">@dimen/layout_margin_top</item>
-        <item name="android:textSize">@dimen/splash_text_size</item>
-        <item name="android:textAlignment">center</item>
-    </style>
-
-    <style name="emptyIssuesBtnStyle" parent="linkButtonStyle">
-        <item name="android:layout_centerHorizontal">true</item>
-        <item name="android:drawablePadding">@dimen/drawable_padding</item>
-    </style>
-
-    <style name="horizontalLinearLayoutStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingStart">@dimen/activity_horizontal_padding</item>
-    </style>
-
-    <style name="fieldOfficeTextStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:clickable">true</item>
-        <item name="android:minHeight">@dimen/text_layout_margin32</item>
-        <item name="android:textColor">@color/colorAccent</item>
-        <item name="android:textSize">@dimen/splash_text_size</item>
-    </style>
-
-    <style name="fieldCityTextStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginStart">@dimen/margin_top4</item>
-        <item name="android:textColor">@color/colorPrimaryDark</item>
-        <item name="android:textSize">@dimen/splash_text_size</item>
-    </style>
-
-    <style name="searchBoxStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
+    <style name="searchBoxStyle" parent="BaseContainer">
         <item name="android:hint">@string/search_hint</item>
         <item name="android:minHeight">@dimen/accessibility_min_size</item>
         <item name="android:minWidth">@dimen/min_button_width</item>
@@ -511,139 +459,125 @@
         <item name="android:maxLines">1</item>
     </style>
 
-    <style name="issueViewStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:padding">@dimen/activity_horizontal_padding</item>
-        <item name="android:clickable">true</item>
-        <item name="android:foreground">?android:attr/selectableItemBackground</item>
-        <item name="android:background">@color/issue_background_color</item>
+    <style name="headingStyle" parent="Widget.FiveCalls.TextView.H2">
+        <item name="android:layout_width">wrap_content</item>
     </style>
 
-    <style name="issueViewTextStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
+    <style name="paragraphTextStyle" parent="genericParagraphStyle">
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+    <style name="spacedParagraphTextStyle" parent="Widget.FiveCalls.TextView.Paragraph">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/text_layout_marginTop</item>
+    </style>
+
+    <style name="spacedParagraphTextStyleHighlight" parent="spacedParagraphTextStyle">
+        <item name="android:textStyle">italic</item>
+    </style>
+
+    <style name="spacedParagraphTextStyleErrorHighlight" parent="spacedParagraphTextStyleHighlight">
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
+    <style name="noCallsMessageStyle" parent="Widget.FiveCalls.TextView.Subheading">
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+    </style>
+
+    <style name="emptyInvalidStyle" parent="Widget.FiveCalls.TextView.Splash">
+        <item name="android:layout_centerHorizontal">true</item>
         <item name="android:layout_alignParentTop">true</item>
-        <item name="android:textColor">@color/colorPrimaryDark</item>
-        <item name="android:textSize">@dimen/subheading_text_size</item>
+        <item name="android:layout_marginEnd">@dimen/text_layout_margin32</item>
+        <item name="android:layout_marginTop">@dimen/layout_margin_top</item>
+        <item name="android:textAlignment">center</item>
     </style>
 
-    <style name="issueCallCountStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/colorPrimaryDark</item>
-        <item name="android:textSize">@dimen/text_size_paragraph</item>
-        <item name="android:paddingTop">4dp</item>
-        <item name="android:paddingBottom">4dp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="issuePreviousCallStatsStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:gravity">center_vertical</item>
+    <style name="locationGpsBtnStyle" parent="genericButtonStyle">
+        <item name="android:layout_marginTop">@dimen/margin_top16</item>
+        <item name="android:visibility">gone</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:drawableStart">@drawable/ic_gps_fixed_white_24dp</item>
+        <item name="android:drawableTint">@color/colorPrimaryDark</item>
         <item name="android:drawablePadding">@dimen/drawable_padding</item>
-        <item name="android:textSize">@dimen/text_size_paragraph</item>
-        <item name="android:textColor">@color/colorPrimaryDark</item>
-        <item name="android:fontFeatureSettings">smcp</item>
     </style>
 
-    <style name="issueImageStyle">
-        <item name="android:layout_width">@dimen/text_box_dimen</item>
-        <item name="android:layout_height">@dimen/text_box_dimen</item>
-        <item name="android:layout_alignParentStart">true</item>
-        <item name="android:layout_alignParentBottom">true</item>
-        <item name="android:layout_centerVertical">true</item>
-        <item name="android:layout_marginEnd">@dimen/margin_right</item>
-        <item name="android:scaleType">fitCenter</item>
+    <style name="submitBtn" parent="genericButtonStyle">
+        <item name="android:layout_alignParentEnd">true</item>
+        <item name="android:layout_marginStart">@dimen/margin_text</item>
+        <item name="android:minWidth">@dimen/accessibility_min_size</item>
+        <item name="android:text">@string/submit</item>
     </style>
 
-    <style name="outcomeBtnStyle">
+    <style name="transparentBtnStyle" parent="linkButtonStyle">
+        <item name="android:layout_gravity">start</item>
+        <item name="android:layout_margin">@dimen/layout_margin_button</item>
+        <item name="android:textAlignment">textStart</item>
+    </style>
+
+    <style name="fullWidthBtnStyle" parent="genericButtonStyle">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAlignment">textStart</item>
+        <item name="android:drawableEnd">@drawable/arrow_forward_24px</item>
+    </style>
+
+    <style name="emptyIssuesBtnStyle" parent="linkButtonStyle">
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:drawablePadding">@dimen/drawable_padding</item>
+    </style>
+
+    <style name="outcomeBtnStyle" parent="genericButtonStyle">
+        <item name="android:layout_width">match_parent</item>
         <item name="android:background">@color/button_color</item>
-        <item name="android:minHeight">@dimen/accessibility_min_size</item>
-        <item name="android:textColor">@color/colorPrimaryDark</item>
     </style>
 
-    <style name="progressBarStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
+    <style name="ImageButtonStyle" parent="FiveCallsImageView">
+        <item name="android:layout_width">@dimen/issue_image_layout</item>
+        <item name="android:layout_height">@dimen/issue_image_layout</item>
+        <item name="android:layout_alignParentTop">true</item>
+        <item name="android:layout_alignParentEnd">true</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="zipEditTextStyle" parent="BaseContainer">
+        <item name="android:layout_alignParentStart">true</item>
+        <item name="android:layout_toStartOf">@id/address_submit</item>
+        <item name="android:hint">@string/address_hint</item>
+        <item name="android:imeOptions">actionDone</item>
+        <item name="android:minHeight">@dimen/accessibility_min_size</item>
+    </style>
+
+    <style name="spinnerStyle" parent="BaseContainer">
+        <item name="android:minHeight">@dimen/accessibility_min_size</item>
+        <item name="android:background">@color/colorAccent</item>
+        <item name="android:elevation">@dimen/spinner_elevation</item>
+        <item name="android:paddingStart">@dimen/padding_spinner</item>
+        <item name="android:paddingEnd">@dimen/padding_spinner</item>
+        <item name="android:spinnerMode">dropdown</item>
+    </style>
+
+    <style name="RecyclerViewStyle" parent="BaseContainer">
+        <item name="android:nestedScrollingEnabled">false</item>
+        <item name="android:paddingTop">@dimen/grid_padding</item>
+    </style>
+
+    <style name="progressBarStyle" parent="BaseContainer">
         <item name="android:layout_margin">@dimen/margin_top16</item>
         <item name="android:indeterminate">true</item>
         <item name="android:layout_gravity">center</item>
     </style>
 
-    <style name="linearLayoutHeaderStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">@dimen/linear_header_height</item>
-        <item name="android:background">@android:color/white</item>
-        <item name="android:gravity">bottom</item>
+    <style name="graphViewStyle" parent="BaseContainer">
+        <item name="android:layout_marginTop">@dimen/margin_top8</item>
+        <item name="android:padding">@dimen/padding_spinner</item>
     </style>
 
-    <style name="headerImageStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/img_header_height</item>
-        <item name="android:padding">@dimen/grid_padding</item>
-        <item name="android:scaleType">fitCenter</item>
+    <style name="aboutPrompt" parent="Widget.FiveCalls.TextView.Splash.Bold">
+        <item name="android:layout_marginTop">@dimen/margin_text</item>
     </style>
 
-    <style name="timePickerStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_gravity">center_horizontal</item>
-        <item name="android:theme">@style/AppTheme</item>
-    </style>
+    <style name="aboutSubtStyle" parent="Widget.FiveCalls.TextView.Subheading" />
 
-    <style name="repListRelativeStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/load_more_height</item>
-        <item name="android:minHeight">@dimen/accessibility_min_size</item>
-        <item name="android:paddingBottom">@dimen/rep_list_dimens</item>
-        <item name="android:paddingTop">@dimen/rep_list_dimens</item>
-        <item name="android:paddingStart">@dimen/rep_list_dimens_left_right</item>
-        <item name="android:paddingEnd">@dimen/rep_list_dimens_left_right</item>
-        <item name="android:background">@color/issue_background_color</item>
-        <item name="android:foreground">?android:attr/selectableItemBackground</item>
-    </style>
-
-    <style name="repListLinearStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_alignParentEnd">true</item>
-        <item name="android:layout_alignWithParentIfMissing">true</item>
-        <item name="android:layout_centerVertical">true</item>
-        <item name="android:layout_marginEnd">@dimen/rep_list_linear_dimens</item>
-    </style>
-
-    <style name="repListContactNameStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/colorPrimaryDark</item>
-        <item name="android:textSize">@dimen/splash_text_size</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="repListReasonStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">@dimen/margin_top4</item>
-        <item name="android:textColor">@color/textColorDarkGrey</item>
-        <item name="android:textSize">@dimen/min_resizable_text_size</item>
-    </style>
-
-    <style name="repListImageStyle">
-        <item name="android:layout_width">@dimen/issue_image_layout</item>
-        <item name="android:layout_height">@dimen/issue_image_layout</item>
-        <item name="android:layout_alignParentEnd">true</item>
-        <item name="android:layout_centerVertical">true</item>
-        <item name="android:background">@android:color/transparent</item>
-        <item name="android:scaleType">fitCenter</item>
-    </style>
-
-    <style name="newsletterWrapperStyle">
-        <item name="android:paddingStart">@dimen/activity_horizontal_margin</item>
-        <item name="android:paddingEnd">@dimen/activity_horizontal_margin</item>
+    <style name="newsletterWrapperStyle" parent="BaseContainer.HorizontalPadded">
         <item name="android:paddingBottom">@dimen/activity_vertical_margin</item>
         <item name="android:background">@color/colorPrimary</item>
     </style>
@@ -656,41 +590,13 @@
         <item name="android:background">@color/background_color</item>
     </style>
 
-    <style name="genericButtonStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:minHeight">@dimen/accessibility_min_size</item>
-    </style>
-
-    <style name="linkButtonStyle" parent="genericButtonStyle">
-        <item name="android:background">@android:color/transparent</item>
-        <item name="android:textColor">@color/colorAccent</item>
-    </style>
-
     <style name="newsletterButtonStyle" parent="genericButtonStyle">
         <item name="android:layout_weight">1</item>
     </style>
 
-    <style name="newsletterTitleStyle">
-        <item name="android:textColor">@color/colorPrimaryDark</item>
-        <item name="android:textSize">@dimen/splash_text_size</item>
-        <item name="android:textStyle">bold</item>
-    </style>
+    <style name="newsletterTitleStyle" parent="Widget.FiveCalls.TextView.Splash.Bold" />
 
-    <style name="newsletterDescriptionStyle">
-        <item name="android:textColor">@color/colorPrimaryDark</item>
-        <item name="android:textSize">@dimen/text_size_paragraph</item>
-    </style>
-
-    <style name="horizontalInPortraitStyle">
-        <item name="android:orientation">vertical</item>
-    </style>
-
-    <style name="simpleVerticalLinearLayout">
-        <item name="android:orientation">vertical</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
+    <style name="newsletterDescriptionStyle" parent="Widget.FiveCalls.TextView.Paragraph.PrimaryDark" />
 
     <style name="doneCardStyle" parent="simpleVerticalLinearLayout">
         <item name="android:layout_marginStart">@dimen/activity_horizontal_margin</item>
@@ -700,8 +606,7 @@
         <item name="android:background">@color/script_background_color</item>
     </style>
 
-    <style name="doneCardParagraph" parent="genericParagraphStyle">
-        <item name="android:textColor">@color/colorPrimaryDark</item>
+    <style name="doneCardParagraph" parent="Widget.FiveCalls.TextView.Paragraph.PrimaryDark">
         <item name="android:layout_marginTop">@dimen/margin_text</item>
         <item name="android:layout_marginBottom">@dimen/margin_text</item>
     </style>
@@ -710,14 +615,32 @@
         <item name="android:layout_alignParentEnd">true</item>
     </style>
 
-    <style name="doneSectionCallout">
+    <style name="doneSectionCallout" parent="Widget.FiveCalls.TextView.Paragraph">
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_alignParentStart">true</item>
         <item name="android:layout_centerVertical">true</item>
         <item name="android:textColor">@color/colorAccent</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textSize">@dimen/text_size_paragraph</item>
+    </style>
+
+    <style name="linearLayoutHeaderStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/linear_header_height</item>
+        <item name="android:background">@android:color/white</item>
+        <item name="android:gravity">bottom</item>
+    </style>
+
+    <style name="headerImageStyle" parent="FiveCallsImageView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/img_header_height</item>
+        <item name="android:padding">@dimen/grid_padding</item>
+    </style>
+
+    <style name="timePickerStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:theme">@style/AppTheme</item>
     </style>
 
     <style name="stateIndicatorStyle">
