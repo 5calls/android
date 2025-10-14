@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     private String mLongitude;
     private String mLocationName;
     private String mDistrictId;
+    // If the house district is split for this location.
     private boolean mIsDistrictSplit = false;
     private boolean mIsLowAccuracy = false;
     private boolean mShowLowAccuracyWarning = true;
@@ -501,7 +502,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
 
                 if (mShowLowAccuracyWarning) {
                     if (mIsDistrictSplit) {
-                        mSnackbar = Snackbar.make(binding.drawerLayout, R.string.low_accuracy_warning,
+                        mSnackbar = Snackbar.make(binding.drawerLayout, R.string.split_district_warning,
                                         Snackbar.LENGTH_INDEFINITE)
                                 .setAction(R.string.update, view -> launchLocationActivity());
                         mSnackbar.setActionTextColor(getResources().getColor(
