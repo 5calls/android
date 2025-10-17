@@ -265,6 +265,7 @@
 
     <style name="issueViewTextStyle" parent="noCallsMessageStyle">
         <item name="android:layout_alignParentTop">true</item>
+        <item name="android:textStyle">normal</item>
     </style>
 
     <style name="issueCallCountStyle" parent="Widget.FiveCalls.TextView.Paragraph.PrimaryDark">
