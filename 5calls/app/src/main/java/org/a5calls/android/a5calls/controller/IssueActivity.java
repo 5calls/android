@@ -5,26 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.activity.OnBackPressedCallback;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.content.res.AppCompatResources;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.WindowInsetsCompat;
-
-import com.bumptech.glide.load.resource.bitmap.CircleCrop;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-
-import androidx.annotation.VisibleForTesting;
-import androidx.appcompat.app.AlertDialog;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.fragment.app.Fragment;
-import androidx.core.widget.NestedScrollView;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
@@ -37,7 +17,27 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.widget.NestedScrollView;
+import androidx.fragment.app.Fragment;
+
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.play.core.review.ReviewInfo;
 import com.google.android.play.core.review.ReviewManager;
@@ -96,12 +96,22 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
     private boolean mIsAnimating = false;
 
     private ActivityIssueBinding binding;
+    private ActivityResultLauncher<Intent> mRepCallLauncher;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         binding = ActivityIssueBinding.inflate(getLayoutInflater());
+
+        // Register activity result launcher for RepCallActivity
+        mRepCallLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_SERVER_ERROR) {
+                        mShowServerError = true;
+                    }
+                });
 
         mIssue = getIntent().getParcelableExtra(KEY_ISSUE);
         if (mIssue == null) {
@@ -517,7 +527,7 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
                     intent.putExtra(RepCallActivity.KEY_LOCATION_NAME,
                             getIntent().getStringExtra(RepCallActivity.KEY_LOCATION_NAME));
                     intent.putExtra(RepCallActivity.KEY_ACTIVE_CONTACT_INDEX, index);
-                    startActivityForResult(intent, REP_CALL_REQUEST_CODE);
+                    mRepCallLauncher.launch(intent);
                 }
             });
         } else {
@@ -566,14 +576,6 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
             findViewById(R.id.donate_btn).setOnClickListener(v -> launchDonate());
         } else {
             findViewById(R.id.donate_section).setVisibility(View.GONE);
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_SERVER_ERROR) {
-            mShowServerError = true;
         }
     }
 

@@ -4,7 +4,6 @@ import android.content.res.Resources;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
-import android.view.View;
 
 import org.a5calls.android.a5calls.R;
 

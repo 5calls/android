@@ -16,7 +16,7 @@ public class GridItemDecoration extends RecyclerView.ItemDecoration {
 
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-        int itemPosition = ((RecyclerView.LayoutParams) view.getLayoutParams()).getViewAdapterPosition();
+        int itemPosition = ((RecyclerView.LayoutParams) view.getLayoutParams()).getBindingAdapterPosition();
 
         if (itemPosition < gridSize) {
             outRect.top = 0;

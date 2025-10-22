@@ -11,6 +11,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
@@ -505,7 +506,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                         mSnackbar = Snackbar.make(binding.drawerLayout, R.string.split_district_warning,
                                         Snackbar.LENGTH_INDEFINITE)
                                 .setAction(R.string.update, view -> launchLocationActivity());
-                        mSnackbar.setActionTextColor(getResources().getColor(
+                        mSnackbar.setActionTextColor(ContextCompat.getColor(MainActivity.this,
                                 R.color.colorAccentLight));
                         mSnackbar.addCallback(new BaseTransientBottomBar.BaseCallback<>() {
                             @Override
