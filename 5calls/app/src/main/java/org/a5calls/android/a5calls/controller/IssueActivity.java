@@ -79,8 +79,6 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
     public static final int RESULT_OK = 1;
     public static final int RESULT_SERVER_ERROR = 2;
 
-    private static final int REP_CALL_REQUEST_CODE = 1;
-
     private static final String DONATE_URL = "https://secure.actblue.com/donate/5calls-donate?refcode=android&refcode2=";
 
     private static final int MIN_CALLS_TO_SHOW_CALL_STATS = 10;
