@@ -1,6 +1,12 @@
 package org.a5calls.android.a5calls.model;
 
-import android.os.Parcel;
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import androidx.core.util.Pair;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.After;
 import org.junit.Before;
@@ -10,12 +16,6 @@ import org.junit.runner.RunWith;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
-import androidx.core.util.Pair;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-
-import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
-import static org.junit.Assert.*;
 
 /**
  * Unit tests for DatabaseHelper.

@@ -1,26 +1,11 @@
 package org.a5calls.android.a5calls.controller;
 
+import static org.a5calls.android.a5calls.controller.IssueActivity.KEY_ISSUE;
+
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsCompat;
-
-import com.bumptech.glide.load.resource.bitmap.CircleCrop;
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.annotation.VisibleForTesting;
-import androidx.core.app.NavUtils;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-
 import android.text.TextUtils;
 import android.text.util.Linkify;
 import android.util.DisplayMetrics;
@@ -31,7 +16,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NavUtils;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
+
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.FiveCallsApplication;
@@ -45,14 +43,11 @@ import org.a5calls.android.a5calls.model.DatabaseHelper;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.model.Outcome;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
-import org.a5calls.android.a5calls.util.AnalyticsManager;
-import org.a5calls.android.a5calls.util.ScriptReplacements;
 import org.a5calls.android.a5calls.util.MarkdownUtil;
+import org.a5calls.android.a5calls.util.ScriptReplacements;
 import org.a5calls.android.a5calls.view.GridItemDecoration;
 
 import java.util.List;
-
-import static org.a5calls.android.a5calls.controller.IssueActivity.KEY_ISSUE;
 
 /**
  * Activity which handles showing a script for a rep and logging calls.

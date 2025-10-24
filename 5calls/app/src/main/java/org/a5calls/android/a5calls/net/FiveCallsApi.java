@@ -2,7 +2,6 @@ package org.a5calls.android.a5calls.net;
 
 import android.content.Context;
 import android.net.Uri;
-import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 

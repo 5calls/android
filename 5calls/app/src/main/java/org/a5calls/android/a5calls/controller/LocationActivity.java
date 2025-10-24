@@ -1,23 +1,15 @@
 package org.a5calls.android.a5calls.controller;
 
+import static org.a5calls.android.a5calls.controller.IssueActivity.KEY_IS_DISTRICT_SPLIT;
+
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Rect;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.core.app.ActivityCompat;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsCompat;
-
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -25,14 +17,21 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+
 import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.databinding.ActivityLocationBinding;
 import org.a5calls.android.a5calls.model.AccountManager;
 
 import java.util.Objects;
-
-import static org.a5calls.android.a5calls.controller.IssueActivity.KEY_IS_DISTRICT_SPLIT;
 
 public class LocationActivity extends AppCompatActivity {
     private static final String TAG = "LocationActivity";

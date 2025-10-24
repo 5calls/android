@@ -10,16 +10,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import org.a5calls.android.a5calls.AppSingleton;
-import org.a5calls.android.a5calls.FiveCallsApplication;
-import org.a5calls.android.a5calls.R;
-import org.a5calls.android.a5calls.databinding.ActivityTutorialBinding;
-import org.a5calls.android.a5calls.model.AccountManager;
-import org.a5calls.android.a5calls.net.FiveCallsApi;
-
-import java.text.NumberFormat;
-import java.util.Locale;
-
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.Nullable;
@@ -32,6 +22,16 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+
+import org.a5calls.android.a5calls.AppSingleton;
+import org.a5calls.android.a5calls.FiveCallsApplication;
+import org.a5calls.android.a5calls.R;
+import org.a5calls.android.a5calls.databinding.ActivityTutorialBinding;
+import org.a5calls.android.a5calls.model.AccountManager;
+import org.a5calls.android.a5calls.net.FiveCallsApi;
+
+import java.text.NumberFormat;
+import java.util.Locale;
 
 /**
  * Tutorial / splash screen activity

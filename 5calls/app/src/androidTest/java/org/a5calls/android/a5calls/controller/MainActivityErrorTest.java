@@ -1,20 +1,21 @@
 package org.a5calls.android.a5calls.controller;
 
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.allOf;
+
 import android.view.View;
+
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.platform.app.InstrumentationRegistry;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.HttpResponse;
 
-import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.R;
-import org.a5calls.android.a5calls.model.AccountManager;
-import org.a5calls.android.a5calls.net.FakeRequestQueue;
-import org.a5calls.android.a5calls.net.FiveCallsApi;
-import org.a5calls.android.a5calls.net.MockHttpStack;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
@@ -23,17 +24,6 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
-import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.startsWith;
 
 /**
  * Integration test for MainActivity that tests error handling.

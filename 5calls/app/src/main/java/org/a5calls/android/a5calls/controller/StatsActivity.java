@@ -44,6 +44,7 @@ import java.util.Locale;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.core.graphics.Insets;
 import androidx.core.util.Pair;
@@ -203,15 +204,15 @@ public class StatsActivity extends AppCompatActivity {
         ArrayList<PieEntry> entries = new ArrayList<>();
         if (!contacts.isEmpty()) {
             entries.add(new PieEntry(contacts.size(), getResources().getString(R.string.contact_n)));
-            colorsList.add(getResources().getColor(R.color.contacted_color));
+            colorsList.add(ContextCompat.getColor(this, R.color.contacted_color));
         }
         if (!voicemails.isEmpty()) {
             entries.add(new PieEntry(voicemails.size(), getResources().getString(R.string.voicemail_n)));
-            colorsList.add(getResources().getColor(R.color.voicemail_color));
+            colorsList.add(ContextCompat.getColor(this, R.color.voicemail_color));
         }
         if (!unavailables.isEmpty()) {
             entries.add(new PieEntry(unavailables.size(), getResources().getString(R.string.unavailable_n)));
-            colorsList.add(getResources().getColor(R.color.unavailable_color));
+            colorsList.add(ContextCompat.getColor(this, R.color.unavailable_color));
         }
 
         PieDataSet dataSet = new PieDataSet(entries, getResources().getString(R.string.menu_stats));
@@ -223,7 +224,7 @@ public class StatsActivity extends AppCompatActivity {
         dataSet.setValueLinePart1OffsetPercentage(80.f);
         dataSet.setValueLinePart1Length(.1f);
         dataSet.setValueLinePart2Length(.5f);
-        dataSet.setValueLineColor(getResources().getColor(R.color.colorPrimaryDark));
+        dataSet.setValueLineColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
         dataSet.setYValuePosition(PieDataSet.ValuePosition.INSIDE_SLICE);
         dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
 
@@ -244,10 +245,10 @@ public class StatsActivity extends AppCompatActivity {
 
         binding.pieChart.setData(data);
         binding.pieChart.setCenterText(insideCircleText);
-        binding.pieChart.setCenterTextColor(getResources().getColor(R.color.colorPrimaryDark));
+        binding.pieChart.setCenterTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
         binding.pieChart.setCenterTextSize(11f);
         binding.pieChart.setHoleRadius(70);
-        binding.pieChart.setEntryLabelColor(getResources().getColor(R.color.colorPrimaryDark));
+        binding.pieChart.setEntryLabelColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
         binding.pieChart.getLegend().setEnabled(false);
         binding.pieChart.setDescription(new Description());
         binding.pieChart.getDescription().setText("");
@@ -276,7 +277,7 @@ public class StatsActivity extends AppCompatActivity {
                 R.integer.horizontal_labels_count));
         binding.lineChart.getGridLabelRenderer().setNumVerticalLabels(5);
         binding.lineChart.getGridLabelRenderer().setGridColor(
-                getResources().getColor(android.R.color.white));
+                ContextCompat.getColor(this, android.R.color.white));
         binding.lineChart.getGridLabelRenderer().setHumanRounding(false, true);
         binding.lineChart.getViewport().setMinX(firstTimestamp - 10);
         binding.lineChart.getViewport().setMaxX(System.currentTimeMillis() + 10);
@@ -291,7 +292,7 @@ public class StatsActivity extends AppCompatActivity {
 
         binding.lineChart.getLegendRenderer().setVisible(true);
         binding.lineChart.getLegendRenderer().setBackgroundColor(
-                getResources().getColor(android.R.color.transparent));
+                ContextCompat.getColor(this, android.R.color.transparent));
         binding.lineChart.getLegendRenderer().setFixedPosition(0, 0);
 
         /*
@@ -316,7 +317,7 @@ public class StatsActivity extends AppCompatActivity {
 
         // Styling
         LineGraphSeries<DataPoint> series = new LineGraphSeries<>(points);
-        series.setColor(getResources().getColor(colorId));
+        series.setColor(ContextCompat.getColor(this, colorId));
         series.setThickness(getResources().getDimensionPixelSize(R.dimen.graph_line_width));
         return series;
     }
