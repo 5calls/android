@@ -31,7 +31,9 @@ public enum AccountManager {
     public static final String KEY_ALLOW_REMINDERS = "prefsKeyEnableReminders";
     private static final String KEY_REMINDERS_INFO_SHOWN = "prefsKeyRemindersInfoShown";
     public static final String KEY_NOTIFICATIONS = "prefsKeyNotifications";
-    private static final String KEY_NOTIFICATION_DIALOG_SHOWN = "prefsKeyNotificationDialog";
+    private static final String KEY_NOTIFICATION_DIALOG_SHOWN = "prefsKeyNotificationDialog2";
+    // Used for the notification dialog through version 73 (2.3.15).
+    private static final String KEY_DEPRECATED_NOTIFICATION_DIALOG_SHOWN = "prefsKeyNotificationDialog";
     private static final String KEY_CALLER_ID = "prefsKeyCallerID";
     private static final String KEY_REVIEW_DIALOG_SHOWN = "prefsKeyReviewDialog";
     private static final String KEY_NEWSLETTER_PROMPT_DONE = "prefsKeyNewsletterPrompt";
@@ -168,8 +170,11 @@ public enum AccountManager {
     }
 
     public boolean isNotificationDialogShown(Context context) {
+        // TODO: Try to upgrade users who had KEY_DEPRECATED_NOTIFICATION_DIALOG_SHOWN set
+        // but not KEY_NOTIFICATION_DIALOG_SHOWN.
         return getSharedPrefs(context).getBoolean(KEY_NOTIFICATION_DIALOG_SHOWN,
-                /* not seen yet */ false);
+                /* not seen yet */ false) ||
+                getSharedPrefs(context).getBoolean(KEY_DEPRECATED_NOTIFICATION_DIALOG_SHOWN, false);
     }
 
     public void setNotificationDialogShown(Context context, boolean shown) {
