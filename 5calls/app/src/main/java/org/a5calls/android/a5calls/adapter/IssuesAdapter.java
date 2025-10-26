@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -43,6 +44,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private List<Issue> mIssues = new ArrayList<>();
     private List<Issue> mAllIssues = new ArrayList<>();
+    private boolean mIsSplitDistrict = false;
     private int mErrorType = NO_ISSUES_YET;
     private int mAddressErrorType = NO_ISSUES_YET;
 
@@ -90,7 +92,8 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
-    public void setContacts(List<Contact> contacts, int error) {
+    public void setContacts(List<Contact> contacts, boolean isSplitDistrict, int error) {
+        mIsSplitDistrict = isSplitDistrict;
         // Check if the contacts have returned after the issues list. If so, notify data set
         // changed.
         mAddressErrorType = error;
@@ -304,17 +307,12 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             }
 
             issue.contacts = new ArrayList<Contact>();
-            int houseCount = 0;  // Only add the first contact in the house for each issue.
             for (String contactArea : issue.contactAreas) {
                 for (Contact contact : mContacts) {
                     if (TextUtils.equals(contact.area, contactArea) &&
                             !issue.contacts.contains(contact)) {
-                        if (TextUtils.equals(contact.area, Contact.AREA_HOUSE)) {
-                            houseCount++;
-                            if (houseCount > 1) {
-                                issue.isSplit = true;
-                                continue;
-                            }
+                        if (TextUtils.equals(contact.area, Contact.AREA_HOUSE) && mIsSplitDistrict) {
+                            issue.isSplit = true;
                         }
 
                         issue.contacts.add(contact);
@@ -460,7 +458,7 @@ private static class EmptyRequestViewHolder extends RecyclerView.ViewHolder {
         refreshButton = (Button) itemView.findViewById(R.id.refresh_btn);
         // Tinting the compound drawable only works API 23+, so do this manually.
         refreshButton.getCompoundDrawablesRelative()[0].mutate().setColorFilter(
-                refreshButton.getResources().getColor(R.color.colorAccent),
+                ContextCompat.getColor(itemView.getContext(), R.color.colorAccent),
                 PorterDuff.Mode.MULTIPLY);
     }
 }
@@ -473,7 +471,7 @@ private static class EmptyAddressViewHolder extends RecyclerView.ViewHolder {
         locationButton = (Button) itemView.findViewById(R.id.location_btn);
         // Tinting the compound drawable only works API 23+, so do this manually.
         locationButton.getCompoundDrawablesRelative()[0].mutate().setColorFilter(
-                locationButton.getResources().getColor(R.color.colorAccent),
+                ContextCompat.getColor(itemView.getContext(), R.color.colorAccent),
                 PorterDuff.Mode.MULTIPLY);
     }
 }
@@ -486,7 +484,7 @@ private static class EmptySearchViewHolder extends RecyclerView.ViewHolder {
         searchButton = (Button) itemView.findViewById(R.id.search_btn);
         // Tinting the compound drawable only works API 23+, so do this manually.
         searchButton.getCompoundDrawablesRelative()[0].mutate().setColorFilter(
-                searchButton.getResources().getColor(R.color.colorAccent),
+                ContextCompat.getColor(itemView.getContext(), R.color.colorAccent),
                 PorterDuff.Mode.MULTIPLY);
     }
 }

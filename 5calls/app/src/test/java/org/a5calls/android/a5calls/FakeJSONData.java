@@ -2,7 +2,6 @@ package org.a5calls.android.a5calls;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 public class FakeJSONData {
     // A snapshot of real issue data, used for testing.

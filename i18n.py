@@ -1,6 +1,8 @@
 
 # Little script to make a CSV from translated strings.
 
+from collections import OrderedDict
+
 # Get the english language strings
 raw_strings = []
 f = open("5calls/app/src/main/res/values/strings.xml", "r")
@@ -11,22 +13,27 @@ for line in f:
 f.close()
 
 # Parse them
-strings = {}
-for i in range(len(raw_strings)):
+strings = OrderedDict()
+current_comment = ""
+i = 0
+while i < len(raw_strings):
 	line = raw_strings[i]
 	if line.startswith("<!--"):
-		comment = line[5 : len(line) - 4]
-		i += 1
-		line = raw_strings[i]
-		while not line.endswith("</string>"):
+		# Update the current comment
+		current_comment = line[5 : len(line) - 4]
+	elif line.startswith("<string name="):
+		# Process the string, using the current comment
+		full_line = line
+		while not full_line.endswith("</string>"):
 			# multiline strings
 			i += 1
-			line += raw_strings[i]
-		string_id_start = line.find("name=\"") + 6
-		string_id_end = line.find("\">")
-		string_id = line[string_id_start : string_id_end]
-		value = line[string_id_end + 2 : len(line) - len("</string>")]
-		strings[string_id] = {'comment': comment, 'value': value}
+			full_line += raw_strings[i]
+		string_id_start = full_line.find("name=\"") + 6
+		string_id_end = full_line.find("\">")
+		string_id = full_line[string_id_start : string_id_end]
+		value = full_line[string_id_end + 2 : len(full_line) - len("</string>")]
+		strings[string_id] = {'comment': current_comment, 'value': value}
+	i += 1
 
 # Get the spanish language strings
 raw_es_strings = []
@@ -38,17 +45,22 @@ for line in f_es:
 f_es.close()
 
 # Add these to the dict
-for i in range(len(raw_es_strings)):
+i = 0
+while i < len(raw_es_strings):
 	line = raw_es_strings[i]
 	if line.startswith("<string name="):
-		while not line.endswith("</string>"):
+		full_line = line
+		while not full_line.endswith("</string>"):
 			i += 1
-			line += raw_es_strings[i]
-		string_id_start = line.find("name=\"") + 6
-		string_id_end = line.find("\">")
-		string_id = line[string_id_start : string_id_end]
-		value = line[string_id_end + 2 : len(line) - len("</string>")]
-		strings[string_id]['value-es'] = value
+			full_line += raw_es_strings[i]
+		string_id_start = full_line.find("name=\"") + 6
+		string_id_end = full_line.find("\">")
+		string_id = full_line[string_id_start : string_id_end]
+		value = full_line[string_id_end + 2 : len(full_line) - len("</string>")]
+		# Only add Spanish translation if the string exists in English
+		if string_id in strings:
+			strings[string_id]['value-es'] = value
+	i += 1
 
 # Write to a CSV
 out = open("translations.csv", "w")

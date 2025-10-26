@@ -3,6 +3,7 @@ package org.a5calls.android.a5calls.util;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.net.Uri;
+import androidx.browser.customtabs.CustomTabColorSchemeParams;
 import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.core.content.ContextCompat;
 import android.widget.Toast;
@@ -16,8 +17,11 @@ public class CustomTabsUtil {
      * @param uri The URL to navigate to
      */
     public static void launchUrl(Context context, Uri uri) {
-        CustomTabsIntent customTabsIntent = new CustomTabsIntent.Builder()
+        CustomTabColorSchemeParams colorSchemeParams = new CustomTabColorSchemeParams.Builder()
                 .setToolbarColor(ContextCompat.getColor(context, R.color.colorPrimary))
+                .build();
+        CustomTabsIntent customTabsIntent = new CustomTabsIntent.Builder()
+                .setDefaultColorSchemeParams(colorSchemeParams)
                 .build();
 
         try {

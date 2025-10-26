@@ -1,16 +1,12 @@
 package org.a5calls.android.a5calls.controller;
 
-import android.Manifest;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.DialogFragment;
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
 
 import com.onesignal.Continue;
 import com.onesignal.OneSignal;

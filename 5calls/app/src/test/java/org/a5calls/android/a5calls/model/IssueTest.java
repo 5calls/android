@@ -1,6 +1,13 @@
 package org.a5calls.android.a5calls.model;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import android.os.Bundle;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -8,17 +15,13 @@ import com.google.gson.reflect.TypeToken;
 
 import org.a5calls.android.a5calls.FakeJSONData;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.*;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class IssueTest {
