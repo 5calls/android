@@ -239,6 +239,10 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return !mContacts.isEmpty();
     }
 
+    public List<Issue> getAllIssues() {
+        return mAllIssues;
+    }
+
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
