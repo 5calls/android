@@ -368,6 +368,12 @@
     <!-- Error message shown on the address text field when a user tries to submit an empty address [CHAR_LIMIT=50] -->
     <string name="error_address_empty">Enter an address or zip code</string>
 
+    <!-- Error message shown when a deep link issue is not found [CHAR_LIMIT=150] -->
+    <string name="issue_not_found">This issue isn\'t relevant anymore</string>
+
+    <!-- Error message shown when a deep link issue is inactive [CHAR_LIMIT=150] -->
+    <string name="issue_inactive">This issue is no longer active</string>
+
     <!-- Menu option to share your stats / impact [CHAR_LIMIT=50] -->
     <string name="menu_share">Share</string>
 

@@ -26,6 +26,18 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="https"
+                    android:host="5calls.org"
+                    android:pathPrefix="/issue/" />
+            </intent-filter>
         </activity>
         <activity android:name=".controller.IssueActivity"
             android:launchMode="singleTop"
