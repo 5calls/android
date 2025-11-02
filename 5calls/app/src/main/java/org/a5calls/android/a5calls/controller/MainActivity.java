@@ -71,9 +71,11 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     private static final String KEY_FILTER_ITEM_SELECTED = "filterItemSelected";
     private static final String KEY_SEARCH_TEXT = "searchText";
     private static final String KEY_SHOW_LOW_ACCURACY_WARNING = "showLowAccuracyWarning";
+    private static final String DEEP_LINK_HOST = "5calls.org";
+    private static final String DEEP_LINK_PATH_ISSUE = "issue";
     private final AccountManager accountManager = AccountManager.Instance;
 
-    private String mPendingDeepLinkIssueId = null;
+    private String mPendingDeepLinkSlug = null;
 
     private ArrayAdapter<String> mFilterAdapter;
     private String mFilterText = "";
@@ -139,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             FiveCallsApplication.analyticsManager().trackPageview("/", this);
         }
 
-        handleDeepLink(intent);
+        maybeHandleDeepLink(intent);
 
         setContentView(binding.getRoot());
 
@@ -292,7 +294,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
-        handleDeepLink(intent);
+        maybeHandleDeepLink(intent);
     }
 
     @Override
@@ -468,7 +470,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 mIssuesAdapter.setAllIssues(issues, IssuesAdapter.NO_ERROR);
                 mIssuesAdapter.setFilterAndSearch(mFilterText, mSearchText);
                 binding.swipeContainer.setRefreshing(false);
-                handlePendingDeepLink();
+                maybeHandlePendingDeepLink();
             }
         };
 
@@ -767,43 +769,38 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         });
     }
 
-    private void handleDeepLink(Intent intent) {
+    private void maybeHandleDeepLink(Intent intent) {
         if (intent == null || intent.getData() == null) {
             return;
         }
 
         Uri data = intent.getData();
-        if (data.getHost() != null && data.getHost().equals("5calls.org")) {
+        if (data.getHost() != null && data.getHost().equals(DEEP_LINK_HOST)) {
             List<String> pathSegments = data.getPathSegments();
-            if (pathSegments.size() >= 2 && pathSegments.get(0).equals("issue")) {
-                mPendingDeepLinkIssueId = pathSegments.get(1);
+            if (pathSegments.size() >= 2 && pathSegments.get(0).equals(DEEP_LINK_PATH_ISSUE)) {
+                mPendingDeepLinkSlug = pathSegments.get(1);
             }
         }
     }
 
-    private void handlePendingDeepLink() {
-        if (mPendingDeepLinkIssueId == null) {
+    private void maybeHandlePendingDeepLink() {
+        if (mPendingDeepLinkSlug == null) {
             return;
         }
 
-        String issueId = mPendingDeepLinkIssueId;
-        mPendingDeepLinkIssueId = null;
+        String slug = mPendingDeepLinkSlug;
+        mPendingDeepLinkSlug = null;
 
         Issue targetIssue = null;
         for (Issue issue : mIssuesAdapter.getAllIssues()) {
-            if (issue.id.equals(issueId)) {
+            if (issue.permalink != null && issue.permalink.contains("/" + slug)) {
                 targetIssue = issue;
                 break;
             }
         }
 
         if (targetIssue != null) {
-            if (!targetIssue.active) {
-                hideSnackbars();
-                showSnackbar(R.string.issue_inactive, Snackbar.LENGTH_LONG);
-            } else {
-                startIssueActivity(this, targetIssue);
-            }
+            startIssueActivity(this, targetIssue);
         } else {
             hideSnackbars();
             showSnackbar(R.string.issue_not_found, Snackbar.LENGTH_LONG);
