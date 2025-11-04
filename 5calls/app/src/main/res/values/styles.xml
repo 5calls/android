@@ -335,6 +335,7 @@
         <item name="android:padding">@dimen/padding_spinner</item>
         <item name="android:textColor">@color/textColorDarkGrey</item>
         <item name="android:textIsSelectable">true</item>
+        <item name="android:linksClickable">true</item>
     </style>
 
     <style name="topContactTextStyle" parent="Widget.FiveCalls.TextView.Paragraph.PrimaryDark">
