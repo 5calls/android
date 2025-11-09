@@ -373,6 +373,9 @@
     <!-- Action for a snackbar or button which brings you to the location update screen [CHAR_LIMIT=10] -->
     <string name="update">Actualización</string>
 
+    <!-- Error message shown when a deep link issue is not found [CHAR_LIMIT=150] -->
+    <string name="issue_not_found">No se pudo encontrar este problema. Puede que ya no sea relevante.</string>
+
     <!-- Name of the intent chooser for sending emails [CHAR_LIMIT=NONE] -->
     <string name="send_email">Enviar correo electrónico</string>
 
