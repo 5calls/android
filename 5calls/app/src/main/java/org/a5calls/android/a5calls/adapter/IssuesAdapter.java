@@ -243,6 +243,30 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return mAllIssues;
     }
 
+    /**
+     * Populates an issue's contacts list based on its contact areas.
+     * This is normally done in onBindViewHolder, but is needed for deep linking
+     * where we bypass the RecyclerView.
+     */
+    public void populateIssueContacts(Issue issue) {
+        if (issue == null || issue.contactAreas.isEmpty()) {
+            return;
+        }
+
+        issue.contacts = new ArrayList<Contact>();
+        for (String contactArea : issue.contactAreas) {
+            for (Contact contact : mContacts) {
+                if (TextUtils.equals(contact.area, contactArea) &&
+                        !issue.contacts.contains(contact)) {
+                    if (TextUtils.equals(contact.area, Contact.AREA_HOUSE) && mIsSplitDistrict) {
+                        issue.isSplit = true;
+                    }
+                    issue.contacts.add(contact);
+                }
+            }
+        }
+    }
+
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -310,19 +334,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 return;
             }
 
-            issue.contacts = new ArrayList<Contact>();
-            for (String contactArea : issue.contactAreas) {
-                for (Contact contact : mContacts) {
-                    if (TextUtils.equals(contact.area, contactArea) &&
-                            !issue.contacts.contains(contact)) {
-                        if (TextUtils.equals(contact.area, Contact.AREA_HOUSE) && mIsSplitDistrict) {
-                            issue.isSplit = true;
-                        }
-
-                        issue.contacts.add(contact);
-                    }
-                }
-            }
+            populateIssueContacts(issue);
             displayPreviousCallStats(issue, vh);
         } else if (type == VIEW_TYPE_EMPTY_REQUEST) {
             EmptyRequestViewHolder vh = (EmptyRequestViewHolder) holder;

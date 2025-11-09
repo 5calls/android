@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     private static final String DEEP_LINK_PATH_ISSUE = "issue";
     private final AccountManager accountManager = AccountManager.Instance;
 
-    private String mPendingDeepLinkSlug = null;
+    private String mPendingDeepLinkPath = null;
 
     private ArrayAdapter<String> mFilterAdapter;
     private String mFilterText = "";
@@ -470,7 +470,10 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 mIssuesAdapter.setAllIssues(issues, IssuesAdapter.NO_ERROR);
                 mIssuesAdapter.setFilterAndSearch(mFilterText, mSearchText);
                 binding.swipeContainer.setRefreshing(false);
-                maybeHandlePendingDeepLink();
+                // Only handle deep link if we have both issues and contacts loaded
+                if (mIssuesAdapter.hasContacts()) {
+                    maybeHandlePendingDeepLink();
+                }
             }
         };
 
@@ -537,12 +540,15 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                         mShowLowAccuracyWarning = false;
                     }
                 }
-                
+
                 // If the state changed, refresh issues to get state-specific issues
                 if (stateChanged) {
                     FiveCallsApi api = AppSingleton.getInstance(getApplicationContext()).getJsonController();
                     api.getIssues();
                 }
+
+                // Handle pending deep link now that contacts are loaded
+                maybeHandlePendingDeepLink();
             }
         };
 
@@ -778,28 +784,49 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         if (data.getHost() != null && data.getHost().equals(DEEP_LINK_HOST)) {
             List<String> pathSegments = data.getPathSegments();
             if (pathSegments.size() >= 2 && pathSegments.get(0).equals(DEEP_LINK_PATH_ISSUE)) {
-                mPendingDeepLinkSlug = pathSegments.get(1);
+                // Store the full path (e.g., "issue/slug" or "issue/state/slug")
+                // to avoid false matches with substring matching
+                StringBuilder pathBuilder = new StringBuilder();
+                for (int i = 0; i < pathSegments.size(); i++) {
+                    if (i > 0) {
+                        pathBuilder.append("/");
+                    }
+                    pathBuilder.append(pathSegments.get(i));
+                }
+                mPendingDeepLinkPath = pathBuilder.toString();
             }
         }
     }
 
     private void maybeHandlePendingDeepLink() {
-        if (mPendingDeepLinkSlug == null) {
+        if (mPendingDeepLinkPath == null) {
             return;
         }
 
-        String slug = mPendingDeepLinkSlug;
-        mPendingDeepLinkSlug = null;
+        // Wait for both issues and contacts to be loaded before handling deep link
+        if (mIssuesAdapter.getAllIssues().isEmpty() || !mIssuesAdapter.hasContacts()) {
+            return;
+        }
+
+        String path = mPendingDeepLinkPath;
+        mPendingDeepLinkPath = null;
+
+        // Normalize the path for matching: add leading/trailing slashes to match API format
+        // API permalinks are like "/issue/slug/" but our path is "issue/slug"
+        String normalizedPath = "/" + path + "/";
 
         Issue targetIssue = null;
         for (Issue issue : mIssuesAdapter.getAllIssues()) {
-            if (issue.permalink != null && issue.permalink.contains("/" + slug)) {
+            if (issue.permalink != null && issue.permalink.equals(normalizedPath)) {
                 targetIssue = issue;
                 break;
             }
         }
 
         if (targetIssue != null) {
+            // Populate the issue's contacts before launching IssueActivity
+            // This is normally done in IssuesAdapter.onBindViewHolder, but we're bypassing that
+            mIssuesAdapter.populateIssueContacts(targetIssue);
             startIssueActivity(this, targetIssue);
         } else {
             hideSnackbars();
