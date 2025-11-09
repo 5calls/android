@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.util.DisplayMetrics;
 import android.util.Patterns;
@@ -404,6 +405,9 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
                 getIntent().getStringExtra(KEY_LOCATION_NAME),
                 AccountManager.Instance.getUserName(this)
         );
+        // Explicitly set movement method because the script view has selectable text.
+        // See https://github.com/noties/Markwon/issues/193#issuecomment-586573860
+        binding.callScript.setMovementMethod(LinkMovementMethod.getInstance());
         MarkdownUtil.setUpScript(binding.callScript, script, getApplicationContext());
     }
 
