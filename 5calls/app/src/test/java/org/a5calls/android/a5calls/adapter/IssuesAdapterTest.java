@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import org.a5calls.android.a5calls.FakeJSONData;
+import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.Issue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +17,8 @@ import java.util.List;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Unit tests for IssuesAdapter.
@@ -266,7 +269,7 @@ public class IssuesAdapterTest {
         assertEquals(4, result.size());
         // Should be sorted by sort field: 100(sort=300), 200(sort=100), 300(sort=400), 400(sort=200)
         // Expected order by sort: 200, 400, 100, 300
-        assertEquals("200", result.get(0).id);
+        assertEquals("200", result.getFirst().id);
         assertEquals("400", result.get(1).id);
         assertEquals("100", result.get(2).id);
         assertEquals("300", result.get(3).id);
@@ -287,8 +290,8 @@ public class IssuesAdapterTest {
         
         assertEquals(4, result.size());
         // All should have meta, sorted by sort field: 200(100), 400(200), 100(300), 300(400)
-        assertEquals("200", result.get(0).id);
-        assertEquals("CA", result.get(0).meta);
+        assertEquals("200", result.getFirst().id);
+        assertEquals("CA", result.getFirst().meta);
         assertEquals("400", result.get(1).id);
         assertEquals("NY", result.get(1).meta);
         assertEquals("100", result.get(2).id);
@@ -309,7 +312,7 @@ public class IssuesAdapterTest {
         assertEquals(4, result.size());
         
         // First two should have meta values (sorted by sort field: 200(100), 400(200))
-        assertEquals("200", result.get(0).id);
+        assertEquals("200", result.getFirst().id);
         assertEquals("CA", result.get(0).meta);
         assertEquals(100, result.get(0).sort);
         assertEquals("400", result.get(1).id);
@@ -341,13 +344,165 @@ public class IssuesAdapterTest {
         assertEquals(4, result.size());
         
         // Issues with non-empty meta come first (sorted by sort: 200(100), 400(200))
-        assertEquals("200", result.get(0).id);
-        assertEquals("CA", result.get(0).meta);
+        assertEquals("200", result.getFirst().id);
+        assertEquals("CA", result.getFirst().meta);
         assertEquals("400", result.get(1).id);
         assertEquals("NY", result.get(1).meta);
-        
+
         // Issues with null/empty meta come last (sorted by sort: 100(300), 300(400))
         assertEquals("100", result.get(2).id);
         assertEquals("300", result.get(3).id);
+    }
+
+    // Test data for populateIssueContacts tests
+    private static final String CONTACTS_TEST_ISSUE_DATA = """
+    [
+        {
+            "id": "1000",
+            "name": "Test Issue with House and Senate",
+            "reason": "Test reason",
+            "script": "Test script",
+            "categories": [{"name": "Test"}],
+            "contactType": "REPS",
+            "contactAreas": ["US House", "US Senate"],
+            "outcomeModels": [],
+            "stats": { "calls": 0 },
+            "active": true,
+            "meta": ""
+        },
+        {
+            "id": "2000",
+            "name": "Test Issue with only Senate",
+            "reason": "Test reason",
+            "script": "Test script",
+            "categories": [{"name": "Test"}],
+            "contactType": "REPS",
+            "contactAreas": ["US Senate"],
+            "outcomeModels": [],
+            "stats": { "calls": 0 },
+            "active": true,
+            "meta": ""
+        },
+        {
+            "id": "3000",
+            "name": "Test Issue with no contact areas",
+            "reason": "Test reason",
+            "script": "Test script",
+            "categories": [{"name": "Test"}],
+            "contactType": "REPS",
+            "contactAreas": [],
+            "outcomeModels": [],
+            "stats": { "calls": 0 },
+            "active": true,
+            "meta": ""
+        }
+    ]""";
+
+    @Test
+    public void testPopulateIssueContacts_basicAssignment() {
+        Gson gson = new GsonBuilder().serializeNulls().create();
+        Type listType = new TypeToken<ArrayList<Issue>>(){}.getType();
+        List<Issue> issues = gson.fromJson(CONTACTS_TEST_ISSUE_DATA, listType);
+        Issue issue = issues.getFirst();
+
+        List<Contact> contacts = new ArrayList<>();
+        Contact senatorA = Contact.createPlaceholder("sen1", "Senator A", "", "US Senate");
+        senatorA.isPlaceholder = false;
+        contacts.add(senatorA);
+
+        Contact senatorB = Contact.createPlaceholder("sen2", "Senator B", "", "US Senate");
+        senatorB.isPlaceholder = false;
+        contacts.add(senatorB);
+
+        Contact rep = Contact.createPlaceholder("rep1", "Representative", "", "US House");
+        rep.isPlaceholder = false;
+        contacts.add(rep);
+
+        IssuesAdapter adapter = new IssuesAdapter(null, null);
+        adapter.setContacts(contacts, false, IssuesAdapter.NO_ERROR);
+        adapter.populateIssueContacts(issue);
+
+        assertEquals(3, issue.contacts.size());
+        assertEquals("Representative", issue.contacts.get(0).name);
+        assertEquals("Senator A", issue.contacts.get(1).name);
+        assertEquals("Senator B", issue.contacts.get(2).name);
+    }
+
+    @Test
+    public void testPopulateIssueContacts_splitDistrict() {
+        Gson gson = new GsonBuilder().serializeNulls().create();
+        Type listType = new TypeToken<ArrayList<Issue>>(){}.getType();
+        List<Issue> issues = gson.fromJson(CONTACTS_TEST_ISSUE_DATA, listType);
+        Issue issue = issues.getFirst();
+
+        List<Contact> contacts = new ArrayList<>();
+        Contact rep = Contact.createPlaceholder("rep1", "Representative", "", "US House");
+        rep.isPlaceholder = false;
+        contacts.add(rep);
+
+        IssuesAdapter adapter = new IssuesAdapter(null, null);
+        adapter.setContacts(contacts, true, IssuesAdapter.NO_ERROR);
+        adapter.populateIssueContacts(issue);
+
+        assertTrue(issue.isSplit);
+    }
+
+    @Test
+    public void testPopulateIssueContacts_emptyContactAreas() {
+        Gson gson = new GsonBuilder().serializeNulls().create();
+        Type listType = new TypeToken<ArrayList<Issue>>(){}.getType();
+        List<Issue> issues = gson.fromJson(CONTACTS_TEST_ISSUE_DATA, listType);
+        Issue issue = issues.get(2);
+
+        List<Contact> contacts = new ArrayList<>();
+        Contact senator = Contact.createPlaceholder("sen1", "Senator", "", "US Senate");
+        senator.isPlaceholder = false;
+        contacts.add(senator);
+
+        IssuesAdapter adapter = new IssuesAdapter(null, null);
+        adapter.setContacts(contacts, false, IssuesAdapter.NO_ERROR);
+        adapter.populateIssueContacts(issue);
+
+        assertNull(issue.contacts);
+    }
+
+    @Test
+    public void testPopulateIssueContacts_noMatchingContacts() {
+        Gson gson = new GsonBuilder().serializeNulls().create();
+        Type listType = new TypeToken<ArrayList<Issue>>(){}.getType();
+        List<Issue> issues = gson.fromJson(CONTACTS_TEST_ISSUE_DATA, listType);
+        Issue issue = issues.getFirst();
+
+        List<Contact> contacts = new ArrayList<>();
+        Contact stateRep = Contact.createPlaceholder("state1", "State Representative", "", "State Lower");
+        stateRep.isPlaceholder = false;
+        contacts.add(stateRep);
+
+        IssuesAdapter adapter = new IssuesAdapter(null, null);
+        adapter.setContacts(contacts, false, IssuesAdapter.NO_ERROR);
+        adapter.populateIssueContacts(issue);
+
+        assertEquals(0, issue.contacts.size());
+    }
+
+    @Test
+    public void testPopulateIssueContacts_noDuplicates() {
+        Gson gson = new GsonBuilder().serializeNulls().create();
+        Type listType = new TypeToken<ArrayList<Issue>>(){}.getType();
+        List<Issue> issues = gson.fromJson(CONTACTS_TEST_ISSUE_DATA, listType);
+        Issue issue = issues.get(1);
+
+        List<Contact> contacts = new ArrayList<>();
+        Contact senator = Contact.createPlaceholder("sen1", "Senator A", "", "US Senate");
+        senator.isPlaceholder = false;
+        contacts.add(senator);
+        contacts.add(senator);
+
+        IssuesAdapter adapter = new IssuesAdapter(null, null);
+        adapter.setContacts(contacts, false, IssuesAdapter.NO_ERROR);
+        adapter.populateIssueContacts(issue);
+
+        assertEquals(1, issue.contacts.size());
+        assertEquals("Senator A", issue.contacts.getFirst().name);
     }
 }
