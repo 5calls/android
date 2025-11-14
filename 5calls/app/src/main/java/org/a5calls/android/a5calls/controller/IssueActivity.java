@@ -399,7 +399,7 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
             return true;
         }
         if (item.getItemId() == R.id.menu_share) {
-            sendShare();
+            sendShare(true);
             return true;
         }
         if (item.getItemId() == R.id.menu_details) {
@@ -421,14 +421,19 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
         finish();
     }
 
-    private void sendShare() {
+    private void sendShare(boolean urlOnly) {
         Intent shareIntent = new Intent();
         shareIntent.setAction(Intent.ACTION_SEND);
         shareIntent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(
                 R.string.issue_share_subject));
-        shareIntent.putExtra(Intent.EXTRA_TEXT,
-                String.format(getResources().getString(R.string.issue_share_content), mIssue.name,
-                        mIssue.permalink));
+        if (urlOnly) {
+            shareIntent.putExtra(Intent.EXTRA_TEXT,
+                    String.format(getResources().getString(R.string.issue_share_url), mIssue.permalink));
+        } else {
+            shareIntent.putExtra(Intent.EXTRA_TEXT,
+                    String.format(getResources().getString(R.string.issue_share_content), mIssue.name,
+                            mIssue.permalink));
+        }
         shareIntent.setType("text/plain");
 
         // Could send analytics on share event.
@@ -567,7 +572,7 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
         ((TextView) findViewById(R.id.issue_call_count)).setText(
                 String.format(Locale.getDefault(), "%,d", mIssue.stats.calls));
 
-        findViewById(R.id.share_btn).setOnClickListener(v -> sendShare());
+        findViewById(R.id.share_btn).setOnClickListener(v -> sendShare(false));
 
         if (mDonateIsOn) {
             findViewById(R.id.donate_section).setVisibility(View.VISIBLE);
