@@ -45,6 +45,12 @@
     <!-- Message to the user when there are no contact areas on a particular issue, so there are no calls and it's just informational. [CHAR_LIMIT=NONE] -->
     <string name="no_contact_areas_message">There are no calls for this issue.</string>
 
+    <!-- Message to the user that no calls are left on a particular issue [CHAR_LIMIT=NONE] -->
+    <string name="no_location_set">No contacts available</string>
+
+    <!-- Message to the user when there are no contact areas on a particular issue, so there are no calls and it's just informational. [CHAR_LIMIT=NONE] -->
+    <string name="error_no_location_set">Set your location to find your representatives.</string>
+
     <!-- Menu option to go to the About 5 Calls screen [CHAR_LIMIT=25] -->
     <string name="menu_about">About 5 Calls</string>
 

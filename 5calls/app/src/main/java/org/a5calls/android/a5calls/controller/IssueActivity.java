@@ -287,13 +287,24 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
             return;
         }
         if (mIssue.contacts == null) {
-            // Probably an address error.
-            binding.noCallsLeft.setVisibility(View.VISIBLE);
+            if (AccountManager.Instance.hasLocation(this)) {
+                // An address error.
+                binding.noCallsLeft.setVisibility(View.VISIBLE);
+                binding.updateLocationButton.setOnClickListener(view -> {
+                    Intent intent = new Intent(IssueActivity.this, LocationActivity.class);
+                    intent.putExtra(LocationActivity.ALLOW_HOME_UP_KEY, true);
+                    startActivity(intent);
+                });
+            } else {
+                // Hasn't set an address yet.
+                binding.noAddressSet.setVisibility(View.VISIBLE);
+                binding.setLocationButton.setOnClickListener(view -> {
+                    Intent intent = new Intent(IssueActivity.this, LocationActivity.class);
+                    intent.putExtra(LocationActivity.ALLOW_HOME_UP_KEY, true);
+                    startActivity(intent);
+                });
+            }
             binding.issueDone.getRoot().setVisibility(View.GONE);
-            binding.updateLocationButton.setOnClickListener(view -> {
-                Intent intent = new Intent(IssueActivity.this, LocationActivity.class);
-                startActivity(intent);
-            });
             return;
         }
 
@@ -307,7 +318,7 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
                     senateCount++;
                 }
             }
-            if (senateCount == 1) {
+            if (senateCount <= 1) {
                 mIssue.contacts.add(Contact.createPlaceholder(
                         "placeholderSenate",
                         getResources().getString(R.string.vacant_seat_rep_name),
@@ -343,6 +354,7 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(IssueActivity.this, LocationActivity.class);
+                    intent.putExtra(LocationActivity.ALLOW_HOME_UP_KEY, true);
                     startActivity(intent);
                 }
             });

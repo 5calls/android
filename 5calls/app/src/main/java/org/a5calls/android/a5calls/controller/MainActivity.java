@@ -123,14 +123,14 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             return;
         }
 
-        // Confirm the user has set a location.
-        if (!accountManager.hasLocation(this)) {
-            // No location set, go to LocationActivity!
-            Intent intent = new Intent(this, LocationActivity.class);
-            startActivity(intent);
-            finish();
-            return;
-        }
+//        // Confirm the user has set a location.
+//        if (!accountManager.hasLocation(this)) {
+//            // No location set, go to LocationActivity!
+//            Intent intent = new Intent(this, LocationActivity.class);
+//            startActivity(intent);
+//            finish();
+//            return;
+//        }
 
         Intent intent = getIntent();
         if (intent != null && intent.getExtras() != null &&
@@ -172,7 +172,10 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
 
         setupDrawerContent(binding.navigationView);
 
-        if (!accountManager.isNewsletterPromptDone(this)) {
+        boolean hasLocation = accountManager.hasLocation(this);
+        if (!hasLocation) {
+            // TODO: Set up a prompt to set location.
+        } else if (!accountManager.isNewsletterPromptDone(this)) {
             binding.newsletterSignupView.setVisibility(View.VISIBLE);
             binding.newsletterView.newsletterDeclineButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -322,8 +325,11 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         mAddress = accountManager.getAddress(this);
         mLatitude = accountManager.getLat(this);
         mLongitude = accountManager.getLng(this);
-
-        if (accountManager.isNewsletterPromptDone(this) ||
+        boolean hasLocation = accountManager.hasLocation(this);
+        if (!hasLocation) {
+            binding.newsletterSignupView.setVisibility(View.GONE);
+            // TODO: show "set your location" prompt.
+        } else if (accountManager.isNewsletterPromptDone(this) ||
                 accountManager.isNewsletterSignUpCompleted(this)) {
             binding.newsletterSignupView.setVisibility(View.GONE);
         }
@@ -470,8 +476,9 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 mIssuesAdapter.setAllIssues(issues, IssuesAdapter.NO_ERROR);
                 mIssuesAdapter.setFilterAndSearch(mFilterText, mSearchText);
                 binding.swipeContainer.setRefreshing(false);
-                // Only handle deep link if we have both issues and contacts loaded
-                if (mIssuesAdapter.hasContacts()) {
+                // Only handle deep link if we have both issues and contacts loaded,
+                // or if there's no location set.
+                if (mIssuesAdapter.hasContacts() || !accountManager.hasLocation(getApplicationContext())) {
                     maybeHandlePendingDeepLink();
                 }
             }
@@ -672,6 +679,8 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             String location = getLocationString();
             if (!TextUtils.isEmpty(location)) {
                 api.getContacts(location);
+            } else {
+                mIssuesAdapter.setAddressError(IssuesAdapter.ERROR_ADDRESS);
             }
         }
         api.getIssues();
@@ -803,8 +812,10 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             return;
         }
 
-        // Wait for both issues and contacts to be loaded before handling deep link
-        if (mIssuesAdapter.getAllIssues().isEmpty() || !mIssuesAdapter.hasContacts()) {
+        // Wait for both issues and contacts to be loaded before handling deep link,
+        // or just issues if we hav eno location.
+        if (mIssuesAdapter.getAllIssues().isEmpty() ||
+                (!mIssuesAdapter.hasContacts() && accountManager.hasLocation(getApplicationContext()))) {
             return;
         }
 
