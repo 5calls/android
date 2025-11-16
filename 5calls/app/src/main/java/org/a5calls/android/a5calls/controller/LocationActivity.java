@@ -38,6 +38,7 @@ public class LocationActivity extends AppCompatActivity {
 
     // Allows parent activity to control the home button
     public static final String ALLOW_HOME_UP_KEY = "allowHomeUp";
+    public static final String FROM_TUTORIAL_KEY = "fromTutorial";
     private static final int LOCATION_PERMISSION_REQUEST = 1;
 
     private final AccountManager accountManager = AccountManager.Instance;
@@ -86,16 +87,21 @@ public class LocationActivity extends AppCompatActivity {
         // Allow home up if required.
         Intent intent = getIntent();
         if (intent != null) {
+            ActionBar supportActionBar = getSupportActionBar();
             if (intent.getBooleanExtra(ALLOW_HOME_UP_KEY, false)) {
-                ActionBar supportActionBar = getSupportActionBar();
                 if (supportActionBar != null) {
                     supportActionBar.setDisplayHomeAsUpEnabled(true);
-
-                    // Set the title to "update location" if we haven't come here
-                    // from the tutorial.
-                    supportActionBar.setTitle(R.string.menu_location);
                 }
                 allowsHomeUp = true;
+            }
+            if (intent.getBooleanExtra(FROM_TUTORIAL_KEY, false)) {
+                binding.skipLocationSection.setVisibility(View.VISIBLE);
+            }
+            if (AccountManager.Instance.hasLocation(this)) {
+                // Set the title to "update location" if we have some location already.
+                if (supportActionBar != null) {
+                    supportActionBar.setTitle(R.string.menu_location);
+                }
             }
             boolean isDistrictSplit = intent.getBooleanExtra(KEY_IS_DISTRICT_SPLIT, false);
             if (isDistrictSplit) {
@@ -110,32 +116,23 @@ public class LocationActivity extends AppCompatActivity {
         }
 
         // Set listeners
-        binding.addressEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    onSubmitAddress(binding.addressEdit.getText().toString());
-                    return true;
-                }
-                return false;
+        binding.addressEdit.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                onSubmitAddress(binding.addressEdit.getText().toString());
+                return true;
             }
+            return false;
         });
 
-        binding.addressSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onSubmitAddress(binding.addressEdit.getText().toString());
-            }
+        binding.addressSubmit.setOnClickListener(v -> onSubmitAddress(binding.addressEdit.getText().toString()));
+
+        binding.skipLocationBtn.setOnClickListener(v -> {
+            returnToMain();
         });
 
         if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_LOCATION_GPS)) {
             binding.gpsButton.setVisibility(View.VISIBLE);
-            binding.gpsButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    tryGettingLocation();
-                }
-            });
+            binding.gpsButton.setOnClickListener(v -> tryGettingLocation());
         } else {
             // No GPS available, so don't show the GPS location section.
             binding.gpsButton.setVisibility(View.GONE);

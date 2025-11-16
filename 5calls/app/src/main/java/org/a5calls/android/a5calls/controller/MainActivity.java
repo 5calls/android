@@ -123,15 +123,6 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             return;
         }
 
-//        // Confirm the user has set a location.
-//        if (!accountManager.hasLocation(this)) {
-//            // No location set, go to LocationActivity!
-//            Intent intent = new Intent(this, LocationActivity.class);
-//            startActivity(intent);
-//            finish();
-//            return;
-//        }
-
         Intent intent = getIntent();
         if (intent != null && intent.getExtras() != null &&
                 intent.getExtras().getBoolean(EXTRA_FROM_NOTIFICATION, false)) {
@@ -492,6 +483,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 // active issues list to avoid showing a stale list.
                 mIssuesAdapter.setAddressError(IssuesAdapter.ERROR_REQUEST);
                 binding.swipeContainer.setRefreshing(false);
+                maybeHandlePendingDeepLink();
             }
 
             @Override
@@ -501,6 +493,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 // active issues list to avoid showing a stale list.
                 mIssuesAdapter.setAddressError(IssuesAdapter.ERROR_REQUEST);
                 binding.swipeContainer.setRefreshing(false);
+                maybeHandlePendingDeepLink();
             }
 
             @Override
@@ -508,6 +501,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 showAddressErrorSnackbar();
                 mIssuesAdapter.setAddressError(IssuesAdapter.ERROR_ADDRESS);
                 binding.swipeContainer.setRefreshing(false);
+                maybeHandlePendingDeepLink();
             }
 
             @Override
@@ -813,9 +807,12 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         }
 
         // Wait for both issues and contacts to be loaded before handling deep link,
-        // or just issues if we hav eno location.
-        if (mIssuesAdapter.getAllIssues().isEmpty() ||
-                (!mIssuesAdapter.hasContacts() && accountManager.hasLocation(getApplicationContext()))) {
+        // or just issues if we have no location.
+        boolean hasLocation = accountManager.hasLocation(getApplicationContext());
+        if (mIssuesAdapter.getAllIssues().isEmpty()) {
+            return;
+        }
+        if (!mIssuesAdapter.hasContacts() && hasLocation && !mIssuesAdapter.hasAddressError()) {
             return;
         }
 
@@ -835,9 +832,11 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         }
 
         if (targetIssue != null) {
-            // Populate the issue's contacts before launching IssueActivity
-            // This is normally done in IssuesAdapter.onBindViewHolder, but we're bypassing that
-            mIssuesAdapter.populateIssueContacts(targetIssue);
+            if (hasLocation && !mIssuesAdapter.hasAddressError()) {
+                // Populate the issue's contacts before launching IssueActivity
+                // This is normally done in IssuesAdapter.onBindViewHolder, but we're bypassing that
+                mIssuesAdapter.populateIssueContacts(targetIssue);
+            }
             startIssueActivity(this, targetIssue);
         } else {
             hideSnackbars();

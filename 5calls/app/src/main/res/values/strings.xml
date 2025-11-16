@@ -361,18 +361,22 @@
     <string name="try_again_btn">Try again</string>
 
     <!-- Prompt to enter an address or zip code instead of using the phone's GPS location [CHAR_LIMIT=NONE] -->
-    <string name="location_address_prompt">You can enter a zip code or address manually. If
-        your ZIP code is in more than one Congressional district we may show our best guess for your
-        representative in the House. Use an address or cross streets to more accurately locate you.</string>
+    <string name="location_address_prompt">Enter a zip code or address. If
+        your zip code is in more than one Congressional district we will show our best guess for your
+        representative in the House. Use an address or cross streets to more accurately locate your reps.</string>
 
     <!-- Hint text for edittext to enter an address or zip code for the user's location [CHAR_LIMIT=50] -->
     <string name="address_hint">Address or zip code</string>
 
     <!-- Error message for when an address is invalid according to the API [CHAR_LIMIT=150] -->
-    <string name="error_address_invalid">The address you entered was not found. Please update your location and try again.</string>
+    <string name="error_address_invalid">The address entered was not found. Please update your location and try again.</string>
 
     <!-- Error message shown on the address text field when a user tries to submit an empty address [CHAR_LIMIT=50] -->
     <string name="error_address_empty">Enter an address or zip code</string>
+
+    <string name="location_skip_prompt">Skip this step now and just view all the issues</string>
+
+    <string name="skip_location_btn">Set location later</string>
 
     <!-- Error message shown when a deep link issue is not found [CHAR_LIMIT=150] -->
     <string name="issue_not_found">Could not find this issue. It may no longer be relevant</string>

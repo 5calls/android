@@ -239,6 +239,10 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return !mContacts.isEmpty();
     }
 
+    public boolean hasAddressError() {
+        return mAddressErrorType != NO_ERROR;
+    }
+
     public List<Issue> getAllIssues() {
         return mAllIssues;
     }

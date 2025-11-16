@@ -260,7 +260,9 @@ public class TutorialActivity extends AppCompatActivity {
 
                         // Return to the main activity
                         AccountManager.Instance.setTutorialSeen(getActivity(), true);
-                        Intent intent = new Intent(getActivity(), MainActivity.class);
+                        Intent intent = new Intent(getActivity(), LocationActivity.class);
+                        intent.putExtra(LocationActivity.FROM_TUTORIAL_KEY, true);
+                        intent.putExtra(LocationActivity.ALLOW_HOME_UP_KEY, false);
                         startActivity(intent);
                         getActivity().finish();
                     });
