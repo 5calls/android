@@ -126,9 +126,7 @@ public class LocationActivity extends AppCompatActivity {
 
         binding.addressSubmit.setOnClickListener(v -> onSubmitAddress(binding.addressEdit.getText().toString()));
 
-        binding.skipLocationBtn.setOnClickListener(v -> {
-            returnToMain();
-        });
+        binding.skipLocationBtn.setOnClickListener(v -> returnToMain());
 
         if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_LOCATION_GPS)) {
             binding.gpsButton.setVisibility(View.VISIBLE);

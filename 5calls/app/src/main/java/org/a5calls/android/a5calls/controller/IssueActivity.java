@@ -286,6 +286,8 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
             binding.noContactAreas.setVisibility(View.VISIBLE);
             return;
         }
+        binding.noAddressSet.setVisibility(View.GONE);
+        binding.noCallsLeft.setVisibility(View.GONE);
         if (mIssue.contacts == null) {
             if (AccountManager.Instance.hasLocation(this)) {
                 // An address error.
