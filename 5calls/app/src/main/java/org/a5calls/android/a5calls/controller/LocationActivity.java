@@ -162,6 +162,10 @@ public class LocationActivity extends AppCompatActivity {
         // If we came from MainActivity and return with another Intent, it will create a deep stack
         // of activities!
         if (allowsHomeUp) {
+            // TODO: If we came from IssueActivity then we will need to re-load the contacts
+            // and go back to IssueActivity.
+            // Look at how the return with a new intent is handled in RepCallActivity -> IssueActivity,
+            // and try re-loading contacts when that happens.
             finish();
         } else {
             Intent intent = new Intent(this, MainActivity.class);

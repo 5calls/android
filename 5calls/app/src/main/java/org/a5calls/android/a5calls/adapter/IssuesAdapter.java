@@ -329,6 +329,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 vh.previousCallStats.setVisibility(View.GONE);
                 return;
             }
+            vh.numCalls.setVisibility(View.VISIBLE);
 
             // Sometimes an issue is shown with no contact areas in order to
             // inform users that a major vote or change has happened.

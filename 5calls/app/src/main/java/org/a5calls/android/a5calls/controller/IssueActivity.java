@@ -291,6 +291,7 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
         if (mIssue.contacts == null) {
             if (AccountManager.Instance.hasLocation(this)) {
                 // An address error.
+                // TODO: Need to refresh contacts if we have a location now after coming from LocationActivity.
                 binding.noCallsLeft.setVisibility(View.VISIBLE);
                 binding.updateLocationButton.setOnClickListener(view -> {
                     Intent intent = new Intent(IssueActivity.this, LocationActivity.class);
