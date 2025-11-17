@@ -121,28 +121,40 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
         mLocationLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    // TODO: Refresh contacts if the address has changed,
-                    // otherwise we can just show the same server error.
-
-                    mAddress = MainActivity.getLocationString(getApplicationContext());
-                    api.getContacts(mAddress);
+                    // If the address has changed after going to the location activity, refresh
+                    // the contacts for this issue.
+                    String newAddress = MainActivity.getLocationString(getApplicationContext());
+                    if (!TextUtils.equals(newAddress, mAddress)) {
+                        mAddress = newAddress;
+                        api.getContacts(mAddress);
+                    }
                 }
         );
         mContactsRequestListener = new FiveCallsApi.ContactsRequestListener() {
 
             @Override
             public void onRequestError() {
-                // TODO: Show a snackbar and do not change contats.
+                Snackbar.make(getWindow().getDecorView(),
+                        getResources().getString(R.string.request_error),
+                        Snackbar.LENGTH_LONG).show();
+                // Do not change the UI.
             }
 
             @Override
             public void onJsonError() {
-                // TODO: Show a snackbar and do not change contacts.
+                Snackbar.make(getWindow().getDecorView(),
+                        getResources().getString(R.string.json_error),
+                        Snackbar.LENGTH_LONG).show();
+                // Do not change the UI.
             }
 
             @Override
             public void onAddressError() {
-                // TODO: Show a snackbar and set contacts to nothing.
+                Snackbar.make(getWindow().getDecorView(),
+                        getResources().getString(R.string.error_address_invalid),
+                        Snackbar.LENGTH_LONG).show();
+                mIssue.contacts = null;
+                showContactsUi();
             }
 
             @Override
@@ -342,7 +354,6 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
         if (mIssue.contacts == null) {
             if (AccountManager.Instance.hasLocation(this)) {
                 // An address error.
-                // TODO: Need to refresh contacts if we have a location now after coming from LocationActivity.
                 binding.noCallsLeft.setVisibility(View.VISIBLE);
                 binding.updateLocationButton.setOnClickListener(view -> {
                     Intent intent = new Intent(IssueActivity.this, LocationActivity.class);

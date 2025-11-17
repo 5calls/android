@@ -253,6 +253,10 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
      * where we bypass the RecyclerView.
      */
     public void populateIssueContacts(Issue issue) {
+        if (mAddressErrorType == ERROR_ADDRESS) {
+            issue.contacts = null;
+            return;
+        }
         populateIssueContacts(issue, mContacts, mIsSplitDistrict);
     }
 
