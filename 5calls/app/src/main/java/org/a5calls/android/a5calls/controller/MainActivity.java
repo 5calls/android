@@ -85,9 +85,6 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     private FiveCallsApi.ContactsRequestListener mContactsRequestListener;
     private FiveCallsApi.CallRequestListener mReportListener;
     private OnBackPressedCallback mOnBackPressedCallback;
-    private String mAddress;
-    private String mLatitude;
-    private String mLongitude;
     private String mLocationName;
     private String mDistrictId;
     // If the house district is split for this location.
@@ -313,9 +310,6 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
 
         loadStats();
 
-        mAddress = accountManager.getAddress(this);
-        mLatitude = accountManager.getLat(this);
-        mLongitude = accountManager.getLng(this);
         boolean hasLocation = accountManager.hasLocation(this);
         if (!hasLocation) {
             binding.newsletterSignupView.setVisibility(View.GONE);
@@ -384,7 +378,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     public void startIssueActivity(Context context, Issue issue) {
         Intent issueIntent = new Intent(context, IssueActivity.class);
         issueIntent.putExtra(IssueActivity.KEY_ISSUE, issue);
-        issueIntent.putExtra(RepCallActivity.KEY_ADDRESS, getLocationString());
+        issueIntent.putExtra(RepCallActivity.KEY_ADDRESS, getLocationString(getApplicationContext()));
         issueIntent.putExtra(RepCallActivity.KEY_LOCATION_NAME, mLocationName);
         issueIntent.putExtra(IssueActivity.KEY_IS_DISTRICT_SPLIT, mIsDistrictSplit);
         issueIntent.putExtra(IssueActivity.KEY_IS_LOW_ACCURACY, mIsLowAccuracy);
@@ -670,7 +664,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         FiveCallsApi api = AppSingleton.getInstance(getApplicationContext()).getJsonController();
 
         if (!mIssuesAdapter.hasContacts()) {
-            String location = getLocationString();
+            String location = getLocationString(getApplicationContext());
             if (!TextUtils.isEmpty(location)) {
                 api.getContacts(location);
             } else {
@@ -680,12 +674,15 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         api.getIssues();
     }
 
-    private String getLocationString() {
-        if (!TextUtils.isEmpty(mLatitude) && !TextUtils.isEmpty(mLongitude)) {
-            return mLatitude + "," + mLongitude;
+    public static String getLocationString(Context context) {
+        String address = AccountManager.Instance.getAddress(context);
+        String latitude = AccountManager.Instance.getLat(context);
+        String longitude = AccountManager.Instance.getLng(context);
+        if (!TextUtils.isEmpty(latitude) && !TextUtils.isEmpty(longitude)) {
+            return latitude + "," + longitude;
 
-        } else if (!TextUtils.isEmpty(mAddress)) {
-            return mAddress;
+        } else if (!TextUtils.isEmpty(address)) {
+            return address;
         }
         return null;
     }
