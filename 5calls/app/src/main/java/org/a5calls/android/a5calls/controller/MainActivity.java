@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                     R.dimen.activity_horizontal_margin);
             final int bottomPadding = getResources().getDimensionPixelSize(
                     R.dimen.activity_vertical_margin);
-            binding.newsletterSignupView.setPadding(insets.left + sidePadding, 0,
+            binding.actionableCardHolder.setPadding(insets.left + sidePadding, 0,
                     insets.right + sidePadding, bottomPadding);
             return WindowInsetsCompat.CONSUMED;
         });
@@ -162,47 +162,44 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
 
         boolean hasLocation = accountManager.hasLocation(this);
         if (!hasLocation) {
-            // TODO: Set up a prompt to set location.
+            binding.setLocationPrompt.setVisibility(VISIBLE);
+            binding.setLocationView.setLocationButton.setOnClickListener(view -> {
+                launchLocationActivity();
+            });
         } else if (!accountManager.isNewsletterPromptDone(this)) {
             binding.newsletterSignupView.setVisibility(View.VISIBLE);
-            binding.newsletterView.newsletterDeclineButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    accountManager.setNewsletterPromptDone(v.getContext(), true);
-                    findViewById(R.id.newsletter_card).setVisibility(View.GONE);
-                    findViewById(R.id.newsletter_card_result_decline).setVisibility(VISIBLE);
-                }
+            binding.newsletterView.newsletterDeclineButton.setOnClickListener(v -> {
+                accountManager.setNewsletterPromptDone(v.getContext(), true);
+                findViewById(R.id.newsletter_card).setVisibility(View.GONE);
+                findViewById(R.id.newsletter_card_result_decline).setVisibility(VISIBLE);
             });
-            binding.newsletterView.newsletterSignupButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String email = binding.newsletterView.newsletterEmail.getText().toString();
-                    if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                        binding.newsletterView.newsletterEmail.setError(
-                                getResources().getString(R.string.error_email_format));
-                        return;
-                    }
-                    binding.newsletterView.newsletterSignupButton.setEnabled(false);
-                    binding.newsletterView.newsletterDeclineButton.setEnabled(false);
-                    FiveCallsApi api =
-                            AppSingleton.getInstance(getApplicationContext()).getJsonController();
-                    api.newsletterSubscribe(email, new FiveCallsApi.NewsletterSubscribeCallback() {
-                        @Override
-                        public void onSuccess() {
-                            accountManager.setNewsletterPromptDone(v.getContext(), true);
-                            accountManager.setNewsletterSignUpCompleted(v.getContext(), true);
-                            findViewById(R.id.newsletter_card).setVisibility(View.GONE);
-                            findViewById(R.id.newsletter_card_result_success).setVisibility(VISIBLE);
-                        }
-
-                        @Override
-                        public void onError() {
-                            binding.newsletterView.newsletterSignupButton.setEnabled(true);
-                            binding.newsletterView.newsletterDeclineButton.setEnabled(true);
-                            showSnackbar(R.string.newsletter_signup_error, Snackbar.LENGTH_LONG);
-                        }
-                    });
+            binding.newsletterView.newsletterSignupButton.setOnClickListener(v -> {
+                String email = binding.newsletterView.newsletterEmail.getText().toString();
+                if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                    binding.newsletterView.newsletterEmail.setError(
+                            getResources().getString(R.string.error_email_format));
+                    return;
                 }
+                binding.newsletterView.newsletterSignupButton.setEnabled(false);
+                binding.newsletterView.newsletterDeclineButton.setEnabled(false);
+                FiveCallsApi api =
+                        AppSingleton.getInstance(getApplicationContext()).getJsonController();
+                api.newsletterSubscribe(email, new FiveCallsApi.NewsletterSubscribeCallback() {
+                    @Override
+                    public void onSuccess() {
+                        accountManager.setNewsletterPromptDone(v.getContext(), true);
+                        accountManager.setNewsletterSignUpCompleted(v.getContext(), true);
+                        findViewById(R.id.newsletter_card).setVisibility(View.GONE);
+                        findViewById(R.id.newsletter_card_result_success).setVisibility(VISIBLE);
+                    }
+
+                    @Override
+                    public void onError() {
+                        binding.newsletterView.newsletterSignupButton.setEnabled(true);
+                        binding.newsletterView.newsletterDeclineButton.setEnabled(true);
+                        showSnackbar(R.string.newsletter_signup_error, Snackbar.LENGTH_LONG);
+                    }
+                });
             });
         }
 
@@ -311,9 +308,9 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         loadStats();
 
         boolean hasLocation = accountManager.hasLocation(this);
+        binding.setLocationPrompt.setVisibility(hasLocation ? View.GONE : View.VISIBLE);
         if (!hasLocation) {
             binding.newsletterSignupView.setVisibility(View.GONE);
-            // TODO: show "set your location" prompt.
         } else if (accountManager.isNewsletterPromptDone(this) ||
                 accountManager.isNewsletterSignUpCompleted(this)) {
             binding.newsletterSignupView.setVisibility(View.GONE);
@@ -508,6 +505,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 mIsLowAccuracy = isLowAccuracy;
                 binding.collapsingToolbar.setTitle(String.format(getResources().getString(
                         R.string.title_main), mLocationName));
+                binding.setLocationPrompt.setVisibility(View.GONE);
 
                 mIssuesAdapter.setContacts(contacts, mIsDistrictSplit, IssuesAdapter.NO_ERROR);
 
