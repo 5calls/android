@@ -121,7 +121,7 @@
                 <TextView
                     android:id="@+id/no_calls_message"
                     style="@style/issueTextNoCallsStyle"
-                    android:text="@string/no_calls_left"
+                    android:text="@string/no_contacts_found"
                     android:textColor="@color/colorPrimary"
                     />
 

@@ -39,9 +39,6 @@
     <!-- Prompt for call result buttons [CHAR_LIMIT=NONE] -->
     <string name="buttons_prompt">Indique su resultado:</string>
 
-    <!-- Message to the user that no calls are left on a particular issue [CHAR_LIMIT=NONE] -->
-    <string name="no_calls_left">No faltan llamadas pare este tema.</string>
-
     <!-- Message to the user when there are no contact areas on a particular issue, so there are no calls and it's just informational. [CHAR_LIMIT=NONE] -->
     <string name="no_contact_areas_message">No hay llamadas para este tema.</string>
 

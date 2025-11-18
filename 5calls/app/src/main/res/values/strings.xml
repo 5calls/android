@@ -39,8 +39,8 @@
     <!-- Prompt for call result buttons [CHAR_LIMIT=NONE] -->
     <string name="buttons_prompt">Enter your result:</string>
 
-    <!-- Message to the user that no calls are left on a particular issue [CHAR_LIMIT=NONE] -->
-    <string name="no_calls_left">No calls left for this issue.</string>
+    <!-- Message to the user that no contacts are found on a particular issue [CHAR_LIMIT=NONE] -->
+    <string name="no_contacts_found">No contacts found for this issue.</string>
 
     <!-- Message to the user when there are no contact areas on a particular issue, so there are no calls and it's just informational. [CHAR_LIMIT=NONE] -->
     <string name="no_contact_areas_message">There are no calls for this issue.</string>

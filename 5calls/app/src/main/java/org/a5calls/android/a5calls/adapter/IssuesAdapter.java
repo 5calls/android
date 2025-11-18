@@ -340,6 +340,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 vh.numCalls.setText("");
                 vh.numCalls.setVisibility(View.GONE);
                 vh.previousCallStats.setVisibility(View.GONE);
+                issue.contacts = null;
                 return;
             }
             vh.numCalls.setVisibility(View.VISIBLE);
