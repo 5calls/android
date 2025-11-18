@@ -423,9 +423,12 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="mainSearchBtnStyle">
+    <style name="iconButtonStyle">
         <item name="android:layout_width">@dimen/accessibility_min_size</item>
         <item name="android:layout_height">@dimen/accessibility_min_size</item>
+    </style>
+
+    <style name="mainSearchBtnStyle" parent="iconButtonStyle">
         <item name="android:layout_alignParentEnd">true</item>
         <item name="android:background">@android:color/transparent</item>
         <item name="android:foreground">?android:attr/selectableItemBackground</item>
@@ -578,11 +581,6 @@
     </style>
 
     <style name="aboutSubtStyle" parent="Widget.FiveCalls.TextView.Subheading" />
-
-    <style name="newsletterWrapperStyle" parent="BaseContainer.HorizontalPadded">
-        <item name="android:paddingBottom">@dimen/activity_vertical_margin</item>
-        <item name="android:background">@color/colorPrimary</item>
-    </style>
 
     <style name="newsletterCardStyle">
         <item name="android:paddingStart">@dimen/activity_horizontal_padding</item>
