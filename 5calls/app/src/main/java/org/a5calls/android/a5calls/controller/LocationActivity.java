@@ -38,7 +38,6 @@ public class LocationActivity extends AppCompatActivity {
 
     // Allows parent activity to control the home button
     public static final String ALLOW_HOME_UP_KEY = "allowHomeUp";
-    public static final String FROM_TUTORIAL_KEY = "fromTutorial";
     private static final int LOCATION_PERMISSION_REQUEST = 1;
 
     private final AccountManager accountManager = AccountManager.Instance;
@@ -94,7 +93,8 @@ public class LocationActivity extends AppCompatActivity {
                 }
                 allowsHomeUp = true;
             }
-            if (intent.getBooleanExtra(FROM_TUTORIAL_KEY, false)) {
+            if (!allowsHomeUp) {
+                // From the tutorial. Allow skip.
                 binding.skipLocationSection.setVisibility(View.VISIBLE);
             }
             if (AccountManager.Instance.hasLocation(this)) {
@@ -153,19 +153,16 @@ public class LocationActivity extends AppCompatActivity {
         super.onPause();
     }
 
+    // Returns to wherever we came from or goes back to the MainActivity if we didn't.
     private void returnToMain() {
         // Make sure we're still alive
         if (isFinishing() || isDestroyed()) {
                 return;
         }
 
-        // If we came from MainActivity and return with another Intent, it will create a deep stack
-        // of activities!
+        // If we came from MainActivity or LocationActivity and return with another Intent, it will
+        // create a deep stack of activities!
         if (allowsHomeUp) {
-            // TODO: If we came from IssueActivity then we will need to re-load the contacts
-            // and go back to IssueActivity.
-            // Look at how the return with a new intent is handled in RepCallActivity -> IssueActivity,
-            // and try re-loading contacts when that happens.
             finish();
         } else {
             Intent intent = new Intent(this, MainActivity.class);
