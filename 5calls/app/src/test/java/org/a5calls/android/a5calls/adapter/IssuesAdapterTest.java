@@ -505,4 +505,19 @@ public class IssuesAdapterTest {
         assertEquals(1, issue.contacts.size());
         assertEquals("Senator A", issue.contacts.getFirst().name);
     }
+
+    @Test
+    public void testPopulateIssueContacts_noLocation() {
+        Gson gson = new GsonBuilder().serializeNulls().create();
+        Type listType = new TypeToken<ArrayList<Issue>>(){}.getType();
+        List<Issue> issues = gson.fromJson(CONTACTS_TEST_ISSUE_DATA, listType);
+        Issue issue = issues.get(1);
+        assertNull(issue.contacts);
+
+        IssuesAdapter adapter = new IssuesAdapter(null, null);
+        adapter.setAddressError(IssuesAdapter.ERROR_ADDRESS);
+        adapter.populateIssueContacts(issue);
+
+        assertNull(issue.contacts);
+    }
 }

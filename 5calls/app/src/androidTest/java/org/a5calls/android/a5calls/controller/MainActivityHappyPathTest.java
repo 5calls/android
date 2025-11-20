@@ -1,5 +1,6 @@
 package org.a5calls.android.a5calls.controller;
 
+import android.content.Context;
 import android.view.View;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
@@ -8,6 +9,7 @@ import com.google.android.material.appbar.CollapsingToolbarLayout;
 
 import org.a5calls.android.a5calls.FakeJSONData;
 import org.a5calls.android.a5calls.R;
+import org.a5calls.android.a5calls.model.AccountManager;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
@@ -23,10 +25,14 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.test.platform.app.InstrumentationRegistry;
+
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.containsString;
 
 /**
@@ -59,23 +65,25 @@ public class MainActivityHappyPathTest extends MainActivityBaseTest {
     /**
      * Sets up mock responses for API calls
      */
-    private void setupMockResponses(boolean isSplit)  {
+    private void setupMockResponses(boolean isSplit, boolean hasLocation)  {
+        // Set up the mock to handle all possible requests with appropriate responses
+        mHttpStack.clearUrlPatternResponses();
+
         // Use FakeJSONData for mock issues response
         JSONArray issuesArray = FakeJSONData.getIssueJSON();
         HttpResponse issuesResponse = new HttpResponse(200, new ArrayList<>(), issuesArray.toString().getBytes());
+        mHttpStack.setResponseForUrlPattern("issues", issuesResponse);
 
         // Use FakeJSONData for mock contacts response
-        JSONObject contactsResponseJson = FakeJSONData.getRepsJSON(isSplit);
-        HttpResponse contactsResponse = new HttpResponse(200, new ArrayList<>(), contactsResponseJson.toString().getBytes());
+        if (hasLocation) {
+            JSONObject contactsResponseJson = FakeJSONData.getRepsJSON(isSplit);
+            HttpResponse contactsResponse = new HttpResponse(200, new ArrayList<>(), contactsResponseJson.toString().getBytes());
+            mHttpStack.setResponseForUrlPattern("reps", contactsResponse);
+        }
 
         // Use FakeJSONData for mock report response
         JSONObject reportResponseJson = FakeJSONData.getReportJSON();
         HttpResponse reportResponse = new HttpResponse(200, new ArrayList<>(), reportResponseJson.toString().getBytes());
-
-        // Set up the mock to handle all possible requests with appropriate responses
-        mHttpStack.clearUrlPatternResponses();
-        mHttpStack.setResponseForUrlPattern("issues", issuesResponse);
-        mHttpStack.setResponseForUrlPattern("reps", contactsResponse);
         mHttpStack.setResponseForUrlPattern("report", reportResponse);
 
         // Set a default response for any other requests
@@ -84,7 +92,7 @@ public class MainActivityHappyPathTest extends MainActivityBaseTest {
 
     @Test
     public void testMainUILoadsCorrectly() throws JSONException {
-        setupMockResponses(/*isSplit=*/false);
+        setupMockResponses(/*isSplit=*/false, /*hasLocation=*/true);
 
         setupMockRequestQueue();
 
@@ -112,8 +120,8 @@ public class MainActivityHappyPathTest extends MainActivityBaseTest {
     }
 
     @Test
-    public void testMainUILoadsCorrectly_SplitWarning() throws JSONException {
-        setupMockResponses(/*isSplit=*/true);
+    public void testMainUILoadsCorrectly_SplitWarning() {
+        setupMockResponses(/*isSplit=*/true, /*hasLocation=*/true);
 
         setupMockRequestQueue();
 
@@ -122,13 +130,38 @@ public class MainActivityHappyPathTest extends MainActivityBaseTest {
         // Verify that a real issue is displayed (using the first issue from the real data)
         onView(withText("Condemn a US Takeover of Gaza")).check(matches(isDisplayed()));
 
-        // Check that the location error was shown.
-        onView(withText(R.string.low_accuracy_warning)).check(matches(isDisplayed()));
+        // Check that the location error was shown that is specific to split districts.
+        onView(withText(R.string.split_district_warning)).check(matches(isDisplayed()));
+
+        // No button to set location is shown because some location was set.
+        onView(withContentDescription(R.string.first_location_title)).check(matches(not(isDisplayed())));
+    }
+
+    @Test
+    public void testMainUILoadsCorrectly_NoLocation() {
+        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        // Clear the location.
+        String address = AccountManager.Instance.getAddress(context);
+        AccountManager.Instance.setAddress(context, "");
+        setupMockResponses(/*isSplit=*/false, /*hasLocation=*/false);
+
+        setupMockRequestQueue();
+
+        launchMainActivity(1000);
+
+        // Verify that a real issue is displayed (using the first issue from the real data)
+        onView(withText("Condemn a US Takeover of Gaza")).check(matches(isDisplayed()));
+
+        // Verify that a "set your location" button is displayed.
+        onView(withContentDescription(R.string.first_location_title)).check(matches(isDisplayed()));
+
+        // Set the address again for the sake of the next test.
+        AccountManager.Instance.setAddress(context, address);
     }
 
     @Test
     public void testNavigationDrawerOpens() throws JSONException {
-        setupMockResponses(/*isSplit=*/ false);
+        setupMockResponses(/*isSplit=*/ false, /*hasLocation=*/true);
 
         setupMockRequestQueue();
 
@@ -162,5 +195,22 @@ public class MainActivityHappyPathTest extends MainActivityBaseTest {
         onView(withText("Settings")).check(matches(isDisplayed()));
         onView(withText("FAQ")).check(matches(isDisplayed()));
         onView(withText("Update location")).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void MainActivity_ShowsTutorialOnce() {
+        // Mark tutorial as not seen yet.
+        AccountManager.Instance.setTutorialSeen(
+                InstrumentationRegistry.getInstrumentation().getTargetContext(),
+                false);
+
+        setupMockResponses(/*isSplit=*/ false, /*hasLocation=*/true);
+        setupMockRequestQueue();
+
+        launchMainActivity(1000);
+
+        // First tutorial screen shown.
+        onView(withText(R.string.about_header)).check(matches(isDisplayed()));
+        onView(withText(R.string.next)).perform(ViewAction.click())
     }
 }
