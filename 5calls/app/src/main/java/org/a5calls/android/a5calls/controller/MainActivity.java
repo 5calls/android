@@ -162,11 +162,14 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
 
         boolean hasLocation = accountManager.hasLocation(this);
         if (!hasLocation) {
+            // Show a prompt to set location.
             binding.setLocationPrompt.setVisibility(VISIBLE);
             binding.setLocationView.setLocationButton.setOnClickListener(view -> {
                 launchLocationActivity();
             });
         } else if (!accountManager.isNewsletterPromptDone(this)) {
+            // Show the newsletter prompt if we have a location and the user hasn't yet
+            // interacted with the prompt.
             binding.newsletterSignupView.setVisibility(View.VISIBLE);
             binding.newsletterView.newsletterDeclineButton.setOnClickListener(v -> {
                 accountManager.setNewsletterPromptDone(v.getContext(), true);

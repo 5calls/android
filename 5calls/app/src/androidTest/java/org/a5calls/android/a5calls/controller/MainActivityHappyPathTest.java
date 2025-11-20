@@ -22,18 +22,23 @@ import org.junit.runner.RunWith;
 import java.util.ArrayList;
 
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withInputType;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Integration test for MainActivity that tests the happy path.
@@ -97,6 +102,9 @@ public class MainActivityHappyPathTest extends MainActivityBaseTest {
         setupMockRequestQueue();
 
         launchMainActivity(1000);
+
+        // Verify the location placeholder in the header is not shown.
+        onView(withContentDescription("5 Calls for BOWLING GREEN")).check(matches(isDisplayed()));
 
         // Verify that the toolbar is displayed
         onView(withId(R.id.toolbar)).check(matches(isDisplayed()));
@@ -198,11 +206,16 @@ public class MainActivityHappyPathTest extends MainActivityBaseTest {
     }
 
     @Test
-    public void MainActivity_ShowsTutorialOnce() {
+    // TODO: Consider moving to a tutorial-specific test file.
+    public void MainActivity_ShowsTutorialOnce() throws InterruptedException {
         // Mark tutorial as not seen yet.
-        AccountManager.Instance.setTutorialSeen(
-                InstrumentationRegistry.getInstrumentation().getTargetContext(),
-                false);
+        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        AccountManager.Instance.setTutorialSeen(context, false);
+        // Clear the location.
+        String address = AccountManager.Instance.getAddress(context);
+        AccountManager.Instance.setAddress(context, "");
+
+        // Now we are in the state of starting the app for the first time.
 
         setupMockResponses(/*isSplit=*/ false, /*hasLocation=*/true);
         setupMockRequestQueue();
@@ -210,7 +223,28 @@ public class MainActivityHappyPathTest extends MainActivityBaseTest {
         launchMainActivity(1000);
 
         // First tutorial screen shown.
-        onView(withText(R.string.about_header)).check(matches(isDisplayed()));
-        onView(withText(R.string.next)).perform(ViewAction.click())
+        onView(withText(R.string.about_p2)).check(matches(isDisplayed()));
+        onView(allOf(withText(R.string.next), isDisplayed())).perform(click());
+
+        // Second tutorial screen shown.
+        onView(withText(R.string.about_p2_2)).check(matches(isDisplayed()));
+        onView(allOf(withText(R.string.next), isDisplayed())).perform(click());
+
+        // Third tutorial screen shown.
+        onView(withText(R.string.about_splash_3)).check(matches(isDisplayed()));
+        onView(allOf(withText(R.string.get_started_btn), isDisplayed())).perform(click());
+
+        // Location screen shown.
+        onView(withText(R.string.location_prompt)).check(matches(isDisplayed()));
+        onView(withText(R.string.skip_location_btn)).perform(click());
+
+        // When we reach main activity, the tutorial is seen and the button
+        // to set location is shown.
+        Thread.sleep(1000);
+        onView(withContentDescription(R.string.first_location_title)).check(matches(isDisplayed()));
+        assertTrue(AccountManager.Instance.isTutorialSeen(context));
+
+        // Put the address back.
+        AccountManager.Instance.setAddress(context, address);
     }
 }

@@ -39,8 +39,17 @@
     <!-- Prompt for call result buttons [CHAR_LIMIT=NONE] -->
     <string name="buttons_prompt">Indique su resultado:</string>
 
+    <!-- Message to the user that no contacts are found on a particular issue [CHAR_LIMIT=NONE] -->
+    <string name="no_contacts_found">No se encontraron contactos para este tema.</string>
+
     <!-- Message to the user when there are no contact areas on a particular issue, so there are no calls and it's just informational. [CHAR_LIMIT=NONE] -->
     <string name="no_contact_areas_message">No hay llamadas para este tema.</string>
+
+    <!-- Message to the user that no calls are left on a particular issue [CHAR_LIMIT=NONE] -->
+    <string name="no_location_set">No hay contactos disponibles</string>
+
+    <!-- Message to the user when no location is set, prompting them to set a location. [CHAR_LIMIT=NONE] -->
+    <string name="error_no_location_set">Establece tu ubicación para encontrar a tus representantes.</string>
 
     <!-- Menu option to go to the About 5 Calls screen [CHAR_LIMIT=25] -->
     <string name="menu_about">Sobre 5 Calls</string>
@@ -299,16 +308,22 @@
     <string name="try_again_btn">Inténtelo de nuevo</string>
 
     <!-- Prompt to enter an address or zip code instead of using the phone's GPS location [CHAR_LIMIT=NONE] -->
-    <string name="location_address_prompt">Puede introducir un código postal o una dirección manualmente. Si su código postal se encuentra en más de un distrito del Congreso, le mostraremos el representante mas probable de su area. Utilice una dirección o un calle transversal para localizarle con mayor precisión.</string>
+    <string name="location_address_prompt">Puede introducir una dirección manualmente. Utilice una dirección o un calle transversal para localizarle con mayor precisión.</string>
 
     <!-- Hint text for edittext to enter an address or zip code for the user's location [CHAR_LIMIT=50] -->
-    <string name="address_hint">Dirección o código postal</string>
+    <string name="address_hint">Dirección una ubicación</string>
 
     <!-- Error message for when an address is invalid according to the API [CHAR_LIMIT=150] -->
     <string name="error_address_invalid">Esta dirección no es válida. Por favor actualice su dirección e intente de nuevo.</string>
 
     <!-- Error message shown on the address text field when a user tries to submit an empty address [CHAR_LIMIT=50] -->
-    <string name="error_address_empty">Introduzca una dirección o un código postal</string>
+    <string name="error_address_empty">Introduzca una dirección</string>
+
+    <!-- Prompt to a user that they can skip setting their location and do it later [CHAR_LIMIT=NONE] -->
+    <string name="location_skip_prompt">También puedes establecer tu ubicación más tarde.</string>
+
+    <!-- Button to skip setting location now but implies they could do it later [CHAR_LIMIT=NONE] -->
+    <string name="skip_location_btn">Omitir por ahora</string>
 
     <!-- Menu option to share your stats / impact [CHAR_LIMIT=50] -->
     <string name="menu_share">Compartir</string>
@@ -356,13 +371,13 @@
     <string name="rep_section_prompt">Contactos para llamar hoy</string>
 
     <!-- Warning that you may be in a split district [CHAR_LIMIT=90] -->
-    <string name="split_district_warning">Su código postal abarca varios distritos, use código+4 o dirección completa.</string>
+    <string name="split_district_warning">Su dirección abarca varios distritos, use código+4 o dirección completa.</string>
 
     <!-- Warning that you have a low accuracy location [CHAR_LIMIT=90] -->
     <string name="low_accuracy_warning">Su ubicación no es lo suficientemente precisa para garantizar que tengamos al representante de la Cámara adecuado.</string>
 
     <!-- Warning for low accuracy location in issue activity [CHAR_LIMIT=NONE] -->
-    <string name="low_accuracy_state_rep_warning">Advertencia: su ubicación está configurada en un código postal u otra ubicación aproximada, ingrese una dirección o código postal+4 para representantes estatales precisos.</string>
+    <string name="low_accuracy_state_rep_warning">Advertencia: su ubicación está configurada en una dirección u otra ubicación aproximada, ingrese una dirección o código postal+4 para representantes estatales precisos.</string>
 
     <!-- Shown on the set location page above the address text field if the zip is low accuracy [CHAR_LIMIT=NONE] -->
     <string name="split_district_suggestion">Utilice su código postal + 4 o una dirección para identificar a su representante exacto.</string>

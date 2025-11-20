@@ -160,7 +160,7 @@ public class LocationActivity extends AppCompatActivity {
                 return;
         }
 
-        // If we came from MainActivity or LocationActivity and return with another Intent, it will
+        // If we came from MainActivity or IssueActivity and return with another Intent, it will
         // create a deep stack of activities!
         if (allowsHomeUp) {
             finish();

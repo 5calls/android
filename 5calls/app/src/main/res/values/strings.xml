@@ -48,7 +48,7 @@
     <!-- Message to the user that no calls are left on a particular issue [CHAR_LIMIT=NONE] -->
     <string name="no_location_set">No contacts available</string>
 
-    <!-- Message to the user when there are no contact areas on a particular issue, so there are no calls and it's just informational. [CHAR_LIMIT=NONE] -->
+    <!-- Message to the user when no location is set, prompting them to set a location. [CHAR_LIMIT=NONE] -->
     <string name="error_no_location_set">Set your location to find your representatives.</string>
 
     <!-- Menu option to go to the About 5 Calls screen [CHAR_LIMIT=25] -->
@@ -372,8 +372,10 @@
     <!-- Error message shown on the address text field when a user tries to submit an empty address [CHAR_LIMIT=50] -->
     <string name="error_address_empty">Enter an address</string>
 
+    <!-- Prompt to a user that they can skip setting their location and do it later [CHAR_LIMIT=NONE] -->
     <string name="location_skip_prompt">You can also set your location later.</string>
 
+    <!-- Button to skip setting location now but implies they could do it later [CHAR_LIMIT=NONE] -->
     <string name="skip_location_btn">Skip for now</string>
 
     <!-- Error message shown when a deep link issue is not found [CHAR_LIMIT=150] -->
