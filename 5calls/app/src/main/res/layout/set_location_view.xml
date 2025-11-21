@@ -25,6 +25,7 @@
             android:text="@string/location_prompt"
             style="@style/newsletterDescriptionStyle"
             android:layout_weight="1"
+            android:layout_gravity="center_vertical"
             />
 
         <ImageButton
@@ -33,6 +34,7 @@
             android:contentDescription="@string/first_location_title"
             android:tint="@color/colorPrimaryDark"
             tools:ignore="UseAppTint"
+            android:layout_gravity="center_vertical"
             />
 
     </LinearLayout>
