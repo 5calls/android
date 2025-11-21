@@ -239,6 +239,10 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return !mContacts.isEmpty();
     }
 
+    public boolean hasAddressError() {
+        return mAddressErrorType != NO_ERROR;
+    }
+
     public List<Issue> getAllIssues() {
         return mAllIssues;
     }
@@ -249,16 +253,29 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
      * where we bypass the RecyclerView.
      */
     public void populateIssueContacts(Issue issue) {
+        if (mAddressErrorType == ERROR_ADDRESS) {
+            issue.contacts = null;
+            return;
+        }
+        populateIssueContacts(issue, mContacts, mIsSplitDistrict);
+    }
+
+    /**
+     * Populates an issue's contacts list based on its contact areas.
+     * This is normally done in onBindViewHolder, but is needed for deep linking
+     * where we bypass the RecyclerView.
+     */
+    public static void populateIssueContacts(Issue issue, List<Contact> contacts, boolean isSplitDistrict) {
         if (issue == null || issue.contactAreas.isEmpty()) {
             return;
         }
 
-        issue.contacts = new ArrayList<Contact>();
+        issue.contacts = new ArrayList<>();
         for (String contactArea : issue.contactAreas) {
-            for (Contact contact : mContacts) {
+            for (Contact contact : contacts) {
                 if (TextUtils.equals(contact.area, contactArea) &&
                         !issue.contacts.contains(contact)) {
-                    if (TextUtils.equals(contact.area, Contact.AREA_HOUSE) && mIsSplitDistrict) {
+                    if (TextUtils.equals(contact.area, Contact.AREA_HOUSE) && isSplitDistrict) {
                         issue.isSplit = true;
                     }
                     issue.contacts.add(contact);
@@ -321,9 +338,12 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             if (mAddressErrorType != NO_ERROR) {
                 // If there was an address error, clear the number of calls to make.
                 vh.numCalls.setText("");
+                vh.numCalls.setVisibility(View.GONE);
                 vh.previousCallStats.setVisibility(View.GONE);
+                issue.contacts = null;
                 return;
             }
+            vh.numCalls.setVisibility(View.VISIBLE);
 
             // Sometimes an issue is shown with no contact areas in order to
             // inform users that a major vote or change has happened.

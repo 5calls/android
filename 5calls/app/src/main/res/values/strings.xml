@@ -39,11 +39,17 @@
     <!-- Prompt for call result buttons [CHAR_LIMIT=NONE] -->
     <string name="buttons_prompt">Enter your result:</string>
 
-    <!-- Message to the user that no calls are left on a particular issue [CHAR_LIMIT=NONE] -->
-    <string name="no_calls_left">No calls left for this issue.</string>
+    <!-- Message to the user that no contacts are found on a particular issue [CHAR_LIMIT=NONE] -->
+    <string name="no_contacts_found">No contacts found for this issue.</string>
 
     <!-- Message to the user when there are no contact areas on a particular issue, so there are no calls and it's just informational. [CHAR_LIMIT=NONE] -->
     <string name="no_contact_areas_message">There are no calls for this issue.</string>
+
+    <!-- Message to the user that no calls are left on a particular issue [CHAR_LIMIT=NONE] -->
+    <string name="no_location_set">No contacts available</string>
+
+    <!-- Message to the user when no location is set, prompting them to set a location. [CHAR_LIMIT=NONE] -->
+    <string name="error_no_location_set">Set your location to find your representatives.</string>
 
     <!-- Menu option to go to the About 5 Calls screen [CHAR_LIMIT=25] -->
     <string name="menu_about">About 5 Calls</string>
@@ -355,18 +361,22 @@
     <string name="try_again_btn">Try again</string>
 
     <!-- Prompt to enter an address or zip code instead of using the phone's GPS location [CHAR_LIMIT=NONE] -->
-    <string name="location_address_prompt">You can enter a zip code or address manually. If
-        your ZIP code is in more than one Congressional district we may show our best guess for your
-        representative in the House. Use an address or cross streets to more accurately locate you.</string>
+    <string name="location_address_prompt">Enter your full address or the exact cross streets so we can accurately look up your representatives.</string>
 
     <!-- Hint text for edittext to enter an address or zip code for the user's location [CHAR_LIMIT=50] -->
-    <string name="address_hint">Address or zip code</string>
+    <string name="address_hint">Enter a location</string>
 
     <!-- Error message for when an address is invalid according to the API [CHAR_LIMIT=150] -->
-    <string name="error_address_invalid">The address you entered was not found. Please update your location and try again.</string>
+    <string name="error_address_invalid">The address entered was not found. Please update your location and try again.</string>
 
     <!-- Error message shown on the address text field when a user tries to submit an empty address [CHAR_LIMIT=50] -->
-    <string name="error_address_empty">Enter an address or zip code</string>
+    <string name="error_address_empty">Enter an address</string>
+
+    <!-- Prompt to a user that they can skip setting their location and do it later [CHAR_LIMIT=NONE] -->
+    <string name="location_skip_prompt">You can also set your location later.</string>
+
+    <!-- Button to skip setting location now but implies they could do it later [CHAR_LIMIT=NONE] -->
+    <string name="skip_location_btn">Skip for now</string>
 
     <!-- Error message shown when a deep link issue is not found [CHAR_LIMIT=150] -->
     <string name="issue_not_found">Could not find this issue. It may no longer be relevant</string>
@@ -420,10 +430,10 @@
     <string name="rep_section_prompt">Contacts to call today</string>
 
     <!-- Warning that you may be in a split district [CHAR_LIMIT=90] -->
-    <string name="split_district_warning">Your zip code matches multiple House districts, use a zip+4 or address for best results.</string>
+    <string name="split_district_warning">Your location matches multiple House districts, use a zip+4 or address for best results.</string>
 
     <!-- Warning that you have a low accuracy location [CHAR_LIMIT=90] -->
-    <string name="low_accuracy_warning">Your zip is not precise enough to ensure we\'ve got the right House representative.</string>
+    <string name="low_accuracy_warning">Your location is not precise enough to ensure we\'ve got the right House representative.</string>
 
     <!-- Warning for low accuracy location in issue activity [CHAR_LIMIT=NONE] -->
     <string name="low_accuracy_state_rep_warning">Warning: your location is set to a zip code or other approximate location, please enter an address or zip+4 for accurate state level reps.</string>

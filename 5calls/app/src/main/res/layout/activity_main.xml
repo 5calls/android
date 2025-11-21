@@ -57,26 +57,50 @@
                 android:layout_height="match_parent"
                 >
 
-                <FrameLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    style="@style/newsletterWrapperStyle"
                     android:layout_alignParentTop="true"
-                    android:id="@+id/newsletter_signup_view"
+                    android:id="@+id/actionable_card_holder"
+                    android:background="@color/colorPrimary"
                     >
 
-                    <include
-                        android:id="@+id/newsletter_view"
-                        layout="@layout/newsletter_signup_view"
-                        />
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:id="@+id/newsletter_signup_view"
+                        >
 
-                </FrameLayout>
+                        <include
+                            android:id="@+id/newsletter_view"
+                            layout="@layout/newsletter_signup_view"
+                            />
+
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:id="@+id/set_location_prompt"
+                        >
+
+                        <include
+                            android:id="@+id/set_location_view"
+                            layout="@layout/set_location_view"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                    </FrameLayout>
+
+                </RelativeLayout>
 
                 <androidx.appcompat.widget.AppCompatSpinner
                     android:id="@+id/filter"
                     style="@style/spinnerStyle"
                     tools:ignore="UnusedAttribute"
-                    android:layout_below="@id/newsletter_signup_view"
+                    android:layout_below="@id/actionable_card_holder"
                     />
 
                 <RelativeLayout

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/background_color"
+    >
+
+    <LinearLayout
+        android:id="@+id/set_location_clickable_area"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/newsletterCardStyle"
+        android:orientation="horizontal"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground"
+        android:contentDescription="@string/location_prompt"
+        >
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:text="@string/location_prompt"
+            style="@style/newsletterDescriptionStyle"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            />
+
+        <ImageButton
+            style="@style/iconButtonStyle"
+            android:src="@drawable/ic_gps_fixed_white_24dp"
+            android:contentDescription="@string/first_location_title"
+            android:tint="@color/colorPrimaryDark"
+            tools:ignore="UseAppTint"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/set_location_button"
+            />
+
+    </LinearLayout>
+
+</LinearLayout>

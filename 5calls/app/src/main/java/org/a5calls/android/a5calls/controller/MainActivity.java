@@ -85,9 +85,6 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     private FiveCallsApi.ContactsRequestListener mContactsRequestListener;
     private FiveCallsApi.CallRequestListener mReportListener;
     private OnBackPressedCallback mOnBackPressedCallback;
-    private String mAddress;
-    private String mLatitude;
-    private String mLongitude;
     private String mLocationName;
     private String mDistrictId;
     // If the house district is split for this location.
@@ -118,15 +115,6 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         // See if we've had this user before. If not, start them at tutorial type page.
         if (!accountManager.isTutorialSeen(this)) {
             Intent intent = new Intent(this, TutorialActivity.class);
-            startActivity(intent);
-            finish();
-            return;
-        }
-
-        // Confirm the user has set a location.
-        if (!accountManager.hasLocation(this)) {
-            // No location set, go to LocationActivity!
-            Intent intent = new Intent(this, LocationActivity.class);
             startActivity(intent);
             finish();
             return;
@@ -165,53 +153,59 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                     R.dimen.activity_horizontal_margin);
             final int bottomPadding = getResources().getDimensionPixelSize(
                     R.dimen.activity_vertical_margin);
-            binding.newsletterSignupView.setPadding(insets.left + sidePadding, 0,
+            binding.actionableCardHolder.setPadding(insets.left + sidePadding, 0,
                     insets.right + sidePadding, bottomPadding);
             return WindowInsetsCompat.CONSUMED;
         });
 
         setupDrawerContent(binding.navigationView);
 
-        if (!accountManager.isNewsletterPromptDone(this)) {
-            binding.newsletterSignupView.setVisibility(View.VISIBLE);
-            binding.newsletterView.newsletterDeclineButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    accountManager.setNewsletterPromptDone(v.getContext(), true);
-                    findViewById(R.id.newsletter_card).setVisibility(View.GONE);
-                    findViewById(R.id.newsletter_card_result_decline).setVisibility(VISIBLE);
-                }
+        boolean hasLocation = accountManager.hasLocation(this);
+        if (!hasLocation) {
+            // Show a prompt to set location.
+            binding.setLocationPrompt.setVisibility(VISIBLE);
+            binding.setLocationView.setLocationButton.setOnClickListener(view -> {
+                launchLocationActivity();
             });
-            binding.newsletterView.newsletterSignupButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String email = binding.newsletterView.newsletterEmail.getText().toString();
-                    if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                        binding.newsletterView.newsletterEmail.setError(
-                                getResources().getString(R.string.error_email_format));
-                        return;
-                    }
-                    binding.newsletterView.newsletterSignupButton.setEnabled(false);
-                    binding.newsletterView.newsletterDeclineButton.setEnabled(false);
-                    FiveCallsApi api =
-                            AppSingleton.getInstance(getApplicationContext()).getJsonController();
-                    api.newsletterSubscribe(email, new FiveCallsApi.NewsletterSubscribeCallback() {
-                        @Override
-                        public void onSuccess() {
-                            accountManager.setNewsletterPromptDone(v.getContext(), true);
-                            accountManager.setNewsletterSignUpCompleted(v.getContext(), true);
-                            findViewById(R.id.newsletter_card).setVisibility(View.GONE);
-                            findViewById(R.id.newsletter_card_result_success).setVisibility(VISIBLE);
-                        }
-
-                        @Override
-                        public void onError() {
-                            binding.newsletterView.newsletterSignupButton.setEnabled(true);
-                            binding.newsletterView.newsletterDeclineButton.setEnabled(true);
-                            showSnackbar(R.string.newsletter_signup_error, Snackbar.LENGTH_LONG);
-                        }
-                    });
+            binding.setLocationView.setLocationClickableArea.setOnClickListener(view -> {
+                launchLocationActivity();
+            });
+        } else if (!accountManager.isNewsletterPromptDone(this)) {
+            // Show the newsletter prompt if we have a location and the user hasn't yet
+            // interacted with the prompt.
+            binding.newsletterSignupView.setVisibility(View.VISIBLE);
+            binding.newsletterView.newsletterDeclineButton.setOnClickListener(v -> {
+                accountManager.setNewsletterPromptDone(v.getContext(), true);
+                findViewById(R.id.newsletter_card).setVisibility(View.GONE);
+                findViewById(R.id.newsletter_card_result_decline).setVisibility(VISIBLE);
+            });
+            binding.newsletterView.newsletterSignupButton.setOnClickListener(v -> {
+                String email = binding.newsletterView.newsletterEmail.getText().toString();
+                if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                    binding.newsletterView.newsletterEmail.setError(
+                            getResources().getString(R.string.error_email_format));
+                    return;
                 }
+                binding.newsletterView.newsletterSignupButton.setEnabled(false);
+                binding.newsletterView.newsletterDeclineButton.setEnabled(false);
+                FiveCallsApi api =
+                        AppSingleton.getInstance(getApplicationContext()).getJsonController();
+                api.newsletterSubscribe(email, new FiveCallsApi.NewsletterSubscribeCallback() {
+                    @Override
+                    public void onSuccess() {
+                        accountManager.setNewsletterPromptDone(v.getContext(), true);
+                        accountManager.setNewsletterSignUpCompleted(v.getContext(), true);
+                        findViewById(R.id.newsletter_card).setVisibility(View.GONE);
+                        findViewById(R.id.newsletter_card_result_success).setVisibility(VISIBLE);
+                    }
+
+                    @Override
+                    public void onError() {
+                        binding.newsletterView.newsletterSignupButton.setEnabled(true);
+                        binding.newsletterView.newsletterDeclineButton.setEnabled(true);
+                        showSnackbar(R.string.newsletter_signup_error, Snackbar.LENGTH_LONG);
+                    }
+                });
             });
         }
 
@@ -319,11 +313,11 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
 
         loadStats();
 
-        mAddress = accountManager.getAddress(this);
-        mLatitude = accountManager.getLat(this);
-        mLongitude = accountManager.getLng(this);
-
-        if (accountManager.isNewsletterPromptDone(this) ||
+        boolean hasLocation = accountManager.hasLocation(this);
+        binding.setLocationPrompt.setVisibility(hasLocation ? View.GONE : View.VISIBLE);
+        if (!hasLocation) {
+            binding.newsletterSignupView.setVisibility(View.GONE);
+        } else if (accountManager.isNewsletterPromptDone(this) ||
                 accountManager.isNewsletterSignUpCompleted(this)) {
             binding.newsletterSignupView.setVisibility(View.GONE);
         }
@@ -387,7 +381,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     public void startIssueActivity(Context context, Issue issue) {
         Intent issueIntent = new Intent(context, IssueActivity.class);
         issueIntent.putExtra(IssueActivity.KEY_ISSUE, issue);
-        issueIntent.putExtra(RepCallActivity.KEY_ADDRESS, getLocationString());
+        issueIntent.putExtra(RepCallActivity.KEY_ADDRESS, getLocationString(getApplicationContext()));
         issueIntent.putExtra(RepCallActivity.KEY_LOCATION_NAME, mLocationName);
         issueIntent.putExtra(IssueActivity.KEY_IS_DISTRICT_SPLIT, mIsDistrictSplit);
         issueIntent.putExtra(IssueActivity.KEY_IS_LOW_ACCURACY, mIsLowAccuracy);
@@ -470,8 +464,9 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 mIssuesAdapter.setAllIssues(issues, IssuesAdapter.NO_ERROR);
                 mIssuesAdapter.setFilterAndSearch(mFilterText, mSearchText);
                 binding.swipeContainer.setRefreshing(false);
-                // Only handle deep link if we have both issues and contacts loaded
-                if (mIssuesAdapter.hasContacts()) {
+                // Only handle deep link if we have both issues and contacts loaded,
+                // or if there's no location set.
+                if (mIssuesAdapter.hasContacts() || !accountManager.hasLocation(getApplicationContext())) {
                     maybeHandlePendingDeepLink();
                 }
             }
@@ -485,6 +480,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 // active issues list to avoid showing a stale list.
                 mIssuesAdapter.setAddressError(IssuesAdapter.ERROR_REQUEST);
                 binding.swipeContainer.setRefreshing(false);
+                maybeHandlePendingDeepLink();
             }
 
             @Override
@@ -494,6 +490,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 // active issues list to avoid showing a stale list.
                 mIssuesAdapter.setAddressError(IssuesAdapter.ERROR_REQUEST);
                 binding.swipeContainer.setRefreshing(false);
+                maybeHandlePendingDeepLink();
             }
 
             @Override
@@ -501,6 +498,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 showAddressErrorSnackbar();
                 mIssuesAdapter.setAddressError(IssuesAdapter.ERROR_ADDRESS);
                 binding.swipeContainer.setRefreshing(false);
+                maybeHandlePendingDeepLink();
             }
 
             @Override
@@ -513,6 +511,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 mIsLowAccuracy = isLowAccuracy;
                 binding.collapsingToolbar.setTitle(String.format(getResources().getString(
                         R.string.title_main), mLocationName));
+                binding.setLocationPrompt.setVisibility(View.GONE);
 
                 mIssuesAdapter.setContacts(contacts, mIsDistrictSplit, IssuesAdapter.NO_ERROR);
 
@@ -669,20 +668,25 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         FiveCallsApi api = AppSingleton.getInstance(getApplicationContext()).getJsonController();
 
         if (!mIssuesAdapter.hasContacts()) {
-            String location = getLocationString();
+            String location = getLocationString(getApplicationContext());
             if (!TextUtils.isEmpty(location)) {
                 api.getContacts(location);
+            } else {
+                mIssuesAdapter.setAddressError(IssuesAdapter.ERROR_ADDRESS);
             }
         }
         api.getIssues();
     }
 
-    private String getLocationString() {
-        if (!TextUtils.isEmpty(mLatitude) && !TextUtils.isEmpty(mLongitude)) {
-            return mLatitude + "," + mLongitude;
+    public static String getLocationString(Context context) {
+        String address = AccountManager.Instance.getAddress(context);
+        String latitude = AccountManager.Instance.getLat(context);
+        String longitude = AccountManager.Instance.getLng(context);
+        if (!TextUtils.isEmpty(latitude) && !TextUtils.isEmpty(longitude)) {
+            return latitude + "," + longitude;
 
-        } else if (!TextUtils.isEmpty(mAddress)) {
-            return mAddress;
+        } else if (!TextUtils.isEmpty(address)) {
+            return address;
         }
         return null;
     }
@@ -803,8 +807,13 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             return;
         }
 
-        // Wait for both issues and contacts to be loaded before handling deep link
-        if (mIssuesAdapter.getAllIssues().isEmpty() || !mIssuesAdapter.hasContacts()) {
+        // Wait for both issues and contacts to be loaded before handling deep link,
+        // or just issues if we have no location.
+        boolean hasLocation = accountManager.hasLocation(getApplicationContext());
+        if (mIssuesAdapter.getAllIssues().isEmpty()) {
+            return;
+        }
+        if (!mIssuesAdapter.hasContacts() && hasLocation && !mIssuesAdapter.hasAddressError()) {
             return;
         }
 
@@ -824,9 +833,11 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         }
 
         if (targetIssue != null) {
-            // Populate the issue's contacts before launching IssueActivity
-            // This is normally done in IssuesAdapter.onBindViewHolder, but we're bypassing that
-            mIssuesAdapter.populateIssueContacts(targetIssue);
+            if (hasLocation && !mIssuesAdapter.hasAddressError()) {
+                // Populate the issue's contacts before launching IssueActivity
+                // This is normally done in IssuesAdapter.onBindViewHolder, but we're bypassing that
+                mIssuesAdapter.populateIssueContacts(targetIssue);
+            }
             startIssueActivity(this, targetIssue);
         } else {
             hideSnackbars();

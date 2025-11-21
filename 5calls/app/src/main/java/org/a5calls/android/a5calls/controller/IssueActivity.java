@@ -47,6 +47,7 @@ import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.BuildConfig;
 import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
+import org.a5calls.android.a5calls.adapter.IssuesAdapter;
 import org.a5calls.android.a5calls.databinding.ActivityIssueBinding;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.Contact;
@@ -86,6 +87,8 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
     private boolean mShowServerError = false;
 
     private Issue mIssue;
+    private String mAddress;
+    private String mLocationName;
     // indicates that the zip entered intersects with multiple congressional districts
     private boolean mIsDistrictSplit = false;
     // low accuracy locations are zip codes or city names, we warn on state reps if you are using one
@@ -95,6 +98,9 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
 
     private ActivityIssueBinding binding;
     private ActivityResultLauncher<Intent> mRepCallLauncher;
+    private ActivityResultLauncher<Intent> mLocationLauncher;
+
+    private FiveCallsApi.ContactsRequestListener mContactsRequestListener;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -111,15 +117,69 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
                     }
                 });
 
+        FiveCallsApi api = AppSingleton.getInstance(this).getJsonController();
+        mLocationLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    // If the address has changed after going to the location activity, refresh
+                    // the contacts for this issue.
+                    String newAddress = MainActivity.getLocationString(getApplicationContext());
+                    if (!TextUtils.equals(newAddress, mAddress)) {
+                        mAddress = newAddress;
+                        api.getContacts(mAddress);
+                    }
+                }
+        );
+        mContactsRequestListener = new FiveCallsApi.ContactsRequestListener() {
+
+            @Override
+            public void onRequestError() {
+                Snackbar.make(getWindow().getDecorView(),
+                        getResources().getString(R.string.request_error),
+                        Snackbar.LENGTH_LONG).show();
+                // Do not change the UI.
+            }
+
+            @Override
+            public void onJsonError() {
+                Snackbar.make(getWindow().getDecorView(),
+                        getResources().getString(R.string.json_error),
+                        Snackbar.LENGTH_LONG).show();
+                // Do not change the UI.
+            }
+
+            @Override
+            public void onAddressError() {
+                Snackbar.make(getWindow().getDecorView(),
+                        getResources().getString(R.string.error_address_invalid),
+                        Snackbar.LENGTH_LONG).show();
+                mIssue.contacts = null;
+                showContactsUi();
+            }
+
+            @Override
+            public void onContactsReceived(String locationName, String districtId, boolean isDistrictSplit, boolean isLowAccuracy, List<Contact> contacts, boolean stateChanged) {
+                mIsDistrictSplit = isDistrictSplit;
+                mIsLowAccuracy = isLowAccuracy;
+                mLocationName = locationName;
+                IssuesAdapter.populateIssueContacts(mIssue, contacts, isDistrictSplit);
+                showContactsUi();
+            }
+        };
+        api.registerContactsRequestListener(mContactsRequestListener);
+
         mIssue = getIntent().getParcelableExtra(KEY_ISSUE);
         if (mIssue == null) {
             // TODO handle this better? Is it even possible to get here?
             finish();
             return;
         }
+
+        mAddress = getIntent().getStringExtra(RepCallActivity.KEY_ADDRESS);
         mIsDistrictSplit = getIntent().getBooleanExtra(KEY_IS_DISTRICT_SPLIT, false);
         mIsLowAccuracy = getIntent().getBooleanExtra(KEY_IS_LOW_ACCURACY, false);
         mDonateIsOn = getIntent().getBooleanExtra(KEY_DONATE_IS_ON, false);
+        mLocationName = getIntent().getStringExtra(RepCallActivity.KEY_LOCATION_NAME);
 
         setContentView(binding.getRoot());
 
@@ -153,6 +213,11 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
                 child.setPadding(repItemHorizontalPadding + insets.left, repItemVerticalPadding,
                         repItemHorizontalPadding + insets.right, repItemVerticalPadding);
             }
+            final int errorSectionVerticalPadding = getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
+            binding.noCallsLeft.setPadding(activityPadding + insets.left, errorSectionVerticalPadding, activityPadding+insets.right, errorSectionVerticalPadding);
+            binding.noAddressSet.setPadding(activityPadding + insets.left, errorSectionVerticalPadding, activityPadding+insets.right, errorSectionVerticalPadding);
+            binding.noContactAreas.setPadding(activityPadding + insets.left, errorSectionVerticalPadding, activityPadding+insets.right, errorSectionVerticalPadding);
+
             behavior.setPeekHeight(targetPeakHeight + insets.bottom);
             return WindowInsetsCompat.CONSUMED;
         });
@@ -250,7 +315,6 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
         FiveCallsApplication.analyticsManager().trackPageview(mIssue.permalink, this);
 
         // Register scripts request listener once
-        FiveCallsApi api = AppSingleton.getInstance(this).getJsonController();
         api.registerScriptsRequestListener(this);
 
         // Fetch customized scripts once on create
@@ -286,14 +350,31 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
             binding.noContactAreas.setVisibility(View.VISIBLE);
             return;
         }
+        showContactsUi();
+    }
+
+    private void showContactsUi() {
+        binding.noAddressSet.setVisibility(View.GONE);
+        binding.noCallsLeft.setVisibility(View.GONE);
         if (mIssue.contacts == null) {
-            // Probably an address error.
-            binding.noCallsLeft.setVisibility(View.VISIBLE);
+            if (AccountManager.Instance.hasLocation(this)) {
+                // An address error.
+                binding.noCallsLeft.setVisibility(View.VISIBLE);
+                binding.updateLocationButton.setOnClickListener(view -> {
+                    Intent intent = new Intent(IssueActivity.this, LocationActivity.class);
+                    intent.putExtra(LocationActivity.ALLOW_HOME_UP_KEY, true);
+                    mLocationLauncher.launch(intent);
+                });
+            } else {
+                // Hasn't set an address yet.
+                binding.noAddressSet.setVisibility(View.VISIBLE);
+                binding.setLocationButton.setOnClickListener(view -> {
+                    Intent intent = new Intent(IssueActivity.this, LocationActivity.class);
+                    intent.putExtra(LocationActivity.ALLOW_HOME_UP_KEY, true);
+                    mLocationLauncher.launch(intent);
+                });
+            }
             binding.issueDone.getRoot().setVisibility(View.GONE);
-            binding.updateLocationButton.setOnClickListener(view -> {
-                Intent intent = new Intent(IssueActivity.this, LocationActivity.class);
-                startActivity(intent);
-            });
             return;
         }
 
@@ -307,7 +388,7 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
                     senateCount++;
                 }
             }
-            if (senateCount == 1) {
+            if (senateCount <= 1) {
                 mIssue.contacts.add(Contact.createPlaceholder(
                         "placeholderSenate",
                         getResources().getString(R.string.vacant_seat_rep_name),
@@ -343,6 +424,7 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(IssueActivity.this, LocationActivity.class);
+                    intent.putExtra(LocationActivity.ALLOW_HOME_UP_KEY, true);
                     startActivity(intent);
                 }
             });
@@ -525,10 +607,8 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
                 public void onClick(View view) {
                     Intent intent = new Intent(getApplicationContext(), RepCallActivity.class);
                     intent.putExtra(KEY_ISSUE, mIssue);
-                    intent.putExtra(RepCallActivity.KEY_ADDRESS,
-                            getIntent().getStringExtra(RepCallActivity.KEY_ADDRESS));
-                    intent.putExtra(RepCallActivity.KEY_LOCATION_NAME,
-                            getIntent().getStringExtra(RepCallActivity.KEY_LOCATION_NAME));
+                    intent.putExtra(RepCallActivity.KEY_ADDRESS, mAddress);
+                    intent.putExtra(RepCallActivity.KEY_LOCATION_NAME, mLocationName);
                     intent.putExtra(RepCallActivity.KEY_ACTIVE_CONTACT_INDEX, index);
                     mRepCallLauncher.launch(intent);
                 }
@@ -645,10 +725,9 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
             return;
         }
 
-        String address = getIntent().getStringExtra(RepCallActivity.KEY_ADDRESS);
-        String locationName = getIntent().getStringExtra(RepCallActivity.KEY_LOCATION_NAME);
+        String locationName = mLocationName;
 
-        if (TextUtils.isEmpty(address) && TextUtils.isEmpty(locationName)) {
+        if (TextUtils.isEmpty(mAddress) && TextUtils.isEmpty(locationName)) {
             return;
         }
 
@@ -660,7 +739,8 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
 
         FiveCallsApi api = AppSingleton.getInstance(this).getJsonController();
         String userName = AccountManager.Instance.getUserName(this);
-        api.getCustomizedScripts(mIssue.id, contactIds, locationName != null ? locationName : address, userName);
+        api.getCustomizedScripts(mIssue.id, contactIds,
+                locationName != null ? locationName : mAddress, userName);
     }
 
     @Override
@@ -685,5 +765,6 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
         super.onDestroy();
         FiveCallsApi api = AppSingleton.getInstance(this).getJsonController();
         api.unregisterScriptsRequestListener(this);
+        api.unregisterContactsRequestListener(mContactsRequestListener);
     }
 }
