@@ -213,6 +213,11 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
                 child.setPadding(repItemHorizontalPadding + insets.left, repItemVerticalPadding,
                         repItemHorizontalPadding + insets.right, repItemVerticalPadding);
             }
+            final int errorSectionVerticalPadding = getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
+            binding.noCallsLeft.setPadding(activityPadding + insets.left, errorSectionVerticalPadding, activityPadding+insets.right, errorSectionVerticalPadding);
+            binding.noAddressSet.setPadding(activityPadding + insets.left, errorSectionVerticalPadding, activityPadding+insets.right, errorSectionVerticalPadding);
+            binding.noContactAreas.setPadding(activityPadding + insets.left, errorSectionVerticalPadding, activityPadding+insets.right, errorSectionVerticalPadding);
+
             behavior.setPeekHeight(targetPeakHeight + insets.bottom);
             return WindowInsetsCompat.CONSUMED;
         });

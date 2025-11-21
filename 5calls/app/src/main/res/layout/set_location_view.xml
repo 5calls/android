@@ -8,7 +8,7 @@
     >
 
     <LinearLayout
-        android:id="@+id/set_location_button"
+        android:id="@+id/set_location_clickable_area"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/newsletterCardStyle"
@@ -35,6 +35,7 @@
             android:tint="@color/colorPrimaryDark"
             tools:ignore="UseAppTint"
             android:layout_gravity="center_vertical"
+            android:id="@+id/set_location_button"
             />
 
     </LinearLayout>

@@ -167,6 +167,9 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             binding.setLocationView.setLocationButton.setOnClickListener(view -> {
                 launchLocationActivity();
             });
+            binding.setLocationView.setLocationClickableArea.setOnClickListener(view -> {
+                launchLocationActivity();
+            });
         } else if (!accountManager.isNewsletterPromptDone(this)) {
             // Show the newsletter prompt if we have a location and the user hasn't yet
             // interacted with the prompt.
