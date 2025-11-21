@@ -3,13 +3,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/background_color"
+    >
 
     <LinearLayout
+        android:id="@+id/set_location_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/newsletterCardStyle"
         android:orientation="horizontal"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground"
+        android:contentDescription="@string/location_prompt"
         >
 
         <TextView
@@ -25,8 +32,8 @@
             android:src="@drawable/ic_gps_fixed_white_24dp"
             android:contentDescription="@string/first_location_title"
             android:tint="@color/colorPrimaryDark"
-            android:id="@+id/set_location_button"
-            tools:ignore="UseAppTint" />
+            tools:ignore="UseAppTint"
+            />
 
     </LinearLayout>
 
