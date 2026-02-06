@@ -8,6 +8,7 @@ import com.android.volley.toolbox.HttpResponse;
 
 import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.Issue;
+import org.a5calls.android.a5calls.model.Outcome;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -352,7 +353,21 @@ public class FiveCallsApiTest {
     }
 
     @Test
-    public void testReportCall() {
+    public void testReportCallUnavailable() {
+        testReportCallStatus(Outcome.Status.UNAVAILABLE, "unavailable");
+    }
+
+    @Test
+    public void testReportCallVoicemail() {
+        testReportCallStatus(Outcome.Status.VOICEMAIL, "voicemail");
+    }
+
+    @Test
+    public void testReportCallContact() {
+        testReportCallStatus(Outcome.Status.CONTACT, "contact");
+    }
+
+    private void testReportCallStatus(Outcome.Status status, String outcomeString) {
         byte[] bytes = "{\"ok\":true}".getBytes();
         ArrayList<Header> headers = new ArrayList<>();
         headers.add(new Header("Content-Type", "text/json"));
@@ -362,7 +377,7 @@ public class FiveCallsApiTest {
         TestCallListener testCallListener = new TestCallListener();
         mApi.registerCallRequestListener(testCallListener);
 
-        mApi.reportCall("myIssue", "myRep", "unavailable", "myLocation");
+        mApi.reportCall("myIssue", "myRep", status);
         waitForHttpRequestComplete();
 
         assertEquals(1, testCallListener.mCallReported);
@@ -370,7 +385,7 @@ public class FiveCallsApiTest {
         assertEquals(0, testCallListener.mCallJsonError);
 
         assertEquals(new String(mHttpStack.getLastPostBody()),
-                "result=unavailable&issueid=myIssue&contactid=myRep&callerid=itMe&via=" +
+                "result=" + outcomeString + "&issueid=myIssue&contactid=myRep&callerid=itMe&via=" +
                         (FiveCallsApi.TESTING ? "test&" : "android&"));
 
         mApi.unregisterCallRequestListener(testCallListener);
@@ -383,7 +398,7 @@ public class FiveCallsApiTest {
         TestCallListener testCallListener = new TestCallListener();
         mApi.registerCallRequestListener(testCallListener);
 
-        mApi.reportCall("myIssue", "myRep", "unavailable", "myLocation");
+        mApi.reportCall("myIssue", "myRep", Outcome.Status.UNAVAILABLE);
         waitForHttpRequestComplete();
 
         assertEquals(0, testCallListener.mCallReported);
