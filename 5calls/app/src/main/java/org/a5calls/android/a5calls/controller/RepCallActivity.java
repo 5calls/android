@@ -202,7 +202,7 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
                 mIssue.name, mIssue.contacts.get(mActiveContactIndex).id,
                 mIssue.contacts.get(mActiveContactIndex).name, outcome.status.toString(), address);
         AppSingleton.getInstance(getApplicationContext()).getJsonController().reportCall(
-                mIssue.id, mIssue.contacts.get(mActiveContactIndex).id, outcome.label, address);
+                mIssue.id, mIssue.contacts.get(mActiveContactIndex).id, outcome.status);
     }
 
     private void setupContactUi(int index, boolean expandLocalSection) {
