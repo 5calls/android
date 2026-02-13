@@ -106,11 +106,15 @@
         </provider>
     </application>
 
-    <!-- Query for Android 11+ to find apps that can handle mailto Intents -->
+    <!-- Query for Android 11+ to find apps that can handle mailto and tel Intents -->
     <queries>
         <intent>
             <action android:name="android.intent.action.SENDTO"/>
             <data android:scheme="mailto" android:host="*" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.DIAL"/>
+            <data android:scheme="tel" />
         </intent>
     </queries>
 

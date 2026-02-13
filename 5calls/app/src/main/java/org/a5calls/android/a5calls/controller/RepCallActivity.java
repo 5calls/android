@@ -9,6 +9,9 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
+import android.text.style.UnderlineSpan;
+import android.text.SpannableString;
+import android.graphics.Paint;
 import android.util.DisplayMetrics;
 import android.util.Patterns;
 import android.view.LayoutInflater;
@@ -16,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
@@ -388,11 +392,28 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
         return (int) (displayMetrics.widthPixels / minButtonWidth);
     }
 
-    private static void linkPhoneNumber(TextView textView, String phoneNumber) {
-        textView.setText(phoneNumber);
-        Linkify.addLinks(textView, Patterns.PHONE, "tel:",
-                Linkify.sPhoneNumberMatchFilter,
-                Linkify.sPhoneNumberTransformFilter);
+    private void linkPhoneNumber(TextView textView, String phoneNumber) {
+        SpannableString spannableString = new SpannableString(phoneNumber);
+        spannableString.setSpan(new UnderlineSpan(), 0, phoneNumber.length(), 0);
+        textView.setText(spannableString);
+        textView.setClickable(true);
+        textView.setFocusable(true);
+        textView.setTextColor(getResources().getColor(R.color.colorAccent, null));
+        textView.setOnClickListener(v -> {
+            Intent dialIntent = new Intent(Intent.ACTION_DIAL);
+            dialIntent.setData(android.net.Uri.parse("tel:" + phoneNumber));
+            
+            try {
+                Intent chooser = Intent.createChooser(dialIntent, "Choose phone app");
+                startActivity(chooser);
+            } catch (android.content.ActivityNotFoundException e) {
+                try {
+                    startActivity(dialIntent);
+                } catch (android.content.ActivityNotFoundException e2) {
+                    Toast.makeText(this, "No phone app available to make calls", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void updateScriptDisplay() {
