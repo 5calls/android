@@ -461,7 +461,7 @@
 
     <style name="filterItemStyle" parent="Widget.FiveCalls.TextView.Paragraph">
         <item name="android:layout_marginEnd">@dimen/filter_item_margin</item>
-        <item name="android:drawableEnd">@drawable/ic_filter_list_white_24dp</item>
+        <item name="android:drawableStart">@drawable/filter_background</item>
         <item name="android:drawablePadding">@dimen/filter_item_padding</item>
         <item name="android:ellipsize">marquee</item>
         <item name="android:gravity">center_vertical</item>
@@ -470,6 +470,18 @@
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textStyle">bold</item>
         <item name="android:foreground">?android:attr/selectableItemBackground</item>
+    </style>
+
+    <style name="filterListItemStyle" parent="Widget.FiveCalls.TextView.Paragraph">
+        <item name="android:minHeight">@dimen/accessibility_min_size</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
+        <item name="android:paddingStart">@dimen/filter_item_padding</item>
+        <item name="android:paddingEnd">@dimen/filter_item_padding</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:singleLine">true</item>
     </style>
 
     <style name="searchBoxStyle" parent="BaseContainer">

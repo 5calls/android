@@ -217,7 +217,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         binding.issuesRecyclerView.setAdapter(mIssuesAdapter);
 
         mFilterAdapter = new ArrayAdapter<>(this, R.layout.filter_item);
-        mFilterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mFilterAdapter.setDropDownViewResource(R.layout.filter_list_item);
         mFilterAdapter.addAll(getResources().getStringArray(R.array.default_filters));
         binding.filter.setAdapter(mFilterAdapter);
         if (savedInstanceState != null) {
