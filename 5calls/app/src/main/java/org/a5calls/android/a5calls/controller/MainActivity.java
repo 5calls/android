@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     private static final String KEY_SHOW_LOW_ACCURACY_WARNING = "showLowAccuracyWarning";
     private static final String DEEP_LINK_HOST = "5calls.org";
     private static final String DEEP_LINK_PATH_ISSUE = "issue";
+    private static final String DEMO_ISSUE_PERMALINK = "/issue/demoIssue";
     private final AccountManager accountManager = AccountManager.Instance;
 
     private String mPendingDeepLinkPath = null;
@@ -469,12 +470,17 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 // If they've called more than 3 times, don't bother with the placeholder any more.
                 boolean showPlaceholderIfEarly = mCallCount <= 3 && !accountManager.getPlaceholderIssueCalled(getApplicationContext());
                 if (forceShowPlaceholder || showPlaceholderIfEarly) {
-                    // TODO put strings in strings.xml
-                    Contact demoContact = Contact.createPlaceholder("0", "Representative Name", "(555) 555-5555", Contact.AREA_DEMO, "This is a pretend contact");
-                    Issue demoIssue = Issue.createPlaceholder("0", "Feeling unsure? Start here!", "/issue/demoIssue",
-                            "This is where we'll put a description. You can get back to this in the app's settings, \"Show the example call\".\n\nDon't worry, this is just an example, you won't be connected with your representative.",
-                            "*You can read from the script or improvise. Tip: tap the contact's phone number above to open your dialer app, start the call on speaker phone, then switch back to 5 Calls to see the script while you are calling.*\n\nHi, my name is **[NAME]** and I’m a constituent from [CITY, ZIP]. I'm calling to ask [REP/SEN NAME] to support bill 123. Thank you for your time.\n\n*When you have finished the call, mark your result depending on whether you reached a person, left a voicemail, or called but could do neither.*\n\n***Practice reading the script out loud, then go ahead and click a result!***", true, 0,
-                            Collections.singletonList(demoContact), Collections.emptyList(), Collections.emptyList());
+                    Contact demoContact = Contact.createPlaceholder("0",
+                            getResources().getString(R.string.demo_rep_name),
+                            getResources().getString(R.string.demo_rep_phone),
+                            Contact.AREA_DEMO, getResources().getString(R.string.demo_rep_reason));
+                    Issue demoIssue = Issue.createPlaceholder("0",
+                            getResources().getString(R.string.demo_issue_name),
+                            DEMO_ISSUE_PERMALINK,
+                            getResources().getString(R.string.demo_issue_reason),
+                            getResources().getString(R.string.demo_issue_script), true, 0,
+                            Collections.singletonList(demoContact),
+                            Collections.emptyList(), Collections.emptyList());
                     issues.add(demoIssue);
                 }
                 mIssuesAdapter.setAllIssues(issues, IssuesAdapter.NO_ERROR);

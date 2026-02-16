@@ -36,6 +36,9 @@
     <!-- Message telling a user how many previous calls they have made [CHAR_LIMIT=none] -->
     <string name="previous_call_count_many"><xliff:g id="callCount">%1$d</xliff:g> previous calls</string>
 
+    <!-- Message telling a user they have made one previous (pretend) call [CHAR_LIMIT=none] -->
+    <string name="demo_previous_call_stats_one">1 previous (pretend) call</string>
+
     <!-- Prompt for call result buttons [CHAR_LIMIT=NONE] -->
     <string name="buttons_prompt">Enter your result:</string>
 
@@ -671,4 +674,41 @@
     <!-- The reason for a vacant seat being shown in the rep call list -->
     <string name="vacant_seat_rep_reason">This <xliff:g id="area">%1$s</xliff:g> seat is currently vacant</string>
 
+    <!-- A name for a placeholder representative in a practice call [CHAR_LIMIT=100]-->
+    <string name="demo_rep_name">Representative Name</string>
+
+    <!-- A fake phone number for a placeholder representative in a practice call [CHAR_LIMIT=15]-->
+    <string name="demo_rep_phone" translatable="false">"(555) 555-5555"</string>
+
+    <!-- A reason for calling a placeholder representative in a practice call [CHAR_LIMIT=100]-->
+    <string name="demo_rep_reason">This is a pretend contact</string>
+
+    <!-- A name for a placeholder issue for placing a practice call [CHAR_LIMIT=100]-->
+    <string name="demo_issue_name">Feeling unsure? Start here!</string>
+
+    <!-- A description for a placeholder issue for placing a practice call, explaining more about the process [CHAR_LIMIT=NONE]-->
+    <string name="demo_issue_reason">This is where we\'ll put a description. Who writes the issues and script? Include what to expect, who might answer and what they want from you, leaving a voicemail, why they ask for your name/number, who is a constituent, links to videos of making a call, You can get back to this in the app\'s settings, "Show the example call".
+\n\n
+Don\'t worry, this is just an example, you won\'t be connected with your representative.</string>
+
+    <!-- A script for a placeholder issue for placing a practice call, explaining more about the calling process [CHAR_LIMIT=NONE]-->
+    <string name="demo_issue_script">*You can read from the script or improvise. Tip: tap the contact\'s phone number above to open your dialer app, start the call on speaker phone, then switch back to 5 Calls to see the script while you are calling.*
+\n\n
+Hi, my name is **[NAME]** and I’m a constituent from [CITY, ZIP]. I\'m calling to ask [REP/SEN NAME] to support bill 123. Thank you for your time.
+\n\n
+*When you have finished the call, mark your result depending on whether you reached a person, left a voicemail, or called but could do neither.*
+\n\n
+***Practice reading the script out loud, then go ahead and click a result!***</string>
+
+    <!-- A message shown when the info (i) icon is clicked on the issue details page, about the demo issue [CHAR_LIMIT=NONE] -->
+    <string name="demo_issue_details_message">For a real call, you can see information here like call count, date created and category.</string>
+
+    <!-- A message shown after logging a pretend call for a placeholder issue for placing a practice call [CHAR_LIMIT=NONE]-->
+    <string name="demo_done_paragraph">That\'s all there is to it! Now you are ready to make some real calls. You can do it! \n\nIf you want to see this pretend issue again, you can get back to it in settings.</string>
+
+    <!-- Name of a setting to show an example call in the calls list [CHAR_LIMIT=100]-->
+    <string name="settings_reshow_demo_name">Show an example call</string>
+
+    <!-- Description of a setting to show an example call in the calls list [CHAR_LIMIT=NONE]-->
+    <string name="settings_reshow_demo_description">Show an example issue in the list with hints about how to use 5 Calls.</string>
 </resources>

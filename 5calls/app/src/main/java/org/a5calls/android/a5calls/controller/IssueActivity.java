@@ -686,7 +686,7 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
     static String getIssueDetailsMessage(Context context, Issue issue) {
         StringBuilder result = new StringBuilder();
         if (issue.isPlaceholder) {
-            return "This is an example issue. To see it again later, you can go to Settings.";
+            return context.getResources().getString(R.string.demo_issue_details_message);
         }
         if (issue.categories.length > 0) {
             if (issue.categories.length == 1) {

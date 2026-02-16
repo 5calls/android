@@ -99,9 +99,9 @@
             />
 
         <SwitchPreference
-            android:title="Show the example call"
+            android:title="@string/settings_reshow_demo_name"
             android:defaultValue="false"
-            android:summary="Show an example issue in the list with hints about how to use 5 Calls."
+            android:summary="@string/settings_reshow_demo_description"
             android:key="prefsKeyShowPlaceholderIssue"
             app:iconSpaceReserved="false"
             android:singleLineTitle="false"

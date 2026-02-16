@@ -341,9 +341,8 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 if (AccountManager.Instance.getPlaceholderIssueCalled(mActivity)) {
                     vh.numCalls.setVisibility(View.GONE);
                     vh.previousCallStats.setVisibility(View.VISIBLE);
-                    // TODO move to strings.xml
                     vh.previousCallStats.setText(
-                            "1 previous (pretend) call");
+                            mActivity.getResources().getString(R.string.demo_previous_call_stats_one));
                 } else {
                     vh.numCalls.setText(mActivity.getResources().getString(R.string.call_count_one));
                     vh.previousCallStats.setVisibility(View.GONE);

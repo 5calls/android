@@ -12,9 +12,10 @@
         android:textSize="@dimen/subheading_text_size"
         android:textStyle="bold"
         />
+
     <TextView
         style="@style/doneCardParagraph"
-        android:text="That's all there is to it! Now you are ready to make some real calls. You can do it! \n\nIf you want to see this pretend issue again, you can get back to it in settings."
+        android:text="@string/demo_done_paragraph"
         />
 
 </LinearLayout>
