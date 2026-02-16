@@ -5,7 +5,9 @@ import com.onebusaway.plausible.android.Plausible
 import org.a5calls.android.a5calls.BuildConfig
 import org.a5calls.android.a5calls.model.AccountManager
 
-
+/**
+ * Handles interaction with Plausible for analytics, if analytics has been enabled.
+ */
 class AnalyticsManager {
     private lateinit var plausible: Plausible
     private val staticProps: Map<String, String> = mapOf(
@@ -18,7 +20,7 @@ class AnalyticsManager {
     @Synchronized
     private fun getPlausible(context: Context): Plausible {
         if (!::plausible.isInitialized) {
-            plausible = Plausible(context, AnalyticsManager.PLAUSIBLE_DOMAIN)
+            plausible = Plausible(context, PLAUSIBLE_DOMAIN)
         }
         return plausible
     }
@@ -37,7 +39,7 @@ class AnalyticsManager {
 
     fun trackOutcome(outcome: String, issuePath: String, context: Context) {
         if (!BuildConfig.DEBUG && AccountManager.Instance.allowAnalytics(context)) {
-            getPlausible(context).event(name = "Outcome-" + outcome,
+            getPlausible(context).event(name = "Outcome-$outcome",
                 url = issuePath, props = staticProps)
         }
     }
