@@ -20,6 +20,10 @@ public class Contact implements Parcelable {
     public static final String AREA_ATTORNEY_GENERAL = "AttorneyGeneral";
     public static final String AREA_SECRETARY_OF_STATE = "SecretaryOfState";
 
+    // Used to show the placeholder contact for the demonstration issue.
+    public static final String AREA_DEMO = "demo";
+
+
     public String id;
     public String name;
     public String phone;
@@ -49,16 +53,21 @@ public class Contact implements Parcelable {
         isPlaceholder = in.readInt() == 1;
     }
 
-    protected Contact(String id, String name, String reason, String area, boolean isPlaceholder) {
+    protected Contact(String id, String name, String reason, String phone, String area, boolean isPlaceholder) {
         this.id = id;
         this.name = name;
         this.reason = reason;
+        this.phone = phone;
         this.area = area;
         this.isPlaceholder = isPlaceholder;
     }
 
     public static Contact createPlaceholder(String id, String name, String reason, String area) {
-        return new Contact(id, name, reason, area, /* isPlaceholder= */ true);
+        return createPlaceholder(id, name, reason, /*phone=*/"", area);
+    }
+
+    public static Contact createPlaceholder(String id, String name, String phone, String area, String reason) {
+        return new Contact(id, name, reason, phone, area, /* isPlaceholder= */ true);
     }
 
     public static final Creator<Contact> CREATOR = new Creator<Contact>() {

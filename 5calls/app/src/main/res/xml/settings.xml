@@ -98,6 +98,15 @@
             android:singleLineTitle="false"
             />
 
+        <SwitchPreference
+            android:title="Show the example call"
+            android:defaultValue="false"
+            android:summary="Show an example issue in the list with hints about how to use 5 Calls."
+            android:key="prefsKeyShowPlaceholderIssue"
+            app:iconSpaceReserved="false"
+            android:singleLineTitle="false"
+            />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

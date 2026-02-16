@@ -42,6 +42,8 @@ public enum AccountManager {
     public static final String KEY_SCRIPT_TEXT_SIZE_SP = "prefsKeyScriptTextSize";
     private static final String KEY_USER_STATE = "prefsKeyUserState";
     private static final String KEY_USER_DISTRICT = "prefsKeyUserDistrict";
+    private static final String KEY_PLACEHOLDER_CALLED = "prefsKeyPlaceholderCalled";
+    public static final String KEY_SHOW_PLACEHOLDER_CALLED = "prefsKeyShowPlaceholderIssue";
 
     // Default to 11 am.
     public static final int DEFAULT_REMINDER_MINUTES = 60 * 11;
@@ -229,6 +231,22 @@ public enum AccountManager {
 
     public void setScriptTextSize(Context context, float value) {
         getSharedPrefs(context).edit().putFloat(KEY_SCRIPT_TEXT_SIZE_SP, value).apply();
+    }
+
+    public void setPlaceholderIssueCalled(Context context, boolean value) {
+        getSharedPrefs(context).edit().putBoolean(KEY_PLACEHOLDER_CALLED, value).apply();
+    }
+
+    public boolean getPlaceholderIssueCalled(Context context) {
+        return getSharedPrefs(context).getBoolean(KEY_PLACEHOLDER_CALLED, false);
+    }
+
+    public void setShowPlaceholderIssue(Context context, boolean value) {
+        getSharedPrefs(context).edit().putBoolean(KEY_SHOW_PLACEHOLDER_CALLED, value).apply();
+    }
+
+    public boolean showPlaceholderIssue(Context context) {
+        return getSharedPrefs(context).getBoolean(KEY_SHOW_PLACEHOLDER_CALLED, false);
     }
 
     private SharedPreferences getSharedPrefs(Context context) {

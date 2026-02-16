@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     private boolean mShowLowAccuracyWarning = true;
     private boolean mDonateIsOn = false;
     private FirebaseAuth mAuth = null;
+    private int mCallCount = 0;
 
     private ActivityMainBinding binding;
 
@@ -461,6 +462,21 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             @Override
             public void onIssuesReceived(List<Issue> issues) {
                 populateFilterAdapterIfNeeded(issues);
+
+                // TODO refactor into helper.
+                // Option to force show the placeholder call in settings.
+                boolean forceShowPlaceholder = AccountManager.Instance.showPlaceholderIssue(getApplicationContext());
+                // If they've called more than 3 times, don't bother with the placeholder any more.
+                boolean showPlaceholderIfEarly = mCallCount <= 3 && !accountManager.getPlaceholderIssueCalled(getApplicationContext());
+                if (forceShowPlaceholder || showPlaceholderIfEarly) {
+                    // TODO put strings in strings.xml
+                    Contact demoContact = Contact.createPlaceholder("0", "Representative Name", "(555) 555-5555", Contact.AREA_DEMO, "This is a pretend contact");
+                    Issue demoIssue = Issue.createPlaceholder("0", "Feeling unsure? Start here!", "/issue/demoIssue",
+                            "This is where we'll put a description. You can get back to this in the app's settings, \"Show the example call\".\n\nDon't worry, this is just an example, you won't be connected with your representative.",
+                            "*You can read from the script or improvise. Tip: tap the contact's phone number above to open your dialer app, start the call on speaker phone, then switch back to 5 Calls to see the script while you are calling.*\n\nHi, my name is **[NAME]** and I’m a constituent from [CITY, ZIP]. I'm calling to ask [REP/SEN NAME] to support bill 123. Thank you for your time.\n\n*When you have finished the call, mark your result depending on whether you reached a person, left a voicemail, or called but could do neither.*\n\n***Practice reading the script out loud, then go ahead and click a result!***", true, 0,
+                            Collections.singletonList(demoContact), Collections.emptyList(), Collections.emptyList());
+                    issues.add(demoIssue);
+                }
                 mIssuesAdapter.setAllIssues(issues, IssuesAdapter.NO_ERROR);
                 mIssuesAdapter.setFilterAndSearch(mFilterText, mSearchText);
                 binding.swipeContainer.setRefreshing(false);
@@ -648,12 +664,12 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     }
 
     private void loadStats() {
-        int callCount = AppSingleton.getInstance(getApplicationContext())
+        mCallCount = AppSingleton.getInstance(getApplicationContext())
                 .getDatabaseHelper().getCallsCount();
-        if (callCount > 1) {
+        if (mCallCount > 1) {
             // Don't bother if it is less than 1.
             binding.actionBarSubtitle.setText(String.format(
-                    getResources().getString(R.string.your_call_count_summary), callCount));
+                    getResources().getString(R.string.your_call_count_summary), mCallCount));
         }
     }
 

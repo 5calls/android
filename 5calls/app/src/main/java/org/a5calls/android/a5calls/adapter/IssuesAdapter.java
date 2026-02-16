@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.R;
+import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.Category;
 import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.DatabaseHelper;
@@ -335,6 +336,21 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 }
             });
 
+            if (issue.isPlaceholder) {
+                vh.numCalls.setVisibility(View.VISIBLE);
+                if (AccountManager.Instance.getPlaceholderIssueCalled(mActivity)) {
+                    vh.numCalls.setVisibility(View.GONE);
+                    vh.previousCallStats.setVisibility(View.VISIBLE);
+                    // TODO move to strings.xml
+                    vh.previousCallStats.setText(
+                            "1 previous (pretend) call");
+                } else {
+                    vh.numCalls.setText(mActivity.getResources().getString(R.string.call_count_one));
+                    vh.previousCallStats.setVisibility(View.GONE);
+                }
+                return;
+            }
+
             if (mAddressErrorType != NO_ERROR) {
                 // If there was an address error, clear the number of calls to make.
                 vh.numCalls.setText("");
@@ -527,16 +543,20 @@ private static class EmptySearchViewHolder extends RecyclerView.ViewHolder {
 
     /**
      * Sorts a list of issues to prioritize those with meta values (state abbreviations) at the top,
-     * then sorts the remaining issues. Both groups maintain their internal sort order.
+     * then sorts the remaining issues. Both groups maintain their internal sort order. Placeholder
+     * issues are always put at the very top.
      */
     @VisibleForTesting
     ArrayList<Issue> sortIssuesWithMetaPriority(List<Issue> issues) {
+        ArrayList<Issue> placeholders = new ArrayList<>();
         ArrayList<Issue> withMeta = new ArrayList<>();
         ArrayList<Issue> withoutMeta = new ArrayList<>();
         
         // Separate issues with and without meta values
         for (Issue issue : issues) {
-            if (!TextUtils.isEmpty(issue.meta)) {
+            if (issue.isPlaceholder) {
+                placeholders.add(issue);
+            } else if (!TextUtils.isEmpty(issue.meta)) {
                 withMeta.add(issue);
             } else {
                 withoutMeta.add(issue);
@@ -544,11 +564,13 @@ private static class EmptySearchViewHolder extends RecyclerView.ViewHolder {
         }
         
         // Sort each group independently by sort field (maintaining consistent order)
+        Collections.sort(placeholders, (a, b) -> Integer.compare(a.sort, b.sort));
         Collections.sort(withMeta, (a, b) -> Integer.compare(a.sort, b.sort));
         Collections.sort(withoutMeta, (a, b) -> Integer.compare(a.sort, b.sort));
         
         // Combine: meta issues first, then regular issues
         ArrayList<Issue> result = new ArrayList<>();
+        result.addAll(placeholders);
         result.addAll(withMeta);
         result.addAll(withoutMeta);
         

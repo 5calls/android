@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/doneCardStyle"
+    android:visibility="gone"
+    >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/done_heading"
+        android:textColor="@color/colorAccent"
+        android:textSize="@dimen/subheading_text_size"
+        android:textStyle="bold"
+        />
+    <TextView
+        style="@style/doneCardParagraph"
+        android:text="That's all there is to it! Now you are ready to make some real calls. You can do it! \n\nIf you want to see this pretend issue again, you can get back to it in settings."
+        />
+
+</LinearLayout>

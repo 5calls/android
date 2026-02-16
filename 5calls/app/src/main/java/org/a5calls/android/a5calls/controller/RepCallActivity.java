@@ -153,8 +153,13 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
         outcomeAdapter = new OutcomeAdapter(issueOutcomes, new OutcomeAdapter.Callback() {
             @Override
             public void onOutcomeClicked(Outcome outcome) {
-                reportEvent(outcome.label);
-                reportCall(outcome, address);
+                if (!mIssue.isPlaceholder) {
+                    reportEvent(outcome.label);
+                    reportCall(outcome, address);
+                } else {
+                    AccountManager.Instance.setPlaceholderIssueCalled(getApplicationContext(), true);
+                    returnToIssueWithDemoCalled();
+                }
             }
         });
 
@@ -376,6 +381,19 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
         }
         upIntent.putExtra(IssueActivity.KEY_ISSUE, mIssue);
         setResult(IssueActivity.RESULT_SERVER_ERROR, upIntent);
+        finish();
+    }
+
+    private void returnToIssueWithDemoCalled() {
+        if (isFinishing()) {
+            return;
+        }
+        Intent upIntent = NavUtils.getParentActivityIntent(this);
+        if (upIntent == null) {
+            return;
+        }
+        upIntent.putExtra(IssueActivity.KEY_ISSUE, mIssue);
+        setResult(IssueActivity.RESULT_DEMO_CALLED, upIntent);
         finish();
     }
 

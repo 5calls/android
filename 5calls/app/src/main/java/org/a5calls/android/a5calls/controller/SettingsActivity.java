@@ -218,6 +218,10 @@ public class SettingsActivity extends AppCompatActivity {
             ListPreference notificationPref =
                     (ListPreference) findPreference(AccountManager.KEY_NOTIFICATIONS);
             notificationPref.setValue(notificationSetting);
+
+            boolean showPlaceholderIssue = accountManager.showPlaceholderIssue(getActivity());
+            ((SwitchPreference) findPreference(AccountManager.KEY_SHOW_PLACEHOLDER_CALLED))
+                    .setChecked(hasReminders);
         }
 
         @Override
@@ -276,6 +280,9 @@ public class SettingsActivity extends AppCompatActivity {
             } else if (TextUtils.equals(key, "prefsKeyScriptTextSize")) {
                 String value = sharedPreferences.getString(AccountManager.KEY_SCRIPT_TEXT_SIZE_SP, getString(R.string.script_text_size_normal_sp));
                 AccountManager.Instance.setScriptTextSize(getActivity(), Float.parseFloat(value));
+            } else if (TextUtils.equals(key, AccountManager.KEY_SHOW_PLACEHOLDER_CALLED)) {
+                boolean result = sharedPreferences.getBoolean(key, false);
+                AccountManager.Instance.setShowPlaceholderIssue(getActivity(), result);
             }
         }
 
