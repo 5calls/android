@@ -44,6 +44,7 @@ import org.a5calls.android.a5calls.model.DatabaseHelper;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.model.Outcome;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
+import org.a5calls.android.a5calls.util.AnalyticsManager;
 import org.a5calls.android.a5calls.util.MarkdownUtil;
 import org.a5calls.android.a5calls.util.ScriptReplacements;
 import org.a5calls.android.a5calls.view.GridItemDecoration;
@@ -153,7 +154,7 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
         outcomeAdapter = new OutcomeAdapter(issueOutcomes, new OutcomeAdapter.Callback() {
             @Override
             public void onOutcomeClicked(Outcome outcome) {
-                reportEvent(outcome.label);
+                reportEvent(outcome);
                 reportCall(outcome, address);
             }
         });
@@ -349,8 +350,9 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
         Snackbar.make(binding.scrollView, errorStringId, Snackbar.LENGTH_SHORT).show();
     }
 
-    private void reportEvent(String event) {
-        // Could add analytics here.
+    private void reportEvent(Outcome outcome) {
+        FiveCallsApplication.analyticsManager().trackOutcome(outcome.status.toString(),
+                mIssue.permalink, this);
     }
 
     private void returnToIssue() {

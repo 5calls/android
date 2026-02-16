@@ -34,4 +34,11 @@ class AnalyticsManager {
             getPlausible(context).pageView(path, path, props = extraProps + staticProps)
         }
     }
+
+    fun trackOutcome(outcome: String, issuePath: String, context: Context) {
+        if (!BuildConfig.DEBUG && AccountManager.Instance.allowAnalytics(context)) {
+            getPlausible(context).event(name = "Outcome-" + outcome,
+                url = issuePath, props = staticProps)
+        }
+    }
 }
