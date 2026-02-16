@@ -121,19 +121,45 @@
     <string name="privacy_btn">Privacy Policy</string>
 
     <!-- Text to show the user the number of calls made by everyone [CHAR_LIMIT=50] -->
-    <string name="calls_to_date">Together we\'ve made <xliff:g id="callCount">%1$s</xliff:g> calls</string>
+    <string name="calls_to_date">We\'ve made <xliff:g id="callCount">%1$s</xliff:g> calls, so far</string>
 
     <!-- Text shown to the user on the splash / tutorial screen describing the 5 Calls app. \n\n is used to create new paragraphs. [CHAR_LIMIT=NONE] -->
     <string name="about_splash">There\'s one simple and straightforward way to influence the Government that is supposed to represent you: Call them on the phone.</string>
 
     <!-- Tutorial screen text that calling is effective [CHAR_LIMIT=100] -->
-    <string name="about_p2_2">Calling is the most effective way to influence your representatives.</string>
+    <string name="about_p2_2">Calling your representatives is the most effective way to influence policy.</string>
 
     <!-- Text shown to the user on the splash / tutorial screen describing more about the 5 Calls app. \n\n is used to create new paragraphs. [CHAR_LIMIT=NONE] -->
-    <string name="about_splash_2">5 Calls provides phone numbers and scripts so calling is quick and easy, finds your local representatives so your calls have more impact.</string>
+    <string name="about_splash_2">Phone calls can be stressful. 5 Calls provides scripts and phone numbers for your local representatives so calls can be quick and easy.</string>
+
+    <string name="getting_started_header">How it works</string>
+
+    <!-- Title for step 1 of how to use 5 calls: pick an issue [CHAR_LIMIT=100] -->
+    <string name="about_p2_3">1. Choose an issue you care about</string>
+
+    <!-- Description of step 1 of how to use 5 calls: pick an issue [CHAR_LIMIT=NONE] -->
+    <string name="about_splash_3_1">Make calls from our list of timely, actionable, progressive issues.</string>
+
+    <!-- Title for step 2 of how to use 5 calls: pick a contact [CHAR_LIMIT=100] -->
+    <string name="about_p3_3">2. Pick a contact</string>
+
+    <!-- Description of step 2 of how to use 5 calls: pick a contact [CHAR_LIMIT=NONE] -->
+    <string name="about_splash_3_2">We\'ll show you who you can call, from Representatives and Senators to state-level officials.</string>
+
+    <!-- Title for step 3 of how to use 5 calls: call the contact [CHAR_LIMIT=100] -->
+    <string name="about_p4_3">3. Read the script, or improvise</string>
+
+    <!-- Description of step 3 of how to use 5 calls: call the contact [CHAR_LIMIT=NONE] -->
+    <string name="about_splash_3_3">Click your contact\'s number to call from your dialer app. Tip: Put the call on speaker and switch back to 5 Calls to read from the script.</string>
+
+    <!-- Heading shown on the last tutorial page [CHAR_LIMIT=100] -->
+    <string name="add_your_voice">Your voice matters</string>
+
+    <!-- Prompt to let users know they will be in community if they call [CHAR_LIMIT=NONE] -->
+    <string name="about_splash_4_1">Join us: our voices are louder together</string>
 
     <!-- Text shown to the user on the splash / tutorial screen letting them know about notifications and reminders [CHAR_LIMIT=NONE] -->
-    <string name="about_splash_3">The 5 Calls app can help you maintain involvement by reminding you several times a week to make calls.</string>
+    <string name="about_splash_4_2">The 5 Calls app can help you maintain involvement by reminding you several times a week to make calls.</string>
 
     <!-- Button shown to turn on reminders [CHAR_LIMIT=50] -->
     <string name="tutorial_reminders_btn">Turn on reminders</string>

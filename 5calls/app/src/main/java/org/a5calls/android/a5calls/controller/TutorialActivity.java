@@ -38,6 +38,7 @@ import java.util.Locale;
  */
 public class TutorialActivity extends AppCompatActivity {
     private static final String TAG = "TutorialActivity";
+    private static final int PLACEHOLDER_CALL_COUNT = 12500000;
 
     private ActivityTutorialBinding binding;
 
@@ -93,7 +94,7 @@ public class TutorialActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 3;
+            return 4;
         }
 
         @Override
@@ -101,9 +102,11 @@ public class TutorialActivity extends AppCompatActivity {
             if (position == 0) {
                 return FirstTutorialPageFragment.newInstance();
             } else if (position == 1) {
-                return SecondTutorialPageFragment.newInstance();
+                return StaticTutorialPageFragment.newInstance(R.layout.tutorial_item_2);
             } else if (position == 2) {
-                return ThirdTutorialPageFragment.newInstance();
+                return StaticTutorialPageFragment.newInstance(R.layout.tutorial_item_3);
+            } else if (position == 3) {
+                return FourthTutorialPageFragment.newInstance();
             }
             return null;
         }
@@ -130,18 +133,23 @@ public class TutorialActivity extends AppCompatActivity {
         }
     }
 
-    public static class SecondTutorialPageFragment extends Fragment {
+    public static class StaticTutorialPageFragment extends Fragment {
 
-        public static SecondTutorialPageFragment newInstance() {
-            SecondTutorialPageFragment fragment = new SecondTutorialPageFragment();
-            return fragment;
+        private final int layoutId;
+
+        public static StaticTutorialPageFragment newInstance(int layoutId) {
+            return new StaticTutorialPageFragment(layoutId);
+        }
+
+        public StaticTutorialPageFragment(int layoutId) {
+            this.layoutId = layoutId;
         }
 
         @Nullable
         @Override
         public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                                  @Nullable Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.tutorial_item_2, container, false);
+            View rootView = inflater.inflate(layoutId, container, false);
             rootView.findViewById(R.id.btn_back).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -158,7 +166,7 @@ public class TutorialActivity extends AppCompatActivity {
         }
     }
 
-    public static class ThirdTutorialPageFragment extends Fragment {
+    public static class FourthTutorialPageFragment extends Fragment {
 
         private FiveCallsApi.CallRequestListener mStatusListener;
         private TextView callsToDate;
@@ -167,9 +175,8 @@ public class TutorialActivity extends AppCompatActivity {
 
         private ActivityResultLauncher<String> mNotificationPermissionRequest;
 
-        public static ThirdTutorialPageFragment newInstance() {
-            ThirdTutorialPageFragment fragment = new ThirdTutorialPageFragment();
-            return fragment;
+        public static FourthTutorialPageFragment newInstance() {
+            return new FourthTutorialPageFragment();
         }
 
         @Override
@@ -200,7 +207,7 @@ public class TutorialActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                                  @Nullable Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.tutorial_item_3, container, false);
+            View rootView = inflater.inflate(R.layout.tutorial_item_4, container, false);
             callsToDate = rootView.findViewById(R.id.calls_to_date);
             remindersBtn = rootView.findViewById(R.id.reminders_btn);
             remindersDoneText = rootView.findViewById(R.id.reminders_done);
@@ -235,7 +242,6 @@ public class TutorialActivity extends AppCompatActivity {
                         // No longer attached to the activity!
                         return;
                     }
-                    callsToDate.setVisibility(View.VISIBLE);
                     callsToDate.setText(String.format(
                             getResources().getString(R.string.calls_to_date),
                             NumberFormat.getNumberInstance(Locale.US).format(count)));
@@ -265,6 +271,11 @@ public class TutorialActivity extends AppCompatActivity {
                         startActivity(intent);
                         getActivity().finish();
                     });
+
+            callsToDate.setText(String.format(
+                    getResources().getString(R.string.calls_to_date),
+                    NumberFormat.getNumberInstance(Locale.US).format(PLACEHOLDER_CALL_COUNT)));
+
             return rootView;
         }
 

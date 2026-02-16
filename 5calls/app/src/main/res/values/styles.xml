@@ -153,8 +153,15 @@
     <style name="issueLinearLayout" parent="BaseContainer" />
 
     <style name="tutorialLinearLayoutStyle" parent="BaseContainer">
-        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_centerInParent">true</item>
     </style>
+
+    <style name="tutorialScrollViewStyle" parent="BaseContainer.FullHeight.Padded">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_alignParentTop">true</item>
+    </style>
+
 
     <style name="simpleVerticalLinearLayout" parent="FiveCallsLinearLayout">
         <item name="android:orientation">vertical</item>
@@ -200,11 +207,20 @@
     <style name="nextBtnTutorialStyle" parent="linkButtonStyle">
         <item name="android:layout_alignParentEnd">true</item>
         <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:paddingStart">@dimen/activity_horizontal_padding</item>
+        <item name="android:paddingEnd">@dimen/activity_horizontal_padding</item>
     </style>
 
     <style name="backBtnTutorialStyle" parent="linkButtonStyle">
         <item name="android:layout_alignParentStart">true</item>
         <item name="android:layout_alignParentBottom">true</item>
+    </style>
+
+    <style name="tutorialProgressIndicatorStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/accessibility_min_size</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_centerHorizontal">true</item>
     </style>
 
     <style name="issueHeadStyle" parent="Widget.FiveCalls.TextView.H1">
