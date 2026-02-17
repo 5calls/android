@@ -63,10 +63,10 @@ public class Contact implements Parcelable {
     }
 
     public static Contact createPlaceholder(String id, String name, String reason, String area) {
-        return createPlaceholder(id, name, reason, /*phone=*/"", area);
+        return createPlaceholder(id, name, reason, area, /*phone=*/"");
     }
 
-    public static Contact createPlaceholder(String id, String name, String phone, String area, String reason) {
+    public static Contact createPlaceholder(String id, String name, String reason, String area, String phone) {
         return new Contact(id, name, reason, phone, area, /* isPlaceholder= */ true);
     }
 

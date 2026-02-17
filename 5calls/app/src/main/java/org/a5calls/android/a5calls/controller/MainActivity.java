@@ -472,8 +472,9 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 if (forceShowPlaceholder || showPlaceholderIfEarly) {
                     Contact demoContact = Contact.createPlaceholder("0",
                             getResources().getString(R.string.demo_rep_name),
-                            getResources().getString(R.string.demo_rep_phone),
-                            Contact.AREA_DEMO, getResources().getString(R.string.demo_rep_reason));
+                            getResources().getString(R.string.demo_rep_reason),
+                            Contact.AREA_DEMO,
+                            getResources().getString(R.string.demo_rep_phone));
                     Issue demoIssue = Issue.createPlaceholder("0",
                             getResources().getString(R.string.demo_issue_name),
                             DEMO_ISSUE_PERMALINK,
