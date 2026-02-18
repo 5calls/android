@@ -138,7 +138,7 @@
     <string name="about_p2_3">1. Choose an issue you care about</string>
 
     <!-- Description of step 1 of how to use 5 calls: pick an issue [CHAR_LIMIT=NONE] -->
-    <string name="about_splash_3_1">Make calls from our list of timely, actionable, progressive issues.</string>
+    <string name="about_splash_3_1">Make calls from our list of timely and actionable issues.</string>
 
     <!-- Title for step 2 of how to use 5 calls: pick a contact [CHAR_LIMIT=100] -->
     <string name="about_p3_3">2. Pick a contact</string>

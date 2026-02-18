@@ -111,7 +111,7 @@
     <string name="about_p2_3">1. Elige un tema que te interese</string>
 
     <!-- Description of step 1 of how to use 5 calls: pick an issue [CHAR_LIMIT=NONE] -->
-    <string name="about_splash_3_1">Haz llamadas desde nuestra lista de temas oportunos, procesables y progresistas.</string>
+    <string name="about_splash_3_1">Haz llamadas desde nuestra lista de temas oportunos y procesables.</string>
 
     <!-- Title for step 2 of how to use 5 calls: pick a contact [CHAR_LIMIT=100] -->
     <string name="about_p3_3">2. Elige un contacto</string>
