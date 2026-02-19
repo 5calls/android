@@ -13,19 +13,39 @@
 
             <TextView
                 style="@style/tutorialHeadStyle"
-                android:text="@string/about_header"
-                />
-
-            <TextView
-                android:id="@+id/calls_to_date"
-                style="@style/subheadingTutorialStyle"
-                android:text="@string/about_p2_2"
+                android:text="@string/add_your_voice"
                 />
 
             <TextView
                 style="@style/splashTextStyle"
                 android:layout_marginBottom="@dimen/margin_text"
-                android:text="@string/about_splash_2"
+                android:text="@string/about_splash_4_1"
+                />
+
+            <TextView
+                android:id="@+id/calls_to_date"
+                style="@style/subheadingTutorialStyle"
+                />
+
+            <TextView
+                style="@style/splashTextStyle"
+                android:layout_marginBottom="@dimen/margin_text"
+                android:text="@string/about_splash_4_2"
+                />
+
+            <Button
+                style="@style/genericButtonStyle"
+                android:id="@+id/reminders_btn"
+                android:text="@string/tutorial_reminders_btn"
+                />
+
+            <TextView
+                style="@style/splashTextStyle"
+                android:layout_marginTop="@dimen/margin_text"
+                android:layout_marginBottom="@dimen/margin_text"
+                android:text="@string/about_reminders_on"
+                android:id="@+id/reminders_done"
+                android:visibility="gone"
                 />
 
         </LinearLayout>
@@ -40,14 +60,14 @@
 
     <ImageView
         style="@style/tutorialProgressIndicatorStyle"
-        android:src="@drawable/progress_dots_2"
+        android:src="@drawable/progress_dots_4"
         android:importantForAccessibility="no"
         />
 
     <Button
-        android:id="@+id/btn_next"
+        android:id="@+id/get_started_btn"
         style="@style/nextBtnTutorialStyle"
-        android:text="@string/next"
+        android:text="@string/get_started_btn"
         />
 
 </RelativeLayout>
