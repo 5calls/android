@@ -636,6 +636,11 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             if (issue.categories == null) {
                 continue;
             }
+            // Add state items filter.
+            String state = issue.getStateName();
+            if (!TextUtils.isEmpty(state) && !topics.contains(state)) {
+                topics.add(state);
+            }
             for (Category category : issue.categories) {
                 if (!topics.contains(category.name)) {
                     topics.add(category.name);

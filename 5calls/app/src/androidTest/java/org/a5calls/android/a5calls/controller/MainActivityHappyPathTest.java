@@ -352,7 +352,11 @@ public class MainActivityHappyPathTest extends MainActivityBaseTest {
         onView(allOf(withText(R.string.next), isDisplayed())).perform(click());
 
         // Third tutorial screen shown.
-        onView(withText(R.string.about_splash_3)).check(matches(isDisplayed()));
+        onView(withText(R.string.about_splash_3_1)).check(matches(isDisplayed()));
+        onView(allOf(withText(R.string.next), isDisplayed())).perform(click());
+
+        // Fourth tutorial screen shown
+        onView(withText(R.string.about_splash_4_1)).check(matches(isDisplayed()));
         onView(allOf(withText(R.string.get_started_btn), isDisplayed())).perform(click());
 
         // Location screen shown.

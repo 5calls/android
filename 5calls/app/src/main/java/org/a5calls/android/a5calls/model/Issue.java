@@ -5,7 +5,11 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 
 import java.util.Collections;
+import org.a5calls.android.a5calls.util.StateMapping;
+
 import java.util.List;
+
+import androidx.annotation.Nullable;
 
 /**
  * Represents an issue.
@@ -131,5 +135,12 @@ public class Issue implements Parcelable {
             }
         }
         return script;
+    }
+
+    public @Nullable String getStateName() {
+        if (TextUtils.isEmpty(meta)) {
+            return null;
+        }
+        return StateMapping.getStateName(meta);
     }
 }

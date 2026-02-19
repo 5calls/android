@@ -17,7 +17,6 @@ import org.a5calls.android.a5calls.model.Category;
 import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.DatabaseHelper;
 import org.a5calls.android.a5calls.model.Issue;
-import org.a5calls.android.a5calls.util.StateMapping;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -132,7 +131,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 mIssues = sortIssuesWithMetaPriority(filterActiveIssues());
             } else {
                 // Filter by the category string.
-                mIssues = sortIssuesWithMetaPriority(filterIssuesByCategory(filterText));
+                mIssues = sortIssuesWithMetaPriority(filterIssuesByCategory(mAllIssues, filterText));
             }
         }
         notifyDataSetChanged();
@@ -214,9 +213,15 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return tempIssues;
     }
 
-    private ArrayList<Issue> filterIssuesByCategory(String activeCategory) {
+    @VisibleForTesting
+    public static ArrayList<Issue> filterIssuesByCategory(List<Issue> issues, String activeCategory) {
         ArrayList<Issue> tempIssues = new ArrayList<>();
-        for (Issue issue : mAllIssues) {
+        for (Issue issue : issues) {
+            // Categories include state.
+            if (TextUtils.equals(issue.getStateName(), activeCategory)) {
+                tempIssues.add(issue);
+                continue;
+            }
             for (Category category : issue.categories) {
                 if (TextUtils.equals(activeCategory, category.name)) {
                     tempIssues.add(issue);
@@ -315,16 +320,11 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             final Issue issue = mIssues.get(position);
             vh.name.setText(issue.name);
 
-            // Show state indicator if issue has meta (state abbreviation) and we can map it to a state name
-            if (!TextUtils.isEmpty(issue.meta)) {
-                String stateName = StateMapping.getStateName(issue.meta);
-                if (!TextUtils.isEmpty(stateName)) {
-                    vh.stateIndicator.setText(stateName);
-                    vh.stateIndicator.setVisibility(View.VISIBLE);
-
-                } else {
-                    vh.stateIndicator.setVisibility(View.GONE);
-                }
+            // Show state indicator if issue has a state set.
+            String stateName = issue.getStateName();
+            if (!TextUtils.isEmpty(stateName)) {
+                vh.stateIndicator.setText(stateName);
+                vh.stateIndicator.setVisibility(View.VISIBLE);
             } else {
                 vh.stateIndicator.setVisibility(View.GONE);
             }

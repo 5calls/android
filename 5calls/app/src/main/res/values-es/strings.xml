@@ -103,11 +103,37 @@
     <string name="about_p2_2">Llamar por teléfono es la forma más efectiva de influir a sus representantes.</string>
 
     <!-- Text shown to the user on the splash / tutorial screen describing more about the 5 Calls app.   n  n is used to create new paragraphs. [CHAR_LIMIT=NONE] -->
-    <string name="about_splash_2">5 Calls te da contactos y guiones para que puedas llamar rápido y fácilmente. Usamos su ubicación para darle a sus representantes locales para que sus llamadas sean más impactantes.</string>
+    <string name="about_splash_2">Las llamadas telefónicas pueden ser estresantes. 5 Calls te da guiones y números de teléfono de tus representantes locales para que las llamadas sean rápidas y fáciles.</string>
+
+    <string name="getting_started_header">Cómo funciona</string>
+
+    <!-- Title for step 1 of how to use 5 calls: pick an issue [CHAR_LIMIT=100] -->
+    <string name="about_p2_3">1. Elige un tema que te interese</string>
+
+    <!-- Description of step 1 of how to use 5 calls: pick an issue [CHAR_LIMIT=NONE] -->
+    <string name="about_splash_3_1">Haz llamadas desde nuestra lista de temas oportunos y procesables.</string>
+
+    <!-- Title for step 2 of how to use 5 calls: pick a contact [CHAR_LIMIT=100] -->
+    <string name="about_p3_3">2. Elige un contacto</string>
+
+    <!-- Description of step 2 of how to use 5 calls: pick a contact [CHAR_LIMIT=NONE] -->
+    <string name="about_splash_3_2">Te mostraremos a quién puedes llamar, desde representantes y senadores hasta funcionarios a nivel estatal.</string>
+
+    <!-- Title for step 3 of how to use 5 calls: call the contact [CHAR_LIMIT=100] -->
+    <string name="about_p4_3">3. Lee el guion o improvisa</string>
+
+    <!-- Description of step 3 of how to use 5 calls: call the contact [CHAR_LIMIT=NONE] -->
+    <string name="about_splash_3_3">Toca el número de tu contacto para llamar desde tu aplicación de teléfono. Consejo: pon la llamada en altavoz y vuelve a 5 Calls para leer el guion.</string>
+
+    <!-- Heading shown on the last tutorial page [CHAR_LIMIT=100] -->
+    <string name="add_your_voice">Tu voz importa</string>
+
+    <!-- Prompt to let users know they will be in community if they call [CHAR_LIMIT=NONE] -->
+    <string name="about_splash_4_1">Únete a nosotros: nuestras voces son más fuertes juntas</string>
 
     <!-- Text shown to the user on the splash / tutorial screen letting them know about notifications and reminders [CHAR_LIMIT=NONE] -->
-    <string name="about_splash_3">La aplicación 5 Calls puede enviárte recordatorios varias veces a la semana para ayudarte a mantener tu participación. Puedes activar y personalizar los recordatorios en configuración.</string>
-
+    <string name="about_splash_4_2">La aplicación 5 Calls puede ayudarte a mantener tu participación enviándote recordatorios para hacer llamadas varias veces a la semana.</string>
+    
     <!-- Button shown to turn on reminders [CHAR_LIMIT=50] -->
     <string name="tutorial_reminders_btn">Activar recordatorios</string>
 

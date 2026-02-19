@@ -183,4 +183,22 @@ public class IssueTest {
         assertEquals("Custom script for contact 1", issue.getScriptForContact("contact1"));
         assertNull(issue.getScriptForContact("nonexistent_contact"));
     }
+
+    @Test
+    public void testGetStateNameNoState() {
+        Issue issue = TestModelUtils.createIssue("test-issue", "Test Issue", "");
+        assertNull(issue.getStateName());
+    }
+
+    @Test
+    public void testGetStateNameWithNoStateMapping() {
+        Issue issue = TestModelUtils.createIssue("test-issue", "Test Issue", "ba");
+        assertNull(issue.getStateName());
+    }
+
+    @Test
+    public void testGetStateNameWithStateSet() {
+        Issue issue = TestModelUtils.createIssue("test-issue", "Test Issue", "ca");
+        assertEquals("California", issue.getStateName());
+    }
 }
