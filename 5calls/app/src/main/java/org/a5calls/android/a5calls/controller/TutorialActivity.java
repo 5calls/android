@@ -135,20 +135,24 @@ public class TutorialActivity extends AppCompatActivity {
 
     public static class StaticTutorialPageFragment extends Fragment {
 
-        private final int layoutId;
+        private static final String KEY_LAYOUT_ID = "layoutId";
 
         public static StaticTutorialPageFragment newInstance(int layoutId) {
-            return new StaticTutorialPageFragment(layoutId);
+            StaticTutorialPageFragment fragment = new StaticTutorialPageFragment();
+            Bundle args = new Bundle();
+            args.putInt(KEY_LAYOUT_ID, layoutId);
+            fragment.setArguments(args);
+            return fragment;
         }
 
-        public StaticTutorialPageFragment(int layoutId) {
-            this.layoutId = layoutId;
-        }
+        private StaticTutorialPageFragment() {}
 
         @Nullable
         @Override
         public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                                  @Nullable Bundle savedInstanceState) {
+            assert getArguments() != null;
+            int layoutId = getArguments().getInt(KEY_LAYOUT_ID);
             View rootView = inflater.inflate(layoutId, container, false);
             rootView.findViewById(R.id.btn_back).setOnClickListener(new View.OnClickListener() {
                 @Override
