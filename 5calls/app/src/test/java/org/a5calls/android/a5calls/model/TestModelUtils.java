@@ -20,9 +20,14 @@ public class TestModelUtils {
     }
 
     public static Issue createIssue(String id, String name) {
+        return createIssue(id, name, "");
+    }
+
+    public static Issue createIssue(String id, String name, String meta) {
         Issue issue = Issue.CREATOR.createFromParcel(Parcel.obtain());
         issue.id = id;
         issue.name = name;
+        issue.meta = meta;
         return issue;
     }
 }
