@@ -710,28 +710,43 @@
     <string name="demo_rep_reason">This is a pretend contact</string>
 
     <!-- A name for a placeholder issue for placing a practice call [CHAR_LIMIT=100]-->
-    <string name="demo_issue_name">Feeling unsure? Start here!</string>
+    <string name="demo_issue_name">️🤔 Feeling unsure? Start here!</string>
 
     <!-- A description for a placeholder issue for placing a practice call, explaining more about the process [CHAR_LIMIT=NONE]-->
     <string name="demo_issue_reason">
-        **Practice mode:**
-        For many of us, making phone calls can be intimidating. 5 Calls tries to
-        make it easier by giving you detailed background information about each issue, your
-        representatives\' phone numbers, and a call script.
+        ### **How it works: Practice mode**
         \n\n
-        **What to expect:**
-        You will tap the contacts in the list below to get their office phone number and a script.
-        Calls will be answered by a staffer or go to voicemail. Either way, your position will be
-        added to a tally for your representative.
+        For many of us, making phone calls can be intimidating. This example call helps you learn
+        the process.
         \n\n
-        **Tips for calling:**
-        \n\n- *Keep it short:* Calls can take less than a minute
-        \n\n- *Make your stance clear:* Use supporting bill numbers if applicable so the staffer can easily tally your call.
-        \n\n- *Be respectful:* No matter which party they work for, the staffers that pick up the phone will just record your position.
-        \n\n If you feel nervous or don\'t want to talk to a person, call outside of business
-        hours!
         \n\n
-        **Ready? Tap the pretend contact below to get to the practice script.**
+        #### **Step 1: Call a contact\'s office**
+        \n\n
+        After reading about an issue, tap a contact to see their office phone number and a
+        script. Start the call on speakerphone and switch back to 5 Calls to see the script while
+        you are calling.
+        \n\n
+        #### **Step 2: Read the script, or improvise**
+        \n\n
+        Calls will be answered by a staffer or go to voicemail. Either way, your opinion
+        is tallied to show your representative what their constituents care about.
+        \n\n
+        #### **Step 3: Tell us how it went**
+        \n\n
+        This helps us track our collective impact.
+        \n\n
+        \u0020\u0020- **Made Contact**: Use this if you talked to a staffer\n\n
+        \u0020\u0020- **Left Voicemail**: This still gets tallied!\n\n
+        \u0020\u0020- **Unavailable**: The mailbox was full or the line was busy\n\n
+        \n\n
+        #### **Tips for calling:**
+        \n\n- **Keep it short:** Calls should take less than a minute
+        \n\n- **Be respectful:** No matter which party they work for, the staffers that pick up the
+        phone will just record your opinion.
+        \n\n- **Practice with voicemail:** If you feel nervous or don\'t want to talk to a person, call
+        outside of business hours and leave a message.
+        \n\n
+        ### **Ready? Tap the pretend contact below to get to the practice script.**
         \n\n
         *You can always find this again in the app\'s settings, \"Show an example call\".*
     </string>
@@ -739,29 +754,17 @@
     <!-- A script for a placeholder issue for placing a practice call, explaining more about the calling process [CHAR_LIMIT=NONE]-->
     <string name="demo_issue_script">
         Hi, my name is **[NAME]** and I’m a constituent from [CITY, ZIP]. I\'m calling to ask
-        [REP/SEN NAME] to support Bill 123. Thank you for your time and consideration.
+        [REP/SEN NAME] to support Bill 314 which increases funding for local organizations. Thank
+        you for your time and consideration.
         \n\n
         ---
-        \n\n
-        ***Step 1: Place the call***
-        \n\n
-        *You would tap the phone number above to open your phone app. Pro tip: start the call on
-        speakerphone, then switch back to 5 Calls to see the script while you are calling.*
-        \n\n
-        ***Step 2: Read the script, or improvise***
-        \n\n
-        *Try reading the script above out loud now to get the "feel" of a call.*
-        \n\n
-        ***Step 3: Tell us how it went***
-        \n\n
-        *This helps us track our collective power.*
-        \n\n
-        \u0020\u0020- *Unavailable: The mailbox was full or the line was busy*\n\n
-        \u0020\u0020- *Left Voicemail: This still counts as a call!*\n\n
-        \u0020\u0020- *Made Contact: Use this if you talked to a staffer.*
-        \n\n
-        *Enter a pretend result now!*
+        \n
+        *Read the script out loud to get the \"feel\" for a call. Really! Then enter a
+        pretend result. (This pretend call is not actually recorded.)*
     </string>
+
+    <string name="demo_phone_click_dialog_title">Pretend phone call</string>
+    <string name="demo_phone_click_dialog_description">For a real contact, this would open their number in your phone app.</string>
 
     <!-- A message shown when the info (i) icon is clicked on the issue details page, about the demo issue [CHAR_LIMIT=NONE] -->
     <string name="demo_issue_details_message">For a real call, you can see information here like call count, date created and category.</string>

@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     private static final String DEEP_LINK_HOST = "5calls.org";
     private static final String DEEP_LINK_PATH_ISSUE = "issue";
     private static final String DEMO_ISSUE_PERMALINK = "/issue/demoIssue";
+    private static final int MAX_CALLS_FOR_DEMO = 1;
     private final AccountManager accountManager = AccountManager.Instance;
 
     private String mPendingDeepLinkPath = null;
@@ -467,8 +468,8 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 // TODO refactor into helper.
                 // Option to force show the placeholder call in settings.
                 boolean forceShowPlaceholder = AccountManager.Instance.showPlaceholderIssue(getApplicationContext());
-                // If they've called more than 3 times, don't bother with the placeholder any more.
-                boolean showPlaceholderIfEarly = mCallCount <= 3 && !accountManager.getPlaceholderIssueCalled(getApplicationContext());
+                // If they've called more than N times, don't bother with the placeholder any more.
+                boolean showPlaceholderIfEarly = mCallCount <= MAX_CALLS_FOR_DEMO && !accountManager.getPlaceholderIssueCalled(getApplicationContext());
                 if (forceShowPlaceholder || showPlaceholderIfEarly) {
                     Contact demoContact = Contact.createPlaceholder("0",
                             getResources().getString(R.string.demo_rep_name),

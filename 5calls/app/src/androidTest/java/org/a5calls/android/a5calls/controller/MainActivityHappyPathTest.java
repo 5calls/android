@@ -197,14 +197,12 @@ public class MainActivityHappyPathTest extends MainActivityBaseTest {
     }
 
     @Test
-    public void testMainUILoadCorrectly_threeCalls_placeholderShown() {
+    public void testMainUILoadCorrectly_oneCall_placeholderShown() {
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
         setupMockResponses(/*isSplit=*/false, /*hasLocation=*/true);
         setupMockRequestQueue();
         DatabaseHelper databaseHelper = AppSingleton.getInstance(context).getDatabaseHelper();
         // Add three fake calls.
-        databaseHelper.addCall("issueId", "issueName", "contactId", "contactName", "result", "location");
-        databaseHelper.addCall("issueId", "issueName", "contactId", "contactName", "result", "location");
         databaseHelper.addCall("issueId", "issueName", "contactId", "contactName", "result", "location");
 
         launchMainActivity(1000);
@@ -219,14 +217,12 @@ public class MainActivityHappyPathTest extends MainActivityBaseTest {
     }
 
     @Test
-    public void testMainUILoadCorrectly_fourCalls_placeholderNotShown() {
+    public void testMainUILoadCorrectly_twoCalls_placeholderNotShown() {
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
         setupMockResponses(/*isSplit=*/false, /*hasLocation=*/true);
         setupMockRequestQueue();
         DatabaseHelper databaseHelper = AppSingleton.getInstance(context).getDatabaseHelper();
         // Add four fake calls.
-        databaseHelper.addCall("issueId", "issueName", "contactId", "contactName", "result", "location");
-        databaseHelper.addCall("issueId", "issueName", "contactId", "contactName", "result", "location");
         databaseHelper.addCall("issueId", "issueName", "contactId", "contactName", "result", "location");
         databaseHelper.addCall("issueId", "issueName", "contactId", "contactName", "result", "location");
 
