@@ -40,7 +40,7 @@ public class Contact implements Parcelable {
         name = in.readString();
         phone = in.readString();
         photoURL = in.readString();
-        party = normalizeParty(in.readString());
+        party = in.readString();
         state = in.readString();
         reason = in.readString();
         area = in.readString();
@@ -98,12 +98,13 @@ public class Contact implements Parcelable {
             return "";
         }
         if (!TextUtils.isEmpty(party)) {
+            String partyForDisplay = normalizeParty(party);
             if (!TextUtils.isEmpty(district)) {
                 return res.getString(R.string.contact_political_details_all,
-                        name, party, state, district);
+                        name, partyForDisplay, state, district);
             }
             return res.getString(R.string.contact_political_details_party_state,
-                    name, party, state);
+                    name, partyForDisplay, state);
         }
         return res.getString(R.string.contact_political_details_state,
                 name, state);
