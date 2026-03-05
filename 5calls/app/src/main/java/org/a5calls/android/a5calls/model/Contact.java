@@ -40,7 +40,7 @@ public class Contact implements Parcelable {
         name = in.readString();
         phone = in.readString();
         photoURL = in.readString();
-        party = in.readString();
+        party = normalizeParty(in.readString());
         state = in.readString();
         reason = in.readString();
         area = in.readString();
@@ -107,5 +107,13 @@ public class Contact implements Parcelable {
         }
         return res.getString(R.string.contact_political_details_state,
                 name, state);
+    }
+
+    // See 5calls-api's utils/party.go.
+    private static String normalizeParty(String party) {
+        if (TextUtils.equals(party, "Democratic")) {
+            return "Democrat";
+        }
+        return party;
     }
 }
