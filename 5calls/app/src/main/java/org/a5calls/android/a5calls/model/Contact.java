@@ -98,14 +98,23 @@ public class Contact implements Parcelable {
             return "";
         }
         if (!TextUtils.isEmpty(party)) {
+            String partyForDisplay = normalizeParty(party);
             if (!TextUtils.isEmpty(district)) {
                 return res.getString(R.string.contact_political_details_all,
-                        name, party, state, district);
+                        name, partyForDisplay, state, district);
             }
             return res.getString(R.string.contact_political_details_party_state,
-                    name, party, state);
+                    name, partyForDisplay, state);
         }
         return res.getString(R.string.contact_political_details_state,
                 name, state);
+    }
+
+    // See 5calls-api's utils/party.go.
+    private static String normalizeParty(String party) {
+        if (TextUtils.equals(party, "Democratic")) {
+            return "Democrat";
+        }
+        return party;
     }
 }

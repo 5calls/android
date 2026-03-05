@@ -82,6 +82,14 @@ public class ContactsTest {
     }
 
     @Test
+    public void testDescriptionNormalizeParty() {
+        // Party listed as "Democratic" in JSON.
+        List<Contact> contacts = getTestContacts();
+        String description = contacts.get(2).getDescription(getApplicationContext().getResources());
+        assertEquals("Chuck Schumer is a Democrat from NY.", description);
+    }
+
+    @Test
     public void testDescriptionMissingFields() {
         Contact contact = TestModelUtils.createContact("contactId", "name");
         assertEquals("", contact.getDescription(getApplicationContext().getResources()));
