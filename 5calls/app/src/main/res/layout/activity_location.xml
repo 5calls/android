@@ -47,11 +47,6 @@
                 android:text="@string/location_prompt"
                 />
 
-            <TextView
-                style="@style/spacedParagraphTextStyleHighlight"
-                android:text="@string/location_private"
-                />
-
             <Button
                 android:id="@+id/gps_button"
                 style="@style/locationGpsBtnStyle"
@@ -59,8 +54,8 @@
                 />
 
             <TextView
-                style="@style/spacedParagraphTextStyle"
-                android:text="@string/location_address_prompt"
+                style="@style/spacedParagraphTextStyleHighlight"
+                android:text="@string/location_private"
                 />
 
             <TextView
@@ -86,6 +81,31 @@
                     style="@style/submitBtn"
                     />
             </RelativeLayout>
+
+            <TextView
+                style="@style/spacedParagraphTextStyle"
+                android:text="@string/location_address_prompt"
+                />
+
+            <LinearLayout
+                android:id="@+id/skip_location_section"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+
+                <TextView
+                    style="@style/spacedParagraphTextStyle"
+                    android:text="@string/location_skip_prompt"
+                    />
+
+                <Button
+                    android:id="@+id/skip_location_btn"
+                    style="@style/genericButtonStyle"
+                    android:text="@string/skip_location_btn"
+                    />
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>

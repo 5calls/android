@@ -8,6 +8,9 @@ import com.android.volley.toolbox.HttpResponse;
 
 import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.Issue;
+import org.a5calls.android.a5calls.model.Outcome;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -352,28 +355,18 @@ public class FiveCallsApiTest {
     }
 
     @Test
-    public void testReportCall() {
-        byte[] bytes = "{\"ok\":true}".getBytes();
-        ArrayList<Header> headers = new ArrayList<>();
-        headers.add(new Header("Content-Type", "text/json"));
-        HttpResponse response = new HttpResponse(200, headers);
-        mHttpStack.setResponseToReturn(response);
+    public void testReportCallUnavailable() {
+        testReportCallStatus(Outcome.Status.UNAVAILABLE, "unavailable");
+    }
 
-        TestCallListener testCallListener = new TestCallListener();
-        mApi.registerCallRequestListener(testCallListener);
+    @Test
+    public void testReportCallVoicemail() {
+        testReportCallStatus(Outcome.Status.VOICEMAIL, "voicemail");
+    }
 
-        mApi.reportCall("myIssue", "myRep", "unavailable", "myLocation");
-        waitForHttpRequestComplete();
-
-        assertEquals(1, testCallListener.mCallReported);
-        assertEquals(0, testCallListener.mCallError);
-        assertEquals(0, testCallListener.mCallJsonError);
-
-        assertEquals(new String(mHttpStack.getLastPostBody()),
-                "result=unavailable&issueid=myIssue&contactid=myRep&callerid=itMe&via=" +
-                        (FiveCallsApi.TESTING ? "test&" : "android&"));
-
-        mApi.unregisterCallRequestListener(testCallListener);
+    @Test
+    public void testReportCallContact() {
+        testReportCallStatus(Outcome.Status.CONTACT, "contact");
     }
 
     @Test
@@ -383,7 +376,7 @@ public class FiveCallsApiTest {
         TestCallListener testCallListener = new TestCallListener();
         mApi.registerCallRequestListener(testCallListener);
 
-        mApi.reportCall("myIssue", "myRep", "unavailable", "myLocation");
+        mApi.reportCall("myIssue", "myRep", Outcome.Status.UNAVAILABLE);
         waitForHttpRequestComplete();
 
         assertEquals(0, testCallListener.mCallReported);
@@ -423,6 +416,50 @@ public class FiveCallsApiTest {
 
         assertTrue(testNewsletterListener.mSubscribeError);
         assertFalse(testNewsletterListener.mSubscribeSuccess);
+    }
+
+    @Test
+    public void reportSearch() {
+        ArrayList<Header> headers = new ArrayList<>();
+        headers.add(new Header("Content-Type", "text/json"));
+        HttpResponse response = new HttpResponse(200, headers);
+        mHttpStack.setResponseToReturn(response);
+
+        mApi.reportSearch("Banana phone");
+        waitForHttpRequestComplete();
+
+        assertEquals("https://api.5calls.org/v1/users/search", mHttpStack.getLastUrl());
+        try {
+            JSONObject params = new JSONObject(new String(mHttpStack.getLastPostBody()));
+            assertEquals("Banana phone", params.get("query"));
+            assertEquals("android", params.get("via"));
+        } catch (JSONException e) {
+            fail(e.getMessage());
+        }
+    }
+
+    private void testReportCallStatus(Outcome.Status status, String outcomeString) {
+        ArrayList<Header> headers = new ArrayList<>();
+        headers.add(new Header("Content-Type", "text/json"));
+        HttpResponse response = new HttpResponse(200, headers);
+        mHttpStack.setResponseToReturn(response);
+
+        TestCallListener testCallListener = new TestCallListener();
+        mApi.registerCallRequestListener(testCallListener);
+
+        mApi.reportCall("myIssue", "myRep", status);
+        waitForHttpRequestComplete();
+
+        assertEquals(1, testCallListener.mCallReported);
+        assertEquals(0, testCallListener.mCallError);
+        assertEquals(0, testCallListener.mCallJsonError);
+
+        assertEquals("https://api.5calls.org/v1/report", mHttpStack.getLastUrl());
+        assertEquals(new String(mHttpStack.getLastPostBody()),
+                "result=" + outcomeString + "&issueid=myIssue&contactid=myRep&callerid=itMe&via=" +
+                        (FiveCallsApi.TESTING ? "test&" : "android&"));
+
+        mApi.unregisterCallRequestListener(testCallListener);
     }
 
     private void waitForHttpRequestComplete() {

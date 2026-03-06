@@ -407,10 +407,7 @@ public class FiveCallsApi {
         mRequestQueue.add(reportRequest);
     }
 
-    // Result is "VOICEMAIL", "unavailable", or "contacted"
-    // https://github.com/5calls/5calls/blob/master/static/js/main.js#L221
-    public void reportCall(final String issueId, final String contactId, final String result,
-                           final String zip) {
+    public void reportCall(final String issueId, final String contactId, final Outcome.Status result) {
         String getReport = GET_REPORT;
         StringRequest request = new StringRequest(Request.Method.POST, getReport,
                 new Response.Listener<String>() {
@@ -430,7 +427,7 @@ public class FiveCallsApi {
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("issueid", issueId);
-                params.put("result", result);
+                params.put("result", result.toString());
                 params.put("contactid", contactId);
                 params.put("via", (BuildConfig.DEBUG && TESTING) ? "test" : "android");
                 params.put("callerid", mCallerId);
@@ -486,18 +483,12 @@ public class FiveCallsApi {
         try {
             JSONObject jsonBody = new JSONObject();
             jsonBody.put("query", searchTerm);
+            jsonBody.put("via", "android");
 
-            JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, SEARCH_TRACKING, jsonBody, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    // Search report successful - no action needed
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.w(TAG, "Search tracking failed: " + error.getMessage());
-                }
-            });
+            JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, SEARCH_TRACKING,
+                    jsonBody, response -> {
+                // Search report successful - no action needed
+            }, error -> Log.w(TAG, "Search tracking failed: " + error.getMessage()));
             request.setTag(TAG);
             // Add the request to the RequestQueue.
             mRequestQueue.add(request);

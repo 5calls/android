@@ -16,7 +16,6 @@ import org.a5calls.android.a5calls.model.Category;
 import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.DatabaseHelper;
 import org.a5calls.android.a5calls.model.Issue;
-import org.a5calls.android.a5calls.util.StateMapping;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -131,7 +130,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 mIssues = sortIssuesWithMetaPriority(filterActiveIssues());
             } else {
                 // Filter by the category string.
-                mIssues = sortIssuesWithMetaPriority(filterIssuesByCategory(filterText));
+                mIssues = sortIssuesWithMetaPriority(filterIssuesByCategory(mAllIssues, filterText));
             }
         }
         notifyDataSetChanged();
@@ -213,9 +212,15 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return tempIssues;
     }
 
-    private ArrayList<Issue> filterIssuesByCategory(String activeCategory) {
+    @VisibleForTesting
+    public static ArrayList<Issue> filterIssuesByCategory(List<Issue> issues, String activeCategory) {
         ArrayList<Issue> tempIssues = new ArrayList<>();
-        for (Issue issue : mAllIssues) {
+        for (Issue issue : issues) {
+            // Categories include state.
+            if (TextUtils.equals(issue.getStateName(), activeCategory)) {
+                tempIssues.add(issue);
+                continue;
+            }
             for (Category category : issue.categories) {
                 if (TextUtils.equals(activeCategory, category.name)) {
                     tempIssues.add(issue);
@@ -237,6 +242,51 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     public boolean hasContacts() {
         return !mContacts.isEmpty();
+    }
+
+    public boolean hasAddressError() {
+        return mAddressErrorType != NO_ERROR;
+    }
+
+    public List<Issue> getAllIssues() {
+        return mAllIssues;
+    }
+
+    /**
+     * Populates an issue's contacts list based on its contact areas.
+     * This is normally done in onBindViewHolder, but is needed for deep linking
+     * where we bypass the RecyclerView.
+     */
+    public void populateIssueContacts(Issue issue) {
+        if (mAddressErrorType == ERROR_ADDRESS) {
+            issue.contacts = null;
+            return;
+        }
+        populateIssueContacts(issue, mContacts, mIsSplitDistrict);
+    }
+
+    /**
+     * Populates an issue's contacts list based on its contact areas.
+     * This is normally done in onBindViewHolder, but is needed for deep linking
+     * where we bypass the RecyclerView.
+     */
+    public static void populateIssueContacts(Issue issue, List<Contact> contacts, boolean isSplitDistrict) {
+        if (issue == null || issue.contactAreas.isEmpty()) {
+            return;
+        }
+
+        issue.contacts = new ArrayList<>();
+        for (String contactArea : issue.contactAreas) {
+            for (Contact contact : contacts) {
+                if (TextUtils.equals(contact.area, contactArea) &&
+                        !issue.contacts.contains(contact)) {
+                    if (TextUtils.equals(contact.area, Contact.AREA_HOUSE) && isSplitDistrict) {
+                        issue.isSplit = true;
+                    }
+                    issue.contacts.add(contact);
+                }
+            }
+        }
     }
 
     @NonNull
@@ -269,16 +319,11 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             final Issue issue = mIssues.get(position);
             vh.name.setText(issue.name);
 
-            // Show state indicator if issue has meta (state abbreviation) and we can map it to a state name
-            if (!TextUtils.isEmpty(issue.meta)) {
-                String stateName = StateMapping.getStateName(issue.meta);
-                if (!TextUtils.isEmpty(stateName)) {
-                    vh.stateIndicator.setText(stateName);
-                    vh.stateIndicator.setVisibility(View.VISIBLE);
-
-                } else {
-                    vh.stateIndicator.setVisibility(View.GONE);
-                }
+            // Show state indicator if issue has a state set.
+            String stateName = issue.getStateName();
+            if (!TextUtils.isEmpty(stateName)) {
+                vh.stateIndicator.setText(stateName);
+                vh.stateIndicator.setVisibility(View.VISIBLE);
             } else {
                 vh.stateIndicator.setVisibility(View.GONE);
             }
@@ -293,9 +338,12 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             if (mAddressErrorType != NO_ERROR) {
                 // If there was an address error, clear the number of calls to make.
                 vh.numCalls.setText("");
+                vh.numCalls.setVisibility(View.GONE);
                 vh.previousCallStats.setVisibility(View.GONE);
+                issue.contacts = null;
                 return;
             }
+            vh.numCalls.setVisibility(View.VISIBLE);
 
             // Sometimes an issue is shown with no contact areas in order to
             // inform users that a major vote or change has happened.
@@ -306,19 +354,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 return;
             }
 
-            issue.contacts = new ArrayList<Contact>();
-            for (String contactArea : issue.contactAreas) {
-                for (Contact contact : mContacts) {
-                    if (TextUtils.equals(contact.area, contactArea) &&
-                            !issue.contacts.contains(contact)) {
-                        if (TextUtils.equals(contact.area, Contact.AREA_HOUSE) && mIsSplitDistrict) {
-                            issue.isSplit = true;
-                        }
-
-                        issue.contacts.add(contact);
-                    }
-                }
-            }
+            populateIssueContacts(issue);
             displayPreviousCallStats(issue, vh);
         } else if (type == VIEW_TYPE_EMPTY_REQUEST) {
             EmptyRequestViewHolder vh = (EmptyRequestViewHolder) holder;

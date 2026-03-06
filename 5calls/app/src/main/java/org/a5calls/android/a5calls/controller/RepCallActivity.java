@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.util.DisplayMetrics;
 import android.util.Patterns;
@@ -43,6 +44,7 @@ import org.a5calls.android.a5calls.model.DatabaseHelper;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.model.Outcome;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
+import org.a5calls.android.a5calls.util.AnalyticsManager;
 import org.a5calls.android.a5calls.util.MarkdownUtil;
 import org.a5calls.android.a5calls.util.ScriptReplacements;
 import org.a5calls.android.a5calls.view.GridItemDecoration;
@@ -152,7 +154,7 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
         outcomeAdapter = new OutcomeAdapter(issueOutcomes, new OutcomeAdapter.Callback() {
             @Override
             public void onOutcomeClicked(Outcome outcome) {
-                reportEvent(outcome.label);
+                reportEvent(outcome);
                 reportCall(outcome, address);
             }
         });
@@ -201,7 +203,7 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
                 mIssue.name, mIssue.contacts.get(mActiveContactIndex).id,
                 mIssue.contacts.get(mActiveContactIndex).name, outcome.status.toString(), address);
         AppSingleton.getInstance(getApplicationContext()).getJsonController().reportCall(
-                mIssue.id, mIssue.contacts.get(mActiveContactIndex).id, outcome.label, address);
+                mIssue.id, mIssue.contacts.get(mActiveContactIndex).id, outcome.status);
     }
 
     private void setupContactUi(int index, boolean expandLocalSection) {
@@ -348,8 +350,9 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
         Snackbar.make(binding.scrollView, errorStringId, Snackbar.LENGTH_SHORT).show();
     }
 
-    private void reportEvent(String event) {
-        // Could add analytics here.
+    private void reportEvent(Outcome outcome) {
+        FiveCallsApplication.analyticsManager().trackOutcome(outcome.status.toString(),
+                mIssue.permalink, this);
     }
 
     private void returnToIssue() {
@@ -404,6 +407,9 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
                 getIntent().getStringExtra(KEY_LOCATION_NAME),
                 AccountManager.Instance.getUserName(this)
         );
+        // Explicitly set movement method because the script view has selectable text.
+        // See https://github.com/noties/Markwon/issues/193#issuecomment-586573860
+        binding.callScript.setMovementMethod(LinkMovementMethod.getInstance());
         MarkdownUtil.setUpScript(binding.callScript, script, getApplicationContext());
     }
 

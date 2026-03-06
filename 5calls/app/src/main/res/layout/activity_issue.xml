@@ -121,7 +121,7 @@
                 <TextView
                     android:id="@+id/no_calls_message"
                     style="@style/issueTextNoCallsStyle"
-                    android:text="@string/no_calls_left"
+                    android:text="@string/no_contacts_found"
                     android:textColor="@color/colorPrimary"
                     />
 
@@ -141,6 +141,42 @@
                     android:layout_alignBaseline="@id/split_district_warning"
                     android:layout_alignParentEnd="true"
                     android:text="@string/update"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/no_address_set"
+                style="@style/issueRelativeLayoutStyle"
+                android:background="@color/issue_background_color"
+                android:paddingTop="@dimen/activity_horizontal_margin"
+                android:paddingBottom="@dimen/activity_horizontal_margin"
+                android:visibility="gone"
+                >
+
+                <TextView
+                    android:id="@+id/no_location_set_message"
+                    style="@style/issueTextNoCallsStyle"
+                    android:text="@string/no_location_set"
+                    android:textColor="@color/colorPrimary"
+                    />
+
+                <TextView
+                    android:id="@+id/no_location_set_warning"
+                    style="@style/issueTextNoCallsStyle"
+                    android:layout_below="@id/no_location_set_message"
+                    android:layout_marginTop="@dimen/grid_padding"
+                    android:text="@string/error_no_location_set"
+                    android:layout_toStartOf="@+id/set_location_button"
+                    android:textColor="@color/colorPrimaryDark"
+                    />
+
+                <Button
+                    android:id="@id/set_location_button"
+                    style="@style/transparentBtnStyle"
+                    android:layout_alignBaseline="@id/no_location_set_warning"
+                    android:layout_alignParentEnd="true"
+                    android:text="@string/first_location_title"
                     />
 
             </RelativeLayout>

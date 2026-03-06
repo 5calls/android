@@ -39,11 +39,17 @@
     <!-- Prompt for call result buttons [CHAR_LIMIT=NONE] -->
     <string name="buttons_prompt">Indique su resultado:</string>
 
-    <!-- Message to the user that no calls are left on a particular issue [CHAR_LIMIT=NONE] -->
-    <string name="no_calls_left">No faltan llamadas pare este tema.</string>
+    <!-- Message to the user that no contacts are found on a particular issue [CHAR_LIMIT=NONE] -->
+    <string name="no_contacts_found">No se encontraron contactos para este tema.</string>
 
     <!-- Message to the user when there are no contact areas on a particular issue, so there are no calls and it's just informational. [CHAR_LIMIT=NONE] -->
     <string name="no_contact_areas_message">No hay llamadas para este tema.</string>
+
+    <!-- Message to the user that no calls are left on a particular issue [CHAR_LIMIT=NONE] -->
+    <string name="no_location_set">No hay contactos disponibles</string>
+
+    <!-- Message to the user when no location is set, prompting them to set a location. [CHAR_LIMIT=NONE] -->
+    <string name="error_no_location_set">Establece tu ubicación para encontrar a tus representantes.</string>
 
     <!-- Menu option to go to the About 5 Calls screen [CHAR_LIMIT=25] -->
     <string name="menu_about">Sobre 5 Calls</string>
@@ -97,11 +103,37 @@
     <string name="about_p2_2">Llamar por teléfono es la forma más efectiva de influir a sus representantes.</string>
 
     <!-- Text shown to the user on the splash / tutorial screen describing more about the 5 Calls app.   n  n is used to create new paragraphs. [CHAR_LIMIT=NONE] -->
-    <string name="about_splash_2">5 Calls te da contactos y guiones para que puedas llamar rápido y fácilmente. Usamos su ubicación para darle a sus representantes locales para que sus llamadas sean más impactantes.</string>
+    <string name="about_splash_2">Las llamadas telefónicas pueden ser estresantes. 5 Calls te da guiones y números de teléfono de tus representantes locales para que las llamadas sean rápidas y fáciles.</string>
+
+    <string name="getting_started_header">Cómo funciona</string>
+
+    <!-- Title for step 1 of how to use 5 calls: pick an issue [CHAR_LIMIT=100] -->
+    <string name="about_p2_3">1. Elige un tema que te interese</string>
+
+    <!-- Description of step 1 of how to use 5 calls: pick an issue [CHAR_LIMIT=NONE] -->
+    <string name="about_splash_3_1">Haz llamadas desde nuestra lista de temas oportunos y procesables.</string>
+
+    <!-- Title for step 2 of how to use 5 calls: pick a contact [CHAR_LIMIT=100] -->
+    <string name="about_p3_3">2. Elige un contacto</string>
+
+    <!-- Description of step 2 of how to use 5 calls: pick a contact [CHAR_LIMIT=NONE] -->
+    <string name="about_splash_3_2">Te mostraremos a quién puedes llamar, desde representantes y senadores hasta funcionarios a nivel estatal.</string>
+
+    <!-- Title for step 3 of how to use 5 calls: call the contact [CHAR_LIMIT=100] -->
+    <string name="about_p4_3">3. Lee el guion o improvisa</string>
+
+    <!-- Description of step 3 of how to use 5 calls: call the contact [CHAR_LIMIT=NONE] -->
+    <string name="about_splash_3_3">Toca el número de tu contacto para llamar desde tu aplicación de teléfono. Consejo: pon la llamada en altavoz y vuelve a 5 Calls para leer el guion.</string>
+
+    <!-- Heading shown on the last tutorial page [CHAR_LIMIT=100] -->
+    <string name="add_your_voice">Tu voz importa</string>
+
+    <!-- Prompt to let users know they will be in community if they call [CHAR_LIMIT=NONE] -->
+    <string name="about_splash_4_1">Únete a nosotros: nuestras voces son más fuertes juntas</string>
 
     <!-- Text shown to the user on the splash / tutorial screen letting them know about notifications and reminders [CHAR_LIMIT=NONE] -->
-    <string name="about_splash_3">La aplicación 5 Calls puede enviárte recordatorios varias veces a la semana para ayudarte a mantener tu participación. Puedes activar y personalizar los recordatorios en configuración.</string>
-
+    <string name="about_splash_4_2">La aplicación 5 Calls puede ayudarte a mantener tu participación enviándote recordatorios para hacer llamadas varias veces a la semana.</string>
+    
     <!-- Button shown to turn on reminders [CHAR_LIMIT=50] -->
     <string name="tutorial_reminders_btn">Activar recordatorios</string>
 
@@ -302,16 +334,22 @@
     <string name="try_again_btn">Inténtelo de nuevo</string>
 
     <!-- Prompt to enter an address or zip code instead of using the phone's GPS location [CHAR_LIMIT=NONE] -->
-    <string name="location_address_prompt">Puede introducir un código postal o una dirección manualmente. Si su código postal se encuentra en más de un distrito del Congreso, le mostraremos el representante mas probable de su area. Utilice una dirección o un calle transversal para localizarle con mayor precisión.</string>
+    <string name="location_address_prompt">Puede introducir una dirección manualmente. Utilice una dirección o un calle transversal para localizarle con mayor precisión.</string>
 
     <!-- Hint text for edittext to enter an address or zip code for the user's location [CHAR_LIMIT=50] -->
-    <string name="address_hint">Dirección o código postal</string>
+    <string name="address_hint">Dirección una ubicación</string>
 
     <!-- Error message for when an address is invalid according to the API [CHAR_LIMIT=150] -->
     <string name="error_address_invalid">Esta dirección no es válida. Por favor actualice su dirección e intente de nuevo.</string>
 
     <!-- Error message shown on the address text field when a user tries to submit an empty address [CHAR_LIMIT=50] -->
-    <string name="error_address_empty">Introduzca una dirección o un código postal</string>
+    <string name="error_address_empty">Introduzca una dirección</string>
+
+    <!-- Prompt to a user that they can skip setting their location and do it later [CHAR_LIMIT=NONE] -->
+    <string name="location_skip_prompt">También puedes establecer tu ubicación más tarde.</string>
+
+    <!-- Button to skip setting location now but implies they could do it later [CHAR_LIMIT=NONE] -->
+    <string name="skip_location_btn">Omitir por ahora</string>
 
     <!-- Menu option to share your stats / impact [CHAR_LIMIT=50] -->
     <string name="menu_share">Compartir</string>
@@ -359,19 +397,22 @@
     <string name="rep_section_prompt">Contactos para llamar hoy</string>
 
     <!-- Warning that you may be in a split district [CHAR_LIMIT=90] -->
-    <string name="split_district_warning">Su código postal abarca varios distritos, use código+4 o dirección completa.</string>
+    <string name="split_district_warning">Su dirección abarca varios distritos, use código+4 o dirección completa.</string>
 
     <!-- Warning that you have a low accuracy location [CHAR_LIMIT=90] -->
     <string name="low_accuracy_warning">Su ubicación no es lo suficientemente precisa para garantizar que tengamos al representante de la Cámara adecuado.</string>
 
     <!-- Warning for low accuracy location in issue activity [CHAR_LIMIT=NONE] -->
-    <string name="low_accuracy_state_rep_warning">Advertencia: su ubicación está configurada en un código postal u otra ubicación aproximada, ingrese una dirección o código postal+4 para representantes estatales precisos.</string>
+    <string name="low_accuracy_state_rep_warning">Advertencia: su ubicación está configurada en una dirección u otra ubicación aproximada, ingrese una dirección o código postal+4 para representantes estatales precisos.</string>
 
     <!-- Shown on the set location page above the address text field if the zip is low accuracy [CHAR_LIMIT=NONE] -->
     <string name="split_district_suggestion">Utilice su código postal + 4 o una dirección para identificar a su representante exacto.</string>
 
     <!-- Action for a snackbar or button which brings you to the location update screen [CHAR_LIMIT=10] -->
     <string name="update">Actualización</string>
+
+    <!-- Error message shown when a deep link issue is not found [CHAR_LIMIT=150] -->
+    <string name="issue_not_found">No se pudo encontrar este problema. Puede que ya no sea relevante.</string>
 
     <!-- Name of the intent chooser for sending emails [CHAR_LIMIT=NONE] -->
     <string name="send_email">Enviar correo electrónico</string>

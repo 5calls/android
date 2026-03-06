@@ -39,11 +39,17 @@
     <!-- Prompt for call result buttons [CHAR_LIMIT=NONE] -->
     <string name="buttons_prompt">Enter your result:</string>
 
-    <!-- Message to the user that no calls are left on a particular issue [CHAR_LIMIT=NONE] -->
-    <string name="no_calls_left">No calls left for this issue.</string>
+    <!-- Message to the user that no contacts are found on a particular issue [CHAR_LIMIT=NONE] -->
+    <string name="no_contacts_found">No contacts found for this issue.</string>
 
     <!-- Message to the user when there are no contact areas on a particular issue, so there are no calls and it's just informational. [CHAR_LIMIT=NONE] -->
     <string name="no_contact_areas_message">There are no calls for this issue.</string>
+
+    <!-- Message to the user that no calls are left on a particular issue [CHAR_LIMIT=NONE] -->
+    <string name="no_location_set">No contacts available</string>
+
+    <!-- Message to the user when no location is set, prompting them to set a location. [CHAR_LIMIT=NONE] -->
+    <string name="error_no_location_set">Set your location to find your representatives.</string>
 
     <!-- Menu option to go to the About 5 Calls screen [CHAR_LIMIT=25] -->
     <string name="menu_about">About 5 Calls</string>
@@ -115,19 +121,45 @@
     <string name="privacy_btn">Privacy Policy</string>
 
     <!-- Text to show the user the number of calls made by everyone [CHAR_LIMIT=50] -->
-    <string name="calls_to_date">Together we\'ve made <xliff:g id="callCount">%1$s</xliff:g> calls</string>
+    <string name="calls_to_date">We\'ve made <xliff:g id="callCount">%1$s</xliff:g> calls, so far</string>
 
     <!-- Text shown to the user on the splash / tutorial screen describing the 5 Calls app. \n\n is used to create new paragraphs. [CHAR_LIMIT=NONE] -->
     <string name="about_splash">There\'s one simple and straightforward way to influence the Government that is supposed to represent you: Call them on the phone.</string>
 
     <!-- Tutorial screen text that calling is effective [CHAR_LIMIT=100] -->
-    <string name="about_p2_2">Calling is the most effective way to influence your representatives.</string>
+    <string name="about_p2_2">Calling your representatives is the most effective way to influence policy.</string>
 
     <!-- Text shown to the user on the splash / tutorial screen describing more about the 5 Calls app. \n\n is used to create new paragraphs. [CHAR_LIMIT=NONE] -->
-    <string name="about_splash_2">5 Calls provides phone numbers and scripts so calling is quick and easy, finds your local representatives so your calls have more impact.</string>
+    <string name="about_splash_2">Phone calls can be stressful. 5 Calls provides scripts and phone numbers for your local representatives so calls can be quick and easy.</string>
+
+    <string name="getting_started_header">How it works</string>
+
+    <!-- Title for step 1 of how to use 5 calls: pick an issue [CHAR_LIMIT=100] -->
+    <string name="about_p2_3">1. Choose an issue you care about</string>
+
+    <!-- Description of step 1 of how to use 5 calls: pick an issue [CHAR_LIMIT=NONE] -->
+    <string name="about_splash_3_1">Make calls from our list of timely and actionable issues.</string>
+
+    <!-- Title for step 2 of how to use 5 calls: pick a contact [CHAR_LIMIT=100] -->
+    <string name="about_p3_3">2. Pick a contact</string>
+
+    <!-- Description of step 2 of how to use 5 calls: pick a contact [CHAR_LIMIT=NONE] -->
+    <string name="about_splash_3_2">We\'ll show you who you can call, from Representatives and Senators to state-level officials.</string>
+
+    <!-- Title for step 3 of how to use 5 calls: call the contact [CHAR_LIMIT=100] -->
+    <string name="about_p4_3">3. Read the script, or improvise</string>
+
+    <!-- Description of step 3 of how to use 5 calls: call the contact [CHAR_LIMIT=NONE] -->
+    <string name="about_splash_3_3">Click your contact\'s number to call from your dialer app. Tip: Put the call on speaker and switch back to 5 Calls to read from the script.</string>
+
+    <!-- Heading shown on the last tutorial page [CHAR_LIMIT=100] -->
+    <string name="add_your_voice">Your voice matters</string>
+
+    <!-- Prompt to let users know they will be in community if they call [CHAR_LIMIT=NONE] -->
+    <string name="about_splash_4_1">Join us: our voices are louder together</string>
 
     <!-- Text shown to the user on the splash / tutorial screen letting them know about notifications and reminders [CHAR_LIMIT=NONE] -->
-    <string name="about_splash_3">The 5 Calls app can help you maintain involvement by reminding you several times a week to make calls.</string>
+    <string name="about_splash_4_2">The 5 Calls app can help you maintain involvement by reminding you several times a week to make calls.</string>
 
     <!-- Button shown to turn on reminders [CHAR_LIMIT=50] -->
     <string name="tutorial_reminders_btn">Turn on reminders</string>
@@ -355,18 +387,25 @@
     <string name="try_again_btn">Try again</string>
 
     <!-- Prompt to enter an address or zip code instead of using the phone's GPS location [CHAR_LIMIT=NONE] -->
-    <string name="location_address_prompt">You can enter a zip code or address manually. If
-        your ZIP code is in more than one Congressional district we may show our best guess for your
-        representative in the House. Use an address or cross streets to more accurately locate you.</string>
+    <string name="location_address_prompt">Enter your full address or the exact cross streets so we can accurately look up your representatives.</string>
 
     <!-- Hint text for edittext to enter an address or zip code for the user's location [CHAR_LIMIT=50] -->
-    <string name="address_hint">Address or zip code</string>
+    <string name="address_hint">Enter a location</string>
 
     <!-- Error message for when an address is invalid according to the API [CHAR_LIMIT=150] -->
-    <string name="error_address_invalid">The address you entered was not found. Please update your location and try again.</string>
+    <string name="error_address_invalid">The address entered was not found. Please update your location and try again.</string>
 
     <!-- Error message shown on the address text field when a user tries to submit an empty address [CHAR_LIMIT=50] -->
-    <string name="error_address_empty">Enter an address or zip code</string>
+    <string name="error_address_empty">Enter an address</string>
+
+    <!-- Prompt to a user that they can skip setting their location and do it later [CHAR_LIMIT=NONE] -->
+    <string name="location_skip_prompt">You can also set your location later.</string>
+
+    <!-- Button to skip setting location now but implies they could do it later [CHAR_LIMIT=NONE] -->
+    <string name="skip_location_btn">Skip for now</string>
+
+    <!-- Error message shown when a deep link issue is not found [CHAR_LIMIT=150] -->
+    <string name="issue_not_found">Could not find this issue. It may no longer be relevant</string>
 
     <!-- Menu option to share your stats / impact [CHAR_LIMIT=50] -->
     <string name="menu_share">Share</string>
@@ -385,6 +424,9 @@
 
     <!-- Content of an email or message shared from an issue detail screen sharing an issue [CHAR_LIMIT=NONE] -->
     <string name="issue_share_content">I just called my reps to <xliff:g id="issue_summary">%1$s</xliff:g> — you should too: http://5calls.org<xliff:g id="issue_id">%2$s</xliff:g></string>
+
+    <!-- URL to use when sharing an issue -->
+    <string name="issue_share_url" translatable="false">http://5calls.org<xliff:g id="issue_id">%1$s</xliff:g></string>
 
     <!-- Stats activity line chart title [CHAR_LIMIT=100] -->
     <string name="line_chart_title">Impact over time</string>
@@ -414,10 +456,10 @@
     <string name="rep_section_prompt">Contacts to call today</string>
 
     <!-- Warning that you may be in a split district [CHAR_LIMIT=90] -->
-    <string name="split_district_warning">Your zip code matches multiple House districts, use a zip+4 or address for best results.</string>
+    <string name="split_district_warning">Your location matches multiple House districts, use a zip+4 or address for best results.</string>
 
     <!-- Warning that you have a low accuracy location [CHAR_LIMIT=90] -->
-    <string name="low_accuracy_warning">Your zip is not precise enough to ensure we\'ve got the right House representative.</string>
+    <string name="low_accuracy_warning">Your location is not precise enough to ensure we\'ve got the right House representative.</string>
 
     <!-- Warning for low accuracy location in issue activity [CHAR_LIMIT=NONE] -->
     <string name="low_accuracy_state_rep_warning">Warning: your location is set to a zip code or other approximate location, please enter an address or zip+4 for accurate state level reps.</string>
