@@ -145,7 +145,9 @@ public class TutorialActivity extends AppCompatActivity {
             return fragment;
         }
 
-        private StaticTutorialPageFragment() {}
+        public StaticTutorialPageFragment() {
+            // Required empty public constructor.
+        }
 
         @Nullable
         @Override
