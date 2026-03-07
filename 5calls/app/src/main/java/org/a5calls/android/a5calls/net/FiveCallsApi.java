@@ -167,7 +167,7 @@ public class FiveCallsApi {
         if (!TextUtils.isEmpty(state)) {
             urlBuilder.appendQueryParameter(GET_ISSUES_REQUEST_PARAM_STATE, state);
         }
-        
+
         String url = urlBuilder.build().toString();
         buildIssuesRequest(url, mIssuesRequestListeners);
     }
