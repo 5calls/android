@@ -76,6 +76,7 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
     public static final String KEY_IS_DISTRICT_SPLIT = "key_is_district_split";
     public static final String KEY_IS_LOW_ACCURACY = "key_is_low_accuracy";
     public static final String KEY_DONATE_IS_ON = "key_donate_is_on";
+    public static final String KEY_IS_BOOKMARKED = "key_is_bookmarked";
 
     public static final int RESULT_OK = 1;
     public static final int RESULT_SERVER_ERROR = 2;
@@ -94,6 +95,7 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
     // low accuracy locations are zip codes or city names, we warn on state reps if you are using one
     private boolean mIsLowAccuracy = false;
     private boolean mDonateIsOn = false;
+    private boolean mIsBookmarked = false;
     private boolean mIsAnimating = false;
 
     private ActivityIssueBinding binding;
@@ -179,6 +181,7 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
         mIsDistrictSplit = getIntent().getBooleanExtra(KEY_IS_DISTRICT_SPLIT, false);
         mIsLowAccuracy = getIntent().getBooleanExtra(KEY_IS_LOW_ACCURACY, false);
         mDonateIsOn = getIntent().getBooleanExtra(KEY_DONATE_IS_ON, false);
+        mIsBookmarked = getIntent().getBooleanExtra(KEY_IS_BOOKMARKED, false);
         mLocationName = getIntent().getStringExtra(RepCallActivity.KEY_LOCATION_NAME);
 
         setContentView(binding.getRoot());
@@ -231,6 +234,21 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
         }
 
         binding.issueName.setText(mIssue.name);
+        updateBookmarkIcon();
+        binding.bookmarkIcon.setOnClickListener(v -> {
+            mIsBookmarked = !mIsBookmarked;
+            DatabaseHelper dbHelper = AppSingleton.getInstance(getApplicationContext())
+                    .getDatabaseHelper();
+            if (mIsBookmarked) {
+                dbHelper.addBookmark(mIssue.id);
+            } else {
+                dbHelper.removeBookmark(mIssue.id);
+            }
+            updateBookmarkIcon();
+            FiveCallsApplication.analyticsManager().trackBookmark(
+                    mIssue.permalink, mIsBookmarked, this);
+        });
+
         MarkdownUtil.setUpScript(binding.issueDescription, mIssue.reason, getApplicationContext());
         if (!TextUtils.isEmpty(mIssue.link)) {
             binding.link.setVisibility(View.VISIBLE);
@@ -334,6 +352,7 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
         outState.putParcelable(KEY_ISSUE, mIssue);
         outState.putBoolean(KEY_IS_DISTRICT_SPLIT, mIsDistrictSplit);
         outState.putBoolean(KEY_IS_LOW_ACCURACY, mIsLowAccuracy);
+        outState.putBoolean(KEY_IS_BOOKMARKED, mIsBookmarked);
     }
 
     @Override
@@ -660,6 +679,13 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
         } else {
             findViewById(R.id.donate_section).setVisibility(View.GONE);
         }
+    }
+
+    private void updateBookmarkIcon() {
+        binding.bookmarkIcon.setImageResource(mIsBookmarked ?
+                R.drawable.bookmark_filled_24 : R.drawable.bookmark_outline_24);
+        binding.bookmarkIcon.setContentDescription(getResources().getString(
+                mIsBookmarked ? R.string.remove_bookmark : R.string.bookmark_issue));
     }
 
     private void showIssueDetails() {

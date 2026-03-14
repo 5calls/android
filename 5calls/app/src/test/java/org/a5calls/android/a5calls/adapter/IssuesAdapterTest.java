@@ -12,7 +12,9 @@ import org.junit.runner.RunWith;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
@@ -503,6 +505,62 @@ public class IssuesAdapterTest {
         adapter.populateIssueContacts(issue);
 
         assertNull(issue.contacts);
+    }
+
+    @Test
+    public void testFilterBookmarkedIssues() {
+        List<Issue> issues = issuesFromJson(ORDERING_TEST_ISSUE_DATA);
+        Set<String> bookmarkedIds = new HashSet<>();
+        bookmarkedIds.add("100");
+        bookmarkedIds.add("300");
+
+        List<Issue> filtered = IssuesAdapter.filterBookmarkedIssues(issues, bookmarkedIds);
+
+        assertEquals(2, filtered.size());
+        assertEquals("100", filtered.get(0).id);
+        assertEquals("300", filtered.get(1).id);
+    }
+
+    @Test
+    public void testFilterBookmarkedIssues_empty() {
+        List<Issue> issues = issuesFromJson(ORDERING_TEST_ISSUE_DATA);
+        Set<String> bookmarkedIds = new HashSet<>();
+
+        List<Issue> filtered = IssuesAdapter.filterBookmarkedIssues(issues, bookmarkedIds);
+
+        assertEquals(0, filtered.size());
+    }
+
+    @Test
+    public void testFilterBookmarkedIssues_combinesWithSort() {
+        List<Issue> issues = issuesFromJson(ORDERING_TEST_ISSUE_DATA);
+        Set<String> bookmarkedIds = new HashSet<>();
+        bookmarkedIds.add("100");
+        bookmarkedIds.add("200");
+        bookmarkedIds.add("300");
+
+        List<Issue> filtered = IssuesAdapter.filterBookmarkedIssues(issues, bookmarkedIds);
+        IssuesAdapter adapter = new IssuesAdapter(null, null);
+        ArrayList<Issue> sorted = adapter.sortIssuesWithMetaPriority(filtered);
+
+        assertEquals(3, sorted.size());
+        // Issue 200 has meta "CA" so it comes first, then 100 (sort=300) and 300 (sort=400)
+        assertEquals("200", sorted.get(0).id);
+        assertEquals("100", sorted.get(1).id);
+        assertEquals("300", sorted.get(2).id);
+    }
+
+    @Test
+    public void testFilterBookmarkedIssues_nonExistentIdsIgnored() {
+        List<Issue> issues = issuesFromJson(ORDERING_TEST_ISSUE_DATA);
+        Set<String> bookmarkedIds = new HashSet<>();
+        bookmarkedIds.add("100");
+        bookmarkedIds.add("99999");
+
+        List<Issue> filtered = IssuesAdapter.filterBookmarkedIssues(issues, bookmarkedIds);
+
+        assertEquals(1, filtered.size());
+        assertEquals("100", filtered.get(0).id);
     }
 
     private List<Issue> issuesFromJson(String json) {

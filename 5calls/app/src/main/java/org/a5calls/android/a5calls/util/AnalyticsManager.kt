@@ -43,4 +43,12 @@ class AnalyticsManager {
                 url = issuePath, props = staticProps)
         }
     }
+
+    fun trackBookmark(issuePath: String, added: Boolean, context: Context) {
+        if (!BuildConfig.DEBUG && AccountManager.Instance.allowAnalytics(context)) {
+            val action = if (added) "add" else "remove"
+            getPlausible(context).event(name = "Bookmark-$action",
+                url = issuePath, props = staticProps)
+        }
+    }
 }

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.a5calls.android.a5calls.AppSingleton;
@@ -19,7 +20,9 @@ import org.a5calls.android.a5calls.model.Issue;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import androidx.annotation.NonNull;
@@ -35,17 +38,22 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public static final int ERROR_ADDRESS = 12;
     public static final int NO_ISSUES_YET = 13;
     public static final int ERROR_SEARCH_NO_MATCH = 14;
+    public static final int ERROR_BOOKMARKS_EMPTY = 15;
 
     private static final int VIEW_TYPE_EMPTY_REQUEST = 0;
     private static final int VIEW_TYPE_ISSUE = 1;
     private static final int VIEW_TYPE_EMPTY_ADDRESS = 2;
     private static final int VIEW_TYPE_NO_SEARCH_MATCH = 3;
+    private static final int VIEW_TYPE_EMPTY_BOOKMARKS = 4;
 
     private List<Issue> mIssues = new ArrayList<>();
     private List<Issue> mAllIssues = new ArrayList<>();
     private boolean mIsSplitDistrict = false;
     private int mErrorType = NO_ISSUES_YET;
     private int mAddressErrorType = NO_ISSUES_YET;
+
+    private Set<String> mBookmarkedIds = new HashSet<>();
+    private boolean mBookmarkFilterActive = false;
 
     private List<Contact> mContacts = new ArrayList<>();
     private final Activity mActivity;
@@ -60,6 +68,8 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         void launchSearchDialog();
 
         void startIssueActivity(Context context, Issue issue);
+
+        void onBookmarkToggled(String issueId, boolean isNowBookmarked);
     }
 
     public IssuesAdapter(Activity activity, Callback callback) {
@@ -107,32 +117,52 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
+    public void setBookmarkedIds(Set<String> ids) {
+        mBookmarkedIds = ids;
+        notifyDataSetChanged();
+    }
+
+    public void setBookmarkFilterActive(boolean active) {
+        mBookmarkFilterActive = active;
+    }
+
+    public boolean isBookmarkFilterActive() {
+        return mBookmarkFilterActive;
+    }
+
     public void setFilterAndSearch(String filterText, String searchText) {
-        if (mErrorType == ERROR_SEARCH_NO_MATCH) {
-            // If we previously had a search error, reset it: this is a new
+        if (mErrorType == ERROR_SEARCH_NO_MATCH || mErrorType == ERROR_BOOKMARKS_EMPTY) {
+            // If we previously had a search or bookmarks error, reset it: this is a new
             // filter or search.
             mErrorType = NO_ERROR;
         }
+
+        // Step 1: Apply the category/topic filter first.
+        List<Issue> filtered;
         if (!TextUtils.isEmpty(searchText)) {
-            mIssues = sortIssuesWithMetaPriority(filterIssuesBySearchText(searchText, mAllIssues));
-            // If there's no other error, show a search error.
-            if (mIssues.isEmpty() && mErrorType == NO_ERROR) {
+            filtered = filterIssuesBySearchText(searchText, mAllIssues);
+            if (filtered.isEmpty() && mErrorType == NO_ERROR) {
                 mErrorType = ERROR_SEARCH_NO_MATCH;
             }
+        } else if (TextUtils.equals(filterText,
+                mActivity.getResources().getString(R.string.all_issues_filter))) {
+            filtered = mAllIssues;
+        } else if (TextUtils.equals(filterText,
+                mActivity.getResources().getString(R.string.top_issues_filter))) {
+            filtered = filterActiveIssues();
         } else {
-            // Search text is empty.
-            if (TextUtils.equals(filterText,
-                    mActivity.getResources().getString(R.string.all_issues_filter))) {
-                // Include everything
-                mIssues = sortIssuesWithMetaPriority(mAllIssues);
-            } else if (TextUtils.equals(filterText,
-                    mActivity.getResources().getString(R.string.top_issues_filter))) {
-                mIssues = sortIssuesWithMetaPriority(filterActiveIssues());
-            } else {
-                // Filter by the category string.
-                mIssues = sortIssuesWithMetaPriority(filterIssuesByCategory(mAllIssues, filterText));
+            filtered = filterIssuesByCategory(mAllIssues, filterText);
+        }
+
+        // Step 2: Apply the bookmark filter on top, if active.
+        if (mBookmarkFilterActive && mErrorType != ERROR_SEARCH_NO_MATCH) {
+            filtered = filterBookmarkedIssues(filtered, mBookmarkedIds);
+            if (filtered.isEmpty() && mErrorType == NO_ERROR) {
+                mErrorType = ERROR_BOOKMARKS_EMPTY;
             }
         }
+
+        mIssues = sortIssuesWithMetaPriority(filtered);
         notifyDataSetChanged();
     }
 
@@ -206,6 +236,17 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         ArrayList<Issue> tempIssues = new ArrayList<>();
         for (Issue issue : mAllIssues) {
             if (issue.active) {
+                tempIssues.add(issue);
+            }
+        }
+        return tempIssues;
+    }
+
+    @VisibleForTesting
+    public static ArrayList<Issue> filterBookmarkedIssues(List<Issue> issues, Set<String> bookmarkedIds) {
+        ArrayList<Issue> tempIssues = new ArrayList<>();
+        for (Issue issue : issues) {
+            if (bookmarkedIds.contains(issue.id)) {
                 tempIssues.add(issue);
             }
         }
@@ -304,6 +345,10 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             View empty = LayoutInflater.from(parent.getContext()).inflate(
                     R.layout.empty_issues_search_view, parent, false);
             return new EmptySearchViewHolder(empty);
+        } else if (viewType == VIEW_TYPE_EMPTY_BOOKMARKS) {
+            View empty = LayoutInflater.from(parent.getContext()).inflate(
+                    R.layout.empty_bookmarks_view, parent, false);
+            return new EmptyBookmarksViewHolder(empty);
         } else {
             ConstraintLayout v = (ConstraintLayout) LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.issue_view, parent, false);
@@ -328,6 +373,26 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 vh.stateIndicator.setVisibility(View.GONE);
             }
             
+            // Set bookmark icon state.
+            boolean isBookmarked = mBookmarkedIds.contains(issue.id);
+            vh.bookmarkIcon.setImageResource(isBookmarked ?
+                    R.drawable.bookmark_filled_24 : R.drawable.bookmark_outline_24);
+            vh.bookmarkIcon.setContentDescription(mActivity.getResources().getString(
+                    isBookmarked ? R.string.remove_bookmark : R.string.bookmark_issue));
+            vh.bookmarkIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    boolean wasBookmarked = mBookmarkedIds.contains(issue.id);
+                    if (wasBookmarked) {
+                        mBookmarkedIds.remove(issue.id);
+                    } else {
+                        mBookmarkedIds.add(issue.id);
+                    }
+                    notifyItemChanged(holder.getAdapterPosition());
+                    mCallback.onBookmarkToggled(issue.id, !wasBookmarked);
+                }
+            });
+
             vh.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -387,6 +452,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public void onViewRecycled(RecyclerView.ViewHolder holder) {
         if (holder instanceof IssueViewHolder) {
             holder.itemView.setOnClickListener(null);
+            ((IssueViewHolder) holder).bookmarkIcon.setOnClickListener(null);
         } else if (holder instanceof EmptyRequestViewHolder) {
             ((EmptyRequestViewHolder) holder).refreshButton.setOnClickListener(null);
         } else if (holder instanceof EmptyAddressViewHolder) {
@@ -399,7 +465,8 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public int getItemCount() {
-        if (mErrorType == ERROR_REQUEST || mErrorType == ERROR_SEARCH_NO_MATCH) {
+        if (mErrorType == ERROR_REQUEST || mErrorType == ERROR_SEARCH_NO_MATCH ||
+                mErrorType == ERROR_BOOKMARKS_EMPTY) {
             // For these special types of errors, we will hide the issues.
             return 1;
         }
@@ -414,6 +481,9 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             }
             if (mErrorType == ERROR_SEARCH_NO_MATCH) {
                 return VIEW_TYPE_NO_SEARCH_MATCH;
+            }
+            if (mErrorType == ERROR_BOOKMARKS_EMPTY) {
+                return VIEW_TYPE_EMPTY_BOOKMARKS;
             }
         }
         return VIEW_TYPE_ISSUE;
@@ -475,6 +545,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public TextView numCalls;
     public TextView previousCallStats;
     public TextView stateIndicator;
+    public ImageView bookmarkIcon;
 
     public IssueViewHolder(View itemView) {
         super(itemView);
@@ -482,6 +553,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         numCalls = (TextView) itemView.findViewById(R.id.issue_call_count);
         previousCallStats = (TextView) itemView.findViewById(R.id.previous_call_stats);
         stateIndicator = (TextView) itemView.findViewById(R.id.state_indicator);
+        bookmarkIcon = (ImageView) itemView.findViewById(R.id.bookmark_icon);
     }
 }
 
@@ -522,6 +594,12 @@ private static class EmptySearchViewHolder extends RecyclerView.ViewHolder {
         searchButton.getCompoundDrawablesRelative()[0].mutate().setColorFilter(
                 ContextCompat.getColor(itemView.getContext(), R.color.colorAccent),
                 PorterDuff.Mode.MULTIPLY);
+    }
+}
+
+private static class EmptyBookmarksViewHolder extends RecyclerView.ViewHolder {
+    public EmptyBookmarksViewHolder(View itemView) {
+        super(itemView);
     }
 }
 
