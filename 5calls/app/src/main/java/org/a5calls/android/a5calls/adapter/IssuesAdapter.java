@@ -53,7 +53,6 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private int mAddressErrorType = NO_ISSUES_YET;
 
     private Set<String> mBookmarkedIds = new HashSet<>();
-    private boolean mBookmarkFilterActive = false;
 
     private List<Contact> mContacts = new ArrayList<>();
     private final Activity mActivity;
@@ -122,14 +121,6 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         notifyDataSetChanged();
     }
 
-    public void setBookmarkFilterActive(boolean active) {
-        mBookmarkFilterActive = active;
-    }
-
-    public boolean isBookmarkFilterActive() {
-        return mBookmarkFilterActive;
-    }
-
     public void setFilterAndSearch(String filterText, String searchText) {
         if (mErrorType == ERROR_SEARCH_NO_MATCH || mErrorType == ERROR_BOOKMARKS_EMPTY) {
             // If we previously had a search or bookmarks error, reset it: this is a new
@@ -137,7 +128,6 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             mErrorType = NO_ERROR;
         }
 
-        // Step 1: Apply the category/topic filter first.
         List<Issue> filtered;
         if (!TextUtils.isEmpty(searchText)) {
             filtered = filterIssuesBySearchText(searchText, mAllIssues);
@@ -150,16 +140,14 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         } else if (TextUtils.equals(filterText,
                 mActivity.getResources().getString(R.string.top_issues_filter))) {
             filtered = filterActiveIssues();
-        } else {
-            filtered = filterIssuesByCategory(mAllIssues, filterText);
-        }
-
-        // Step 2: Apply the bookmark filter on top, if active.
-        if (mBookmarkFilterActive && mErrorType != ERROR_SEARCH_NO_MATCH) {
-            filtered = filterBookmarkedIssues(filtered, mBookmarkedIds);
+        } else if (TextUtils.equals(filterText,
+                mActivity.getResources().getString(R.string.bookmarked_issues_filter))) {
+            filtered = filterBookmarkedIssues(mAllIssues, mBookmarkedIds);
             if (filtered.isEmpty() && mErrorType == NO_ERROR) {
                 mErrorType = ERROR_BOOKMARKS_EMPTY;
             }
+        } else {
+            filtered = filterIssuesByCategory(mAllIssues, filterText);
         }
 
         mIssues = sortIssuesWithMetaPriority(filtered);

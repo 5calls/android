@@ -96,63 +96,32 @@
 
                 </RelativeLayout>
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <FrameLayout
                     android:id="@+id/filter_bar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/actionable_card_holder"
-                    android:background="@android:color/white"
-                    android:paddingStart="@dimen/activity_horizontal_margin"
-                    android:paddingEnd="@dimen/activity_horizontal_margin"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
+                    android:background="@color/colorAccent"
                     >
 
                     <TextView
                         android:id="@+id/filter"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="@dimen/accessibility_min_size"
-                        android:background="@drawable/filter_pill_background"
+                        android:foreground="?android:attr/selectableItemBackground"
                         android:drawableStart="@drawable/ic_filter_list_24"
                         android:drawablePadding="4dp"
                         android:gravity="center_vertical"
-                        android:paddingStart="12dp"
-                        android:paddingEnd="16dp"
+                        android:paddingStart="@dimen/activity_horizontal_margin"
+                        android:paddingEnd="@dimen/activity_horizontal_margin"
                         android:text="@string/menu_filter"
                         android:textColor="@android:color/white"
                         android:textStyle="bold"
                         android:maxLines="1"
                         android:ellipsize="end"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/bookmark_filter_chip"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintHorizontal_bias="0"
-                        app:layout_constraintHorizontal_chainStyle="packed"
-                        app:layout_constraintWidth_default="wrap"
                         />
 
-                    <TextView
-                        android:id="@+id/bookmark_filter_chip"
-                        android:layout_width="wrap_content"
-                        android:layout_height="@dimen/accessibility_min_size"
-                        android:layout_marginStart="8dp"
-                        android:background="@drawable/filter_pill_background"
-                        android:drawableStart="@drawable/bookmark_outline_white_24"
-                        android:drawablePadding="4dp"
-                        android:gravity="center_vertical"
-                        android:paddingStart="12dp"
-                        android:paddingEnd="16dp"
-                        android:text="@string/bookmarked_issues_filter"
-                        android:textColor="@android:color/white"
-                        android:textStyle="bold"
-                        android:singleLine="true"
-                        app:layout_constraintStart_toEndOf="@id/filter"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintHorizontal_bias="0"
-                        />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                </FrameLayout>
 
                 <RelativeLayout
                     android:id="@+id/search_bar"

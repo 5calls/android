@@ -33,8 +33,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListPopupWindow;
 import android.widget.TextView;
 
@@ -44,6 +42,7 @@ import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.BuildConfig;
 import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
+import org.a5calls.android.a5calls.adapter.FilterAdapter;
 import org.a5calls.android.a5calls.adapter.IssuesAdapter;
 import org.a5calls.android.a5calls.databinding.ActivityMainBinding;
 import org.a5calls.android.a5calls.model.AccountManager;
@@ -75,14 +74,13 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     private static final String KEY_FILTER_ITEM_SELECTED = "filterItemSelected";
     private static final String KEY_SEARCH_TEXT = "searchText";
     private static final String KEY_SHOW_LOW_ACCURACY_WARNING = "showLowAccuracyWarning";
-    private static final String KEY_BOOKMARK_FILTER_ACTIVE = "bookmarkFilterActive";
     private static final String DEEP_LINK_HOST = "5calls.org";
     private static final String DEEP_LINK_PATH_ISSUE = "issue";
     private final AccountManager accountManager = AccountManager.Instance;
 
     private String mPendingDeepLinkPath = null;
 
-    private ArrayAdapter<String> mFilterAdapter;
+    private FilterAdapter mFilterAdapter;
     private final List<String> mFilterItems = new ArrayList<>();
     private String mFilterText = "";
     private String mSearchText = "";
@@ -98,7 +96,6 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     private boolean mIsLowAccuracy = false;
     private boolean mShowLowAccuracyWarning = true;
     private boolean mDonateIsOn = false;
-    private boolean mBookmarkFilterActive = false;
     private FirebaseAuth mAuth = null;
 
     private ActivityMainBinding binding;
@@ -229,13 +226,12 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         // Initialize filter items with defaults.
         String[] defaultFilters = getResources().getStringArray(R.array.default_filters);
         Collections.addAll(mFilterItems, defaultFilters);
-        mFilterAdapter = new ArrayAdapter<>(this, R.layout.filter_list_item, mFilterItems);
+        mFilterAdapter = new FilterAdapter(this, mFilterItems);
 
         if (savedInstanceState != null) {
             mFilterText = savedInstanceState.getString(KEY_FILTER_ITEM_SELECTED);
             mSearchText = savedInstanceState.getString(KEY_SEARCH_TEXT);
             mShowLowAccuracyWarning = savedInstanceState.getBoolean(KEY_SHOW_LOW_ACCURACY_WARNING);
-            mBookmarkFilterActive = savedInstanceState.getBoolean(KEY_BOOKMARK_FILTER_ACTIVE, false);
             if (TextUtils.isEmpty(mSearchText)) {
                 binding.searchBar.setVisibility(View.GONE);
                 binding.filterBar.setVisibility(VISIBLE);
@@ -263,17 +259,6 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             public void onClick(View view) {
                 onIssueSearchCleared();
             }
-        });
-
-        // Setup bookmark filter button.
-        mIssuesAdapter.setBookmarkFilterActive(mBookmarkFilterActive);
-        updateBookmarkFilterButton();
-        binding.bookmarkFilterChip.setOnClickListener(v -> {
-            mBookmarkFilterActive = !mBookmarkFilterActive;
-            mIssuesAdapter.setBookmarkFilterActive(mBookmarkFilterActive);
-            mIssuesAdapter.setFilterAndSearch(mFilterText, mSearchText);
-            updateBookmarkFilterButton();
-            updateOnBackPressedCallbackEnabled();
         });
 
         registerOnBackPressedCallback();
@@ -366,7 +351,6 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         outState.putString(KEY_FILTER_ITEM_SELECTED, mFilterText);
         outState.putString(KEY_SEARCH_TEXT, mSearchText);
         outState.putBoolean(KEY_SHOW_LOW_ACCURACY_WARNING, mShowLowAccuracyWarning);
-        outState.putBoolean(KEY_BOOKMARK_FILTER_ACTIVE, mBookmarkFilterActive);
         super.onSaveInstanceState(outState);
     }
 
@@ -620,10 +604,6 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 mFilterText = mFilterItems.get(0);
                 updateFilterButtonText();
                 mIssuesAdapter.setFilterAndSearch(mFilterText, mSearchText);
-                // Clear the bookmark filter, if active.
-                mBookmarkFilterActive = false;
-                mIssuesAdapter.setBookmarkFilterActive(false);
-                updateBookmarkFilterButton();
                 // Clear the search, if there was one.
                 onIssueSearchSet("");
                 // The calls above will disable this callback, so no need
@@ -638,11 +618,11 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     private void updateOnBackPressedCallbackEnabled() {
         boolean isFiltering = !mFilterItems.isEmpty() && !Objects.equals(mFilterText, mFilterItems.get(0));
         boolean isSearching = !TextUtils.isEmpty(mSearchText);
-        mOnBackPressedCallback.setEnabled(isFiltering || isSearching || mBookmarkFilterActive);
+        mOnBackPressedCallback.setEnabled(isFiltering || isSearching);
     }
 
     private void populateFilterAdapterIfNeeded(List<Issue> issues) {
-        if (mFilterItems.size() > 2) {
+        if (mFilterItems.size() > 3) {
             // Already populated. Don't try again.
             // This assumes that the categories won't change much during the course of a session.
             return;
@@ -665,7 +645,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         }
         Collections.sort(topics);
         mFilterItems.addAll(topics);
-        mFilterAdapter.notifyDataSetChanged();
+        mFilterAdapter.notifyItemsChanged();
         updateFilterButtonText();
     }
 
@@ -675,7 +655,10 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         popup.setAdapter(mFilterAdapter);
         popup.setContentWidth(measurePopupWidth());
         popup.setOnItemClickListener((parent, view, position, id) -> {
-            String newFilter = mFilterItems.get(position);
+            String newFilter = mFilterAdapter.getFilterText(position);
+            if (newFilter == null) {
+                return; // divider
+            }
             if (!TextUtils.equals(newFilter, mFilterText)) {
                 mFilterText = newFilter;
                 updateFilterButtonText();
@@ -695,6 +678,9 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         int widthSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
         int heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
         for (int i = 0; i < mFilterAdapter.getCount(); i++) {
+            if (!mFilterAdapter.isEnabled(i)) {
+                continue; // skip divider
+            }
             measureView = mFilterAdapter.getView(i, measureView, binding.filterBar);
             measureView.measure(widthSpec, heightSpec);
             maxWidth = Math.max(maxWidth, measureView.getMeasuredWidth());
@@ -709,13 +695,6 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         } else {
             binding.filter.setText(mFilterText);
         }
-    }
-
-    private void updateBookmarkFilterButton() {
-        int iconRes = mBookmarkFilterActive ?
-                R.drawable.bookmark_filled_white_24 : R.drawable.bookmark_outline_white_24;
-        binding.bookmarkFilterChip.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                iconRes, 0, 0, 0);
     }
 
     private void loadStats() {
@@ -763,8 +742,8 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             FiveCallsApplication.analyticsManager().trackBookmark(
                     issue.permalink, isNowBookmarked, this);
         }
-        // If bookmark filter is active, re-filter the list.
-        if (mBookmarkFilterActive) {
+        // If "Saved" filter is active, re-filter the list.
+        if (TextUtils.equals(mFilterText, getString(R.string.bookmarked_issues_filter))) {
             mIssuesAdapter.setFilterAndSearch(mFilterText, mSearchText);
         }
     }
@@ -804,7 +783,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             mIssuesAdapter.updateIssue(issue);
             // Reload bookmarks in case bookmark state changed in IssueActivity.
             loadBookmarks();
-            if (mBookmarkFilterActive) {
+            if (TextUtils.equals(mFilterText, getString(R.string.bookmarked_issues_filter))) {
                 mIssuesAdapter.setFilterAndSearch(mFilterText, mSearchText);
             }
         }

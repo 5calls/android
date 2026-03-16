@@ -439,10 +439,13 @@
     <string name="filter_label">Filtrar</string>
 
     <!-- Filter for showing only the top issues [CHAR_LIMIT=50] -->
-    <string name="top_issues_filter">Temas principales</string>
+    <string name="top_issues_filter">Top</string>
 
     <!-- Filter for showing all issues [CHAR_LIMIT=50] -->
     <string name="all_issues_filter">Todos los temas</string>
+
+    <!-- Filter button label for showing only bookmarked issues [CHAR_LIMIT=30] -->
+    <string name="bookmarked_issues_filter">Guardados</string>
 
     <!-- Title of a section in settings about notifications [CHAR_LIMIT=50] -->
     <string name="settings_category_notifications">Notificaciones</string>
