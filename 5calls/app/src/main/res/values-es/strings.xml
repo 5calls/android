@@ -36,6 +36,9 @@
     <!-- Message telling a user how many previous calls they have made [CHAR_LIMIT=none] -->
     <string name="previous_call_count_many"><xliff:g id="callCount">%1$d</xliff:g> llamadas hechas</string>
 
+    <!-- Message telling a user they have made one previous (pretend) call [CHAR_LIMIT=none] -->
+    <string name="demo_previous_call_stats_one">1 llamada anterior (simulada)</string>
+
     <!-- Prompt for call result buttons [CHAR_LIMIT=NONE] -->
     <string name="buttons_prompt">Indique su resultado:</string>
 
