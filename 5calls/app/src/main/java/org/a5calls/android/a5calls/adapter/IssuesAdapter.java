@@ -271,7 +271,8 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
      * This is normally done in onBindViewHolder, but is needed for deep linking
      * where we bypass the RecyclerView.
      */
-    public static void populateIssueContacts(Issue issue, List<Contact> contacts, boolean isSplitDistrict) {
+    public static void populateIssueContacts(Issue issue, List<Contact> contacts,
+                                             boolean isSplitDistrict) {
         if (issue == null || issue.contactAreas.isEmpty()) {
             return;
         }
@@ -341,10 +342,11 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 if (AccountManager.Instance.getPlaceholderIssueCalled(mActivity)) {
                     vh.numCalls.setVisibility(View.GONE);
                     vh.previousCallStats.setVisibility(View.VISIBLE);
-                    vh.previousCallStats.setText(
-                            mActivity.getResources().getString(R.string.demo_previous_call_stats_one));
+                    vh.previousCallStats.setText(mActivity.getResources().getString(
+                            R.string.demo_previous_call_stats_one));
                 } else {
-                    vh.numCalls.setText(mActivity.getResources().getString(R.string.call_count_one));
+                    vh.numCalls.setText(mActivity.getResources().getString(
+                            R.string.call_count_one));
                     vh.previousCallStats.setVisibility(View.GONE);
                 }
                 return;

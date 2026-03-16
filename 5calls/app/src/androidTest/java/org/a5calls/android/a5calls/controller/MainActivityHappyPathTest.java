@@ -202,7 +202,7 @@ public class MainActivityHappyPathTest extends MainActivityBaseTest {
         setupMockResponses(/*isSplit=*/false, /*hasLocation=*/true);
         setupMockRequestQueue();
         DatabaseHelper databaseHelper = AppSingleton.getInstance(context).getDatabaseHelper();
-        // Add three fake calls.
+        // Add one fake call.
         databaseHelper.addCall("issueId", "issueName", "contactId", "contactName", "result", "location");
 
         launchMainActivity(1000);
@@ -222,7 +222,7 @@ public class MainActivityHappyPathTest extends MainActivityBaseTest {
         setupMockResponses(/*isSplit=*/false, /*hasLocation=*/true);
         setupMockRequestQueue();
         DatabaseHelper databaseHelper = AppSingleton.getInstance(context).getDatabaseHelper();
-        // Add four fake calls.
+        // Add two fake calls.
         databaseHelper.addCall("issueId", "issueName", "contactId", "contactName", "result", "location");
         databaseHelper.addCall("issueId", "issueName", "contactId", "contactName", "result", "location");
 

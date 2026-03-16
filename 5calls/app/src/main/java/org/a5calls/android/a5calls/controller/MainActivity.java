@@ -465,26 +465,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             public void onIssuesReceived(List<Issue> issues) {
                 populateFilterAdapterIfNeeded(issues);
 
-                // TODO refactor into helper.
-                // Option to force show the placeholder call in settings.
-                boolean forceShowPlaceholder = AccountManager.Instance.showPlaceholderIssue(getApplicationContext());
-                // If they've called more than N times, don't bother with the placeholder any more.
-                boolean showPlaceholderIfEarly = mCallCount <= MAX_CALLS_FOR_DEMO && !accountManager.getPlaceholderIssueCalled(getApplicationContext());
-                if (forceShowPlaceholder || showPlaceholderIfEarly) {
-                    Contact demoContact = Contact.createPlaceholder("0",
-                            getResources().getString(R.string.demo_rep_name),
-                            getResources().getString(R.string.demo_rep_reason),
-                            Contact.AREA_DEMO,
-                            getResources().getString(R.string.demo_rep_phone));
-                    Issue demoIssue = Issue.createPlaceholder("0",
-                            getResources().getString(R.string.demo_issue_name),
-                            DEMO_ISSUE_PERMALINK,
-                            getResources().getString(R.string.demo_issue_reason),
-                            getResources().getString(R.string.demo_issue_script), true, 0,
-                            Collections.singletonList(demoContact),
-                            Collections.emptyList(), Collections.emptyList());
-                    issues.add(demoIssue);
-                }
+                maybeAddPlaceholderIssue(issues);
                 mIssuesAdapter.setAllIssues(issues, IssuesAdapter.NO_ERROR);
                 mIssuesAdapter.setFilterAndSearch(mFilterText, mSearchText);
                 binding.swipeContainer.setRefreshing(false);
@@ -871,6 +852,30 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         } else {
             hideSnackbars();
             showSnackbar(R.string.issue_not_found, Snackbar.LENGTH_LONG);
+        }
+    }
+
+    private void maybeAddPlaceholderIssue(List<Issue> issues) {
+        // Option to force show the placeholder call in settings.
+        boolean forceShowPlaceholder = AccountManager.Instance.showPlaceholderIssue(
+                getApplicationContext());
+        // If they've called more than N times, don't bother with the placeholder any more.
+        boolean showPlaceholderIfEarly = mCallCount <= MAX_CALLS_FOR_DEMO &&
+                !accountManager.getPlaceholderIssueCalled(getApplicationContext());
+        if (forceShowPlaceholder || showPlaceholderIfEarly) {
+            Contact demoContact = Contact.createPlaceholder("0",
+                    getResources().getString(R.string.demo_rep_name),
+                    getResources().getString(R.string.demo_rep_reason),
+                    Contact.AREA_DEMO,
+                    getResources().getString(R.string.demo_rep_phone));
+            Issue demoIssue = Issue.createPlaceholder("0",
+                    getResources().getString(R.string.demo_issue_name),
+                    DEMO_ISSUE_PERMALINK,
+                    getResources().getString(R.string.demo_issue_reason),
+                    getResources().getString(R.string.demo_issue_script), true, 0,
+                    Collections.singletonList(demoContact),
+                    Collections.emptyList(), Collections.emptyList());
+            issues.add(demoIssue);
         }
     }
 }
