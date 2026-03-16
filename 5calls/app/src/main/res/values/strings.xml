@@ -763,7 +763,10 @@
         pretend result. (This pretend call is not actually recorded.)*
     </string>
 
+    <!-- The title for a dialog that appears when pressing the pretend contact's phone number. -->
     <string name="demo_phone_click_dialog_title">Pretend phone call</string>
+
+    <!-- The description for a dialog that appears when pressing the pretend contact's phone number. -->
     <string name="demo_phone_click_dialog_description">For a real contact, this would open their number in your phone app.</string>
 
     <!-- A message shown when the info (i) icon is clicked on the issue details page, about the demo issue [CHAR_LIMIT=NONE] -->
