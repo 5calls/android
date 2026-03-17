@@ -221,7 +221,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             boolean showPlaceholderIssue = accountManager.showPlaceholderIssue(getActivity());
             ((SwitchPreference) findPreference(AccountManager.KEY_SHOW_PLACEHOLDER_CALLED))
-                    .setChecked(hasReminders);
+                    .setChecked(showPlaceholderIssue);
         }
 
         @Override
