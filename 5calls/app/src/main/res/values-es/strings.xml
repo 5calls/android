@@ -36,6 +36,9 @@
     <!-- Message telling a user how many previous calls they have made [CHAR_LIMIT=none] -->
     <string name="previous_call_count_many"><xliff:g id="callCount">%1$d</xliff:g> llamadas hechas</string>
 
+    <!-- Message telling a user they have made one previous (pretend) call [CHAR_LIMIT=none] -->
+    <string name="demo_previous_call_stats_one">1 llamada anterior (simulada)</string>
+
     <!-- Prompt for call result buttons [CHAR_LIMIT=NONE] -->
     <string name="buttons_prompt">Indique su resultado:</string>
 
@@ -595,5 +598,83 @@
 
     <!-- The reason for a vacant seat being shown in the rep call list -->
     <string name="vacant_seat_rep_reason">Este escaño en el <xliff:g id="area">%1$s</xliff:g> está actualmente vacante.</string>
+
+    <!-- A name for a placeholder representative in a practice call [CHAR_LIMIT=100]-->
+    <string name="demo_rep_name">Nombre Del Representante</string>
+
+    <!-- A reason for calling a placeholder representative in a practice call [CHAR_LIMIT=100]-->
+    <string name="demo_rep_reason">Este es un contacto ficticio.</string>
+
+    <!-- A name for a placeholder issue for placing a practice call [CHAR_LIMIT=100]-->
+    <string name="demo_issue_name">️🤔 ¿Te sientes inseguro? ¡Empieza aquí!</string>
+
+    <!-- A description for a placeholder issue for placing a practice call, explaining more about the process [CHAR_LIMIT=NONE]-->
+    <string name="demo_issue_reason">
+        ### **Cómo funciona: Modo de práctica**
+        \n\n
+        Para muchos de nosotros, hacer llamadas telefónicas puede resultar intimidante. Esta llamada de ejemplo te ayuda a aprender
+        el proceso.
+        \n\n
+        \n\n
+        #### **Paso 1: Llama a la oficina de un contacto**
+        \n\n
+        Después de leer sobre un tema, toca un contacto para ver el número de teléfono de su oficina y un
+        guion. Inicia la llamada con el altavoz activado y vuelve a la aplicación 5 Calls para ver el guion mientras
+        estás llamando.
+        \n\n
+        #### **Paso 2: Lee el guion o improvisa**
+        \n\n
+        Las llamadas serán contestadas por un miembro del personal o irán directamente al buzón de voz. De cualquier manera, tu opinión
+        se contabiliza para mostrarle a tu representante qué es lo que les importa a sus electores.
+        \n\n
+        #### **Paso 3: Cuéntanos cómo te fue**
+        \n\n
+        Esto nos ayuda a dar seguimiento a nuestro impacto colectivo.
+        \n\n
+        \u0020\u0020- **Logré contactar**: Usa esta opción si hablaste con un miembro del personal\n\n
+        \u0020\u0020- **Dejé un mensaje de voz**: ¡Esto también se contabiliza!\n\n
+        \u0020\u0020- **No disponible**: El buzón estaba lleno o la línea estaba ocupada\n\n
+        \n\n
+        #### **Consejos para llamar:**
+        \n\n- **Sé breve:** Las llamadas deben durar menos de un minuto
+        \n\n- **Sé respetuoso:** Sin importar para qué partido trabajen, los miembros del personal que contestan el
+        teléfono simplemente registrarán tu opinión.
+        \n\n- **Practica con el buzón de voz:** Si te sientes nervioso o no quieres hablar con una persona, llama
+        fuera del horario de oficina y deja un mensaje.
+        \n\n
+        ### **¿Listo? Toca el contacto de prueba que aparece abajo para acceder al guion de práctica.**
+        \n\n
+        *Siempre puedes volver a encontrar esto en la configuración de la aplicación, en la opción "Mostrar una llamada de ejemplo".*
+    </string>
+
+    <!-- A script for a placeholder issue for placing a practice call, explaining more about the calling process [CHAR_LIMIT=NONE]-->
+    <string name="demo_issue_script">
+        Hi, my name is **[NAME]** and I’m a constituent from [CITY, ZIP]. I\'m calling to ask
+        [REP/SEN NAME] to support Bill 314 which increases funding for local organizations. Thank
+        you for your time and consideration.
+        \n\n
+        ---
+        \n
+        *Lee el guion en voz alta para captar la «sensación» de una llamada. ¡En serio! Luego,
+        introduce un resultado ficticio. (Esta llamada de prueba no se graba realmente).*
+    </string>
+
+    <!-- The title for a dialog that appears when pressing the pretend contact's phone number. -->
+    <string name="demo_phone_click_dialog_title">Llamada telefónica simulada</string>
+
+    <!-- The description for a dialog that appears when pressing the pretend contact's phone number. -->
+    <string name="demo_phone_click_dialog_description">Para un contacto real, esto abriría su número en tu aplicación de teléfono.</string>
+
+    <!-- A message shown when the info (i) icon is clicked on the issue details page, about the demo issue [CHAR_LIMIT=NONE] -->
+    <string name="demo_issue_details_message">Para una llamada real, puede ver aquí información como el número de llamadas, la fecha de creación y la categoría.</string>
+
+    <!-- A message shown after logging a pretend call for a placeholder issue for placing a practice call [CHAR_LIMIT=NONE]-->
+    <string name="demo_done_paragraph">¡Eso es todo! Ahora ya estás listo para realizar llamadas reales. ¡Tú puedes hacerlo! \n\nSi deseas volver a ver este problema simulado, puedes acceder a él desde la configuración.</string>
+
+    <!-- Name of a setting to show an example call in the calls list [CHAR_LIMIT=100]-->
+    <string name="settings_reshow_demo_name">Mostrar un ejemplo de llamada</string>
+
+    <!-- Description of a setting to show an example call in the calls list [CHAR_LIMIT=NONE]-->
+    <string name="settings_reshow_demo_description">Muestra un ejemplo de un tema en la lista, con sugerencias sobre cómo utilizar 5 Calls.</string>
 
 </resources>

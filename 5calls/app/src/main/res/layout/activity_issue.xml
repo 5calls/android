@@ -59,6 +59,11 @@
                 layout="@layout/issue_done_view"
                 />
 
+            <include
+                android:id="@+id/placeholder_done"
+                layout="@layout/placeholder_done_view"
+                />
+
             <TextView
                 android:id="@+id/issue_description"
                 style="@style/issueDescriptionTextStyle"

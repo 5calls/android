@@ -79,12 +79,14 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
 
     public static final int RESULT_OK = 1;
     public static final int RESULT_SERVER_ERROR = 2;
+    public static final int RESULT_DEMO_CALLED = 3;
 
     private static final String DONATE_URL = "https://secure.actblue.com/donate/5calls-donate?refcode=android&refcode2=";
 
     private static final int MIN_CALLS_TO_SHOW_CALL_STATS = 10;
 
     private boolean mShowServerError = false;
+    private boolean mShowPlaceholderCalled = false;
 
     private Issue mIssue;
     private String mAddress;
@@ -114,6 +116,9 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
                 result -> {
                     if (result.getResultCode() == RESULT_SERVER_ERROR) {
                         mShowServerError = true;
+                    }
+                    if (result.getResultCode() == RESULT_DEMO_CALLED) {
+                        mShowPlaceholderCalled = true;
                     }
                 });
 
@@ -350,6 +355,10 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
             binding.noContactAreas.setVisibility(View.VISIBLE);
             return;
         }
+        if (mShowPlaceholderCalled) {
+            binding.placeholderDone.getRoot().setVisibility(View.VISIBLE);
+            AccountManager.Instance.setShowPlaceholderIssue(getApplicationContext(), false);
+        }
         showContactsUi();
     }
 
@@ -583,7 +592,7 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
         } else {
             contactReason.setVisibility(View.GONE);
         }
-        if (!contact.isPlaceholder) {
+        if (!contact.isPlaceholder || contact.area.equals(Contact.AREA_DEMO)) {
             if (!TextUtils.isEmpty(contact.photoURL)) {
             Glide.with(getApplicationContext())
                     .load(contact.photoURL)
@@ -593,7 +602,7 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
                     .into(repImage);
             }
             // Show a bit about whether they've been contacted yet today.
-            if (hasCalledToday) {
+            if (hasCalledToday || (mIssue.isPlaceholder && mShowPlaceholderCalled)) {
                 contactChecked.setImageLevel(1);
                 contactChecked.setContentDescription(getResources().getString(
                         R.string.contact_done_img_description));
@@ -676,6 +685,9 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
     @VisibleForTesting
     static String getIssueDetailsMessage(Context context, Issue issue) {
         StringBuilder result = new StringBuilder();
+        if (issue.isPlaceholder) {
+            return context.getResources().getString(R.string.demo_issue_details_message);
+        }
         if (issue.categories.length > 0) {
             if (issue.categories.length == 1) {
                 result.append(context.getResources().getString(R.string.issue_category_one));

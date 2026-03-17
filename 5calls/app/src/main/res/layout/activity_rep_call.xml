@@ -82,7 +82,7 @@
 
                 <org.a5calls.android.a5calls.controller.SingleLineResizableTextView
                     android:id="@+id/phone_number"
-                    style="@style/SingleLineResizableStyle"
+                    style="@style/mainOfficeNumberStyle"
                     />
 
                 <Button

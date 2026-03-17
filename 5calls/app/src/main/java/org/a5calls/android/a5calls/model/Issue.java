@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import java.util.Collections;
 import org.a5calls.android.a5calls.util.StateMapping;
 
 import java.util.List;
@@ -32,8 +33,33 @@ public class Issue implements Parcelable {
     public Category[] categories;
     public boolean isSplit;
     public IssueStats stats;
+    public boolean isPlaceholder = false;
     
     public List<CustomizedContactScript> customizedScripts;
+
+    public static Issue createPlaceholder(String id, String name, String permalink, String reason,
+                 String script, boolean active, int sort, List<Contact> contacts,
+                 List<String> contactAreas, List<Outcome> outcomeModels) {
+        Issue issue = new Issue();
+        issue.id = id;
+        issue.name = name;
+        issue.permalink = permalink;
+        issue.reason = reason;
+        issue.script = script;
+        issue.active = active;
+        issue.sort = sort;
+        issue.contacts = contacts;
+        issue.contactAreas = Collections.singletonList("demo");
+        issue.outcomeModels = outcomeModels;
+
+        issue.stats = new IssueStats(0);
+        issue.isPlaceholder = true;
+        return issue;
+    }
+
+    private Issue() {
+
+    }
 
     protected Issue(Parcel in) {
         id = in.readString();
@@ -57,6 +83,7 @@ public class Issue implements Parcelable {
         categories = in.createTypedArray(Category.CREATOR);
         stats = IssueStats.CREATOR.createFromParcel(in);
         customizedScripts = in.createTypedArrayList(CustomizedContactScript.CREATOR);
+        isPlaceholder = in.readInt() != 0;
     }
 
     public static final Creator<Issue> CREATOR = new Creator<Issue>() {
@@ -96,6 +123,7 @@ public class Issue implements Parcelable {
         dest.writeTypedArray(categories, PARCELABLE_WRITE_RETURN_VALUE);
         stats.writeToParcel(dest, flags);
         dest.writeTypedList(customizedScripts);
+        dest.writeInt(isPlaceholder ? 1 : 0);
     }
     
     public String getScriptForContact(String contactId) {

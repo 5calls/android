@@ -5,6 +5,7 @@ import static org.a5calls.android.a5calls.controller.IssueActivity.KEY_ISSUE;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
@@ -154,8 +155,13 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
         outcomeAdapter = new OutcomeAdapter(issueOutcomes, new OutcomeAdapter.Callback() {
             @Override
             public void onOutcomeClicked(Outcome outcome) {
-                reportEvent(outcome);
-                reportCall(outcome, address);
+                if (!mIssue.isPlaceholder) {
+                    reportEvent(outcome);
+                    reportCall(outcome, address);
+                } else {
+                    AccountManager.Instance.setPlaceholderIssueCalled(getApplicationContext(), true);
+                    returnToIssueWithDemoCalled();
+                }
             }
         });
 
@@ -225,7 +231,7 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
                     .into(binding.repImage);
         }
 
-        linkPhoneNumber(binding.phoneNumber, contact.phone);
+        linkPhoneNumber(binding.phoneNumber, contact.phone, contact.isPlaceholder);
 
         if (expandLocalSection) {
             binding.localOfficeButton.setVisibility(View.INVISIBLE);
@@ -337,7 +343,7 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
             TextView numberView = (TextView) localOfficeInfo.findViewById(
                     R.id.field_office_number);
             numberView.setText(contact.field_offices[i].phone);
-            linkPhoneNumber(numberView, contact.field_offices[i].phone);
+            linkPhoneNumber(numberView, contact.field_offices[i].phone, contact.isPlaceholder);
             if (!TextUtils.isEmpty(contact.field_offices[i].city)) {
                 ((TextView) localOfficeInfo.findViewById(R.id.field_office_city)).setText(
                         "- " + contact.field_offices[i].city);
@@ -381,6 +387,19 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
         finish();
     }
 
+    private void returnToIssueWithDemoCalled() {
+        if (isFinishing()) {
+            return;
+        }
+        Intent upIntent = NavUtils.getParentActivityIntent(this);
+        if (upIntent == null) {
+            return;
+        }
+        upIntent.putExtra(IssueActivity.KEY_ISSUE, mIssue);
+        setResult(IssueActivity.RESULT_DEMO_CALLED, upIntent);
+        finish();
+    }
+
     private int getSpanCount(Activity activity) {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -390,11 +409,26 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
         return (int) (displayMetrics.widthPixels / minButtonWidth);
     }
 
-    private static void linkPhoneNumber(TextView textView, String phoneNumber) {
+    private void linkPhoneNumber(TextView textView, String phoneNumber,
+                                        boolean isPlaceholder) {
         textView.setText(phoneNumber);
-        Linkify.addLinks(textView, Patterns.PHONE, "tel:",
-                Linkify.sPhoneNumberMatchFilter,
-                Linkify.sPhoneNumberTransformFilter);
+        if (!isPlaceholder) {
+            Linkify.addLinks(textView, Patterns.PHONE, "tel:",
+                    Linkify.sPhoneNumberMatchFilter,
+                    Linkify.sPhoneNumberTransformFilter);
+        } else {
+            textView.setPaintFlags(textView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+            textView.setOnClickListener(v -> {
+                new AlertDialog.Builder(RepCallActivity.this)
+                        .setTitle(R.string.demo_phone_click_dialog_title)
+                        .setMessage(R.string.demo_phone_click_dialog_description)
+                        .setPositiveButton(android.R.string.ok,
+                                (dialog, which) -> {
+
+                                })
+                        .show();
+            });
+        }
     }
 
     private void updateScriptDisplay() {
