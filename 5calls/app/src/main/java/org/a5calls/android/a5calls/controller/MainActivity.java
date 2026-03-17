@@ -76,6 +76,8 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     private static final String KEY_SHOW_LOW_ACCURACY_WARNING = "showLowAccuracyWarning";
     private static final String DEEP_LINK_HOST = "5calls.org";
     private static final String DEEP_LINK_PATH_ISSUE = "issue";
+    private static final String DEMO_ISSUE_PERMALINK = "/issue/demoIssue";
+    private static final int MAX_CALLS_FOR_DEMO = 1;
     private final AccountManager accountManager = AccountManager.Instance;
 
     private String mPendingDeepLinkPath = null;
@@ -97,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     private boolean mShowLowAccuracyWarning = true;
     private boolean mDonateIsOn = false;
     private FirebaseAuth mAuth = null;
+    private int mCallCount = 0;
 
     private ActivityMainBinding binding;
 
@@ -478,6 +481,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 populateFilterAdapterIfNeeded(issues);
                 loadBookmarks();
 
+                maybeAddPlaceholderIssue(issues);
                 mIssuesAdapter.setAllIssues(issues, IssuesAdapter.NO_ERROR);
                 mIssuesAdapter.setFilterAndSearch(mFilterText, mSearchText);
                 binding.swipeContainer.setRefreshing(false);
@@ -698,12 +702,12 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     }
 
     private void loadStats() {
-        int callCount = AppSingleton.getInstance(getApplicationContext())
+        mCallCount = AppSingleton.getInstance(getApplicationContext())
                 .getDatabaseHelper().getCallsCount();
-        if (callCount > 1) {
+        if (mCallCount > 1) {
             // Don't bother if it is less than 1.
             binding.actionBarSubtitle.setText(String.format(
-                    getResources().getString(R.string.your_call_count_summary), callCount));
+                    getResources().getString(R.string.your_call_count_summary), mCallCount));
         }
     }
 
@@ -927,6 +931,30 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         } else {
             hideSnackbars();
             showSnackbar(R.string.issue_not_found, Snackbar.LENGTH_LONG);
+        }
+    }
+
+    private void maybeAddPlaceholderIssue(List<Issue> issues) {
+        // Option to force show the placeholder call in settings.
+        boolean forceShowPlaceholder = AccountManager.Instance.showPlaceholderIssue(
+                getApplicationContext());
+        // If they've called more than N times, don't bother with the placeholder any more.
+        boolean showPlaceholderIfEarly = mCallCount <= MAX_CALLS_FOR_DEMO &&
+                !accountManager.getPlaceholderIssueCalled(getApplicationContext());
+        if (forceShowPlaceholder || showPlaceholderIfEarly) {
+            Contact demoContact = Contact.createPlaceholder("0",
+                    getResources().getString(R.string.demo_rep_name),
+                    getResources().getString(R.string.demo_rep_reason),
+                    Contact.AREA_DEMO,
+                    getResources().getString(R.string.demo_rep_phone));
+            Issue demoIssue = Issue.createPlaceholder("0",
+                    getResources().getString(R.string.demo_issue_name),
+                    DEMO_ISSUE_PERMALINK,
+                    getResources().getString(R.string.demo_issue_reason),
+                    getResources().getString(R.string.demo_issue_script), true, 0,
+                    Collections.singletonList(demoContact),
+                    Collections.emptyList(), Collections.emptyList());
+            issues.add(demoIssue);
         }
     }
 }

@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.R;
+import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.Category;
 import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.DatabaseHelper;
@@ -310,7 +311,8 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
      * This is normally done in onBindViewHolder, but is needed for deep linking
      * where we bypass the RecyclerView.
      */
-    public static void populateIssueContacts(Issue issue, List<Contact> contacts, boolean isSplitDistrict) {
+    public static void populateIssueContacts(Issue issue, List<Contact> contacts,
+                                             boolean isSplitDistrict) {
         if (issue == null || issue.contactAreas.isEmpty()) {
             return;
         }
@@ -372,25 +374,31 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 vh.stateIndicator.setVisibility(View.GONE);
             }
             
-            // Set bookmark icon state.
-            boolean isBookmarked = mBookmarkedIds.contains(issue.id);
-            vh.bookmarkIcon.setImageResource(isBookmarked ?
-                    R.drawable.bookmark_filled_24 : R.drawable.bookmark_outline_24);
-            vh.bookmarkIcon.setContentDescription(mActivity.getResources().getString(
-                    isBookmarked ? R.string.remove_bookmark : R.string.bookmark_issue));
-            vh.bookmarkIcon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    boolean wasBookmarked = mBookmarkedIds.contains(issue.id);
-                    if (wasBookmarked) {
-                        mBookmarkedIds.remove(issue.id);
-                    } else {
-                        mBookmarkedIds.add(issue.id);
+            // Hide bookmark icon on placeholder/demo issues.
+            if (issue.isPlaceholder) {
+                vh.bookmarkIcon.setVisibility(View.GONE);
+            } else {
+                vh.bookmarkIcon.setVisibility(View.VISIBLE);
+                // Set bookmark icon state.
+                boolean isBookmarked = mBookmarkedIds.contains(issue.id);
+                vh.bookmarkIcon.setImageResource(isBookmarked ?
+                        R.drawable.bookmark_filled_24 : R.drawable.bookmark_outline_24);
+                vh.bookmarkIcon.setContentDescription(mActivity.getResources().getString(
+                        isBookmarked ? R.string.remove_bookmark : R.string.bookmark_issue));
+                vh.bookmarkIcon.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        boolean wasBookmarked = mBookmarkedIds.contains(issue.id);
+                        if (wasBookmarked) {
+                            mBookmarkedIds.remove(issue.id);
+                        } else {
+                            mBookmarkedIds.add(issue.id);
+                        }
+                        notifyItemChanged(holder.getAdapterPosition());
+                        mCallback.onBookmarkToggled(issue.id, !wasBookmarked);
                     }
-                    notifyItemChanged(holder.getAdapterPosition());
-                    mCallback.onBookmarkToggled(issue.id, !wasBookmarked);
-                }
-            });
+                });
+            }
 
             vh.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -398,6 +406,21 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     mCallback.startIssueActivity(holder.itemView.getContext(), issue);
                 }
             });
+
+            if (issue.isPlaceholder) {
+                vh.numCalls.setVisibility(View.VISIBLE);
+                if (AccountManager.Instance.getPlaceholderIssueCalled(mActivity)) {
+                    vh.numCalls.setVisibility(View.GONE);
+                    vh.previousCallStats.setVisibility(View.VISIBLE);
+                    vh.previousCallStats.setText(mActivity.getResources().getString(
+                            R.string.demo_previous_call_stats_one));
+                } else {
+                    vh.numCalls.setText(mActivity.getResources().getString(
+                            R.string.call_count_one));
+                    vh.previousCallStats.setVisibility(View.GONE);
+                }
+                return;
+            }
 
             if (mAddressErrorType != NO_ERROR) {
                 // If there was an address error, clear the number of calls to make.
@@ -604,16 +627,20 @@ private static class EmptyBookmarksViewHolder extends RecyclerView.ViewHolder {
 
     /**
      * Sorts a list of issues to prioritize those with meta values (state abbreviations) at the top,
-     * then sorts the remaining issues. Both groups maintain their internal sort order.
+     * then sorts the remaining issues. Both groups maintain their internal sort order. Placeholder
+     * issues are always put at the very top.
      */
     @VisibleForTesting
     ArrayList<Issue> sortIssuesWithMetaPriority(List<Issue> issues) {
+        ArrayList<Issue> placeholders = new ArrayList<>();
         ArrayList<Issue> withMeta = new ArrayList<>();
         ArrayList<Issue> withoutMeta = new ArrayList<>();
         
         // Separate issues with and without meta values
         for (Issue issue : issues) {
-            if (!TextUtils.isEmpty(issue.meta)) {
+            if (issue.isPlaceholder) {
+                placeholders.add(issue);
+            } else if (!TextUtils.isEmpty(issue.meta)) {
                 withMeta.add(issue);
             } else {
                 withoutMeta.add(issue);
@@ -621,11 +648,13 @@ private static class EmptyBookmarksViewHolder extends RecyclerView.ViewHolder {
         }
         
         // Sort each group independently by sort field (maintaining consistent order)
+        Collections.sort(placeholders, (a, b) -> Integer.compare(a.sort, b.sort));
         Collections.sort(withMeta, (a, b) -> Integer.compare(a.sort, b.sort));
         Collections.sort(withoutMeta, (a, b) -> Integer.compare(a.sort, b.sort));
         
         // Combine: meta issues first, then regular issues
         ArrayList<Issue> result = new ArrayList<>();
+        result.addAll(placeholders);
         result.addAll(withMeta);
         result.addAll(withoutMeta);
         
