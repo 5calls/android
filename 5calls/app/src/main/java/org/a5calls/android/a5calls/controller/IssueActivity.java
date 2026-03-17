@@ -239,20 +239,26 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
         }
 
         binding.issueName.setText(mIssue.name);
-        updateBookmarkIcon();
-        binding.bookmarkIcon.setOnClickListener(v -> {
-            mIsBookmarked = !mIsBookmarked;
-            DatabaseHelper dbHelper = AppSingleton.getInstance(getApplicationContext())
-                    .getDatabaseHelper();
-            if (mIsBookmarked) {
-                dbHelper.addBookmark(mIssue.id);
-            } else {
-                dbHelper.removeBookmark(mIssue.id);
-            }
+        if (mIssue.isPlaceholder) {
+            binding.bookmarkIcon.setVisibility(View.GONE);
+        } else {
             updateBookmarkIcon();
-            FiveCallsApplication.analyticsManager().trackBookmark(
-                    mIssue.permalink, mIsBookmarked, this);
-        });
+            binding.bookmarkIcon.setOnClickListener(v -> {
+                mIsBookmarked = !mIsBookmarked;
+                DatabaseHelper dbHelper = AppSingleton.getInstance(getApplicationContext())
+                        .getDatabaseHelper();
+                if (mIsBookmarked) {
+                    dbHelper.addBookmark(mIssue.id);
+                } else {
+                    dbHelper.removeBookmark(mIssue.id);
+                }
+                updateBookmarkIcon();
+                if (mIssue.permalink != null) {
+                    FiveCallsApplication.analyticsManager().trackBookmark(
+                            mIssue.permalink, mIsBookmarked, this);
+                }
+            });
+        }
 
         MarkdownUtil.setUpScript(binding.issueDescription, mIssue.reason, getApplicationContext());
         if (!TextUtils.isEmpty(mIssue.link)) {
