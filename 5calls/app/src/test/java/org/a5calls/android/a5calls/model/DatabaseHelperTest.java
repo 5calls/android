@@ -432,6 +432,15 @@ public class DatabaseHelperTest {
         assertTrue(mDatabase.isBookmarked("issue_1"));
     }
 
+    @Test
+    public void testRemoveBookmarkIdempotent() {
+        mDatabase.addBookmark("issue_1");
+        assertTrue(mDatabase.isBookmarked("issue_1"));
+        mDatabase.removeBookmark("issue_1");
+        mDatabase.removeBookmark("issue_1");
+        assertFalse(mDatabase.isBookmarked("issue_1"));
+        assertTrue(mDatabase.getBookmarkedIssueIds().isEmpty());
+    }
 
     @Test
     public void testIsBookmarkedReturnsFalseForUnbookmarked() {

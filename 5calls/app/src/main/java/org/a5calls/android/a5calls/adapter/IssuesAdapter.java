@@ -51,6 +51,8 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private boolean mIsSplitDistrict = false;
     private int mErrorType = NO_ISSUES_YET;
     private int mAddressErrorType = NO_ISSUES_YET;
+    private String mLastFilterText = "";
+    private String mLastSearchText = "";
 
     private Set<String> mBookmarkedIds = new HashSet<>();
 
@@ -121,7 +123,16 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         notifyDataSetChanged();
     }
 
+    public void onBookmarksChanged() {
+        if (TextUtils.equals(mLastFilterText,
+                mActivity.getResources().getString(R.string.bookmarked_issues_filter))) {
+            setFilterAndSearch(mLastFilterText, mLastSearchText);
+        }
+    }
+
     public void setFilterAndSearch(String filterText, String searchText) {
+        mLastFilterText = filterText;
+        mLastSearchText = searchText;
         if (mErrorType == ERROR_SEARCH_NO_MATCH || mErrorType == ERROR_BOOKMARKS_EMPTY) {
             // If we previously had a search or bookmarks error, reset it: this is a new
             // filter or search.
@@ -232,13 +243,13 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @VisibleForTesting
     public static ArrayList<Issue> filterBookmarkedIssues(List<Issue> issues, Set<String> bookmarkedIds) {
-        ArrayList<Issue> tempIssues = new ArrayList<>();
+        ArrayList<Issue> result = new ArrayList<>();
         for (Issue issue : issues) {
             if (bookmarkedIds.contains(issue.id)) {
-                tempIssues.add(issue);
+                result.add(issue);
             }
         }
-        return tempIssues;
+        return result;
     }
 
     @VisibleForTesting

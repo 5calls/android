@@ -622,7 +622,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     }
 
     private void populateFilterAdapterIfNeeded(List<Issue> issues) {
-        if (mFilterItems.size() > 3) {
+        if (mFilterItems.size() > FilterAdapter.HARD_CODED_COUNT) {
             // Already populated. Don't try again.
             // This assumes that the categories won't change much during the course of a session.
             return;
@@ -653,7 +653,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         ListPopupWindow popup = new ListPopupWindow(this);
         popup.setAnchorView(binding.filter);
         popup.setAdapter(mFilterAdapter);
-        popup.setContentWidth(measurePopupWidth());
+        popup.setContentWidth(measurePopupWidthPx());
         popup.setOnItemClickListener((parent, view, position, id) -> {
             String newFilter = mFilterAdapter.getFilterText(position);
             if (newFilter == null) {
@@ -672,8 +672,8 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         popup.show();
     }
 
-    private int measurePopupWidth() {
-        int maxWidth = 0;
+    private int measurePopupWidthPx() {
+        int maxWidthPx = 0;
         View measureView = null;
         int widthSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
         int heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
@@ -683,9 +683,9 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             }
             measureView = mFilterAdapter.getView(i, measureView, binding.filterBar);
             measureView.measure(widthSpec, heightSpec);
-            maxWidth = Math.max(maxWidth, measureView.getMeasuredWidth());
+            maxWidthPx = Math.max(maxWidthPx, measureView.getMeasuredWidth());
         }
-        return maxWidth;
+        return maxWidthPx;
     }
 
     private void updateFilterButtonText() {
@@ -738,14 +738,11 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 break;
             }
         }
-        if (issue != null) {
+        if (issue != null && issue.permalink != null) {
             FiveCallsApplication.analyticsManager().trackBookmark(
                     issue.permalink, isNowBookmarked, this);
         }
-        // If "Saved" filter is active, re-filter the list.
-        if (TextUtils.equals(mFilterText, getString(R.string.bookmarked_issues_filter))) {
-            mIssuesAdapter.setFilterAndSearch(mFilterText, mSearchText);
-        }
+        mIssuesAdapter.onBookmarksChanged();
     }
 
     @Override
@@ -783,9 +780,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             mIssuesAdapter.updateIssue(issue);
             // Reload bookmarks in case bookmark state changed in IssueActivity.
             loadBookmarks();
-            if (TextUtils.equals(mFilterText, getString(R.string.bookmarked_issues_filter))) {
-                mIssuesAdapter.setFilterAndSearch(mFilterText, mSearchText);
-            }
+            mIssuesAdapter.onBookmarksChanged();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

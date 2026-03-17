@@ -21,7 +21,7 @@ public class FilterAdapter extends BaseAdapter {
     private static final int VIEW_TYPE_DIVIDER = 1;
 
     /** Number of hard-coded filter items before the divider. */
-    private static final int HARD_CODED_COUNT = 3;
+    public static final int HARD_CODED_COUNT = 3;
 
     private final Context mContext;
     private final List<String> mItems;

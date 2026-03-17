@@ -38,6 +38,7 @@ import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -45,6 +46,31 @@ import static org.junit.Assert.assertTrue;
  */
 @RunWith(AndroidJUnit4.class)
 public class MainActivityHappyPathTest extends MainActivityBaseTest {
+
+    // Custom matcher that matches only the first view matching the given matcher.
+    public static Matcher<View> first(final Matcher<View> matcher) {
+        return new TypeSafeMatcher<View>() {
+            boolean matched = false;
+
+            @Override
+            public boolean matchesSafely(View view) {
+                if (matched) {
+                    return false;
+                }
+                if (matcher.matches(view)) {
+                    matched = true;
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("first view matching: ");
+                matcher.describeTo(description);
+            }
+        };
+    }
 
     // Custom matcher to check if a CollapsingToolbarLayout's title contains specific text
     public static Matcher<View> withCollapsingToolbarTitle(final Matcher<String> textMatcher) {
@@ -250,5 +276,37 @@ public class MainActivityHappyPathTest extends MainActivityBaseTest {
 
         // Put the address back.
         AccountManager.Instance.setAddress(context, address);
+    }
+
+    @Test
+    public void testBookmarkToggle() {
+        setupMockResponses(/*isSplit=*/false, /*hasLocation=*/true);
+        setupMockRequestQueue();
+        launchMainActivity(1000);
+
+        // Tap the first bookmark icon to bookmark the issue.
+        onView(first(allOf(withId(R.id.bookmark_icon),
+                withContentDescription(R.string.bookmark_issue),
+                isDisplayed())))
+                .perform(click());
+
+        // Verify it changed to the "bookmarked" state.
+        onView(first(allOf(withId(R.id.bookmark_icon),
+                withContentDescription(R.string.remove_bookmark),
+                isDisplayed())))
+                .check(matches(isDisplayed()));
+
+        // Tap again to un-bookmark.
+        onView(first(allOf(withId(R.id.bookmark_icon),
+                withContentDescription(R.string.remove_bookmark),
+                isDisplayed())))
+                .perform(click());
+
+        // Verify it returned to the "not bookmarked" state — all icons should
+        // be back to "Bookmark issue" since only the first was toggled.
+        onView(first(allOf(withId(R.id.bookmark_icon),
+                withContentDescription(R.string.bookmark_issue),
+                isDisplayed())))
+                .check(matches(isDisplayed()));
     }
 }
