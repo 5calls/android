@@ -273,7 +273,10 @@
     </style>
 
     <style name="issueViewStyle" parent="BaseContainer">
-        <item name="android:padding">@dimen/activity_horizontal_padding</item>
+        <item name="android:paddingStart">@dimen/activity_horizontal_padding</item>
+        <item name="android:paddingEnd">@dimen/activity_horizontal_padding</item>
+        <item name="android:paddingTop">@dimen/activity_horizontal_padding</item>
+        <item name="android:paddingBottom">4dp</item>
         <item name="android:clickable">true</item>
         <item name="android:foreground">?android:attr/selectableItemBackground</item>
         <item name="android:background">@color/issue_background_color</item>

@@ -262,6 +262,9 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 tempIssues.add(issue);
                 continue;
             }
+            if (issue.categories == null) {
+                continue;
+            }
             for (Category category : issue.categories) {
                 if (TextUtils.equals(activeCategory, category.name)) {
                     tempIssues.add(issue);
@@ -374,9 +377,11 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 vh.stateIndicator.setVisibility(View.GONE);
             }
             
-            // Hide bookmark icon on placeholder/demo issues.
+            // Keep bookmark icon INVISIBLE (not GONE) on placeholder/demo issues
+            // so it still reserves space for consistent row height.
             if (issue.isPlaceholder) {
-                vh.bookmarkIcon.setVisibility(View.GONE);
+                vh.bookmarkIcon.setVisibility(View.INVISIBLE);
+                vh.bookmarkIcon.setClickable(false);
             } else {
                 vh.bookmarkIcon.setVisibility(View.VISIBLE);
                 // Set bookmark icon state.
@@ -394,8 +399,12 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         } else {
                             mBookmarkedIds.add(issue.id);
                         }
-                        notifyItemChanged(holder.getAdapterPosition());
-                        mCallback.onBookmarkToggled(issue.id, !wasBookmarked);
+                        boolean nowBookmarked = !wasBookmarked;
+                        vh.bookmarkIcon.setImageResource(nowBookmarked ?
+                                R.drawable.bookmark_filled_24 : R.drawable.bookmark_outline_24);
+                        vh.bookmarkIcon.setContentDescription(mActivity.getResources().getString(
+                                nowBookmarked ? R.string.remove_bookmark : R.string.bookmark_issue));
+                        mCallback.onBookmarkToggled(issue.id, nowBookmarked);
                     }
                 });
             }
@@ -423,10 +432,14 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             }
 
             if (mAddressErrorType != NO_ERROR) {
-                // If there was an address error, clear the number of calls to make.
+                // If there was an address error, clear the number of calls to make
+                // Keep bookmark INVISIBLE (not GONE) so it reserves space for
+                // consistent row height.
                 vh.numCalls.setText("");
                 vh.numCalls.setVisibility(View.GONE);
                 vh.previousCallStats.setVisibility(View.GONE);
+                vh.bookmarkIcon.setVisibility(View.INVISIBLE);
+                vh.bookmarkIcon.setClickable(false);
                 issue.contacts = null;
                 return;
             }

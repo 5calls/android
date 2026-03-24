@@ -658,6 +658,21 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         popup.setAnchorView(binding.filter);
         popup.setAdapter(mFilterAdapter);
         popup.setContentWidth(measurePopupWidthPx());
+        popup.setModal(true);
+        popup.setInputMethodMode(ListPopupWindow.INPUT_METHOD_NOT_NEEDED);
+        popup.setVerticalOffset(0);
+        popup.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(
+                android.graphics.Color.WHITE));
+        // Constrain popup height to available space below the anchor.
+        // Without this, WRAP_CONTENT can exceed available space, causing
+        // Android to reposition the popup above the anchor.
+        {
+            android.graphics.Rect vf = new android.graphics.Rect();
+            binding.filter.getWindowVisibleDisplayFrame(vf);
+            int[] loc = new int[2];
+            binding.filter.getLocationOnScreen(loc);
+            popup.setHeight(vf.bottom - loc[1] - binding.filter.getHeight());
+        }
         popup.setOnItemClickListener((parent, view, position, id) -> {
             String newFilter = mFilterAdapter.getFilterText(position);
             if (newFilter == null) {
@@ -691,6 +706,8 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         }
         return maxWidthPx;
     }
+
+
 
     private void updateFilterButtonText() {
         if (TextUtils.isEmpty(mFilterText) ||

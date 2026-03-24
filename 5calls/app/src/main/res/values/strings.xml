@@ -552,8 +552,8 @@
     <string name="no_bookmarks_message">No active bookmarked issues found</string>
 
     <string-array name="default_filters">
-        <item>@string/all_issues_filter</item>
         <item>@string/top_issues_filter</item>
+        <item>@string/all_issues_filter</item>
         <item>@string/bookmarked_issues_filter</item>
     </string-array>
 

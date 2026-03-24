@@ -353,6 +353,16 @@ public class IssuesAdapterTest {
         assertEquals("200", filtered.getFirst().id);
     }
 
+    @Test
+    public void testFilterIssuesByCategoryWithNullCategories() {
+        Issue issue = new Issue();
+        issue.id = "999";
+        issue.categories = null;
+        List<Issue> issues = List.of(issue);
+        List<Issue> filtered = IssuesAdapter.filterIssuesByCategory(issues, "Test");
+        assertTrue(filtered.isEmpty());
+    }
+
     // Test data for populateIssueContacts tests
     private static final String CONTACTS_TEST_ISSUE_DATA = """
     [
