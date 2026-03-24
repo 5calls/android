@@ -355,10 +355,9 @@ public class IssuesAdapterTest {
 
     @Test
     public void testFilterIssuesByCategoryWithNullCategories() {
-        Issue issue = new Issue();
-        issue.id = "999";
-        issue.categories = null;
-        List<Issue> issues = List.of(issue);
+        // Issue with no "categories" field in JSON will have null categories array.
+        List<Issue> issues = issuesFromJson(
+                "[{\"id\":\"999\",\"name\":\"No Categories\"}]");
         List<Issue> filtered = IssuesAdapter.filterIssuesByCategory(issues, "Test");
         assertTrue(filtered.isEmpty());
     }
