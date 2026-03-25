@@ -707,8 +707,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         return maxWidthPx;
     }
 
-
-
+    
     private void updateFilterButtonText() {
         if (TextUtils.isEmpty(mFilterText) ||
                 TextUtils.equals(mFilterText, mFilterItems.get(0))) {

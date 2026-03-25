@@ -22,8 +22,8 @@
 
     <ImageView
         android:id="@+id/bookmark_icon"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="@dimen/accessibility_min_size"
+        android:layout_height="@dimen/accessibility_min_size"
         android:paddingStart="24dp"
         android:paddingTop="12dp"
         android:paddingBottom="12dp"
