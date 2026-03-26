@@ -433,13 +433,10 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             if (mAddressErrorType != NO_ERROR) {
                 // If there was an address error, clear the number of calls to make
-                // Keep bookmark INVISIBLE (not GONE) so it reserves space for
-                // consistent row height.
+                // If there was an address error, clear the number of calls to make.
                 vh.numCalls.setText("");
                 vh.numCalls.setVisibility(View.GONE);
                 vh.previousCallStats.setVisibility(View.GONE);
-                vh.bookmarkIcon.setVisibility(View.INVISIBLE);
-                vh.bookmarkIcon.setClickable(false);
                 issue.contacts = null;
                 return;
             }
