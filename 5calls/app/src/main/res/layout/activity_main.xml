@@ -96,16 +96,36 @@
 
                 </RelativeLayout>
 
-                <androidx.appcompat.widget.AppCompatSpinner
-                    android:id="@+id/filter"
-                    style="@style/spinnerStyle"
-                    tools:ignore="UnusedAttribute"
+                <FrameLayout
+                    android:id="@+id/filter_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_below="@id/actionable_card_holder"
-                    />
+                    android:background="@color/colorAccent"
+                    >
+
+                    <TextView
+                        android:id="@+id/filter"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/accessibility_min_size"
+                        android:foreground="?android:attr/selectableItemBackground"
+                        android:drawableStart="@drawable/ic_filter_list_24"
+                        android:drawablePadding="4dp"
+                        android:gravity="center_vertical"
+                        android:paddingStart="@dimen/activity_horizontal_margin"
+                        android:paddingEnd="@dimen/activity_horizontal_margin"
+                        android:text="@string/menu_filter"
+                        android:textColor="@android:color/white"
+                        android:textStyle="bold"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        />
+
+                </FrameLayout>
 
                 <RelativeLayout
                     android:id="@+id/search_bar"
-                    android:layout_below="@id/filter"
+                    android:layout_below="@id/filter_bar"
                     style="@style/mainSearchBarStyle"
                     tools:ignore="UnusedAttribute"
                     >

@@ -442,10 +442,25 @@
     <string name="filter_label">Filtrar</string>
 
     <!-- Filter for showing only the top issues [CHAR_LIMIT=50] -->
-    <string name="top_issues_filter">Temas principales</string>
+    <string name="top_issues_filter">Arriba</string>
 
     <!-- Filter for showing all issues [CHAR_LIMIT=50] -->
     <string name="all_issues_filter">Todos los temas</string>
+
+    <!-- Label for filter button [CHAR_LIMIT=20] -->
+    <string name="menu_filter">Filtrar</string>
+
+    <!-- Filter button label for showing only bookmarked issues [CHAR_LIMIT=30] -->
+    <string name="bookmarked_issues_filter">Guardados</string>
+
+    <!-- Content description for bookmark icon when issue is not bookmarked [CHAR_LIMIT=50] -->
+    <string name="bookmark_issue">Problema de marcador</string>
+
+    <!-- Content description for bookmark icon when issue is bookmarked [CHAR_LIMIT=50] -->
+    <string name="remove_bookmark">Quitar marcador</string>
+
+    <!-- Message shown when no issues are bookmarked and the bookmark filter is active [CHAR_LIMIT=NONE] -->
+    <string name="no_bookmarks_message">No se encontraron problemas marcados como activos</string>
 
     <!-- Title of a section in settings about notifications [CHAR_LIMIT=50] -->
     <string name="settings_category_notifications">Notificaciones</string>

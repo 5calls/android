@@ -22,13 +22,15 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
 
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
     @VisibleForTesting
     protected static final String CALLS_TABLE_NAME = "UserCallsDatabase";
     @VisibleForTesting
     protected static final String ISSUES_TABLE_NAME = "UserIssuesTable";
     @VisibleForTesting
     protected static final String CONTACTS_TABLE_NAME = "UserContactsTable";
+    @VisibleForTesting
+    protected static final String BOOKMARKS_TABLE_NAME = "BookmarkedIssues";
 
     // Can be used to control time in tests.
     private TimeProvider mTimeProvider;
@@ -82,6 +84,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "CREATE TABLE " + CONTACTS_TABLE_NAME + " (" + ContactColumns.CONTACT_ID + " STRING, " +
                     ContactColumns.CONTACT_NAME + " STRING);";
 
+    private static class BookmarksColumns {
+        public static String ISSUE_ID = "issueid";
+        public static String TIMESTAMP = "timestamp";
+    }
+
+    private static final String BOOKMARKS_TABLE_CREATE =
+            "CREATE TABLE " + BOOKMARKS_TABLE_NAME + " (" +
+                    BookmarksColumns.ISSUE_ID + " STRING PRIMARY KEY, " +
+                    BookmarksColumns.TIMESTAMP + " INTEGER);";
+
     public DatabaseHelper(Context context) {
         this(context, new DefaultTimeProvider());
     }
@@ -96,6 +108,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CALLS_TABLE_CREATE);
         db.execSQL(ISSUES_TABLE_CREATE);
         db.execSQL(CONTACTS_TABLE_CREATE);
+        db.execSQL(BOOKMARKS_TABLE_CREATE);
     }
 
     @Override
@@ -123,6 +136,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     CallsColumns.RESULT + " = ?",
                     new String[]{Outcome.Status.VM.toString()});
             currentDbVersion = 3;
+        }
+
+        if (oldVersion < 4 && currentDbVersion < newVersion) {
+            db.execSQL(BOOKMARKS_TABLE_CREATE);
+            currentDbVersion = 4;
         }
     }
 
@@ -328,6 +346,54 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         while (c.moveToNext()) {
             Pair<String, Integer> next = new Pair(c.getString(0), c.getInt(1));
             result.add(next);
+        }
+        c.close();
+        return result;
+    }
+
+    /**
+     * Adds a bookmark for the given issue ID.
+     */
+    public void addBookmark(String issueId) {
+        ContentValues values = new ContentValues();
+        values.put(BookmarksColumns.ISSUE_ID, issueId);
+        values.put(BookmarksColumns.TIMESTAMP, mTimeProvider.currentTimeMillis());
+        getWritableDatabase().insertWithOnConflict(BOOKMARKS_TABLE_NAME, null, values,
+                SQLiteDatabase.CONFLICT_REPLACE);
+    }
+
+    /**
+     * Removes the bookmark for the given issue ID.
+     */
+    public void removeBookmark(String issueId) {
+        getWritableDatabase().delete(BOOKMARKS_TABLE_NAME,
+                BookmarksColumns.ISSUE_ID + " = ?", new String[]{issueId});
+    }
+
+    /**
+     * Returns whether the given issue ID is bookmarked.
+     */
+    public boolean isBookmarked(String issueId) {
+        Cursor c = getReadableDatabase().rawQuery(
+                "SELECT " + BookmarksColumns.ISSUE_ID + " FROM " + BOOKMARKS_TABLE_NAME +
+                        " WHERE " + BookmarksColumns.ISSUE_ID + " = ?",
+                new String[]{issueId});
+        boolean result = c.getCount() > 0;
+        c.close();
+        return result;
+    }
+
+    /**
+     * Returns a list of all bookmarked issue IDs.
+     */
+    public List<String> getBookmarkedIssueIds() {
+        Cursor c = getReadableDatabase().rawQuery(
+                "SELECT " + BookmarksColumns.ISSUE_ID + " FROM " + BOOKMARKS_TABLE_NAME +
+                        " ORDER BY " + BookmarksColumns.TIMESTAMP + " DESC",
+                null);
+        List<String> result = new ArrayList<>();
+        while (c.moveToNext()) {
+            result.add(c.getString(0));
         }
         c.close();
         return result;

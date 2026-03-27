@@ -33,8 +33,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.ListPopupWindow;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -43,20 +42,24 @@ import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.BuildConfig;
 import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
+import org.a5calls.android.a5calls.adapter.FilterAdapter;
 import org.a5calls.android.a5calls.adapter.IssuesAdapter;
 import org.a5calls.android.a5calls.databinding.ActivityMainBinding;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.Category;
 import org.a5calls.android.a5calls.model.Contact;
+import org.a5calls.android.a5calls.model.DatabaseHelper;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.util.CustomTabsUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import static android.view.View.VISIBLE;
 
@@ -79,7 +82,8 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
 
     private String mPendingDeepLinkPath = null;
 
-    private ArrayAdapter<String> mFilterAdapter;
+    private FilterAdapter mFilterAdapter;
+    private final List<String> mFilterItems = new ArrayList<>();
     private String mFilterText = "";
     private String mSearchText = "";
     private IssuesAdapter mIssuesAdapter;
@@ -148,9 +152,9 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                             WindowInsetsCompat.Type.displayCutout());
             binding.appbar.setPadding(insets.left, insets.top, insets.right, 0);
             binding.issuesRecyclerView.setPadding(insets.left, 0, insets.right, insets.bottom);
-            final int paddingSpinner = getResources().getDimensionPixelSize(R.dimen.padding_spinner);
-            binding.filter.setPadding(paddingSpinner + insets.left, 0,
-                    paddingSpinner + insets.right, 0);
+            binding.filterBar.setPadding(
+                    binding.filterBar.getPaddingStart() + insets.left, binding.filterBar.getPaddingTop(),
+                    binding.filterBar.getPaddingEnd() + insets.right, binding.filterBar.getPaddingBottom());
             binding.searchBar.setPadding(insets.left, 0, insets.right, 0);
             final int sidePadding = getResources().getDimensionPixelSize(
                     R.dimen.activity_horizontal_margin);
@@ -219,26 +223,34 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         mIssuesAdapter = new IssuesAdapter(this, this);
         binding.issuesRecyclerView.setAdapter(mIssuesAdapter);
 
-        mFilterAdapter = new ArrayAdapter<>(this, R.layout.filter_item);
-        mFilterAdapter.setDropDownViewResource(R.layout.filter_list_item);
-        mFilterAdapter.addAll(getResources().getStringArray(R.array.default_filters));
-        binding.filter.setAdapter(mFilterAdapter);
+        // Load bookmarked issues from database.
+        loadBookmarks();
+
+        // Initialize filter items with defaults.
+        String[] defaultFilters = getResources().getStringArray(R.array.default_filters);
+        Collections.addAll(mFilterItems, defaultFilters);
+        mFilterAdapter = new FilterAdapter(this, mFilterItems);
+
         if (savedInstanceState != null) {
             mFilterText = savedInstanceState.getString(KEY_FILTER_ITEM_SELECTED);
             mSearchText = savedInstanceState.getString(KEY_SEARCH_TEXT);
             mShowLowAccuracyWarning = savedInstanceState.getBoolean(KEY_SHOW_LOW_ACCURACY_WARNING);
             if (TextUtils.isEmpty(mSearchText)) {
                 binding.searchBar.setVisibility(View.GONE);
-                binding.filter.setVisibility(VISIBLE);
+                binding.filterBar.setVisibility(VISIBLE);
             } else {
                 binding.searchBar.setVisibility(VISIBLE);
-                binding.filter.setVisibility(View.GONE);
+                binding.filterBar.setVisibility(View.GONE);
                 binding.searchText.setText(mSearchText);
             }
         } else {
-            // Safe to use index as the top two filters are hard-coded strings.
-            mFilterText = mFilterAdapter.getItem(0);
+            mFilterText = mFilterItems.get(0);
         }
+        updateFilterButtonText();
+
+        // Show filter popup when filter button is tapped.
+        binding.filter.setOnClickListener(v -> showFilterPopup());
+
         binding.searchText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -306,11 +318,11 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 int supportActionBarHeight =
                         getSupportActionBar() != null ? getSupportActionBar().getHeight() : 0;
                 int searchHeight = binding.searchBar.getHeight();
-                int filterHeight = binding.filter.getHeight();
+                int filterHeight = binding.filterBar.getHeight();
                 binding.swipeContainer.getLayoutParams().height = (int)
                         (getResources().getConfiguration().screenHeightDp * displayMetrics.density -
                                 searchHeight - filterHeight - supportActionBarHeight);
-                binding.filter.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                binding.drawerLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
         });
 
@@ -389,6 +401,9 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         issueIntent.putExtra(IssueActivity.KEY_IS_DISTRICT_SPLIT, mIsDistrictSplit);
         issueIntent.putExtra(IssueActivity.KEY_IS_LOW_ACCURACY, mIsLowAccuracy);
         issueIntent.putExtra(IssueActivity.KEY_DONATE_IS_ON, mDonateIsOn);
+        DatabaseHelper dbHelper = AppSingleton.getInstance(getApplicationContext())
+                .getDatabaseHelper();
+        issueIntent.putExtra(IssueActivity.KEY_IS_BOOKMARKED, dbHelper.isBookmarked(issue.id));
         startActivityForResult(issueIntent, ISSUE_DETAIL_REQUEST);
     }
 
@@ -464,6 +479,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             @Override
             public void onIssuesReceived(List<Issue> issues) {
                 populateFilterAdapterIfNeeded(issues);
+                loadBookmarks();
 
                 maybeAddPlaceholderIssue(issues);
                 mIssuesAdapter.setAllIssues(issues, IssuesAdapter.NO_ERROR);
@@ -589,7 +605,9 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             @Override
             public void handleOnBackPressed() {
                 // Clear the filter, if there was one.
-                binding.filter.setSelection(0);
+                mFilterText = mFilterItems.get(0);
+                updateFilterButtonText();
+                mIssuesAdapter.setFilterAndSearch(mFilterText, mSearchText);
                 // Clear the search, if there was one.
                 onIssueSearchSet("");
                 // The calls above will disable this callback, so no need
@@ -602,13 +620,13 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
 
     // Should be called whenever filter or search state changes.
     private void updateOnBackPressedCallbackEnabled() {
-        boolean isFiltering = !Objects.equals(mFilterText, mFilterAdapter.getItem(0));
+        boolean isFiltering = !mFilterItems.isEmpty() && !Objects.equals(mFilterText, mFilterItems.get(0));
         boolean isSearching = !TextUtils.isEmpty(mSearchText);
         mOnBackPressedCallback.setEnabled(isFiltering || isSearching);
     }
 
     private void populateFilterAdapterIfNeeded(List<Issue> issues) {
-        if (mFilterAdapter.getCount() > 2) {
+        if (mFilterItems.size() > FilterAdapter.HARD_CODED_COUNT) {
             // Already populated. Don't try again.
             // This assumes that the categories won't change much during the course of a session.
             return;
@@ -630,31 +648,73 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             }
         }
         Collections.sort(topics);
-        mFilterAdapter.addAll(topics);
-        binding.filter.setSelection(mFilterAdapter.getPosition(mFilterText));
-        // Set this listener after manually setting the selection so it isn't fired right away.
-        binding.filter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String newFilter = mFilterAdapter.getItem(i);
-                if (TextUtils.equals(newFilter, mFilterText)) {
-                    // Already set!
-                    return;
-                }
+        mFilterItems.addAll(topics);
+        mFilterAdapter.notifyItemsChanged();
+        updateFilterButtonText();
+    }
+
+    private void showFilterPopup() {
+        ListPopupWindow popup = new ListPopupWindow(this);
+        popup.setAnchorView(binding.filter);
+        popup.setAdapter(mFilterAdapter);
+        popup.setContentWidth(measurePopupWidthPx());
+        popup.setModal(true);
+        popup.setInputMethodMode(ListPopupWindow.INPUT_METHOD_NOT_NEEDED);
+        popup.setVerticalOffset(0);
+        popup.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(
+                android.graphics.Color.WHITE));
+        // Constrain popup height to available space below the anchor.
+        // Without this, WRAP_CONTENT can exceed available space, causing
+        // Android to reposition the popup above the anchor.
+        {
+            android.graphics.Rect vf = new android.graphics.Rect();
+            binding.filter.getWindowVisibleDisplayFrame(vf);
+            int[] loc = new int[2];
+            binding.filter.getLocationOnScreen(loc);
+            popup.setHeight(vf.bottom - loc[1] - binding.filter.getHeight());
+        }
+        popup.setOnItemClickListener((parent, view, position, id) -> {
+            String newFilter = mFilterAdapter.getFilterText(position);
+            if (newFilter == null) {
+                return; // divider
+            }
+            if (!TextUtils.equals(newFilter, mFilterText)) {
                 mFilterText = newFilter;
+                updateFilterButtonText();
                 updateOnBackPressedCallbackEnabled();
-                if (binding.swipeContainer.isRefreshing()) {
-                    // Already loading issues!
-                    return;
+                if (!binding.swipeContainer.isRefreshing()) {
+                    mIssuesAdapter.setFilterAndSearch(mFilterText, mSearchText);
                 }
-                mIssuesAdapter.setFilterAndSearch(mFilterText, mSearchText);
             }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
+            popup.dismiss();
         });
+        popup.show();
+    }
+
+    private int measurePopupWidthPx() {
+        int maxWidthPx = 0;
+        View measureView = null;
+        int widthSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        int heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        for (int i = 0; i < mFilterAdapter.getCount(); i++) {
+            if (!mFilterAdapter.isEnabled(i)) {
+                continue; // skip divider
+            }
+            measureView = mFilterAdapter.getView(i, measureView, binding.filterBar);
+            measureView.measure(widthSpec, heightSpec);
+            maxWidthPx = Math.max(maxWidthPx, measureView.getMeasuredWidth());
+        }
+        return maxWidthPx;
+    }
+
+    
+    private void updateFilterButtonText() {
+        if (TextUtils.isEmpty(mFilterText) ||
+                TextUtils.equals(mFilterText, mFilterItems.get(0))) {
+            binding.filter.setText(getString(R.string.menu_filter));
+        } else {
+            binding.filter.setText(mFilterText);
+        }
     }
 
     private void loadStats() {
@@ -671,6 +731,38 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         Intent intent = new Intent(this, StatsActivity.class);
         intent.putExtra(StatsActivity.KEY_DISTRICT_ID, mDistrictId);
         startActivity(intent);
+    }
+
+    private void loadBookmarks() {
+        DatabaseHelper dbHelper = AppSingleton.getInstance(getApplicationContext())
+                .getDatabaseHelper();
+        List<String> bookmarkList = dbHelper.getBookmarkedIssueIds();
+        Set<String> bookmarkSet = new HashSet<>(bookmarkList);
+        mIssuesAdapter.setBookmarkedIds(bookmarkSet);
+    }
+
+    @Override
+    public void onBookmarkToggled(String issueId, boolean isNowBookmarked) {
+        DatabaseHelper dbHelper = AppSingleton.getInstance(getApplicationContext())
+                .getDatabaseHelper();
+        if (isNowBookmarked) {
+            dbHelper.addBookmark(issueId);
+        } else {
+            dbHelper.removeBookmark(issueId);
+        }
+        // Track analytics.
+        Issue issue = null;
+        for (Issue i : mIssuesAdapter.getAllIssues()) {
+            if (TextUtils.equals(i.id, issueId)) {
+                issue = i;
+                break;
+            }
+        }
+        if (issue != null && issue.permalink != null) {
+            FiveCallsApplication.analyticsManager().trackBookmark(
+                    issue.permalink, isNowBookmarked, this);
+        }
+        mIssuesAdapter.onBookmarksChanged();
     }
 
     @Override
@@ -706,6 +798,9 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         if (requestCode == ISSUE_DETAIL_REQUEST && resultCode == RESULT_OK) {
             Issue issue = data.getExtras().getParcelable(IssueActivity.KEY_ISSUE);
             mIssuesAdapter.updateIssue(issue);
+            // Reload bookmarks in case bookmark state changed in IssueActivity.
+            loadBookmarks();
+            mIssuesAdapter.onBookmarksChanged();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -722,14 +817,14 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             api.reportSearch(searchText.trim());
         }
 
-        binding.filter.setVisibility(View.GONE);
+        binding.filterBar.setVisibility(View.GONE);
         binding.searchBar.setVisibility(VISIBLE);
         setSearchText(searchText);
         updateOnBackPressedCallbackEnabled();
     }
 
     public void onIssueSearchCleared() {
-        binding.filter.setVisibility(VISIBLE);
+        binding.filterBar.setVisibility(VISIBLE);
         binding.searchBar.setVisibility(View.GONE);
         setSearchText("");
         updateOnBackPressedCallbackEnabled();

@@ -395,4 +395,55 @@ public class DatabaseHelperTest {
         assertEquals(11, mDatabase.getCallsCount());
         return result;
     }
+
+    @Test
+    public void testAddBookmark() {
+        assertFalse(mDatabase.isBookmarked("issue_1"));
+        mDatabase.addBookmark("issue_1");
+        assertTrue(mDatabase.isBookmarked("issue_1"));
+    }
+
+    @Test
+    public void testRemoveBookmark() {
+        mDatabase.addBookmark("issue_1");
+        assertTrue(mDatabase.isBookmarked("issue_1"));
+        mDatabase.removeBookmark("issue_1");
+        assertFalse(mDatabase.isBookmarked("issue_1"));
+    }
+
+    @Test
+    public void testGetBookmarkedIssueIds() {
+        mDatabase.addBookmark("issue_1");
+        mDatabase.addBookmark("issue_2");
+        mDatabase.addBookmark("issue_3");
+        List<String> bookmarks = mDatabase.getBookmarkedIssueIds();
+        assertEquals(3, bookmarks.size());
+        assertTrue(bookmarks.contains("issue_1"));
+        assertTrue(bookmarks.contains("issue_2"));
+        assertTrue(bookmarks.contains("issue_3"));
+    }
+
+    @Test
+    public void testBookmarkIdempotent() {
+        mDatabase.addBookmark("issue_1");
+        mDatabase.addBookmark("issue_1");
+        List<String> bookmarks = mDatabase.getBookmarkedIssueIds();
+        assertEquals(1, bookmarks.size());
+        assertTrue(mDatabase.isBookmarked("issue_1"));
+    }
+
+    @Test
+    public void testRemoveBookmarkIdempotent() {
+        mDatabase.addBookmark("issue_1");
+        assertTrue(mDatabase.isBookmarked("issue_1"));
+        mDatabase.removeBookmark("issue_1");
+        mDatabase.removeBookmark("issue_1");
+        assertFalse(mDatabase.isBookmarked("issue_1"));
+        assertTrue(mDatabase.getBookmarkedIssueIds().isEmpty());
+    }
+
+    @Test
+    public void testIsBookmarkedReturnsFalseForUnbookmarked() {
+        assertFalse(mDatabase.isBookmarked("nonexistent_issue"));
+    }
 }
