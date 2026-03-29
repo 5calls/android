@@ -84,7 +84,7 @@ public class ScriptReplacements {
             case Contact.AREA_SENATE, SENATE -> context.getString(R.string.title_us_senate);
             case Contact.AREA_STATE_LOWER, Contact.AREA_STATE_UPPER -> context.getString(R.string.title_state_rep);
             case Contact.AREA_GOVERNOR -> context.getString(R.string.title_governor);
-            case Contact.AREA_ATTORNEY_GENERAL -> context.getString(R.string.attorneys_general);
+            case Contact.AREA_ATTORNEY_GENERAL -> context.getString(R.string.title_attorneys_general);
             case Contact.AREA_SECRETARY_OF_STATE -> context.getString(R.string.title_secretary_of_state);
             default -> null;
         };
