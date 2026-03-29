@@ -1,0 +1,57 @@
+[versions]
+androidx-appcompat = "1.7.1"
+androidx-browser = "1.8.0"
+androidx-cardview = "1.0.0"
+androidx-core-ktx = "1.16.0"
+androidx-espresso-core = "3.1.0"
+androidx-legacy-support-v4 = "1.0.0"
+androidx-preference = "1.2.1"
+androidx-recyclerview = "1.4.0"
+androidx-test-core = "1.6.1"
+androidx-test-ext-junit = "1.2.1"
+firebase-bom = "33.9.0"
+glide = "4.16.0"
+graphview = "4.2.2"
+gson = "2.12.1"
+junit = "4.13.2"
+markwon = "4.6.2"
+material = "1.12.0"
+mpandroidchart = "v3.0.3"
+okhttp = "4.12.0"
+onesignal = "5.1.28"
+plausible = "3.3"
+play-review = "2.0.2"
+robolectric = "4.14.1"
+volley = "1.2.1"
+
+[libraries]
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
+androidx-browser = { module = "androidx.browser:browser", version.ref = "androidx-browser" }
+androidx-cardview = { module = "androidx.cardview:cardview", version.ref = "androidx-cardview" }
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-core-ktx" }
+androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "androidx-espresso-core" }
+androidx-legacy-support-v4 = { module = "androidx.legacy:legacy-support-v4", version.ref = "androidx-legacy-support-v4" }
+androidx-preference = { module = "androidx.preference:preference", version.ref = "androidx-preference" }
+androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "androidx-recyclerview" }
+androidx-test-core = { module = "androidx.test:core", version.ref = "androidx-test-core" }
+androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-test-ext-junit" }
+firebase-auth = { module = "com.google.firebase:firebase-auth" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
+graphview = { module = "com.jjoe64:graphview", version.ref = "graphview" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+junit = { module = "junit:junit", version.ref = "junit" }
+markwon-core = { module = "io.noties.markwon:core", version.ref = "markwon" }
+markwon-ext-strikethrough = { module = "io.noties.markwon:ext-strikethrough", version.ref = "markwon" }
+markwon-simple-ext = { module = "io.noties.markwon:simple-ext", version.ref = "markwon" }
+material = { module = "com.google.android.material:material", version.ref = "material" }
+mpandroidchart = { module = "com.github.PhilJay:MPAndroidChart", version.ref = "mpandroidchart" }
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+onesignal = { module = "com.onesignal:OneSignal", version.ref = "onesignal" }
+plausible = { module = "com.github.OneBusAway:plausible-android-sdk", version.ref = "plausible" }
+play-review = { module = "com.google.android.play:review", version.ref = "play-review" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+volley = { module = "com.android.volley:volley", version.ref = "volley" }
+
+[bundles]
+markwon = ["markwon-core", "markwon-ext-strikethrough", "markwon-simple-ext"]
