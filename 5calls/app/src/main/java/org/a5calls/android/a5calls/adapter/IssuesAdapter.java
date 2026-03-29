@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -705,21 +706,30 @@ private static class EmptyBookmarksViewHolder extends RecyclerView.ViewHolder {
         boolean hasStateUpper = areas.contains(Contact.AREA_STATE_UPPER);
         boolean hasStateLower = areas.contains(Contact.AREA_STATE_LOWER);
 
-        return areas.stream()
-                .map(area -> {
-                    boolean isStateArea = Contact.AREA_STATE_UPPER.equals(area) || Contact.AREA_STATE_LOWER.equals(area);
+        Set<String> formattedLabels = new TreeSet<>();
+        for (String area : areas) {
+            boolean isStateArea = "StateUpper".equals(area) || "StateLower".equals(area);
 
-                    if (isStateArea && hasStateUpper && hasStateLower) {
-                        return context.getString(R.string.state_reps); // Multiple reps
-                    } else if (isStateArea) {
-                        return context.getString(R.string.state_rep); // Single rep
-                    } else {
-                        return areaToNiceString(context, area);
-                    }
-                })
-                .distinct()
-                .sorted()
-                .collect(Collectors.joining(", "));
+            if (isStateArea && hasStateUpper && hasStateLower) {
+                formattedLabels.add(context.getString(R.string.state_reps));
+            } else if (isStateArea) {
+                formattedLabels.add(context.getString(R.string.state_rep));
+            } else {
+                formattedLabels.add(areaToNiceString(context, area));
+            }
+        }
+
+        StringBuilder resultBuilder = new StringBuilder();
+        boolean isFirst = true;
+        for (String label : formattedLabels) {
+            if (!isFirst) {
+                resultBuilder.append(", ");
+            }
+            resultBuilder.append(label);
+            isFirst = false;
+        }
+
+        return resultBuilder.toString();
     }
 
     /**
