@@ -632,7 +632,7 @@
     <string name="title_attorneys_general" translatable="false">Attorney General</string>
     <string name="title_secretary_of_state" translatable="false">Secretary of State</string>
 
-    <!-- -->
+    <!-- Strings describing various contact roles. -->
     <string name="house_rep">House Rep</string>
     <string name="senators">Senators</string>
     <string name="state_reps">State Reps</string>
@@ -641,7 +641,7 @@
     <string name="attorneys_general">Attorney General</string>
     <string name="secretary_of_state">Secretary of State</string>
 
-    <!-- -->
+    <!-- String describing which contact rolls will need to be called. -->
     <string name="calls_to_make">Call <xliff:g id="contact_areas">%1$s</xliff:g></string>
 
     <!-- Title of the section inviting users to sign up for the newsletter. -->
