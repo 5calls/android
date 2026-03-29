@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
@@ -425,28 +426,36 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                             R.string.demo_previous_call_stats_one));
                 } else {
                     vh.numCalls.setText(mActivity.getResources().getString(
-                            R.string.call_count_one));
+                            R.string.call_count_today_one));
                     vh.previousCallStats.setVisibility(View.GONE);
                 }
                 return;
             }
 
-            if (mAddressErrorType != NO_ERROR) {
-                // If there was an address error, clear the number of calls to make
-                vh.numCalls.setText("");
-                vh.numCalls.setVisibility(View.GONE);
-                vh.previousCallStats.setVisibility(View.GONE);
-                issue.contacts = null;
-                return;
-            }
             vh.numCalls.setVisibility(View.VISIBLE);
-
             // Sometimes an issue is shown with no contact areas in order to
             // inform users that a major vote or change has happened.
             if (issue.contactAreas.isEmpty()) {
                 vh.numCalls.setText(
                         mActivity.getResources().getString(R.string.no_contact_areas_message));
                 vh.previousCallStats.setVisibility(View.GONE);
+                return;
+            }
+
+            if (mAddressErrorType != NO_ERROR) {
+                // If there was an address error, show generic info about the number
+                // of calls to make.
+                String contactAreaText = areasToCallsOverviewString(
+                        mActivity.getApplicationContext(), issue.contactAreas);
+                if (TextUtils.isEmpty(contactAreaText)) {
+                    vh.numCalls.setText("");
+                    vh.numCalls.setVisibility(View.GONE);
+                } else {
+                    vh.numCalls.setText(mActivity.getResources().getString(R.string.calls_to_make,
+                            contactAreaText));
+                }
+                vh.previousCallStats.setVisibility(View.GONE);
+                issue.contacts = null;
                 return;
             }
 
@@ -525,49 +534,67 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 .getDatabaseHelper();
         // Calls ever made.
         int totalUserCalls = dbHelper.getTotalCallsForIssueAndContacts(issue.id, issue.contacts);
+        // Calls per day.
+        int totalDayCalls = issue.contacts.size();
+
+        if (totalUserCalls == 0) {
+            // If the user is somewhere like DC, which doesn't have all the contact areas,
+            // don't even tell them about those areas.
+            List<String> actualContactAreas = new ArrayList<>();
+            for (Contact contact : issue.contacts) {
+                actualContactAreas.add(contact.area);
+            }
+            String contactAreaText = areasToCallsOverviewString(mActivity.getApplicationContext(),
+                    actualContactAreas);
+
+            // The user has never called on this issue before. Show a simple number of calls
+            // text, without the word "today".
+            vh.previousCallStats.setVisibility(View.GONE);
+            if (totalDayCalls == 0) {
+                vh.numCalls.setText(mActivity.getResources().getString(
+                        R.string.call_count_zero));
+            } else if (totalDayCalls == 1) {
+                vh.numCalls.setText(mActivity.getResources().getString(
+                        R.string.call_count_one, contactAreaText));
+            } else {
+                vh.numCalls.setText(mActivity.getResources().getString(
+                        R.string.call_count, totalDayCalls, contactAreaText));
+            }
+            return;
+        }
 
         // Calls today only.
-        int callsLeft = issue.contacts.size();
+        int callsLeft = totalDayCalls;
         for (Contact contact : issue.contacts) {
             if(dbHelper.hasCalledToday(issue.id, contact.id)) {
                 callsLeft--;
             }
         }
-        if (totalUserCalls == 0) {
-            // The user has never called on this issue before. Show a simple number of calls
-            // text, without the word "today".
-            vh.previousCallStats.setVisibility(View.GONE);
-            if (callsLeft == 1) {
-                vh.numCalls.setText(
-                        mActivity.getResources().getString(R.string.call_count_one));
-            } else {
-                vh.numCalls.setText(String.format(
-                        mActivity.getResources().getString(R.string.call_count), callsLeft));
-            }
+
+        // Previous call stats
+        vh.previousCallStats.setVisibility(View.VISIBLE);
+        if (totalUserCalls == 1) {
+            vh.previousCallStats.setText(mActivity.getResources().getString(
+                    R.string.previous_call_count_one));
         } else {
-            vh.previousCallStats.setVisibility(View.VISIBLE);
+            vh.previousCallStats.setText(
+                    mActivity.getResources().getString(
+                            R.string.previous_call_count_many, totalUserCalls));
+        }
 
-            // Previous call stats
-            if (totalUserCalls == 1) {
-                vh.previousCallStats.setText(mActivity.getResources().getString(
-                        R.string.previous_call_count_one));
-            } else {
-                vh.previousCallStats.setText(
-                        mActivity.getResources().getString(
-                                R.string.previous_call_count_many, totalUserCalls));
-            }
+        // Calls to make today.
+        if (callsLeft == 0) {
+            vh.numCalls.setText(
+                    mActivity.getResources().getString(R.string.call_count_today_done));
+            return;
+        }
 
-            // Calls to make today.
-            if (callsLeft == 0) {
-                vh.numCalls.setText(
-                        mActivity.getResources().getString(R.string.call_count_today_done));
-            } else if (callsLeft == 1) {
-                vh.numCalls.setText(
-                        mActivity.getResources().getString(R.string.call_count_today_one));
-            } else {
-                vh.numCalls.setText(String.format(
-                        mActivity.getResources().getString(R.string.call_count_today), callsLeft));
-            }
+        if (callsLeft == 1) {
+            vh.numCalls.setText(mActivity.getResources().getString(
+                    R.string.call_count_today_one));
+        } else {
+            vh.numCalls.setText(mActivity.getResources().getString(
+                    R.string.call_count_today, callsLeft));
         }
     }
 
@@ -669,4 +696,48 @@ private static class EmptyBookmarksViewHolder extends RecyclerView.ViewHolder {
         
         return result;
     }
+
+    public static String areasToCallsOverviewString(Context context, List<String> areas) {
+        if (areas == null || areas.isEmpty()) {
+            return "";
+        }
+
+        boolean hasStateUpper = areas.contains(Contact.AREA_STATE_UPPER);
+        boolean hasStateLower = areas.contains(Contact.AREA_STATE_LOWER);
+
+        return areas.stream()
+                .map(area -> {
+                    boolean isStateArea = Contact.AREA_STATE_UPPER.equals(area) || Contact.AREA_STATE_LOWER.equals(area);
+
+                    if (isStateArea && hasStateUpper && hasStateLower) {
+                        return context.getString(R.string.state_reps); // Multiple reps
+                    } else if (isStateArea) {
+                        return context.getString(R.string.state_rep); // Single rep
+                    } else {
+                        return areaToNiceString(context, area);
+                    }
+                })
+                .distinct()
+                .sorted()
+                .collect(Collectors.joining(", "));
+    }
+
+    /**
+     * Converts an area name to a generic office name that can be used in the interface.
+     */
+    public static String areaToNiceString(Context context, String area) {
+        return switch (area) {
+            case Contact.AREA_HOUSE -> context.getString(R.string.house_rep);
+            case Contact.AREA_SENATE -> context.getString(R.string.senators);
+
+            // State legislatures call themselves different things by state,
+            // so let's use a generic term for all of them
+            case Contact.AREA_STATE_UPPER, Contact.AREA_STATE_LOWER -> context.getString(R.string.state_reps);
+            case Contact.AREA_GOVERNOR -> context.getString(R.string.governor);
+            case Contact.AREA_ATTORNEY_GENERAL -> context.getString(R.string.attorneys_general);
+            case Contact.AREA_SECRETARY_OF_STATE -> context.getString(R.string.secretary_of_state);
+            default -> area;
+        };
+    }
 }
+
