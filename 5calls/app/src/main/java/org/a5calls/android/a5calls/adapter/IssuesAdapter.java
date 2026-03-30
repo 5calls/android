@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
@@ -708,8 +707,8 @@ private static class EmptyBookmarksViewHolder extends RecyclerView.ViewHolder {
 
         Set<String> formattedLabels = new TreeSet<>();
         for (String area : areas) {
-            boolean isStateArea = "StateUpper".equals(area) || "StateLower".equals(area);
-
+            boolean isStateArea = Contact.AREA_STATE_UPPER.equals(area) ||
+                    Contact.AREA_STATE_LOWER.equals(area);
             if (isStateArea && hasStateUpper && hasStateLower) {
                 formattedLabels.add(context.getString(R.string.state_reps));
             } else if (isStateArea) {

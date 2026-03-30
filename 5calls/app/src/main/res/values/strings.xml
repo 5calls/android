@@ -641,7 +641,7 @@
     <string name="attorneys_general">Attorney General</string>
     <string name="secretary_of_state">Secretary of State</string>
 
-    <!-- String describing which contact rolls will need to be called. -->
+    <!-- String describing which contact roles will need to be called. -->
     <string name="calls_to_make">Call <xliff:g id="contact_areas">%1$s</xliff:g></string>
 
     <!-- Title of the section inviting users to sign up for the newsletter. -->
