@@ -290,6 +290,7 @@
     <style name="issueCallCountStyle" parent="Widget.FiveCalls.TextView.Paragraph.PrimaryDark">
         <item name="android:paddingTop">4dp</item>
         <item name="android:paddingBottom">4dp</item>
+        <item name="android:paddingEnd">48dp</item>
         <item name="android:textStyle">bold</item>
     </style>
 

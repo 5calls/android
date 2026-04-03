@@ -16,10 +16,13 @@
     <string name="json_error">Error: Invalid or no data for this location. Try again later.</string>
 
     <!-- Message telling a user how many calls they still need to make on a particular issue [CHAR_LIMIT=30] -->
-    <string name="call_count"><xliff:g id="callCount">%1$d</xliff:g> calls to make</string>
+    <string name="call_count"><xliff:g id="callCount">%1$d</xliff:g> calls: <xliff:g id="area">%2$s</xliff:g></string>
+
+    <!-- Message telling a user they have no calls to make on a particular issue (because of their address) [CHAR_LIMIT=30] -->
+    <string name="call_count_zero">0 calls to make</string>
 
     <!-- Message telling a user they sill have one call to make on a particular issue [CHAR_LIMIT=30] -->
-    <string name="call_count_one">1 call to make</string>
+    <string name="call_count_one">1 call: <xliff:g id="area">%1$s</xliff:g></string>
 
     <!-- Message telling a user how many calls they still need to make on a particular issue today [CHAR_LIMIT=none] -->
     <string name="call_count_today"><xliff:g id="callCount">%1$d</xliff:g> calls to make today</string>
@@ -626,8 +629,20 @@
     <string name="title_us_senate" translatable="false">Senator</string>
     <string name="title_state_rep" translatable="false">Legislator</string>
     <string name="title_governor" translatable="false">Governor</string>
-    <string name="title_attorney_general" translatable="false">Attorney General</string>
+    <string name="title_attorneys_general" translatable="false">Attorney General</string>
     <string name="title_secretary_of_state" translatable="false">Secretary of State</string>
+
+    <!-- Strings describing various contact roles. -->
+    <string name="house_rep">House Rep</string>
+    <string name="senators">Senators</string>
+    <string name="state_reps">State Reps</string>
+    <string name="state_rep">State Rep</string>
+    <string name="governor">Governor</string>
+    <string name="attorneys_general">Attorney General</string>
+    <string name="secretary_of_state">Secretary of State</string>
+
+    <!-- String describing which contact roles will need to be called. -->
+    <string name="calls_to_make">Call <xliff:g id="contact_areas">%1$s</xliff:g></string>
 
     <!-- Title of the section inviting users to sign up for the newsletter. -->
     <string name="newsletter_signup_title">Get updates on the latest issues</string>

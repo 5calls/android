@@ -17,7 +17,7 @@ public class Contact implements Parcelable {
     public static final String AREA_STATE_LOWER = "StateLower";
     public static final String AREA_STATE_UPPER = "StateUpper";
     public static final String AREA_GOVERNOR = "Governor";
-    public static final String AREA_ATTORNEY_GENERAL = "AttorneyGeneral";
+    public static final String AREA_ATTORNEY_GENERAL = "AttorneysGeneral";
     public static final String AREA_SECRETARY_OF_STATE = "SecretaryOfState";
 
     // Used to show the placeholder contact for the demonstration issue.
