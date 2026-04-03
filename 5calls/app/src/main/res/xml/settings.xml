@@ -98,6 +98,15 @@
             android:singleLineTitle="false"
             />
 
+        <SwitchPreference
+            android:title="@string/settings_reshow_demo_name"
+            android:defaultValue="false"
+            android:summary="@string/settings_reshow_demo_description"
+            android:key="prefsKeyShowPlaceholderIssue"
+            app:iconSpaceReserved="false"
+            android:singleLineTitle="false"
+            />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

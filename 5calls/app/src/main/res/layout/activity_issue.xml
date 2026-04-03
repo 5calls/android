@@ -44,10 +44,33 @@
                 android:layout_gravity="end"
                 />
 
-            <TextView
-                android:id="@+id/issue_name"
-                style="@style/issueHeadStyle"
-                />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="top"
+                android:layout_marginBottom="@dimen/text_layout_marginBottom16"
+                >
+
+                <TextView
+                    android:id="@+id/issue_name"
+                    style="@style/issueHeadStyle"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_marginBottom="0dp"
+                    />
+
+                <ImageView
+                    android:id="@+id/bookmark_icon"
+                    android:layout_width="@dimen/accessibility_min_size"
+                    android:layout_height="@dimen/accessibility_min_size"
+                    android:padding="12dp"
+                    android:src="@drawable/bookmark_outline_24"
+                    android:contentDescription="@string/bookmark_issue"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    />
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/link"
@@ -57,6 +80,11 @@
             <include
                 android:id="@+id/issue_done"
                 layout="@layout/issue_done_view"
+                />
+
+            <include
+                android:id="@+id/placeholder_done"
+                layout="@layout/placeholder_done_view"
                 />
 
             <TextView

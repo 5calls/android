@@ -76,15 +76,18 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
     public static final String KEY_IS_DISTRICT_SPLIT = "key_is_district_split";
     public static final String KEY_IS_LOW_ACCURACY = "key_is_low_accuracy";
     public static final String KEY_DONATE_IS_ON = "key_donate_is_on";
+    public static final String KEY_IS_BOOKMARKED = "key_is_bookmarked";
 
     public static final int RESULT_OK = 1;
     public static final int RESULT_SERVER_ERROR = 2;
+    public static final int RESULT_DEMO_CALLED = 3;
 
     private static final String DONATE_URL = "https://secure.actblue.com/donate/5calls-donate?refcode=android&refcode2=";
 
     private static final int MIN_CALLS_TO_SHOW_CALL_STATS = 10;
 
     private boolean mShowServerError = false;
+    private boolean mShowPlaceholderCalled = false;
 
     private Issue mIssue;
     private String mAddress;
@@ -94,6 +97,7 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
     // low accuracy locations are zip codes or city names, we warn on state reps if you are using one
     private boolean mIsLowAccuracy = false;
     private boolean mDonateIsOn = false;
+    private boolean mIsBookmarked = false;
     private boolean mIsAnimating = false;
 
     private ActivityIssueBinding binding;
@@ -114,6 +118,9 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
                 result -> {
                     if (result.getResultCode() == RESULT_SERVER_ERROR) {
                         mShowServerError = true;
+                    }
+                    if (result.getResultCode() == RESULT_DEMO_CALLED) {
+                        mShowPlaceholderCalled = true;
                     }
                 });
 
@@ -179,6 +186,7 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
         mIsDistrictSplit = getIntent().getBooleanExtra(KEY_IS_DISTRICT_SPLIT, false);
         mIsLowAccuracy = getIntent().getBooleanExtra(KEY_IS_LOW_ACCURACY, false);
         mDonateIsOn = getIntent().getBooleanExtra(KEY_DONATE_IS_ON, false);
+        mIsBookmarked = getIntent().getBooleanExtra(KEY_IS_BOOKMARKED, false);
         mLocationName = getIntent().getStringExtra(RepCallActivity.KEY_LOCATION_NAME);
 
         setContentView(binding.getRoot());
@@ -231,6 +239,27 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
         }
 
         binding.issueName.setText(mIssue.name);
+        if (mIssue.isPlaceholder) {
+            binding.bookmarkIcon.setVisibility(View.GONE);
+        } else {
+            updateBookmarkIcon();
+            binding.bookmarkIcon.setOnClickListener(v -> {
+                mIsBookmarked = !mIsBookmarked;
+                DatabaseHelper dbHelper = AppSingleton.getInstance(getApplicationContext())
+                        .getDatabaseHelper();
+                if (mIsBookmarked) {
+                    dbHelper.addBookmark(mIssue.id);
+                } else {
+                    dbHelper.removeBookmark(mIssue.id);
+                }
+                updateBookmarkIcon();
+                if (mIssue.permalink != null) {
+                    FiveCallsApplication.analyticsManager().trackBookmark(
+                            mIssue.permalink, mIsBookmarked, this);
+                }
+            });
+        }
+
         MarkdownUtil.setUpScript(binding.issueDescription, mIssue.reason, getApplicationContext());
         if (!TextUtils.isEmpty(mIssue.link)) {
             binding.link.setVisibility(View.VISIBLE);
@@ -334,6 +363,7 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
         outState.putParcelable(KEY_ISSUE, mIssue);
         outState.putBoolean(KEY_IS_DISTRICT_SPLIT, mIsDistrictSplit);
         outState.putBoolean(KEY_IS_LOW_ACCURACY, mIsLowAccuracy);
+        outState.putBoolean(KEY_IS_BOOKMARKED, mIsBookmarked);
     }
 
     @Override
@@ -349,6 +379,10 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
             binding.issueDone.getRoot().setVisibility(View.GONE);
             binding.noContactAreas.setVisibility(View.VISIBLE);
             return;
+        }
+        if (mShowPlaceholderCalled) {
+            binding.placeholderDone.getRoot().setVisibility(View.VISIBLE);
+            AccountManager.Instance.setShowPlaceholderIssue(getApplicationContext(), false);
         }
         showContactsUi();
     }
@@ -583,7 +617,7 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
         } else {
             contactReason.setVisibility(View.GONE);
         }
-        if (!contact.isPlaceholder) {
+        if (!contact.isPlaceholder || contact.area.equals(Contact.AREA_DEMO)) {
             if (!TextUtils.isEmpty(contact.photoURL)) {
             Glide.with(getApplicationContext())
                     .load(contact.photoURL)
@@ -593,7 +627,7 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
                     .into(repImage);
             }
             // Show a bit about whether they've been contacted yet today.
-            if (hasCalledToday) {
+            if (hasCalledToday || (mIssue.isPlaceholder && mShowPlaceholderCalled)) {
                 contactChecked.setImageLevel(1);
                 contactChecked.setContentDescription(getResources().getString(
                         R.string.contact_done_img_description));
@@ -662,6 +696,13 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
         }
     }
 
+    private void updateBookmarkIcon() {
+        binding.bookmarkIcon.setImageResource(mIsBookmarked ?
+                R.drawable.bookmark_filled_24 : R.drawable.bookmark_outline_24);
+        binding.bookmarkIcon.setContentDescription(getResources().getString(
+                mIsBookmarked ? R.string.remove_bookmark : R.string.bookmark_issue));
+    }
+
     private void showIssueDetails() {
         new AlertDialog.Builder(IssueActivity.this)
                 .setTitle(R.string.details_btn)
@@ -676,6 +717,9 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
     @VisibleForTesting
     static String getIssueDetailsMessage(Context context, Issue issue) {
         StringBuilder result = new StringBuilder();
+        if (issue.isPlaceholder) {
+            return context.getResources().getString(R.string.demo_issue_details_message);
+        }
         if (issue.categories.length > 0) {
             if (issue.categories.length == 1) {
                 result.append(context.getResources().getString(R.string.issue_category_one));

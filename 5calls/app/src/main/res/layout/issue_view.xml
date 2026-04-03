@@ -20,12 +20,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    <ImageView
+        android:id="@+id/bookmark_icon"
+        android:layout_width="@dimen/accessibility_min_size"
+        android:layout_height="@dimen/accessibility_min_size"
+        android:padding="12dp"
+        android:translationX="12dp"
+        android:src="@drawable/bookmark_outline_24"
+        android:contentDescription="@string/bookmark_issue"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        app:layout_constraintTop_toTopOf="@id/issue_call_count"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <TextView
         android:id="@+id/issue_call_count"
         style="@style/issueCallCountStyle"
         app:layout_constraintTop_toBottomOf="@id/issue_name"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toStartOf="@id/bookmark_icon"/>
 
     <TextView
         android:id="@+id/previous_call_stats"
@@ -33,5 +45,5 @@
         app:drawableStartCompat="@drawable/checked_small"
         app:layout_constraintTop_toBottomOf="@id/issue_call_count"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toStartOf="@id/bookmark_icon"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

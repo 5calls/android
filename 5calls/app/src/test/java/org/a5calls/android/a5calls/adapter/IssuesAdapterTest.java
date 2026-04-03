@@ -1,5 +1,7 @@
 package org.a5calls.android.a5calls.adapter;
 
+import android.content.Context;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -7,16 +9,21 @@ import com.google.gson.reflect.TypeToken;
 import org.a5calls.android.a5calls.FakeJSONData;
 import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.Issue;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -26,6 +33,14 @@ import static org.junit.Assert.assertTrue;
  */
 @RunWith(AndroidJUnit4.class)
 public class IssuesAdapterTest {
+
+    private Context realContext;
+
+    @Before
+    public void setUp() {
+        // Grab the actual Context from the test application
+        realContext = ApplicationProvider.getApplicationContext();
+    }
 
     @Test
     public void testFilterIssuesBySearchText_noMatches() {
@@ -351,6 +366,15 @@ public class IssuesAdapterTest {
         assertEquals("200", filtered.getFirst().id);
     }
 
+    @Test
+    public void testFilterIssuesByCategoryWithNullCategories() {
+        // Issue with no "categories" field in JSON will have null categories array.
+        List<Issue> issues = issuesFromJson(
+                "[{\"id\":\"999\",\"name\":\"No Categories\"}]");
+        List<Issue> filtered = IssuesAdapter.filterIssuesByCategory(issues, "Test");
+        assertTrue(filtered.isEmpty());
+    }
+
     // Test data for populateIssueContacts tests
     private static final String CONTACTS_TEST_ISSUE_DATA = """
     [
@@ -503,6 +527,120 @@ public class IssuesAdapterTest {
         adapter.populateIssueContacts(issue);
 
         assertNull(issue.contacts);
+    }
+
+    @Test
+    public void testFilterBookmarkedIssues() {
+        List<Issue> issues = issuesFromJson(ORDERING_TEST_ISSUE_DATA);
+        Set<String> bookmarkedIds = new HashSet<>();
+        bookmarkedIds.add("100");
+        bookmarkedIds.add("300");
+
+        List<Issue> filtered = IssuesAdapter.filterBookmarkedIssues(issues, bookmarkedIds);
+
+        assertEquals(2, filtered.size());
+        assertEquals("100", filtered.get(0).id);
+        assertEquals("300", filtered.get(1).id);
+    }
+
+    @Test
+    public void testFilterBookmarkedIssues_empty() {
+        List<Issue> issues = issuesFromJson(ORDERING_TEST_ISSUE_DATA);
+        Set<String> bookmarkedIds = new HashSet<>();
+
+        List<Issue> filtered = IssuesAdapter.filterBookmarkedIssues(issues, bookmarkedIds);
+
+        assertEquals(0, filtered.size());
+    }
+
+    @Test
+    public void testFilterBookmarkedIssues_combinesWithSort() {
+        List<Issue> issues = issuesFromJson(ORDERING_TEST_ISSUE_DATA);
+        Set<String> bookmarkedIds = new HashSet<>();
+        bookmarkedIds.add("100");
+        bookmarkedIds.add("200");
+        bookmarkedIds.add("300");
+
+        List<Issue> filtered = IssuesAdapter.filterBookmarkedIssues(issues, bookmarkedIds);
+        IssuesAdapter adapter = new IssuesAdapter(null, null);
+        ArrayList<Issue> sorted = adapter.sortIssuesWithMetaPriority(filtered);
+
+        assertEquals(3, sorted.size());
+        // Issue 200 has meta "CA" so it comes first, then 100 (sort=300) and 300 (sort=400)
+        assertEquals("200", sorted.get(0).id);
+        assertEquals("100", sorted.get(1).id);
+        assertEquals("300", sorted.get(2).id);
+    }
+
+    @Test
+    public void testFilterBookmarkedIssues_nonExistentIdsIgnored() {
+        List<Issue> issues = issuesFromJson(ORDERING_TEST_ISSUE_DATA);
+        Set<String> bookmarkedIds = new HashSet<>();
+        bookmarkedIds.add("100");
+        bookmarkedIds.add("99999");
+
+        List<Issue> filtered = IssuesAdapter.filterBookmarkedIssues(issues, bookmarkedIds);
+
+        assertEquals(1, filtered.size());
+        assertEquals("100", filtered.get(0).id);
+    }
+
+    @Test
+    public void testFormatAreaLabels_nullInput_returnsEmptyString() {
+        assertEquals("", IssuesAdapter.areasToCallsOverviewString(realContext, null));
+    }
+
+    @Test
+    public void testFormatAreaLabels_emptyInput_returnsEmptyString() {
+        List<String> input = Collections.emptyList();
+        assertEquals("", IssuesAdapter.areasToCallsOverviewString(realContext, input));
+    }
+
+    @Test
+    public void testFormatAreaLabels_singleStandardArea_returnsLocalized() {
+        List<String> input = Collections.singletonList("US House");
+        assertEquals("House Rep", IssuesAdapter.areasToCallsOverviewString(realContext, input));
+    }
+
+    @Test
+    public void testFormatAreaLabels_singleStateArea_returnsSingularStateRep() {
+        // Only one of the state chambers is present
+        List<String> input = Collections.singletonList("StateUpper");
+        assertEquals("State Rep", IssuesAdapter.areasToCallsOverviewString(realContext, input));
+    }
+
+    @Test
+    public void testFormatAreaLabels_bothStateAreas_returnsPluralStateReps() {
+        // Both chambers are present, triggering the plural logic and deduplication
+        List<String> input = Arrays.asList("StateUpper", "StateLower");
+        assertEquals("State Reps", IssuesAdapter.areasToCallsOverviewString(realContext, input));
+    }
+
+    @Test
+    public void testFormatAreaLabels_complexList_sortsAndJoinsCorrectly() {
+        // Mix of different types to ensure mapping, sorting, and joining work together
+        List<String> input = Arrays.asList("Governor", "US House", "StateUpper");
+
+        // Expected mapping: "Governor", "House Rep", "State Rep"
+        // Expected alphabetical sorting: "Governor", "House Rep", "State Rep"
+        assertEquals("Governor, House Rep, State Rep", IssuesAdapter.areasToCallsOverviewString(realContext, input));
+    }
+
+    @Test
+    public void testFormatAreaLabels_duplicatesCombined_sortsCorrectly() {
+        // Testing the specific scenario you pointed out earlier
+        List<String> input = Arrays.asList("StateUpper", "StateLower", "Governor");
+
+        // Expected deduplication: "State Reps", "Governor"
+        // Expected alphabetical sorting: "Governor", "State Reps"
+        assertEquals("Governor, State Reps", IssuesAdapter.areasToCallsOverviewString(realContext, input));
+    }
+
+    @Test
+    public void testFormatAreaLabels_unknownArea_returnsRawString() {
+        // If an area isn't in our switch statement, it should just pass the raw string through
+        List<String> input = Arrays.asList("City Council", "Governor");
+        assertEquals("City Council, Governor", IssuesAdapter.areasToCallsOverviewString(realContext, input));
     }
 
     private List<Issue> issuesFromJson(String json) {

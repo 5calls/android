@@ -2,14 +2,18 @@ package org.a5calls.android.a5calls.controller;
 
 import android.content.Context;
 import android.view.View;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.volley.toolbox.HttpResponse;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 
+import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.FakeJSONData;
+import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
+import org.a5calls.android.a5calls.model.DatabaseHelper;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
@@ -30,6 +34,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withInputType;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -38,6 +43,7 @@ import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -45,6 +51,31 @@ import static org.junit.Assert.assertTrue;
  */
 @RunWith(AndroidJUnit4.class)
 public class MainActivityHappyPathTest extends MainActivityBaseTest {
+
+    // Custom matcher that matches only the first view matching the given matcher.
+    public static Matcher<View> first(final Matcher<View> matcher) {
+        return new TypeSafeMatcher<View>() {
+            boolean matched = false;
+
+            @Override
+            public boolean matchesSafely(View view) {
+                if (matched) {
+                    return false;
+                }
+                if (matcher.matches(view)) {
+                    matched = true;
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("first view matching: ");
+                matcher.describeTo(description);
+            }
+        };
+    }
 
     // Custom matcher to check if a CollapsingToolbarLayout's title contains specific text
     public static Matcher<View> withCollapsingToolbarTitle(final Matcher<String> textMatcher) {
@@ -70,7 +101,7 @@ public class MainActivityHappyPathTest extends MainActivityBaseTest {
     /**
      * Sets up mock responses for API calls
      */
-    private void setupMockResponses(boolean isSplit, boolean hasLocation)  {
+    private void setupMockResponses(boolean isSplit, boolean hasLocation) {
         // Set up the mock to handle all possible requests with appropriate responses
         mHttpStack.clearUrlPatternResponses();
 
@@ -120,8 +151,8 @@ public class MainActivityHappyPathTest extends MainActivityBaseTest {
 
         // Check that the collapsing toolbar is displayed and contains the location text
         onView(withId(R.id.collapsing_toolbar))
-            .check(matches(isDisplayed()))
-            .check(matches(withCollapsingToolbarTitle(containsString("BOWLING GREEN"))));
+                .check(matches(isDisplayed()))
+                .check(matches(withCollapsingToolbarTitle(containsString("BOWLING GREEN"))));
 
         // Check that no location error was shown.
         onView(withText(R.string.low_accuracy_warning)).check(doesNotExist());
@@ -163,9 +194,121 @@ public class MainActivityHappyPathTest extends MainActivityBaseTest {
         // Verify that a "set your location" button is displayed.
         onView(withContentDescription(R.string.first_location_title)).check(matches(isDisplayed()));
 
+        // No calls to make displayed.
+        onView(withText("3 calls to make")).check(doesNotExist());
+        onView(withText("2 calls to make")).check(doesNotExist());
+
         // Set the address again for the sake of the next test.
         AccountManager.Instance.setAddress(context, address);
     }
+
+    @Test
+    public void testMainUILoadsCorrectly_noLocation_placeholderShown() {
+        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        // Clear the location.
+        String address = AccountManager.Instance.getAddress(context);
+        AccountManager.Instance.setAddress(context, "");
+        setupMockResponses(/*isSplit=*/false, /*hasLocation=*/false);
+        setupMockRequestQueue();
+
+        launchMainActivity(1000);
+
+        // Verify that the demo issue is displayed.
+        onView(withText(R.string.demo_issue_name)).check(matches(isDisplayed()));
+        // There should be a "1 call to make" note for the demo issue.
+        onView(withText(R.string.call_count_one)).check(matches(isDisplayed()));
+
+        // Reset address.
+        AccountManager.Instance.setAddress(context, address);
+    }
+
+    @Test
+    public void testMainUILoadCorrectly_oneCall_placeholderShown() {
+        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        setupMockResponses(/*isSplit=*/false, /*hasLocation=*/true);
+        setupMockRequestQueue();
+        DatabaseHelper databaseHelper = AppSingleton.getInstance(context).getDatabaseHelper();
+        // Add one fake call.
+        databaseHelper.addCall("issueId", "issueName", "contactId", "contactName", "result", "location");
+
+        launchMainActivity(1000);
+
+        // Verify that the demo issue is displayed.
+        onView(withText(R.string.demo_issue_name)).check(matches(isDisplayed()));
+        // There should be a "1 call to make" note for the demo issue.
+        onView(withText(R.string.call_count_one)).check(matches(isDisplayed()));
+
+        // Reset the database.
+        databaseHelper.getWritableDatabase().delete("UserCallsDatabase", null, null);
+    }
+
+    @Test
+    public void testMainUILoadCorrectly_twoCalls_placeholderNotShown() {
+        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        setupMockResponses(/*isSplit=*/false, /*hasLocation=*/true);
+        setupMockRequestQueue();
+        DatabaseHelper databaseHelper = AppSingleton.getInstance(context).getDatabaseHelper();
+        // Add two fake calls.
+        databaseHelper.addCall("issueId", "issueName", "contactId", "contactName", "result", "location");
+        databaseHelper.addCall("issueId", "issueName", "contactId", "contactName", "result", "location");
+
+        launchMainActivity(1000);
+
+        // Verify that the demo issue is not displayed.
+        onView(withText(R.string.demo_issue_name)).check(doesNotExist());
+
+        // Reset the database.
+        databaseHelper.getWritableDatabase().delete("UserCallsDatabase", null, null);
+    }
+
+    @Test
+    public void testMainUILoadCorrectly_fourCalls_placeholderPrefSet_placeholderShown() {
+        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        setupMockResponses(/*isSplit=*/false, /*hasLocation=*/true);
+        setupMockRequestQueue();
+        DatabaseHelper databaseHelper = AppSingleton.getInstance(context).getDatabaseHelper();
+        // Add four fake calls.
+        databaseHelper.addCall("issueId", "issueName", "contactId", "contactName", "result", "location");
+        databaseHelper.addCall("issueId", "issueName", "contactId", "contactName", "result", "location");
+        databaseHelper.addCall("issueId", "issueName", "contactId", "contactName", "result", "location");
+        databaseHelper.addCall("issueId", "issueName", "contactId", "contactName", "result", "location");
+        // Pretend the user has turned on the placeholder anyway in settings.
+        AccountManager.Instance.setShowPlaceholderIssue(context, true);
+
+        launchMainActivity(1000);
+
+        // Verify that the demo issue is displayed with "one call to make".
+        onView(withText(R.string.demo_issue_name)).check(matches(isDisplayed()));
+        onView(withText(R.string.demo_previous_call_stats_one)).check(doesNotExist());
+        onView(withText(R.string.call_count_one)).check(matches(isDisplayed()));
+
+        // Reset the database.
+        databaseHelper.getWritableDatabase().delete("UserCallsDatabase", null, null);
+        AccountManager.Instance.setShowPlaceholderIssue(context, false);
+    }
+
+    @Test
+    public void testMainUILoadCorrectly_placeholderAlreadyCalled_placeholderPrefSet_placeholderShown() {
+        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        setupMockResponses(/*isSplit=*/false, /*hasLocation=*/true);
+        setupMockRequestQueue();
+        // The user has already done the placeholder call once.
+        AccountManager.Instance.setPlaceholderIssueCalled(context, true);
+        // Pretend the user has turned on the placeholder anyway in settings.
+        AccountManager.Instance.setShowPlaceholderIssue(context, true);
+
+        launchMainActivity(1000);
+
+        // Verify that the demo issue is displayed.
+        onView(withText(R.string.demo_issue_name)).check(matches(isDisplayed()));
+        // The "one pretend previous call" is shown.
+        onView(withText(R.string.demo_previous_call_stats_one)).check(matches(isDisplayed()));
+
+        // Reset state
+        AccountManager.Instance.setPlaceholderIssueCalled(context, false);
+        AccountManager.Instance.setShowPlaceholderIssue(context, false);
+    }
+
 
     @Test
     public void testNavigationDrawerOpens() throws JSONException {
@@ -250,5 +393,37 @@ public class MainActivityHappyPathTest extends MainActivityBaseTest {
 
         // Put the address back.
         AccountManager.Instance.setAddress(context, address);
+    }
+
+    @Test
+    public void testBookmarkToggle() {
+        setupMockResponses(/*isSplit=*/false, /*hasLocation=*/true);
+        setupMockRequestQueue();
+        launchMainActivity(1000);
+
+        // Tap the first bookmark icon to bookmark the issue.
+        onView(first(allOf(withId(R.id.bookmark_icon),
+                withContentDescription(R.string.bookmark_issue),
+                isDisplayed())))
+                .perform(click());
+
+        // Verify it changed to the "bookmarked" state.
+        onView(first(allOf(withId(R.id.bookmark_icon),
+                withContentDescription(R.string.remove_bookmark),
+                isDisplayed())))
+                .check(matches(isDisplayed()));
+
+        // Tap again to un-bookmark.
+        onView(first(allOf(withId(R.id.bookmark_icon),
+                withContentDescription(R.string.remove_bookmark),
+                isDisplayed())))
+                .perform(click());
+
+        // Verify it returned to the "not bookmarked" state — all icons should
+        // be back to "Bookmark issue" since only the first was toggled.
+        onView(first(allOf(withId(R.id.bookmark_icon),
+                withContentDescription(R.string.bookmark_issue),
+                isDisplayed())))
+                .check(matches(isDisplayed()));
     }
 }
