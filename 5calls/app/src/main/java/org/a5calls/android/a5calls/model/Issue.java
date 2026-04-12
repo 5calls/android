@@ -5,9 +5,9 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 
 import java.util.Collections;
-import org.a5calls.android.a5calls.util.StateMapping;
-
 import java.util.List;
+
+import org.a5calls.android.a5calls.util.StateMapping;
 
 import androidx.annotation.Nullable;
 
@@ -51,6 +51,7 @@ public class Issue implements Parcelable {
         issue.contacts = contacts;
         issue.contactAreas = Collections.singletonList("demo");
         issue.outcomeModels = outcomeModels;
+        issue.categories = new Category[0];
 
         issue.stats = new IssueStats(0);
         issue.isPlaceholder = true;
