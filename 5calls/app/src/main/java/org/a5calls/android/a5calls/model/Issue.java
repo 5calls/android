@@ -51,6 +51,7 @@ public class Issue implements Parcelable {
         issue.contacts = contacts;
         issue.contactAreas = Collections.singletonList("demo");
         issue.outcomeModels = outcomeModels;
+        issue.categories = new Category[0];
 
         issue.stats = new IssueStats(0);
         issue.isPlaceholder = true;

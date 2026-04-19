@@ -15,8 +15,8 @@ import org.junit.runner.RunWith;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,6 +25,7 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -127,6 +128,26 @@ public class IssuesAdapterTest {
         }
     ]""";
 
+    private static final String NULL_SEARCH_FIELDS_ISSUE_DATA = """
+    [
+        {
+            "id": "placeholder_title",
+            "name": "Practice Call",
+            "reason": "Practice your call before dialing a real office.",
+            "categories": null
+        },
+        {
+            "id": "placeholder_reason",
+            "name": "Placeholder",
+            "reason": "Practice your call before dialing a real office.",
+            "categories": null
+        },
+        {
+            "id": "null_name_reason",
+            "categories": [{"name": "Healthcare"}]
+        }
+    ]""";
+
     /**
      * 2025-07-19 XXX: this test is a companion to
      * {@link #testFilterIssuesBySearchText_matchesReason_doesNotMatchIfNotStartOfWord()}
@@ -171,6 +192,54 @@ public class IssuesAdapterTest {
         List<Issue> issues = issuesFromJson(REGEX_TEST_ISSUE_DATA);
         List<Issue> filtered = IssuesAdapter.filterIssuesBySearchText(".", issues);
         assertEquals(0, filtered.size());
+    }
+
+    @Test
+    public void testFilterIssuesBySearchText_nullCategories_noCrashIfNoTitleMatch() {
+        List<Issue> issues = issuesFromJson(NULL_SEARCH_FIELDS_ISSUE_DATA);
+        List<Issue> filtered = IssuesAdapter.filterIssuesBySearchText("missing", issues);
+        assertEquals(0, filtered.size());
+    }
+
+    @Test
+    public void testFilterIssuesBySearchText_nullCategories_matchesTitle() {
+        List<Issue> issues = issuesFromJson(NULL_SEARCH_FIELDS_ISSUE_DATA);
+        List<Issue> filtered = IssuesAdapter.filterIssuesBySearchText("practice call", issues);
+        assertEquals(1, filtered.size());
+        assertEquals("placeholder_title", filtered.getFirst().id);
+    }
+
+    @Test
+    public void testFilterIssuesBySearchText_nullCategories_matchesReason() {
+        List<Issue> issues = issuesFromJson(NULL_SEARCH_FIELDS_ISSUE_DATA);
+        List<Issue> filtered = IssuesAdapter.filterIssuesBySearchText("dialing", issues);
+        assertEquals(2, filtered.size());
+    }
+
+    @Test
+    public void testFilterIssuesBySearchText_nullNameAndReason_matchCategoryWithoutCrash() {
+        List<Issue> issues = issuesFromJson(NULL_SEARCH_FIELDS_ISSUE_DATA);
+        List<Issue> filtered = IssuesAdapter.filterIssuesBySearchText("health", issues);
+        assertEquals(1, filtered.size());
+        assertEquals("null_name_reason", filtered.getFirst().id);
+    }
+
+    @Test
+    public void testCreatePlaceholder_initializesEmptyCategories() {
+        Issue issue = Issue.createPlaceholder(
+                "demo",
+                "Demo issue",
+                "/issue/demo",
+                "Reason",
+                "Script",
+                true,
+                0,
+                Collections.singletonList(Contact.createPlaceholder("contact", "Demo", "", "demo")),
+                Collections.emptyList(),
+                Collections.emptyList());
+
+        assertNotNull(issue.categories);
+        assertEquals(0, issue.categories.length);
     }
 
     // Test data for issue ordering tests
