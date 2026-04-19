@@ -16,10 +16,13 @@
     <string name="json_error">Error: Datos inválidos o inexistentes para esta ubicación</string>
 
     <!-- Message telling a user how many calls they still need to make on a particular issue [CHAR_LIMIT=30] -->
-    <string name="call_count"><xliff:g id="callCount">%1$d</xliff:g> llamadas por hacer</string>
+    <string name="call_count"><xliff:g id="callCount">%1$d</xliff:g> llamadas: <xliff:g id="area">%2$s</xliff:g></string>
+
+    <!-- Message telling a user they have no calls to make on a particular issue (because of their address) [CHAR_LIMIT=30] -->
+    <string name="call_count_zero">0 llamadas por hacer</string>
 
     <!-- Message telling a user they sill have one call to make on a particular issue [CHAR_LIMIT=30] -->
-    <string name="call_count_one">1 llamada por hacer</string>
+    <string name="call_count_one">1 llamada: <xliff:g id="area">%1$s</xliff:g></string>
 
     <!-- Message telling a user how many calls they still need to make on a particular issue today [CHAR_LIMIT=none] -->
     <string name="call_count_today"><xliff:g id="callCount">%1$d</xliff:g> llamadas por hacer hoy</string>
@@ -526,6 +529,18 @@
 
     <!-- Button linking to the privacy policy [CHAR_LIMIT=30] -->
     <string name="privacy_btn">Política de privacidad</string>
+
+    <!-- Strings describing various contact roles. -->
+    <string name="house_rep">Representante</string>
+    <string name="senators">Senadores</string>
+    <string name="state_reps">Representantes Estatales</string>
+    <string name="state_rep">Representante Estatal</string>
+    <string name="governor">Gobernador</string>
+    <string name="attorneys_general">Fiscal General</string>
+    <string name="secretary_of_state">Secretario de Estado</string>
+
+    <!-- String describing which contact roles will need to be called. -->
+    <string name="calls_to_make">Llamar a <xliff:g id="contact_areas">%1$s</xliff:g></string>
 
     <!-- Title of the section inviting users to sign up for the newsletter. -->
     <string name="newsletter_signup_title">Obtenga actualizaciones sobre temas más recientes</string>
