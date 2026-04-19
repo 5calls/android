@@ -426,4 +426,29 @@ public class MainActivityHappyPathTest extends MainActivityBaseTest {
                 isDisplayed())))
                 .check(matches(isDisplayed()));
     }
+
+    @Test
+    public void testIssueSearchWithPlaceholderVisible_doesNotCrash() throws InterruptedException {
+        setupMockResponses(/*isSplit=*/false, /*hasLocation=*/true);
+        setupMockRequestQueue();
+        launchMainActivity(1000);
+
+        onView(withText(R.string.demo_issue_name)).check(matches(isDisplayed()));
+
+        scenario.onActivity(activity -> activity.onIssueSearchSet("zzzzzz"));
+        Thread.sleep(1000);
+
+        onView(withId(R.id.search_bar)).check(matches(isDisplayed()));
+        onView(withText(R.string.demo_issue_name)).check(doesNotExist());
+    }
+
+    @Test
+    public void testFilterPopupShowsSavedIssues() {
+        setupMockResponses(/*isSplit=*/false, /*hasLocation=*/true);
+        setupMockRequestQueue();
+        launchMainActivity(1000);
+
+        onView(withId(R.id.filter)).perform(click());
+        onView(withText(R.string.bookmarked_issues_filter)).check(matches(isDisplayed()));
+    }
 }

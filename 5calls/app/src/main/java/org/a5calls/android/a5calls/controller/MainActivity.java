@@ -235,6 +235,10 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             mFilterText = savedInstanceState.getString(KEY_FILTER_ITEM_SELECTED);
             mSearchText = savedInstanceState.getString(KEY_SEARCH_TEXT);
             mShowLowAccuracyWarning = savedInstanceState.getBoolean(KEY_SHOW_LOW_ACCURACY_WARNING);
+            if (!TextUtils.isEmpty(mSearchText) && TextUtils.equals(mFilterText,
+                    getResources().getString(R.string.bookmarked_issues_filter))) {
+                mFilterText = mFilterItems.get(0);
+            }
             if (TextUtils.isEmpty(mSearchText)) {
                 binding.searchBar.setVisibility(View.GONE);
                 binding.filterBar.setVisibility(VISIBLE);
@@ -762,7 +766,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             FiveCallsApplication.analyticsManager().trackBookmark(
                     issue.permalink, isNowBookmarked, this);
         }
-        mIssuesAdapter.onBookmarksChanged();
+        mIssuesAdapter.setFilterAndSearch(mFilterText, mSearchText);
     }
 
     @Override
@@ -800,7 +804,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             mIssuesAdapter.updateIssue(issue);
             // Reload bookmarks in case bookmark state changed in IssueActivity.
             loadBookmarks();
-            mIssuesAdapter.onBookmarksChanged();
+            mIssuesAdapter.setFilterAndSearch(mFilterText, mSearchText);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -817,6 +821,8 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             api.reportSearch(searchText.trim());
         }
 
+        mFilterText = mFilterItems.get(0);
+        updateFilterButtonText();
         binding.filterBar.setVisibility(View.GONE);
         binding.searchBar.setVisibility(VISIBLE);
         setSearchText(searchText);
@@ -842,6 +848,14 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             return;
         }
         mIssuesAdapter.setFilterAndSearch(mFilterText, mSearchText);
+    }
+
+    public String getCurrentFilterText() {
+        return mFilterText;
+    }
+
+    public String getCurrentSearchText() {
+        return mSearchText;
     }
 
     private void hideSnackbars() {

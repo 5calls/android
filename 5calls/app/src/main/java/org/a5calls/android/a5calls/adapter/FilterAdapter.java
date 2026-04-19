@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import org.a5calls.android.a5calls.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

@@ -53,8 +53,6 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private boolean mIsSplitDistrict = false;
     private int mErrorType = NO_ISSUES_YET;
     private int mAddressErrorType = NO_ISSUES_YET;
-    private String mLastFilterText = "";
-    private String mLastSearchText = "";
 
     private Set<String> mBookmarkedIds = new HashSet<>();
 
@@ -125,16 +123,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         notifyDataSetChanged();
     }
 
-    public void onBookmarksChanged() {
-        if (TextUtils.equals(mLastFilterText,
-                mActivity.getResources().getString(R.string.bookmarked_issues_filter))) {
-            setFilterAndSearch(mLastFilterText, mLastSearchText);
-        }
-    }
-
     public void setFilterAndSearch(String filterText, String searchText) {
-        mLastFilterText = filterText;
-        mLastSearchText = searchText;
         if (mErrorType == ERROR_SEARCH_NO_MATCH || mErrorType == ERROR_BOOKMARKS_EMPTY) {
             // If we previously had a search or bookmarks error, reset it: this is a new
             // filter or search.
@@ -207,15 +196,17 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         for (Issue issue : allIssues) {
             // Search the name and the categories for the search term.
-            if (issue.name.toLowerCase().contains(lowerSearchText)) {
+            if (containsIgnoreCase(issue.name, lowerSearchText)) {
                 tempIssues.add(issue);
             } else {
                 boolean found = false;
-                for (int i = 0; i < issue.categories.length; i++) {
-                    if (issue.categories[i].name.toLowerCase().contains(lowerSearchText)) {
-                        tempIssues.add(issue);
-                        found = true;
-                        break;
+                if (issue.categories != null) {
+                    for (Category category : issue.categories) {
+                        if (category != null && containsIgnoreCase(category.name, lowerSearchText)) {
+                            tempIssues.add(issue);
+                            found = true;
+                            break;
+                        }
                     }
                 }
                 if (found) {
@@ -224,12 +215,16 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 // Search through the issue's reason for words that start with the
                 // search text. This is better than substring matching so that text
                 // like "ice" doesn't match "averice" but just ICE.
-                if (pattern.matcher(issue.reason).find()) {
+                if (!TextUtils.isEmpty(issue.reason) && pattern.matcher(issue.reason).find()) {
                     tempIssues.add(issue);
                 }
             }
         }
         return tempIssues;
+    }
+
+    private static boolean containsIgnoreCase(String text, @NonNull String lowercaseSearchText) {
+        return !TextUtils.isEmpty(text) && text.toLowerCase().contains(lowercaseSearchText);
     }
 
     private ArrayList<Issue> filterActiveIssues() {
@@ -269,6 +264,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             for (Category category : issue.categories) {
                 if (TextUtils.equals(activeCategory, category.name)) {
                     tempIssues.add(issue);
+                    break;
                 }
             }
         }
