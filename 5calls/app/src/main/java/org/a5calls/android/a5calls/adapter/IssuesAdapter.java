@@ -124,7 +124,8 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     public void setFilterAndSearch(String filterText, String searchText) {
         if (mErrorType == ERROR_SEARCH_NO_MATCH || mErrorType == ERROR_BOOKMARKS_EMPTY) {
-            // If we previously had a search or bookmarks error, reset it: this is a new filter or search.
+            // If we previously had a search or bookmarks error, reset it: this is a new
+            // filter or search.
             mErrorType = NO_ERROR;
         }
 
@@ -221,7 +222,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return tempIssues;
     }
 
-    private static boolean containsIgnoreCase(String text, String lowercaseSearchText) {
+    private static boolean containsIgnoreCase(String text, @NonNull String lowercaseSearchText) {
         return !TextUtils.isEmpty(text) && text.toLowerCase().contains(lowercaseSearchText);
     }
 

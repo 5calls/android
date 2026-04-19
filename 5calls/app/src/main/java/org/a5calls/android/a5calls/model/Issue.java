@@ -5,9 +5,9 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 
 import java.util.Collections;
-import java.util.List;
-
 import org.a5calls.android.a5calls.util.StateMapping;
+
+import java.util.List;
 
 import androidx.annotation.Nullable;
 

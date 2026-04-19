@@ -622,6 +622,7 @@ public class IssuesAdapterTest {
         ArrayList<Issue> sorted = adapter.sortIssuesWithMetaPriority(filtered);
 
         assertEquals(3, sorted.size());
+        // Issue 200 has meta "CA" so it comes first, then 100 (sort=300) and 300 (sort=400)
         assertEquals("200", sorted.get(0).id);
         assertEquals("100", sorted.get(1).id);
         assertEquals("300", sorted.get(2).id);
