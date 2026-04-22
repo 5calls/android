@@ -166,6 +166,14 @@ public class LocationActivity extends AppCompatActivity {
             finish();
         } else {
             Intent intent = new Intent(this, MainActivity.class);
+            Intent originalIntent = getIntent();
+            if (originalIntent != null) {
+                // Go to the main activity with any data that was passed in.
+                if (originalIntent.getExtras() != null) {
+                    intent.putExtras(originalIntent.getExtras());
+                }
+                intent.setData(originalIntent.getData());
+            }
             startActivity(intent);
             finish();
         }

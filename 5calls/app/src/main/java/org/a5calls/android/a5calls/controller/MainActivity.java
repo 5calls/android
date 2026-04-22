@@ -119,15 +119,23 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             mAuth = null;
         }
 
+        Intent intent = getIntent();
+
         // See if we've had this user before. If not, start them at tutorial type page.
         if (!accountManager.isTutorialSeen(this)) {
-            Intent intent = new Intent(this, TutorialActivity.class);
-            startActivity(intent);
+            Intent tutorialIntent = new Intent(this, TutorialActivity.class);
+            // Copy all data from the original intent that opened MainActivity.
+            if (intent != null) {
+                if (intent.getExtras() != null) {
+                    tutorialIntent.putExtras(intent.getExtras());
+                }
+                tutorialIntent.setData(intent.getData());
+            }
+            startActivity(tutorialIntent);
             finish();
             return;
         }
 
-        Intent intent = getIntent();
         if (intent != null && intent.getExtras() != null &&
                 intent.getExtras().getBoolean(EXTRA_FROM_NOTIFICATION, false)) {
             FiveCallsApplication.analyticsManager().trackPageviewWithProps("/", this,
