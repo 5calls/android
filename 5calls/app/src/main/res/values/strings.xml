@@ -207,6 +207,15 @@
     <!-- Message shown when a call state was recorded locally but there was an issue communicating a result or parsing the JSON response from the server. [CHAR_LIMIT=150] -->
     <string name="call_error_db_recorded_anyway">Call recorded for you, but we had some issues contacting the server.</string>
 
+    <!-- Snackbar text shown after a call outcome is reported, with an UNDO action. %1$s is the outcome (e.g., "Left voicemail"), %2$s is the contact name. [CHAR_LIMIT=80] -->
+    <string name="call_reported_undo_format">%1$s for %2$s reported</string>
+
+    <!-- UNDO action label on the call-reported Snackbar [CHAR_LIMIT=12] -->
+    <string name="undo_action">UNDO</string>
+
+    <!-- Toast shown when the user is returned to the call screen after tapping UNDO [CHAR_LIMIT=40] -->
+    <string name="not_reported_yet_toast">Not reported yet</string>
+
     <!-- Menu option to go to a settings page [CHAR_LIMIT=25] -->
     <string name="settings">Settings</string>
 
