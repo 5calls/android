@@ -64,7 +64,10 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
     public static final String KEY_ACTIVE_CONTACT_INDEX = "active_contact_index";
     private static final String KEY_LOCAL_OFFICES_EXPANDED = "local_offices_expanded";
 
-    private FiveCallsApi.CallRequestListener mStatusListener;
+    public static final String EXTRA_PENDING_CONTACT_INDEX = "extra_pending_contact_index";
+    public static final String EXTRA_PENDING_OUTCOME = "extra_pending_outcome";
+    public static final String EXTRA_SHOW_UNDONE_MESSAGE = "extra_show_undone_message";
+
     private Issue mIssue;
     private int mActiveContactIndex;
     private OutcomeAdapter outcomeAdapter;
@@ -102,32 +105,14 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
             return WindowInsetsCompat.CONSUMED;
         });
 
-        mStatusListener = new FiveCallsApi.CallRequestListener() {
-            @Override
-            public void onRequestError() {
-                returnToIssueWithServerError();
-            }
-
-            @Override
-            public void onJsonError() {
-                returnToIssueWithServerError();
-            }
-
-            @Override
-            public void onReportReceived(int count, boolean donateOn) {
-                // unused
-            }
-
-            @Override
-            public void onCallReported() {
-                // Note: Skips are not reported.
-                returnToIssue();
-            }
-        };
         FiveCallsApi api = AppSingleton.getInstance(getApplicationContext())
                 .getJsonController();
-        api.registerCallRequestListener(mStatusListener);
         api.registerScriptsRequestListener(this);
+
+        if (getIntent().getBooleanExtra(EXTRA_SHOW_UNDONE_MESSAGE, false)) {
+            Snackbar.make(binding.scrollView, R.string.call_response_undone,
+                    Snackbar.LENGTH_LONG).show();
+        }
 
         // The markdown view gets focus unless we let the scrollview take it back.
         binding.scrollView.setFocusableInTouchMode(true);
@@ -157,7 +142,7 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
             public void onOutcomeClicked(Outcome outcome) {
                 if (!mIssue.isPlaceholder) {
                     reportEvent(outcome);
-                    reportCall(outcome, address);
+                    returnToIssueWithPendingCall(outcome);
                 } else {
                     AccountManager.Instance.setPlaceholderIssueCalled(getApplicationContext(), true);
                     returnToIssueWithDemoCalled();
@@ -180,7 +165,6 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
     @Override
     protected void onDestroy() {
         FiveCallsApi api = AppSingleton.getInstance(getApplicationContext()).getJsonController();
-        api.unregisterCallRequestListener(mStatusListener);
         api.unregisterScriptsRequestListener(this);
         super.onDestroy();
     }
@@ -203,13 +187,20 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
         return super.onOptionsItemSelected(item);
     }
 
-    private void reportCall(Outcome outcome, String address) {
+    private void returnToIssueWithPendingCall(Outcome outcome) {
+        if (isFinishing()) {
+            return;
+        }
         outcomeAdapter.setEnabled(false);
-        AppSingleton.getInstance(getApplicationContext()).getDatabaseHelper().addCall(mIssue.id,
-                mIssue.name, mIssue.contacts.get(mActiveContactIndex).id,
-                mIssue.contacts.get(mActiveContactIndex).name, outcome.status.toString(), address);
-        AppSingleton.getInstance(getApplicationContext()).getJsonController().reportCall(
-                mIssue.id, mIssue.contacts.get(mActiveContactIndex).id, outcome.status);
+        Intent upIntent = NavUtils.getParentActivityIntent(this);
+        if (upIntent == null) {
+            return;
+        }
+        upIntent.putExtra(IssueActivity.KEY_ISSUE, mIssue);
+        upIntent.putExtra(EXTRA_PENDING_CONTACT_INDEX, mActiveContactIndex);
+        upIntent.putExtra(EXTRA_PENDING_OUTCOME, outcome);
+        setResult(IssueActivity.RESULT_OK, upIntent);
+        finish();
     }
 
     private void setupContactUi(int index, boolean expandLocalSection) {
@@ -371,19 +362,6 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
         }
         upIntent.putExtra(IssueActivity.KEY_ISSUE, mIssue);
         setResult(IssueActivity.RESULT_OK, upIntent);
-        finish();
-    }
-
-    private void returnToIssueWithServerError() {
-        if (isFinishing()) {
-            return;
-        }
-        Intent upIntent = NavUtils.getParentActivityIntent(this);
-        if (upIntent == null) {
-            return;
-        }
-        upIntent.putExtra(IssueActivity.KEY_ISSUE, mIssue);
-        setResult(IssueActivity.RESULT_SERVER_ERROR, upIntent);
         finish();
     }
 

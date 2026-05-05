@@ -179,6 +179,15 @@
     <!-- Message shown when a call state was recorded locally but there was an issue parsing the JSON response from the server. [CHAR_LIMIT=150] -->
     <string name="call_error_db_recorded_anyway">Llamada grabada, pero tuvimos algunos problemas al contactar al servidor.</string>
 
+    <!-- Snackbar text shown after a call outcome is reported, with an UNDO action. %1$s is the outcome (e.g., "Left voicemail"), %2$s is the contact name. [CHAR_LIMIT=80] -->
+    <string name="call_reported_undo_format">%1$s para %2$s registrado</string>
+
+    <!-- UNDO action label on the call-reported Snackbar [CHAR_LIMIT=12] -->
+    <string name="undo_action">DESHACER</string>
+
+    <!-- Snackbar shown when the user is returned to the call screen after tapping UNDO [CHAR_LIMIT=40] -->
+    <string name="call_response_undone">Respuesta de llamada deshecha</string>
+
     <!-- Menu option to go to a settings page [CHAR_LIMIT=25] -->
     <string name="settings">Configuración</string>
 
