@@ -185,8 +185,8 @@
     <!-- UNDO action label on the call-reported Snackbar [CHAR_LIMIT=12] -->
     <string name="undo_action">DESHACER</string>
 
-    <!-- Toast shown when the user is returned to the call screen after tapping UNDO [CHAR_LIMIT=40] -->
-    <string name="not_reported_yet_toast">Aún no registrado</string>
+    <!-- Snackbar shown when the user is returned to the call screen after tapping UNDO [CHAR_LIMIT=40] -->
+    <string name="call_response_undone">Respuesta de llamada deshecha</string>
 
     <!-- Menu option to go to a settings page [CHAR_LIMIT=25] -->
     <string name="settings">Configuración</string>

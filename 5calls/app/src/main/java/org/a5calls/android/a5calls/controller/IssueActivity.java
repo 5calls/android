@@ -29,6 +29,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
@@ -728,6 +729,7 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
             snackbar.dismiss();
             cancelPendingCall();
         });
+        snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.colorAccentLight));
         snackbar.show();
         mPendingCallHandler.removeCallbacksAndMessages(null);
         mPendingCallHandler.postDelayed(() -> {
@@ -770,7 +772,7 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
         intent.putExtra(RepCallActivity.KEY_ADDRESS, mAddress);
         intent.putExtra(RepCallActivity.KEY_LOCATION_NAME, mLocationName);
         intent.putExtra(RepCallActivity.KEY_ACTIVE_CONTACT_INDEX, index);
-        intent.putExtra(RepCallActivity.EXTRA_SHOW_NOT_REPORTED_TOAST, true);
+        intent.putExtra(RepCallActivity.EXTRA_SHOW_UNDONE_MESSAGE, true);
         mRepCallLauncher.launch(intent);
     }
 

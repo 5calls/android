@@ -17,7 +17,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
@@ -67,7 +66,7 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
 
     public static final String EXTRA_PENDING_CONTACT_INDEX = "extra_pending_contact_index";
     public static final String EXTRA_PENDING_OUTCOME = "extra_pending_outcome";
-    public static final String EXTRA_SHOW_NOT_REPORTED_TOAST = "extra_show_not_reported_toast";
+    public static final String EXTRA_SHOW_UNDONE_MESSAGE = "extra_show_undone_message";
 
     private Issue mIssue;
     private int mActiveContactIndex;
@@ -110,8 +109,9 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
                 .getJsonController();
         api.registerScriptsRequestListener(this);
 
-        if (getIntent().getBooleanExtra(EXTRA_SHOW_NOT_REPORTED_TOAST, false)) {
-            Toast.makeText(this, R.string.not_reported_yet_toast, Toast.LENGTH_SHORT).show();
+        if (getIntent().getBooleanExtra(EXTRA_SHOW_UNDONE_MESSAGE, false)) {
+            Snackbar.make(binding.scrollView, R.string.call_response_undone,
+                    Snackbar.LENGTH_LONG).show();
         }
 
         // The markdown view gets focus unless we let the scrollview take it back.
