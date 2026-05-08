@@ -137,6 +137,14 @@
                 android:showDividers="middle"
                 />
 
+            <TextView
+                style="@style/repListItemStyle"
+                android:id="@+id/relevant_rep_text"
+                android:textColor="@color/colorPrimaryDark"
+                android:textStyle="bold"
+                android:textSize="@dimen/min_resizable_text_size"
+                />
+
             <RelativeLayout
                 android:id="@+id/no_calls_left"
                 style="@style/issueRelativeLayoutStyle"
