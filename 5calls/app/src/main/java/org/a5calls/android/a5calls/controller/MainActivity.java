@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     private IssuesAdapter mIssuesAdapter;
     private FiveCallsApi.IssuesRequestListener mIssuesRequestListener;
     private FiveCallsApi.ContactsRequestListener mContactsRequestListener;
-    private FiveCallsApi.CallRequestListener mReportListener;
+
     private OnBackPressedCallback mOnBackPressedCallback;
     private String mLocationName;
     private String mDistrictId;
@@ -97,7 +97,6 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     private boolean mIsDistrictSplit = false;
     private boolean mIsLowAccuracy = false;
     private boolean mShowLowAccuracyWarning = true;
-    private boolean mDonateIsOn = false;
     private FirebaseAuth mAuth = null;
     private int mCallCount = 0;
 
@@ -280,10 +279,6 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
 
         registerApiListener();
 
-        // Refresh the "donateOn" information. This doesn't change much so it's sufficient
-        // to do it just once in the activity's lifecycle.
-        AppSingleton.getInstance(getApplicationContext()).getJsonController().getReport();
-
         binding.swipeContainer.setColorSchemeResources(R.color.colorPrimary);
         binding.swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -307,7 +302,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         FiveCallsApi api = AppSingleton.getInstance(getApplicationContext()).getJsonController();
         api.unregisterIssuesRequestListener(mIssuesRequestListener);
         api.unregisterContactsRequestListener(mContactsRequestListener);
-        api.unregisterCallRequestListener(mReportListener);
+
         super.onDestroy();
     }
 
@@ -412,7 +407,6 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         issueIntent.putExtra(RepCallActivity.KEY_LOCATION_NAME, mLocationName);
         issueIntent.putExtra(IssueActivity.KEY_IS_DISTRICT_SPLIT, mIsDistrictSplit);
         issueIntent.putExtra(IssueActivity.KEY_IS_LOW_ACCURACY, mIsLowAccuracy);
-        issueIntent.putExtra(IssueActivity.KEY_DONATE_IS_ON, mDonateIsOn);
         DatabaseHelper dbHelper = AppSingleton.getInstance(getApplicationContext())
                 .getDatabaseHelper();
         issueIntent.putExtra(IssueActivity.KEY_IS_BOOKMARKED, dbHelper.isBookmarked(issue.id));
@@ -584,29 +578,10 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             }
         };
 
-        mReportListener = new FiveCallsApi.CallRequestListener() {
-            @Override
-            public void onRequestError() {
-            }
-
-            @Override
-            public void onJsonError() {
-            }
-
-            @Override
-            public void onReportReceived(int count, boolean donateOn) {
-                mDonateIsOn = donateOn;
-            }
-
-            @Override
-            public void onCallReported() {
-            }
-        };
-
         FiveCallsApi api = AppSingleton.getInstance(getApplicationContext()).getJsonController();
         api.registerIssuesRequestListener(mIssuesRequestListener);
         api.registerContactsRequestListener(mContactsRequestListener);
-        api.registerCallRequestListener(mReportListener);
+
     }
 
     // Registers a callback that handles back presses. This should be active

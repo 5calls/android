@@ -39,31 +39,12 @@
         style="@style/doneCardParagraph"
         android:text="@string/done_description2"
         />
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
-        <TextView
-            style="@style/doneSectionCallout"
-            android:text="@string/done_share_prompt"
-            android:layout_toStartOf="@+id/share_btn"
-            />
-        <Button
-            android:id="@id/share_btn"
-            style="@style/doneButtonStyle"
-            android:text="@string/menu_share"
-            />
-    </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:id="@+id/donate_section"
         >
-        <TextView
-            style="@style/doneCardParagraph"
-            android:text="@string/done_donate_description"
-            />
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -79,7 +60,32 @@
                 style="@style/doneButtonStyle"
                 />
         </RelativeLayout>
+        <TextView
+            style="@style/doneCardParagraph"
+            android:text="@string/done_donate_description"
+            />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/actions_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <TextView
+            style="@style/doneSectionCallout"
+            android:text="@string/done_share_prompt"
+            android:layout_toStartOf="@+id/share_btn"
+            />
+        <Button
+            android:id="@id/share_btn"
+            style="@style/doneButtonStyle"
+            android:text="@string/menu_share"
+            />
+    </RelativeLayout>
 
 </LinearLayout>
