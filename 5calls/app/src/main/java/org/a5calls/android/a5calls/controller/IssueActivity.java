@@ -573,7 +573,8 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
         binding.repList.removeAllViews();
         binding.relevantRepText.setVisibility(mIssue.contacts.isEmpty() ? View.GONE : View.VISIBLE);
         binding.relevantRepText.setText(
-                getResources().getString(R.string.relevant_reps,
+                getResources().getString(
+                        mIssue.contacts.size() == 1 ? R.string.relevant_rep : R.string.relevant_reps,
                 IssuesAdapter.areasToCallsOverviewString(this, mIssue.contactAreas)));
         boolean allCalled = true;
         DatabaseHelper dbHelper = AppSingleton.getInstance(this).getDatabaseHelper();

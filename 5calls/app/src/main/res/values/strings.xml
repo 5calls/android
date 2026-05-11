@@ -57,6 +57,10 @@
     <!-- Message to the user when no location is set, prompting them to set a location. [CHAR_LIMIT=NONE] -->
     <string name="error_no_location_set">Set your location to find your representatives.</string>
 
+    <!-- Informs the user of the contacts that is relevant to a particular issue CHAR_LIMIT=100] -->
+    <string name="relevant_rep">Relevant contact: <xliff:g id="contact">%1$s</xliff:g></string>
+
+    <!-- Informs the user of the list of contacts that are relevant to a particular issue CHAR_LIMIT=100] -->
     <string name="relevant_reps">Relevant contacts: <xliff:g id="contacts_list">%1$s</xliff:g></string>
 
     <!-- Menu option to go to the About 5 Calls screen [CHAR_LIMIT=25] -->
