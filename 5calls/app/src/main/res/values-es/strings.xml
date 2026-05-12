@@ -54,6 +54,12 @@
     <!-- Message to the user that no calls are left on a particular issue [CHAR_LIMIT=NONE] -->
     <string name="no_location_set">No hay contactos disponibles</string>
 
+    <!-- Informs the user of the contacts that is relevant to a particular issue CHAR_LIMIT=100] -->
+    <string name="relevant_rep">Contacto relevante: <xliff:g id="contact">%1$s</xliff:g></string>
+
+    <!-- Informs the user of the list of contacts that are relevant to a particular issue CHAR_LIMIT=100] -->
+    <string name="relevant_reps">Contactos relevantes: <xliff:g id="contacts_list">%1$s</xliff:g></string>
+
     <!-- Message to the user when no location is set, prompting them to set a location. [CHAR_LIMIT=NONE] -->
     <string name="error_no_location_set">Establece tu ubicación para encontrar a tus representantes.</string>
 

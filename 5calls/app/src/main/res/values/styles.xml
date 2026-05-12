@@ -380,14 +380,17 @@
         <item name="android:layout_marginStart">@dimen/margin_top4</item>
     </style>
 
-    <style name="repListRelativeStyle" parent="BaseContainer">
-        <item name="android:layout_height">@dimen/load_more_height</item>
-        <item name="android:minHeight">@dimen/accessibility_min_size</item>
+    <style name="repListItemStyle" parent="BaseContainer">
         <item name="android:paddingBottom">@dimen/rep_list_dimens</item>
         <item name="android:paddingTop">@dimen/rep_list_dimens</item>
         <item name="android:paddingStart">@dimen/rep_list_dimens_left_right</item>
         <item name="android:paddingEnd">@dimen/rep_list_dimens_left_right</item>
         <item name="android:background">@color/issue_background_color</item>
+    </style>
+
+    <style name="repListRelativeStyle" parent="repListItemStyle">
+        <item name="android:layout_height">@dimen/load_more_height</item>
+        <item name="android:minHeight">@dimen/accessibility_min_size</item>
         <item name="android:foreground">?android:attr/selectableItemBackground</item>
     </style>
 
