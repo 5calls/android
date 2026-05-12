@@ -33,6 +33,7 @@ public class Issue implements Parcelable {
     public Category[] categories;
     public boolean isSplit;
     public IssueStats stats;
+    public List<Action> actions;
     public boolean isPlaceholder = false;
     
     public List<CustomizedContactScript> customizedScripts;
@@ -54,6 +55,7 @@ public class Issue implements Parcelable {
         issue.categories = new Category[0];
 
         issue.stats = new IssueStats(0);
+        issue.actions = Collections.emptyList();
         issue.isPlaceholder = true;
         return issue;
     }
@@ -83,6 +85,7 @@ public class Issue implements Parcelable {
         outcomeModels = in.createTypedArrayList(Outcome.CREATOR);
         categories = in.createTypedArray(Category.CREATOR);
         stats = IssueStats.CREATOR.createFromParcel(in);
+        actions = in.createTypedArrayList(Action.CREATOR);
         customizedScripts = in.createTypedArrayList(CustomizedContactScript.CREATOR);
         isPlaceholder = in.readInt() != 0;
     }
@@ -123,6 +126,7 @@ public class Issue implements Parcelable {
         dest.writeTypedList(outcomeModels);
         dest.writeTypedArray(categories, PARCELABLE_WRITE_RETURN_VALUE);
         stats.writeToParcel(dest, flags);
+        dest.writeTypedList(actions);
         dest.writeTypedList(customizedScripts);
         dest.writeInt(isPlaceholder ? 1 : 0);
     }

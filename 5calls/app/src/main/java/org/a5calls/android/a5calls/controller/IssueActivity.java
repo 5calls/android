@@ -14,7 +14,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
@@ -50,6 +52,7 @@ import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.adapter.IssuesAdapter;
 import org.a5calls.android.a5calls.databinding.ActivityIssueBinding;
 import org.a5calls.android.a5calls.model.AccountManager;
+import org.a5calls.android.a5calls.model.Action;
 import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.CustomizedContactScript;
 import org.a5calls.android.a5calls.model.DatabaseHelper;
@@ -75,7 +78,6 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
     public static final String KEY_ISSUE = "key_issue";
     public static final String KEY_IS_DISTRICT_SPLIT = "key_is_district_split";
     public static final String KEY_IS_LOW_ACCURACY = "key_is_low_accuracy";
-    public static final String KEY_DONATE_IS_ON = "key_donate_is_on";
     public static final String KEY_IS_BOOKMARKED = "key_is_bookmarked";
 
     public static final int RESULT_OK = 1;
@@ -96,7 +98,6 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
     private boolean mIsDistrictSplit = false;
     // low accuracy locations are zip codes or city names, we warn on state reps if you are using one
     private boolean mIsLowAccuracy = false;
-    private boolean mDonateIsOn = false;
     private boolean mIsBookmarked = false;
     private boolean mIsAnimating = false;
 
@@ -185,7 +186,6 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
         mAddress = getIntent().getStringExtra(RepCallActivity.KEY_ADDRESS);
         mIsDistrictSplit = getIntent().getBooleanExtra(KEY_IS_DISTRICT_SPLIT, false);
         mIsLowAccuracy = getIntent().getBooleanExtra(KEY_IS_LOW_ACCURACY, false);
-        mDonateIsOn = getIntent().getBooleanExtra(KEY_DONATE_IS_ON, false);
         mIsBookmarked = getIntent().getBooleanExtra(KEY_IS_BOOKMARKED, false);
         mLocationName = getIntent().getStringExtra(RepCallActivity.KEY_LOCATION_NAME);
 
@@ -558,10 +558,10 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
                 R.string.share_chooser_title)));
     }
 
-    private void launchDonate() {
+    private void launchDonate(String callerId) {
         // Could send analytics on donate event.
 
-        String donateUrl = DONATE_URL + AccountManager.Instance.getCallerID(this);
+        String donateUrl = DONATE_URL + callerId;
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(donateUrl)));
     }
 
@@ -687,12 +687,42 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
                 String.format(Locale.getDefault(), "%,d", mIssue.stats.calls));
 
         findViewById(R.id.share_btn).setOnClickListener(v -> sendShare(false));
-
-        if (mDonateIsOn) {
-            findViewById(R.id.donate_section).setVisibility(View.VISIBLE);
-            findViewById(R.id.donate_btn).setOnClickListener(v -> launchDonate());
-        } else {
-            findViewById(R.id.donate_section).setVisibility(View.GONE);
+        findViewById(R.id.donate_section).setVisibility(View.GONE);
+        LinearLayout actionsContainer = findViewById(R.id.actions_container);
+        actionsContainer.removeAllViews();
+        if (mIssue.actions == null) {
+            return;
+        }
+        String callerId = AccountManager.Instance.getCallerID(getApplicationContext());
+        for (Action action : mIssue.actions) {
+            if (TextUtils.equals(action.type, Action.TYPE_DONATE)) {
+                // Assume there's only ever one donate section.
+                findViewById(R.id.donate_section).setVisibility(View.VISIBLE);
+                findViewById(R.id.donate_btn).setOnClickListener(v -> launchDonate(callerId));
+            } else if (TextUtils.equals(action.type, Action.TYPE_FREEFORM)) {
+                View freeformView = LayoutInflater.from(this).inflate(
+                        R.layout.issue_done_freeform_section, actionsContainer, false);
+                TextView title = freeformView.findViewById(R.id.freeform_title);
+                TextView body = freeformView.findViewById(R.id.freeform_body);
+                Button button = freeformView.findViewById(R.id.freeform_button);
+                title.setText(action.title);
+                MarkdownUtil.setUpScript(body, action.body, getApplicationContext());
+                if (TextUtils.isEmpty(action.buttonText) || TextUtils.isEmpty(action.buttonURL)) {
+                    button.setVisibility(View.GONE);
+                } else {
+                    button.setText(action.buttonText);
+                    button.setOnClickListener(v -> {
+                        if (!TextUtils.isEmpty(action.buttonURL)) {
+                            String url = action.buttonURL.replace("%cid%", callerId);
+                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                        }
+                    });
+                }
+                actionsContainer.addView(freeformView);
+            } else {
+                // Unhandled action type.
+                android.util.Log.w("IssueActivity", "Unknown issue action type " + action.type);
+            }
         }
     }
 

@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @RunWith(AndroidJUnit4.class)
@@ -42,6 +43,16 @@ public class IssueTest {
     @Test
     public void testParcelable() {
         ArrayList<Issue> issues = getTestIssues();
+        
+        // Add an action to the first issue to test parceling of actions
+        Action action = new Action();
+        action.type = Action.TYPE_FREEFORM;
+        action.title = "Test Action";
+        action.body = "Test Body";
+        action.buttonText = "Test Button";
+        action.buttonURL = "http://test.com";
+        issues.get(0).actions = Collections.singletonList(action);
+
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList("key", issues);
         ArrayList<Issue> reconstructedIssues = bundle.getParcelableArrayList("key");
@@ -63,7 +74,43 @@ public class IssueTest {
             assertEquals(expected.outcomeModels, actual.outcomeModels);
             assertArrayEquals(expected.categories, actual.categories);
             assertEquals(expected.customizedScripts, actual.customizedScripts);
+            if (expected.actions == null) {
+                assertNull(actual.actions);
+            } else {
+                assertNotNull(actual.actions);
+                assertEquals(expected.actions.size(), actual.actions.size());
+                for (int j = 0; j < expected.actions.size(); j++) {
+                    Action expectedAction = expected.actions.get(j);
+                    Action actualAction = actual.actions.get(j);
+                    assertEquals(expectedAction.type, actualAction.type);
+                    assertEquals(expectedAction.title, actualAction.title);
+                    assertEquals(expectedAction.body, actualAction.body);
+                    assertEquals(expectedAction.buttonText, actualAction.buttonText);
+                    assertEquals(expectedAction.buttonURL, actualAction.buttonURL);
+                }
+            }
         }
+    }
+
+    @Test
+    public void testReadActionsFromJSON() {
+        String json = "{\"id\":123,\"name\":\"Issue with Action\",\"actions\":[{" +
+                "\"type\":\"freeform\"," +
+                "\"title\":\"Participate in a survey?\"," +
+                "\"body\":\"Would you like to participate in a survey?\"," +
+                "\"buttonText\":\"Sign up\"," +
+                "\"buttonURL\":\"https://example.com\"" +
+                "}]}";
+        Gson gson = new GsonBuilder().serializeNulls().create();
+        Issue issue = gson.fromJson(json, Issue.class);
+        assertNotNull(issue.actions);
+        assertEquals(1, issue.actions.size());
+        Action action = issue.actions.get(0);
+        assertEquals("freeform", action.type);
+        assertEquals("Participate in a survey?", action.title);
+        assertEquals("Would you like to participate in a survey?", action.body);
+        assertEquals("Sign up", action.buttonText);
+        assertEquals("https://example.com", action.buttonURL);
     }
 
     private ArrayList<Issue> getTestIssues() {
