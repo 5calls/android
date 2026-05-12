@@ -690,8 +690,10 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
         findViewById(R.id.donate_section).setVisibility(View.GONE);
         LinearLayout actionsContainer = findViewById(R.id.actions_container);
         actionsContainer.removeAllViews();
+        if (mIssue.actions == null) {
+            return;
+        }
         String callerId = AccountManager.Instance.getCallerID(getApplicationContext());
-
         for (Action action : mIssue.actions) {
             if (TextUtils.equals(action.type, Action.TYPE_DONATE)) {
                 // Assume there's only ever one donate section.
