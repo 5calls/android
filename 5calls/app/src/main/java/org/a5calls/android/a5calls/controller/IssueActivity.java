@@ -1,5 +1,6 @@
 package org.a5calls.android.a5calls.controller;
 
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -11,12 +12,15 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
@@ -41,6 +45,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.play.core.review.ReviewInfo;
 import com.google.android.play.core.review.ReviewManager;
@@ -730,12 +735,54 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
             cancelPendingCall();
         });
         snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.colorAccentLight));
+        addUndoCountdownIndicator(snackbar);
         snackbar.show();
         mPendingCallHandler.removeCallbacksAndMessages(null);
         mPendingCallHandler.postDelayed(() -> {
             snackbar.dismiss();
             commitPendingCall();
         }, PENDING_CALL_DELAY_MS);
+    }
+
+    private void addUndoCountdownIndicator(Snackbar snackbar) {
+        View actionView = snackbar.getView().findViewById(
+                com.google.android.material.R.id.snackbar_action);
+        if (actionView == null || !(actionView.getParent() instanceof LinearLayout)) {
+            return;
+        }
+        LinearLayout contentRow = (LinearLayout) actionView.getParent();
+
+        float density = getResources().getDisplayMetrics().density;
+        int sizePx = Math.round(20 * density);
+        int marginPx = Math.round(8 * density);
+        int trackThicknessPx = Math.round(2 * density);
+
+        CircularProgressIndicator indicator = new CircularProgressIndicator(this);
+        indicator.setIndicatorSize(sizePx);
+        indicator.setTrackThickness(trackThicknessPx);
+        indicator.setIndeterminate(false);
+        indicator.setMax(100);
+        indicator.setProgressCompat(100, false);
+        indicator.setIndicatorColor(
+                ContextCompat.getColor(this, R.color.colorAccentLight));
+
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(sizePx, sizePx);
+        lp.gravity = Gravity.CENTER_VERTICAL;
+        lp.setMarginEnd(marginPx);
+        contentRow.addView(indicator, contentRow.indexOfChild(actionView), lp);
+
+        ValueAnimator animator = ValueAnimator.ofInt(100, 0);
+        animator.setDuration(PENDING_CALL_DELAY_MS);
+        animator.setInterpolator(new LinearInterpolator());
+        animator.addUpdateListener(a ->
+                indicator.setProgressCompat((int) a.getAnimatedValue(), false));
+        snackbar.addCallback(new Snackbar.Callback() {
+            @Override
+            public void onDismissed(Snackbar bar, int event) {
+                animator.cancel();
+            }
+        });
+        animator.start();
     }
 
     private void commitPendingCall() {
