@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./gradlew :app:compileDebugJavaWithJavac)",
+      "Bash(./gradlew :app:testDebugUnitTest --tests \"org.a5calls.android.a5calls.controller.IssueActivityUnitTest\")",
+      "Bash(java -version)",
+      "Bash(./gradlew --version)",
+      "Bash(/usr/libexec/java_home -V)",
+      "Bash(JAVA_HOME=/Users/scottpeterson/Library/Java/JavaVirtualMachines/jbr-17.0.14/Contents/Home ./gradlew :app:testDebugUnitTest --tests \"org.a5calls.android.a5calls.controller.IssueActivityUnitTest\")",
+      "Read(//Users/scottpeterson/.sdkman/candidates/**)",
+      "Bash(brew list *)",
+      "Bash(brew *)",
+      "Read(//opt/homebrew/Cellar/openjdk@21/21.0.11/libexec/openjdk.jdk/Contents/Home/bin/**)",
+      "Bash(/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin/java -version)",
+      "Bash(JAVA_HOME=/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home ./gradlew :app:testDebugUnitTest --tests \"org.a5calls.android.a5calls.controller.IssueActivityUnitTest\")",
+      "Bash(JAVA_HOME=/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home ./gradlew :app:testDebugUnitTest)"
+    ]
+  }
+}

@@ -704,7 +704,6 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
                 public void onClick(View view) {
                     Intent intent = new Intent(getApplicationContext(), RepCallActivity.class);
                     intent.putExtra(KEY_ISSUE, mIssue);
-                    intent.putExtra(RepCallActivity.KEY_ADDRESS, mAddress);
                     intent.putExtra(RepCallActivity.KEY_LOCATION_NAME, mLocationName);
                     intent.putExtra(RepCallActivity.KEY_ACTIVE_CONTACT_INDEX, index);
                     mRepCallLauncher.launch(intent);
@@ -727,11 +726,7 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
             mPendingOutcome = null;
             return;
         }
-        String outcomeLabel = capitalizeFirst(
-                Outcome.getDisplayString(this, mPendingOutcome.status));
-        String contactName = mIssue.contacts.get(mPendingContactIndex).name;
-        String message = getResources().getString(
-                R.string.call_reported_undo_format, outcomeLabel, contactName);
+        String message = buildUndoSnackbarMessage(this, mPendingOutcome.status);
         final Snackbar snackbar = Snackbar.make(getWindow().getDecorView(), message,
                 Snackbar.LENGTH_INDEFINITE);
         snackbar.setAction(R.string.undo_action, v -> {
@@ -790,6 +785,7 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
     }
 
     private void commitPendingCall() {
+        mPendingCallHandler.removeCallbacksAndMessages(null);
         if (mPendingContactIndex == null || mPendingOutcome == null) {
             return;
         }
@@ -797,7 +793,6 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
         Outcome outcome = mPendingOutcome;
         mPendingContactIndex = null;
         mPendingOutcome = null;
-        mPendingCallHandler.removeCallbacksAndMessages(null);
         if (index < 0 || index >= mIssue.contacts.size()) {
             return;
         }
@@ -810,17 +805,16 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
     }
 
     private void cancelPendingCall() {
+        mPendingCallHandler.removeCallbacksAndMessages(null);
         if (mPendingContactIndex == null || mPendingOutcome == null) {
             return;
         }
         int index = mPendingContactIndex;
         mPendingContactIndex = null;
         mPendingOutcome = null;
-        mPendingCallHandler.removeCallbacksAndMessages(null);
         showContactsUi();
         Intent intent = new Intent(getApplicationContext(), RepCallActivity.class);
         intent.putExtra(KEY_ISSUE, mIssue);
-        intent.putExtra(RepCallActivity.KEY_ADDRESS, mAddress);
         intent.putExtra(RepCallActivity.KEY_LOCATION_NAME, mLocationName);
         intent.putExtra(RepCallActivity.KEY_ACTIVE_CONTACT_INDEX, index);
         intent.putExtra(RepCallActivity.EXTRA_SHOW_UNDONE_MESSAGE, true);
@@ -833,11 +827,19 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
                 Snackbar.LENGTH_LONG).show();
     }
 
-    private static String capitalizeFirst(String s) {
+    @VisibleForTesting
+    static String capitalizeFirst(String s) {
         if (s == null || s.isEmpty()) {
             return s;
         }
         return Character.toUpperCase(s.charAt(0)) + s.substring(1);
+    }
+
+    @VisibleForTesting
+    static String buildUndoSnackbarMessage(Context context, Outcome.Status status) {
+        String outcomeLabel = capitalizeFirst(Outcome.getDisplayString(context, status));
+        return context.getResources().getString(
+                R.string.call_reported_undo_format, outcomeLabel);
     }
 
     private void maybeShowIssueDone() {
