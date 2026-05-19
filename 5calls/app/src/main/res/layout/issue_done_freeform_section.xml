@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@id/freeform_button"
+            style="@style/doneButtonStyle"
+            android:text="@string/done_donate_button" />
+
+        <TextView
+            android:id="@+id/freeform_title"
+            style="@style/doneSectionCallout"
+            android:layout_toStartOf="@+id/freeform_button"
+            android:text="@string/done_donate_prompt" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/freeform_body"
+        style="@style/doneCardParagraph"
+        android:text="@string/done_donate_description" />
+
+</LinearLayout>

@@ -265,15 +265,20 @@ public class TutorialActivity extends AppCompatActivity {
 
             rootView.findViewById(R.id.btn_back).setOnClickListener(v ->
                     ((TutorialActivity) getActivity()).onPreviousPagePressed());
+            Intent originalIntent = getActivity().getIntent();
             rootView.findViewById(R.id.get_started_btn).setOnClickListener(
                     v -> {
                         // Set that the user has seen info about reminders.
                         AccountManager.Instance.setRemindersInfoShown(getActivity(), true);
 
-                        // Return to the main activity
+                        // Go to the location activity with any data that was passed in.
                         AccountManager.Instance.setTutorialSeen(getActivity(), true);
                         Intent intent = new Intent(getActivity(), LocationActivity.class);
                         intent.putExtra(LocationActivity.ALLOW_HOME_UP_KEY, false);
+                        if (originalIntent.getExtras() != null) {
+                            intent.putExtras(originalIntent.getExtras());
+                        }
+                        intent.setData(originalIntent.getData());
                         startActivity(intent);
                         getActivity().finish();
                     });

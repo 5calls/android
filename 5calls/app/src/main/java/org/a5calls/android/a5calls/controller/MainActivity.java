@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     private IssuesAdapter mIssuesAdapter;
     private FiveCallsApi.IssuesRequestListener mIssuesRequestListener;
     private FiveCallsApi.ContactsRequestListener mContactsRequestListener;
-    private FiveCallsApi.CallRequestListener mReportListener;
+
     private OnBackPressedCallback mOnBackPressedCallback;
     private String mLocationName;
     private String mDistrictId;
@@ -97,7 +97,6 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     private boolean mIsDistrictSplit = false;
     private boolean mIsLowAccuracy = false;
     private boolean mShowLowAccuracyWarning = true;
-    private boolean mDonateIsOn = false;
     private FirebaseAuth mAuth = null;
     private int mCallCount = 0;
 
@@ -119,15 +118,23 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             mAuth = null;
         }
 
+        Intent intent = getIntent();
+
         // See if we've had this user before. If not, start them at tutorial type page.
         if (!accountManager.isTutorialSeen(this)) {
-            Intent intent = new Intent(this, TutorialActivity.class);
-            startActivity(intent);
+            Intent tutorialIntent = new Intent(this, TutorialActivity.class);
+            // Copy all data from the original intent that opened MainActivity.
+            if (intent != null) {
+                if (intent.getExtras() != null) {
+                    tutorialIntent.putExtras(intent.getExtras());
+                }
+                tutorialIntent.setData(intent.getData());
+            }
+            startActivity(tutorialIntent);
             finish();
             return;
         }
 
-        Intent intent = getIntent();
         if (intent != null && intent.getExtras() != null &&
                 intent.getExtras().getBoolean(EXTRA_FROM_NOTIFICATION, false)) {
             FiveCallsApplication.analyticsManager().trackPageviewWithProps("/", this,
@@ -272,10 +279,6 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
 
         registerApiListener();
 
-        // Refresh the "donateOn" information. This doesn't change much so it's sufficient
-        // to do it just once in the activity's lifecycle.
-        AppSingleton.getInstance(getApplicationContext()).getJsonController().getReport();
-
         binding.swipeContainer.setColorSchemeResources(R.color.colorPrimary);
         binding.swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -299,7 +302,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         FiveCallsApi api = AppSingleton.getInstance(getApplicationContext()).getJsonController();
         api.unregisterIssuesRequestListener(mIssuesRequestListener);
         api.unregisterContactsRequestListener(mContactsRequestListener);
-        api.unregisterCallRequestListener(mReportListener);
+
         super.onDestroy();
     }
 
@@ -404,7 +407,6 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         issueIntent.putExtra(RepCallActivity.KEY_LOCATION_NAME, mLocationName);
         issueIntent.putExtra(IssueActivity.KEY_IS_DISTRICT_SPLIT, mIsDistrictSplit);
         issueIntent.putExtra(IssueActivity.KEY_IS_LOW_ACCURACY, mIsLowAccuracy);
-        issueIntent.putExtra(IssueActivity.KEY_DONATE_IS_ON, mDonateIsOn);
         DatabaseHelper dbHelper = AppSingleton.getInstance(getApplicationContext())
                 .getDatabaseHelper();
         issueIntent.putExtra(IssueActivity.KEY_IS_BOOKMARKED, dbHelper.isBookmarked(issue.id));
@@ -576,29 +578,10 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             }
         };
 
-        mReportListener = new FiveCallsApi.CallRequestListener() {
-            @Override
-            public void onRequestError() {
-            }
-
-            @Override
-            public void onJsonError() {
-            }
-
-            @Override
-            public void onReportReceived(int count, boolean donateOn) {
-                mDonateIsOn = donateOn;
-            }
-
-            @Override
-            public void onCallReported() {
-            }
-        };
-
         FiveCallsApi api = AppSingleton.getInstance(getApplicationContext()).getJsonController();
         api.registerIssuesRequestListener(mIssuesRequestListener);
         api.registerContactsRequestListener(mContactsRequestListener);
-        api.registerCallRequestListener(mReportListener);
+
     }
 
     // Registers a callback that handles back presses. This should be active
@@ -669,13 +652,22 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 android.graphics.Color.WHITE));
         // Constrain popup height to available space below the anchor.
         // Without this, WRAP_CONTENT can exceed available space, causing
-        // Android to reposition the popup above the anchor.
+        // Android to reposition the popup above the anchor. If the anchor
+        // is laid out at or below the visible frame (e.g. mid-animation,
+        // multi-window resize), fall back to WRAP_CONTENT to avoid passing
+        // a non-positive value to setHeight (issue #306). Also fall back
+        // when the space below is too small for a usable popup, so Android
+        // can reposition above the anchor instead of showing a sliver.
         {
             android.graphics.Rect vf = new android.graphics.Rect();
             binding.filter.getWindowVisibleDisplayFrame(vf);
             int[] loc = new int[2];
             binding.filter.getLocationOnScreen(loc);
-            popup.setHeight(vf.bottom - loc[1] - binding.filter.getHeight());
+            int available = vf.bottom - loc[1] - binding.filter.getHeight();
+            int minHeight = getResources().getDimensionPixelSize(R.dimen.filter_popup_min_height);
+            if (available >= minHeight) {
+                popup.setHeight(available);
+            }
         }
         popup.setOnItemClickListener((parent, view, position, id) -> {
             String newFilter = mFilterAdapter.getFilterText(position);
