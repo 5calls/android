@@ -652,13 +652,22 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 android.graphics.Color.WHITE));
         // Constrain popup height to available space below the anchor.
         // Without this, WRAP_CONTENT can exceed available space, causing
-        // Android to reposition the popup above the anchor.
+        // Android to reposition the popup above the anchor. If the anchor
+        // is laid out at or below the visible frame (e.g. mid-animation,
+        // multi-window resize), fall back to WRAP_CONTENT to avoid passing
+        // a non-positive value to setHeight (issue #306). Also fall back
+        // when the space below is too small for a usable popup, so Android
+        // can reposition above the anchor instead of showing a sliver.
         {
             android.graphics.Rect vf = new android.graphics.Rect();
             binding.filter.getWindowVisibleDisplayFrame(vf);
             int[] loc = new int[2];
             binding.filter.getLocationOnScreen(loc);
-            popup.setHeight(vf.bottom - loc[1] - binding.filter.getHeight());
+            int available = vf.bottom - loc[1] - binding.filter.getHeight();
+            int minHeight = getResources().getDimensionPixelSize(R.dimen.filter_popup_min_height);
+            if (available >= minHeight) {
+                popup.setHeight(available);
+            }
         }
         popup.setOnItemClickListener((parent, view, position, id) -> {
             String newFilter = mFilterAdapter.getFilterText(position);
