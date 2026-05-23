@@ -50,3 +50,6 @@ translations.csv
 
 # mac files
 .DS_Store
+
+# Claude Code local settings
+.claude/

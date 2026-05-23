@@ -751,10 +751,10 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
         }
         LinearLayout contentRow = (LinearLayout) actionView.getParent();
 
-        float density = getResources().getDisplayMetrics().density;
-        int sizePx = Math.round(20 * density);
-        int marginPx = Math.round(8 * density);
-        int trackThicknessPx = Math.round(2 * density);
+        int sizePx = getResources().getDimensionPixelSize(R.dimen.undo_indicator_size);
+        int marginPx = getResources().getDimensionPixelSize(R.dimen.undo_indicator_margin_end);
+        int trackThicknessPx =
+                getResources().getDimensionPixelSize(R.dimen.undo_indicator_track_thickness);
 
         CircularProgressIndicator indicator = new CircularProgressIndicator(this);
         indicator.setIndicatorSize(sizePx);

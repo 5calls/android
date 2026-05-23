@@ -220,7 +220,7 @@
     <string name="undo_action">UNDO</string>
 
     <!-- Snackbar shown when the user is returned to the call screen after tapping UNDO [CHAR_LIMIT=25] -->
-    <string name="call_response_undone">Not reported</string>
+    <string name="call_response_undone">Call report canceled</string>
 
     <!-- Menu option to go to a settings page [CHAR_LIMIT=25] -->
     <string name="settings">Settings</string>
