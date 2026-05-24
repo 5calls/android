@@ -1,19 +1,24 @@
 package org.a5calls.android.a5calls.controller;
 
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -29,6 +34,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
@@ -40,6 +46,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.play.core.review.ReviewInfo;
 import com.google.android.play.core.review.ReviewManager;
@@ -57,6 +64,7 @@ import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.CustomizedContactScript;
 import org.a5calls.android.a5calls.model.DatabaseHelper;
 import org.a5calls.android.a5calls.model.Issue;
+import org.a5calls.android.a5calls.model.Outcome;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
 import org.a5calls.android.a5calls.util.MarkdownUtil;
 import org.a5calls.android.a5calls.util.StateMapping;
@@ -87,9 +95,15 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
     private static final String DONATE_URL = "https://secure.actblue.com/donate/5calls-donate?refcode=android&refcode2=";
 
     private static final int MIN_CALLS_TO_SHOW_CALL_STATS = 10;
+    private static final long PENDING_CALL_DELAY_MS = 5000L;
 
     private boolean mShowServerError = false;
     private boolean mShowPlaceholderCalled = false;
+
+    private Integer mPendingContactIndex = null;
+    private Outcome mPendingOutcome = null;
+    private final Handler mPendingCallHandler = new Handler(Looper.getMainLooper());
+    private FiveCallsApi.CallRequestListener mCommitStatusListener;
 
     private Issue mIssue;
     private String mAddress;
@@ -117,6 +131,16 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
         mRepCallLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
+                    if (result.getResultCode() == RESULT_OK) {
+                        Intent data = result.getData();
+                        if (data != null
+                                && data.hasExtra(RepCallActivity.EXTRA_PENDING_OUTCOME)) {
+                            mPendingContactIndex = data.getIntExtra(
+                                    RepCallActivity.EXTRA_PENDING_CONTACT_INDEX, -1);
+                            mPendingOutcome = data.getParcelableExtra(
+                                    RepCallActivity.EXTRA_PENDING_OUTCOME);
+                        }
+                    }
                     if (result.getResultCode() == RESULT_SERVER_ERROR) {
                         mShowServerError = true;
                     }
@@ -126,6 +150,28 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
                 });
 
         FiveCallsApi api = AppSingleton.getInstance(this).getJsonController();
+        mCommitStatusListener = new FiveCallsApi.CallRequestListener() {
+            @Override
+            public void onRequestError() {
+                showServerErrorSnackbar();
+            }
+
+            @Override
+            public void onJsonError() {
+                showServerErrorSnackbar();
+            }
+
+            @Override
+            public void onReportReceived(int count, boolean donateOn) {
+                // unused
+            }
+
+            @Override
+            public void onCallReported() {
+                // unused — commit succeeded
+            }
+        };
+        api.registerCallRequestListener(mCommitStatusListener);
         mLocationLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -370,9 +416,7 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
     protected void onResume() {
         super.onResume();
         if (mShowServerError) {
-            Snackbar.make(getWindow().getDecorView(),
-                    getResources().getString(R.string.call_error_db_recorded_anyway),
-                    Snackbar.LENGTH_LONG).show();
+            showServerErrorSnackbar();
             mShowServerError = false;
         }
         if (mIssue.contactAreas.isEmpty()) {
@@ -385,6 +429,15 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
             AccountManager.Instance.setShowPlaceholderIssue(getApplicationContext(), false);
         }
         showContactsUi();
+        if (mPendingContactIndex != null && mPendingOutcome != null) {
+            showUndoSnackbar();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        commitPendingCall();
     }
 
     private void showContactsUi() {
@@ -582,7 +635,8 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
         for (int i = 0; i < mIssue.contacts.size(); i++) {
             Contact contact = mIssue.contacts.get(i);
             View repView = LayoutInflater.from(this).inflate(R.layout.rep_list_view, null);
-            boolean hasCalledToday = dbHelper.hasCalledToday(mIssue.id, contact.id);
+            boolean hasCalledToday = dbHelper.hasCalledToday(mIssue.id, contact.id)
+                    || isPendingForContact(i);
             populateRepView(repView, contact, i, hasCalledToday);
             binding.repList.addView(repView);
             if (!hasCalledToday && !contact.isPlaceholder) {
@@ -590,6 +644,10 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
             }
         }
         return allCalled && !mIssue.contacts.isEmpty();
+    }
+
+    private boolean isPendingForContact(int index) {
+        return mPendingContactIndex != null && mPendingContactIndex == index;
     }
 
     private void populateRepView(View repView, Contact contact, final int index,
@@ -646,7 +704,6 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
                 public void onClick(View view) {
                     Intent intent = new Intent(getApplicationContext(), RepCallActivity.class);
                     intent.putExtra(KEY_ISSUE, mIssue);
-                    intent.putExtra(RepCallActivity.KEY_ADDRESS, mAddress);
                     intent.putExtra(RepCallActivity.KEY_LOCATION_NAME, mLocationName);
                     intent.putExtra(RepCallActivity.KEY_ACTIVE_CONTACT_INDEX, index);
                     mRepCallLauncher.launch(intent);
@@ -660,6 +717,131 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
         }
     }
 
+    private void showUndoSnackbar() {
+        if (mPendingContactIndex == null || mPendingOutcome == null) {
+            return;
+        }
+        if (mPendingContactIndex < 0 || mPendingContactIndex >= mIssue.contacts.size()) {
+            mPendingContactIndex = null;
+            mPendingOutcome = null;
+            return;
+        }
+        String message = buildUndoSnackbarMessage(this, mPendingOutcome.status);
+        final Snackbar snackbar = Snackbar.make(getWindow().getDecorView(), message,
+                Snackbar.LENGTH_INDEFINITE);
+        snackbar.setAction(R.string.undo_action, v -> {
+            snackbar.dismiss();
+            cancelPendingCall();
+        });
+        snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.colorAccentLight));
+        addUndoCountdownIndicator(snackbar);
+        snackbar.show();
+        mPendingCallHandler.removeCallbacksAndMessages(null);
+        mPendingCallHandler.postDelayed(() -> {
+            snackbar.dismiss();
+            commitPendingCall();
+        }, PENDING_CALL_DELAY_MS);
+    }
+
+    private void addUndoCountdownIndicator(Snackbar snackbar) {
+        View actionView = snackbar.getView().findViewById(
+                com.google.android.material.R.id.snackbar_action);
+        if (actionView == null || !(actionView.getParent() instanceof LinearLayout)) {
+            return;
+        }
+        LinearLayout contentRow = (LinearLayout) actionView.getParent();
+
+        int sizePx = getResources().getDimensionPixelSize(R.dimen.undo_indicator_size);
+        int marginPx = getResources().getDimensionPixelSize(R.dimen.undo_indicator_margin_end);
+        int trackThicknessPx =
+                getResources().getDimensionPixelSize(R.dimen.undo_indicator_track_thickness);
+
+        CircularProgressIndicator indicator = new CircularProgressIndicator(this);
+        indicator.setIndicatorSize(sizePx);
+        indicator.setTrackThickness(trackThicknessPx);
+        indicator.setIndeterminate(false);
+        indicator.setMax(100);
+        indicator.setProgressCompat(100, false);
+        indicator.setIndicatorColor(
+                ContextCompat.getColor(this, R.color.colorAccentLight));
+
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(sizePx, sizePx);
+        lp.gravity = Gravity.CENTER_VERTICAL;
+        lp.setMarginEnd(marginPx);
+        contentRow.addView(indicator, contentRow.indexOfChild(actionView), lp);
+
+        ValueAnimator animator = ValueAnimator.ofInt(100, 0);
+        animator.setDuration(PENDING_CALL_DELAY_MS);
+        animator.setInterpolator(new LinearInterpolator());
+        animator.addUpdateListener(a ->
+                indicator.setProgressCompat((int) a.getAnimatedValue(), false));
+        snackbar.addCallback(new Snackbar.Callback() {
+            @Override
+            public void onDismissed(Snackbar bar, int event) {
+                animator.cancel();
+            }
+        });
+        animator.start();
+    }
+
+    private void commitPendingCall() {
+        mPendingCallHandler.removeCallbacksAndMessages(null);
+        if (mPendingContactIndex == null || mPendingOutcome == null) {
+            return;
+        }
+        int index = mPendingContactIndex;
+        Outcome outcome = mPendingOutcome;
+        mPendingContactIndex = null;
+        mPendingOutcome = null;
+        if (index < 0 || index >= mIssue.contacts.size()) {
+            return;
+        }
+        Contact contact = mIssue.contacts.get(index);
+        AppSingleton.getInstance(getApplicationContext()).getDatabaseHelper().addCall(
+                mIssue.id, mIssue.name, contact.id, contact.name,
+                outcome.status.toString(), mAddress);
+        AppSingleton.getInstance(getApplicationContext()).getJsonController().reportCall(
+                mIssue.id, contact.id, outcome.status);
+    }
+
+    private void cancelPendingCall() {
+        mPendingCallHandler.removeCallbacksAndMessages(null);
+        if (mPendingContactIndex == null || mPendingOutcome == null) {
+            return;
+        }
+        int index = mPendingContactIndex;
+        mPendingContactIndex = null;
+        mPendingOutcome = null;
+        showContactsUi();
+        Intent intent = new Intent(getApplicationContext(), RepCallActivity.class);
+        intent.putExtra(KEY_ISSUE, mIssue);
+        intent.putExtra(RepCallActivity.KEY_LOCATION_NAME, mLocationName);
+        intent.putExtra(RepCallActivity.KEY_ACTIVE_CONTACT_INDEX, index);
+        intent.putExtra(RepCallActivity.EXTRA_SHOW_UNDONE_MESSAGE, true);
+        mRepCallLauncher.launch(intent);
+    }
+
+    private void showServerErrorSnackbar() {
+        Snackbar.make(getWindow().getDecorView(),
+                getResources().getString(R.string.call_error_db_recorded_anyway),
+                Snackbar.LENGTH_LONG).show();
+    }
+
+    @VisibleForTesting
+    static String capitalizeFirst(String s) {
+        if (s == null || s.isEmpty()) {
+            return s;
+        }
+        return Character.toUpperCase(s.charAt(0)) + s.substring(1);
+    }
+
+    @VisibleForTesting
+    static String buildUndoSnackbarMessage(Context context, Outcome.Status status) {
+        String outcomeLabel = capitalizeFirst(Outcome.getDisplayString(context, status));
+        return context.getResources().getString(
+                R.string.call_reported_undo_format, outcomeLabel);
+    }
+
     private void maybeShowIssueDone() {
         if (mIssue.contacts.isEmpty()) {
             // Couldn't find any contacts.
@@ -668,12 +850,13 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
         }
         final DatabaseHelper dbHelper = AppSingleton.getInstance(this).getDatabaseHelper();
         int numPlaceholder = 0;
-        for (Contact contact : mIssue.contacts) {
+        for (int i = 0; i < mIssue.contacts.size(); i++) {
+            Contact contact = mIssue.contacts.get(i);
             if (contact.isPlaceholder) {
                 numPlaceholder++;
                 continue;
             }
-            if (!dbHelper.hasCalledToday(mIssue.id, contact.id)) {
+            if (!dbHelper.hasCalledToday(mIssue.id, contact.id) && !isPendingForContact(i)) {
                 binding.issueDone.getRoot().setVisibility(View.GONE);
                 return;
             }
@@ -842,8 +1025,10 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mPendingCallHandler.removeCallbacksAndMessages(null);
         FiveCallsApi api = AppSingleton.getInstance(this).getJsonController();
         api.unregisterScriptsRequestListener(this);
         api.unregisterContactsRequestListener(mContactsRequestListener);
+        api.unregisterCallRequestListener(mCommitStatusListener);
     }
 }

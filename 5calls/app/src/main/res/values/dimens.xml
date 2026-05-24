@@ -61,4 +61,8 @@
     <dimen name="state_indicator_margin_vertical">4dp</dimen>
     <dimen name="state_indicator_padding_horizontal">8dp</dimen>
     <dimen name="state_indicator_padding_vertical">2dp</dimen>
+
+    <dimen name="undo_indicator_size">20dp</dimen>
+    <dimen name="undo_indicator_margin_end">8dp</dimen>
+    <dimen name="undo_indicator_track_thickness">2dp</dimen>
 </resources>
