@@ -159,9 +159,8 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                             WindowInsetsCompat.Type.displayCutout());
             binding.appbar.setPadding(insets.left, insets.top, insets.right, 0);
             binding.issuesRecyclerView.setPadding(insets.left, 0, insets.right, insets.bottom);
-            binding.filterBar.setPadding(
-                    binding.filterBar.getPaddingStart() + insets.left, binding.filterBar.getPaddingTop(),
-                    binding.filterBar.getPaddingEnd() + insets.right, binding.filterBar.getPaddingBottom());
+            binding.filterBar.setPadding(insets.left, binding.filterBar.getPaddingTop(),
+                    insets.right, binding.filterBar.getPaddingBottom());
             binding.searchBar.setPadding(insets.left, 0, insets.right, 0);
             final int sidePadding = getResources().getDimensionPixelSize(
                     R.dimen.activity_horizontal_margin);
