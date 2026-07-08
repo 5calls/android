@@ -409,6 +409,9 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
     }
 
     private void updateScriptDisplay() {
+        if (mIssue.contacts.size() < mActiveContactIndex) {
+            return;
+        }
         Contact c = mIssue.contacts.get(mActiveContactIndex);
         String baseScript = mIssue.getScriptForContact(c.id);
         String script = ScriptReplacements.replacing(
