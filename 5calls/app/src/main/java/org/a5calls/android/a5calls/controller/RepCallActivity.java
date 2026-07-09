@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AlertDialog;
@@ -45,7 +46,7 @@ import org.a5calls.android.a5calls.model.DatabaseHelper;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.model.Outcome;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
-import org.a5calls.android.a5calls.util.AnalyticsManager;
+import org.a5calls.android.a5calls.util.ClickListenerMovementMethod;
 import org.a5calls.android.a5calls.util.MarkdownUtil;
 import org.a5calls.android.a5calls.util.ScriptReplacements;
 import org.a5calls.android.a5calls.view.GridItemDecoration;
@@ -63,6 +64,7 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
 
     public static final String KEY_ACTIVE_CONTACT_INDEX = "active_contact_index";
     private static final String KEY_LOCAL_OFFICES_EXPANDED = "local_offices_expanded";
+    public static final String KEY_LAST_CLICKED_PHONE = "last_clicked_phone";
 
     public static final String EXTRA_PENDING_CONTACT_INDEX = "extra_pending_contact_index";
     public static final String EXTRA_PENDING_OUTCOME = "extra_pending_outcome";
@@ -71,6 +73,7 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
     private Issue mIssue;
     private int mActiveContactIndex;
     private OutcomeAdapter outcomeAdapter;
+    private String mLastClickedPhoneNumber = "";
 
     private ActivityRepCallBinding binding;
 
@@ -124,6 +127,7 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
         if (savedInstanceState != null) {
             expandLocalOffices = savedInstanceState.getBoolean(KEY_LOCAL_OFFICES_EXPANDED,
                     false);
+            mLastClickedPhoneNumber = savedInstanceState.getString(KEY_LAST_CLICKED_PHONE);
         }
         setupContactUi(mActiveContactIndex, expandLocalOffices);
 
@@ -140,6 +144,8 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
             @Override
             public void onOutcomeClicked(Outcome outcome) {
                 if (!mIssue.isPlaceholder) {
+                    // Assume they called the last clicked phone number.
+                    outcome.phone = mLastClickedPhoneNumber;
                     reportEvent(outcome);
                     returnToIssueWithPendingCall(outcome);
                 } else {
@@ -169,9 +175,10 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(KEY_ISSUE, mIssue);
+        outState.putString(KEY_LAST_CLICKED_PHONE, mLastClickedPhoneNumber);
         outState.putBoolean(KEY_LOCAL_OFFICES_EXPANDED,
                 binding.fieldOfficeSection.getVisibility() == View.VISIBLE);
     }
@@ -393,6 +400,9 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
             Linkify.addLinks(textView, Patterns.PHONE, "tel:",
                     Linkify.sPhoneNumberMatchFilter,
                     Linkify.sPhoneNumberTransformFilter);
+            textView.setMovementMethod(new ClickListenerMovementMethod((String url) -> {
+                mLastClickedPhoneNumber = url;
+            }));
         } else {
             textView.setPaintFlags(textView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
             textView.setOnClickListener(v -> {

@@ -376,7 +376,7 @@ public class FiveCallsApiTest {
         TestCallListener testCallListener = new TestCallListener();
         mApi.registerCallRequestListener(testCallListener);
 
-        mApi.reportCall("myIssue", "myRep", Outcome.Status.UNAVAILABLE);
+        mApi.reportCall("myIssue", "myRep", Outcome.Status.UNAVAILABLE, "");
         waitForHttpRequestComplete();
 
         assertEquals(0, testCallListener.mCallReported);
@@ -447,7 +447,7 @@ public class FiveCallsApiTest {
         TestCallListener testCallListener = new TestCallListener();
         mApi.registerCallRequestListener(testCallListener);
 
-        mApi.reportCall("myIssue", "myRep", status);
+        mApi.reportCall("myIssue", "myRep", status, "867-5309");
         waitForHttpRequestComplete();
 
         assertEquals(1, testCallListener.mCallReported);
@@ -456,7 +456,8 @@ public class FiveCallsApiTest {
 
         assertEquals("https://api.5calls.org/v1/report", mHttpStack.getLastUrl());
         assertEquals(new String(mHttpStack.getLastPostBody()),
-                "result=" + outcomeString + "&issueid=myIssue&contactid=myRep&callerid=itMe&via=" +
+                "result=" + outcomeString +
+                        "&issueid=myIssue&contactid=myRep&phone=867-5309&callerid=itMe&via=" +
                         (FiveCallsApi.TESTING ? "test&" : "android&"));
 
         mApi.unregisterCallRequestListener(testCallListener);

@@ -407,22 +407,15 @@ public class FiveCallsApi {
         mRequestQueue.add(reportRequest);
     }
 
-    public void reportCall(final String issueId, final String contactId, final Outcome.Status result) {
+    public void reportCall(final String issueId, final String contactId,
+                           final Outcome.Status result, final String phone) {
         String getReport = GET_REPORT;
         StringRequest request = new StringRequest(Request.Method.POST, getReport,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        for (CallRequestListener listener : mCallRequestListeners) {
-                            listener.onCallReported();
-                        }
+                response -> {
+                    for (CallRequestListener listener : mCallRequestListeners) {
+                        listener.onCallReported();
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                onRequestError(error);
-            }
-        }) {
+                }, error -> onRequestError(error)) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
@@ -431,6 +424,9 @@ public class FiveCallsApi {
                 params.put("contactid", contactId);
                 params.put("via", (BuildConfig.DEBUG && TESTING) ? "test" : "android");
                 params.put("callerid", mCallerId);
+                if (!TextUtils.isEmpty(phone)) {
+                    params.put("phone", phone);
+                }
                 return params;
             }
 

@@ -15,6 +15,7 @@ public class Outcome implements Parcelable {
 
     public String label;
     public Status status;
+    public String phone = "";
 
     public Outcome(String label, Status status) {
         this.label = label;
@@ -28,6 +29,7 @@ public class Outcome implements Parcelable {
     protected Outcome(Parcel in) {
         label = in.readString();
         status = Status.fromString(in.readString());
+        phone = in.readString();
     }
 
     public static final Creator<Outcome> CREATOR = new Creator<Outcome>() {
@@ -51,6 +53,7 @@ public class Outcome implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(label);
         dest.writeString(status.toString());
+        dest.writeString(phone);
     }
 
     public enum Status {
