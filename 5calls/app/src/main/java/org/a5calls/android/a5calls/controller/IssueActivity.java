@@ -801,7 +801,7 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
                 mIssue.id, mIssue.name, contact.id, contact.name,
                 outcome.status.toString(), mAddress);
         AppSingleton.getInstance(getApplicationContext()).getJsonController().reportCall(
-                mIssue.id, contact.id, outcome.status);
+                mIssue.id, contact.id, outcome.status, outcome.phone);
     }
 
     private void cancelPendingCall() {
