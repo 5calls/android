@@ -82,6 +82,16 @@
             app:singleLineTitle="false"
             />
 
+        <SwitchPreference
+            android:key="prefsKeyEnableUndo"
+            android:title="@string/settings_undo_title"
+            android:defaultValue="true"
+            android:summary="@string/settings_undo_summary"
+            android:disableDependentsState="false"
+            app:iconSpaceReserved="false"
+            app:singleLineTitle="false"
+            />
+
     </PreferenceCategory>
 
     <PreferenceCategory

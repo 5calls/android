@@ -609,6 +609,12 @@
     <string name="script_text_size_large">Large</string>
     <string name="script_text_size_xlarge">Extra large</string>
 
+    <!-- Name of a setting to enable an "undo" button after making a call -->
+    <string name="settings_undo_title">Undo recording a call</string>
+
+    <!-- Description of a setting to enable an "undo" button after making a call -->
+    <string name="settings_undo_summary">Undo a call report within 5 seconds</string>
+
     <!-- Title for a dialog where users can pick their notification frequency [CHAR_LIMIT=100] -->
     <string name="notifications_dialog_title">Get alerts before your reps vote on important issues?</string>
 

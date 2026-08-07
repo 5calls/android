@@ -430,7 +430,11 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
         }
         showContactsUi();
         if (mPendingContactIndex != null && mPendingOutcome != null) {
-            showUndoSnackbar();
+            if (AccountManager.Instance.getEnableUndo(this)) {
+                showUndoSnackbar();
+            } else {
+                commitPendingCall();
+            }
         }
     }
 
