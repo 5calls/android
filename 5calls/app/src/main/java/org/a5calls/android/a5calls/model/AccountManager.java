@@ -44,6 +44,7 @@ public enum AccountManager {
     private static final String KEY_USER_DISTRICT = "prefsKeyUserDistrict";
     private static final String KEY_PLACEHOLDER_CALLED = "prefsKeyPlaceholderCalled";
     public static final String KEY_SHOW_PLACEHOLDER_CALLED = "prefsKeyShowPlaceholderIssue";
+    public static final String KEY_ENABLE_UNDO = "prefsKeyEnableUndo";
 
     // Default to 11 am.
     public static final int DEFAULT_REMINDER_MINUTES = 60 * 11;
@@ -247,6 +248,14 @@ public enum AccountManager {
 
     public boolean showPlaceholderIssue(Context context) {
         return getSharedPrefs(context).getBoolean(KEY_SHOW_PLACEHOLDER_CALLED, false);
+    }
+
+    public void setEnableUndo(Context context, boolean value) {
+        getSharedPrefs(context).edit().putBoolean(KEY_ENABLE_UNDO, value).apply();
+    }
+
+    public boolean getEnableUndo(Context context) {
+        return getSharedPrefs(context).getBoolean(KEY_ENABLE_UNDO, true);
     }
 
     private SharedPreferences getSharedPrefs(Context context) {

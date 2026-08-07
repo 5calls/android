@@ -503,6 +503,12 @@
     <string name="script_text_size_large">Grande</string>
     <string name="script_text_size_xlarge">Extra grande</string>
 
+    <!-- Name of a setting to enable an "undo" button after making a call -->
+    <string name="settings_undo_title">Deshacer la grabación de una llamada</string>
+
+    <!-- Description of a setting to enable an "undo" button after making a call -->
+    <string name="settings_undo_summary">Deshacer un reporte de llamada en 5 segundos</string>
+
     <!-- Title for a dialog where users can pick their notification frequency [CHAR_LIMIT=100] -->
     <string name="notifications_dialog_title">Recibir notificaciones de detemas nuevos</string>
 

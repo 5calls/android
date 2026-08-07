@@ -197,7 +197,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             Set<String> reminderDays = accountManager.getReminderDays(getActivity());
             MultiSelectListPreference daysPreference =
-                    (MultiSelectListPreference) findPreference(AccountManager.KEY_REMINDER_DAYS);
+                    findPreference(AccountManager.KEY_REMINDER_DAYS);
             daysPreference.setValues(reminderDays);
             updateReminderDaysSummary(daysPreference, reminderDays);
 
@@ -216,12 +216,16 @@ public class SettingsActivity extends AppCompatActivity {
 
             String notificationSetting = accountManager.getNotificationPreference(getActivity());
             ListPreference notificationPref =
-                    (ListPreference) findPreference(AccountManager.KEY_NOTIFICATIONS);
+                    findPreference(AccountManager.KEY_NOTIFICATIONS);
             notificationPref.setValue(notificationSetting);
 
             boolean showPlaceholderIssue = accountManager.showPlaceholderIssue(getActivity());
             ((SwitchPreference) findPreference(AccountManager.KEY_SHOW_PLACEHOLDER_CALLED))
                     .setChecked(showPlaceholderIssue);
+
+            boolean enableUndo = accountManager.getEnableUndo((getActivity()));
+            ((SwitchPreference) findPreference(AccountManager.KEY_ENABLE_UNDO))
+                    .setChecked(enableUndo);
         }
 
         @Override
@@ -257,12 +261,11 @@ public class SettingsActivity extends AppCompatActivity {
                     // so we don't need to prompt
                     accountManager.setAllowReminders(getActivity(), result);
                 }
-
             } else if (TextUtils.equals(key, AccountManager.KEY_REMINDER_DAYS)) {
                 Set<String> result = sharedPreferences.getStringSet(key,
                         AccountManager.DEFAULT_REMINDER_DAYS);
                 accountManager.setReminderDays(getActivity(), result);
-                updateReminderDaysSummary((MultiSelectListPreference) findPreference(
+                updateReminderDaysSummary(findPreference(
                         AccountManager.KEY_REMINDER_DAYS), result);
             } else if (TextUtils.equals(key, AccountManager.KEY_NOTIFICATIONS)) {
                 String result = sharedPreferences.getString(key,
@@ -277,12 +280,15 @@ public class SettingsActivity extends AppCompatActivity {
                 } else {
                     AccountManager.Instance.setUserName(getActivity(), null);
                 }
-            } else if (TextUtils.equals(key, "prefsKeyScriptTextSize")) {
+            } else if (TextUtils.equals(key, AccountManager.KEY_SCRIPT_TEXT_SIZE_SP)) {
                 String value = sharedPreferences.getString(AccountManager.KEY_SCRIPT_TEXT_SIZE_SP, getString(R.string.script_text_size_normal_sp));
                 AccountManager.Instance.setScriptTextSize(getActivity(), Float.parseFloat(value));
             } else if (TextUtils.equals(key, AccountManager.KEY_SHOW_PLACEHOLDER_CALLED)) {
                 boolean result = sharedPreferences.getBoolean(key, false);
                 AccountManager.Instance.setShowPlaceholderIssue(getActivity(), result);
+            } else if (TextUtils.equals(key, AccountManager.KEY_ENABLE_UNDO)) {
+                boolean result = sharedPreferences.getBoolean(key, true);
+                AccountManager.Instance.setEnableUndo(getActivity(), result);
             }
         }
 
@@ -294,7 +300,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         private void updateReminderDaysSummary(MultiSelectListPreference daysPreference,
                                                Set<String> savedValues) {
-            if (savedValues == null || savedValues.size() == 0) {
+            if (savedValues == null || savedValues.isEmpty()) {
                 daysPreference.setSummary(getActivity().getResources().getString(
                         R.string.no_days_selected));
                 return;
