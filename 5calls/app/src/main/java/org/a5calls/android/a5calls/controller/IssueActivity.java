@@ -18,8 +18,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -731,8 +733,15 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
             return;
         }
         String message = buildUndoSnackbarMessage(this, mPendingOutcome.status);
-        final Snackbar snackbar = Snackbar.make(getWindow().getDecorView(), message,
+
+        final Snackbar snackbar = Snackbar.make(binding.coordinatorLayout, message,
                 Snackbar.LENGTH_INDEFINITE);
+        View snackbarView = snackbar.getView();
+        // Bring it to the front of the drawing stack
+        snackbarView.bringToFront();
+        // Force a high elevation so the bottom sheet's shadow/elevation doesn't cover it
+        snackbarView.setElevation(100f);
+
         snackbar.setAction(R.string.undo_action, v -> {
             snackbar.dismiss();
             cancelPendingCall();
