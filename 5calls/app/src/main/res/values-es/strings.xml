@@ -79,8 +79,8 @@
     <string name="about_p2">Tome 5 minutos, haga 5 llamadas.</string>
 
     <!-- Body of text on the About 5 Calls screen, describing the app.   n  n is used to start the next paragraph. [CHAR_LIMIT=NONE] -->
-    <string name="about_p3">5 Calls le conecta directamente con sus representantes a través de números de teléfono extraídos de sitios web públicos de la Administración, no representamos a ninguna entidad gubernamental específica, independientemente de su partido político..</string>
-
+    <string name="about_p3">5 Calls le conecta directamente con sus representantes a través de números de teléfono extraídos de sitios web públicos de la Administración.\n\n
+        5 Calls es una plataforma cívica independiente gestionada por una organización sin fines de lucro de tipo 501(c)(4). No estamos afiliados a ninguna entidad u organismo gubernamental oficial, ni contamos con su respaldo ni los representamos. Los guiones expresan claramente una postura progresista.</string>
     <!-- Button linking to a page about Why calling works [CHAR_LIMIT=30] -->
     <string name="why_calling_btn">por qué funciona llamar</string>
 

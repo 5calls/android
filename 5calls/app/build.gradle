@@ -11,7 +11,7 @@ android {
         minSdkVersion 23
         targetSdkVersion 36
         versionCode 85
-        versionName '2.4.5'
+        versionName '2.4.6'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         signingConfig signingConfigs.debug
     }

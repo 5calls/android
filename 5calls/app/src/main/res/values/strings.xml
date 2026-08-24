@@ -79,7 +79,8 @@
     <string name="about_p2">Spend 5 minutes, make 5 calls.</string>
 
     <!-- Body of text on the About 5 Calls screen, describing the app. \n\n is used to start the next paragraph. [CHAR_LIMIT=NONE] -->
-    <string name="about_p3">5 Calls connects you directly with your representatives via phone numbers sourced from public government websites, we do not represent any specific government entity, regardless of political party.</string>
+    <string name="about_p3">5 Calls connects you directly with your representatives via phone numbers sourced from public government websites.
+        \n\n5 Calls is an independent civic platform operated by a 501(c)(4) non-profit. We are not affiliated with, endorsed by, or representative of any official government entity or agency. Scripts clearly articulate a progressive position.</string>
 
     <!-- Button linking to a page about Why calling works [CHAR_LIMIT=30] -->
     <string name="why_calling_btn">why calling works</string>
