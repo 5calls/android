@@ -32,12 +32,14 @@ import org.a5calls.android.a5calls.FakeJSONData;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.DatabaseHelper;
+import org.a5calls.android.a5calls.test.RandomOrdering;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Test;
+import org.junit.runner.OrderWith;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
@@ -46,6 +48,7 @@ import java.util.ArrayList;
  * Integration test for MainActivity that tests the happy path.
  */
 @RunWith(AndroidJUnit4.class)
+@OrderWith(RandomOrdering.Factory.class)
 public class MainActivityHappyPathTest extends MainActivityBaseTest {
 
     // Custom matcher that matches only the first view matching the given matcher.
@@ -256,6 +259,9 @@ public class MainActivityHappyPathTest extends MainActivityBaseTest {
         onView(withText(R.string.demo_issue_name)).check(matches(isDisplayed()));
         // There should be a "1 call to make" note for the demo issue.
         onView(withText(R.string.call_count_today_one)).check(matches(isDisplayed()));
+
+        // Reset the database.
+        databaseHelper.getWritableDatabase().delete("UserCallsDatabase", null, null);
     }
 
     @Test
@@ -272,6 +278,9 @@ public class MainActivityHappyPathTest extends MainActivityBaseTest {
 
         // Verify that the demo issue is not displayed.
         onView(withText(R.string.demo_issue_name)).check(doesNotExist());
+
+        // Reset the database.
+        databaseHelper.getWritableDatabase().delete("UserCallsDatabase", null, null);
     }
 
     @Test
@@ -294,6 +303,10 @@ public class MainActivityHappyPathTest extends MainActivityBaseTest {
         onView(withText(R.string.demo_issue_name)).check(matches(isDisplayed()));
         onView(withText(R.string.demo_previous_call_stats_one)).check(doesNotExist());
         onView(withText(R.string.call_count_today_one)).check(matches(isDisplayed()));
+
+        // Reset the database.
+        databaseHelper.getWritableDatabase().delete("UserCallsDatabase", null, null);
+        AccountManager.Instance.setShowPlaceholderIssue(context, false);
     }
 
     @Test
@@ -312,6 +325,10 @@ public class MainActivityHappyPathTest extends MainActivityBaseTest {
         onView(withText(R.string.demo_issue_name)).check(matches(isDisplayed()));
         // The "one pretend previous call" is shown.
         onView(withText(R.string.demo_previous_call_stats_one)).check(matches(isDisplayed()));
+
+        // Reset state
+        AccountManager.Instance.setPlaceholderIssueCalled(context, false);
+        AccountManager.Instance.setShowPlaceholderIssue(context, false);
     }
 
 

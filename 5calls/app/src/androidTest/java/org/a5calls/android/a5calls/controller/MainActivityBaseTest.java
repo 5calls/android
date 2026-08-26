@@ -1,7 +1,6 @@
 package org.a5calls.android.a5calls.controller;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -12,7 +11,6 @@ import com.android.volley.toolbox.BasicNetwork;
 
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.model.AccountManager;
-import org.a5calls.android.a5calls.model.DatabaseHelper;
 import org.a5calls.android.a5calls.net.FakeRequestQueue;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
 import org.a5calls.android.a5calls.net.MockHttpStack;
@@ -50,18 +48,6 @@ public abstract class MainActivityBaseTest {
 
         // Create mock HTTP stack
         mHttpStack = new MockHttpStack();
-
-        // Clear all database tables
-        DatabaseHelper databaseHelper = AppSingleton.getInstance(context).getDatabaseHelper();
-        SQLiteDatabase db = databaseHelper.getWritableDatabase();
-        db.delete("UserCallsDatabase", null, null);
-        db.delete("UserIssuesTable", null, null);
-        db.delete("UserContactsTable", null, null);
-        db.delete("BookmarkedIssues", null, null);
-
-        // Reset placeholder issue state.
-        AccountManager.Instance.setPlaceholderIssueCalled(context, false);
-        AccountManager.Instance.setShowPlaceholderIssue(context, false);
     }
 
 
