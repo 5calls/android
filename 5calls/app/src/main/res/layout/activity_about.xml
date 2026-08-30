@@ -66,6 +66,23 @@
 
             <TextView
                 style="@style/aboutPrompt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/check_your_registration_prompt" />
+
+            <TextView
+                style="@style/paragraphTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/check_your_registration_description" />
+
+            <Button
+                android:id="@+id/check_registration_button"
+                style="@style/fullWidthBtnStyle"
+                android:text="@string/check_your_registration_button" />
+
+            <TextView
+                style="@style/aboutPrompt"
                 android:text="@string/general_prompt"
                 />
 

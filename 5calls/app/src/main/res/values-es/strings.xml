@@ -1,4 +1,4 @@
-<resources xmlns:xliff="http://schemas.android.com/tools">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" xmlns:tools="http://schemas.android.com/tools">
 
     <!-- The application name [CHAR_LIMIT=25] -->
     <string name="app_name">5 Calls</string>
@@ -171,7 +171,7 @@
     <string name="menu_stats">Su impacto</string>
 
     <!-- Header to the script used for calling [CHAR_LIMIT=NONE] -->
-    <string name="call_script_prompt">Su guión:</string>
+    <string name="call_script_prompt">Su guion:</string>
 
     <!-- Header to a section that says why the contact is someone you might call [CHAR_LIMIT=NONE] -->
     <string name="contact_reason_prompt">Por qué llama a esta oficina:</string>
@@ -262,7 +262,7 @@
     <string name="unknown_issue">Tema desconocido</string>
 
     <!-- Unknown location set [CHAR_LIMIT=50] -->
-    <string name="unknown_location">Ubicacion desconocida</string>
+    <string name="unknown_location">Ubicación desconocida</string>
 
     <!-- Label for a list of most contacted representatives [CHAR_LIMIT=100] -->
     <string name="top_contacts">Sus representantes más contactados son:</string>
@@ -727,5 +727,9 @@
 
     <!-- Description of a setting to show an example call in the calls list [CHAR_LIMIT=NONE]-->
     <string name="settings_reshow_demo_description">Muestra un ejemplo de un tema en la lista, con sugerencias sobre cómo utilizar 5 Calls.</string>
+
+    <string name="check_your_registration_prompt">Verifica tu registro</string>
+    <string name="check_your_registration_description">Deja una huella permanente. Verifica si estás registrado para votar o regístrate por primera vez. Vota en la próxima elección para asegurar que tu voz siga estando representada.</string>
+    <string name="check_your_registration_button">Verifica tu registro</string>
 
 </resources>
