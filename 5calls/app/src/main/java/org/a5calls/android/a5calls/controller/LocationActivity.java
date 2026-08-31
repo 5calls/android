@@ -5,7 +5,6 @@ import static org.a5calls.android.a5calls.controller.IssueActivity.KEY_IS_DISTRI
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -224,7 +223,10 @@ public class LocationActivity extends AppCompatActivity {
         }
 
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        String provider = locationManager.getBestProvider(new Criteria(), false);
+        String provider = LocationManager.NETWORK_PROVIDER;
+        if (!locationManager.isProviderEnabled(provider)) {
+            provider = LocationManager.GPS_PROVIDER;
+        }
         Location location = locationManager.getLastKnownLocation(provider);
 
         if (location == null) {
@@ -233,21 +235,6 @@ public class LocationActivity extends AppCompatActivity {
                 @Override
                 public void onLocationChanged(Location location) {
                     onReceiveLocation(location);
-                }
-
-                @Override
-                public void onStatusChanged(String provider, int status, Bundle extras) {
-
-                }
-
-                @Override
-                public void onProviderEnabled(String provider) {
-
-                }
-
-                @Override
-                public void onProviderDisabled(String provider) {
-
                 }
             };
             locationManager.requestLocationUpdates(provider, 10, 0, mLocationListener);

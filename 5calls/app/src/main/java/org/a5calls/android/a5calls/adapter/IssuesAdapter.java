@@ -3,6 +3,7 @@ package org.a5calls.android.a5calls.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -620,8 +621,8 @@ private static class EmptyRequestViewHolder extends RecyclerView.ViewHolder {
         refreshButton = (Button) itemView.findViewById(R.id.refresh_btn);
         // Tinting the compound drawable only works API 23+, so do this manually.
         refreshButton.getCompoundDrawablesRelative()[0].mutate().setColorFilter(
-                ContextCompat.getColor(itemView.getContext(), R.color.colorAccent),
-                PorterDuff.Mode.MULTIPLY);
+                new PorterDuffColorFilter(ContextCompat.getColor(itemView.getContext(), R.color.colorAccent),
+                PorterDuff.Mode.MULTIPLY));
     }
 }
 
@@ -633,8 +634,8 @@ private static class EmptyAddressViewHolder extends RecyclerView.ViewHolder {
         locationButton = (Button) itemView.findViewById(R.id.location_btn);
         // Tinting the compound drawable only works API 23+, so do this manually.
         locationButton.getCompoundDrawablesRelative()[0].mutate().setColorFilter(
-                ContextCompat.getColor(itemView.getContext(), R.color.colorAccent),
-                PorterDuff.Mode.MULTIPLY);
+                new PorterDuffColorFilter(ContextCompat.getColor(itemView.getContext(), R.color.colorAccent),
+                PorterDuff.Mode.MULTIPLY));
     }
 }
 
@@ -646,8 +647,8 @@ private static class EmptySearchViewHolder extends RecyclerView.ViewHolder {
         searchButton = (Button) itemView.findViewById(R.id.search_btn);
         // Tinting the compound drawable only works API 23+, so do this manually.
         searchButton.getCompoundDrawablesRelative()[0].mutate().setColorFilter(
-                ContextCompat.getColor(itemView.getContext(), R.color.colorAccent),
-                PorterDuff.Mode.MULTIPLY);
+                new PorterDuffColorFilter(ContextCompat.getColor(itemView.getContext(), R.color.colorAccent),
+                PorterDuff.Mode.MULTIPLY));
     }
 }
 

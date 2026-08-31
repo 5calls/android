@@ -21,7 +21,7 @@ import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.FiveCallsApplication;
@@ -50,7 +50,7 @@ public class TutorialActivity extends AppCompatActivity {
 
         setContentView(binding.getRoot());
 
-        binding.viewPager.setAdapter(new TutorialPagerAdapter(getSupportFragmentManager()));
+        binding.viewPager.setAdapter(new TutorialPagerAdapter(this));
         ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, windowInsets) -> {
             Insets insets = windowInsets.getInsets(
                     WindowInsetsCompat.Type.systemBars() |
@@ -86,19 +86,19 @@ public class TutorialActivity extends AppCompatActivity {
         binding.viewPager.setCurrentItem(binding.viewPager.getCurrentItem() + 1);
     }
 
-    private class TutorialPagerAdapter extends FragmentPagerAdapter {
+    private class TutorialPagerAdapter extends FragmentStateAdapter {
 
-        public TutorialPagerAdapter(FragmentManager fragmentManager) {
-            super(fragmentManager);
+        public TutorialPagerAdapter(AppCompatActivity activity) {
+            super(activity);
         }
 
         @Override
-        public int getCount() {
+        public int getItemCount() {
             return 4;
         }
 
         @Override
-        public Fragment getItem(int position) {
+        public Fragment createFragment(int position) {
             if (position == 0) {
                 return FirstTutorialPageFragment.newInstance();
             } else if (position == 1) {
@@ -108,7 +108,7 @@ public class TutorialActivity extends AppCompatActivity {
             } else if (position == 3) {
                 return FourthTutorialPageFragment.newInstance();
             }
-            return null;
+            return new Fragment(); // Should not happen
         }
     }
 

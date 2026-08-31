@@ -115,11 +115,8 @@ public class FiveCallsApi {
     private final Context mContext;
 
     public FiveCallsApi(String callerId, RequestQueue requestQueue, Context context) {
-        // TODO: Using OkHttpClient and OkHttpStack cause failures on multiple types of Samsung
-        // Galaxy devices.
         mCallerId = callerId;
         mContext = context;
-        //mRequestQueue = Volley.newRequestQueue(context, new OkHttpStack(new OkHttpClient()));
         mRequestQueue = requestQueue;
         mGson = new GsonBuilder()
                 .serializeNulls()
