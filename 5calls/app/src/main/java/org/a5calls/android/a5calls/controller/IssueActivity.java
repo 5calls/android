@@ -638,7 +638,7 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
 
         for (int i = 0; i < mIssue.contacts.size(); i++) {
             Contact contact = mIssue.contacts.get(i);
-            View repView = LayoutInflater.from(this).inflate(R.layout.rep_list_view, null);
+            View repView = getLayoutInflater().inflate(R.layout.rep_list_view, null);
             boolean hasCalledToday = dbHelper.hasCalledToday(mIssue.id, contact.id)
                     || isPendingForContact(i);
             populateRepView(repView, contact, i, hasCalledToday);
@@ -899,7 +899,7 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
                 findViewById(R.id.donate_section).setVisibility(View.VISIBLE);
                 findViewById(R.id.donate_btn).setOnClickListener(v -> launchDonate(callerId));
             } else if (TextUtils.equals(action.type, Action.TYPE_FREEFORM)) {
-                View freeformView = LayoutInflater.from(this).inflate(
+                View freeformView = getLayoutInflater().inflate(
                         R.layout.issue_done_freeform_section, actionsContainer, false);
                 TextView title = freeformView.findViewById(R.id.freeform_title);
                 TextView body = freeformView.findViewById(R.id.freeform_body);

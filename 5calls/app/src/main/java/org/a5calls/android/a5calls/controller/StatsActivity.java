@@ -130,7 +130,7 @@ public class StatsActivity extends AppCompatActivity {
         // in the future.
         // TODO optimize this list creation
         List<Pair<String, Integer>> contactStats = db.getCallCountsByContact();
-        LayoutInflater inflater = LayoutInflater.from(this);
+        LayoutInflater inflater = getLayoutInflater();
         String callFormatString = getResources().getString(R.string.contact_call_stat);
         String callFormatStringOne = getResources().getString(R.string.contact_call_stat_one);
         int numContactsShown = 0;

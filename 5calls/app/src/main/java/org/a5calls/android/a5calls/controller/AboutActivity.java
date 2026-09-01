@@ -236,7 +236,7 @@ public class AboutActivity extends AppCompatActivity {
     // Inspired by https://www.bignerdranch.com/blog/open-source-licenses-and-android/
     private void showOpenSourceLicenses() {
         @SuppressLint("InflateParams")
-        WebView view = (WebView) LayoutInflater.from(this).inflate(R.layout.licence_view, null);
+        WebView view = (WebView) getLayoutInflater().inflate(R.layout.licence_view, null);
         view.loadUrl("file:///android_asset/licenses.html");
         new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.license_btn))

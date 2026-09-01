@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
@@ -161,7 +162,8 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public static ArrayList<Issue> filterIssuesBySearchText(String searchText, List<Issue> allIssues) {
         ArrayList<Issue> tempIssues = new ArrayList<>();
         // Should we .trim() the whitespace?
-        String lowerSearchText = searchText.toLowerCase();
+        // Issues appear to be all in English, so until Issues are multilingual, specifiy US locale
+        String lowerSearchText = searchText.toLowerCase(Locale.US);
 
         /*
          * When name and category fields are searched, String#contains is used.
@@ -225,7 +227,8 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     private static boolean containsIgnoreCase(String text, @NonNull String lowercaseSearchText) {
-        return !TextUtils.isEmpty(text) && text.toLowerCase().contains(lowercaseSearchText);
+        // Issues appear to be all in English, so until Issues are multilingual, specifiy US locale
+        return !TextUtils.isEmpty(text) && text.toLowerCase(Locale.US).contains(lowercaseSearchText);
     }
 
     private ArrayList<Issue> filterActiveIssues() {
