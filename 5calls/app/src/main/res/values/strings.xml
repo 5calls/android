@@ -839,6 +839,6 @@
     <string name="check_your_registration_button">Check your registration</string>
 
     <!-- URL for the 5 Calls Why Calling Works page [CHAR_LIMIT=NONE] -->
-    <string name="check_your_registration_url" translatable="false">https://www.feelgoodimpact.org/partners/5calls-verify?utm_source=partner&amp;utm_medium=**android**&amp;utm_campaign=5calls&amp;utm_term=verify&amp;utm_content=5calls_lp_1</string>
+    <string name="check_your_registration_url" translatable="false">https://5calls.org/vote/verify/</string>
 
 </resources>
