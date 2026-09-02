@@ -185,10 +185,9 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                returnToIssue();
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            returnToIssue();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
