@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -223,8 +224,15 @@ public class LocationActivity extends AppCompatActivity {
         }
 
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        String provider = LocationManager.NETWORK_PROVIDER;
-        if (!locationManager.isProviderEnabled(provider)) {
+        String provider;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            // Use the modern Fused Provider on Android 12+
+            provider = LocationManager.FUSED_PROVIDER;
+        } else if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            // Prefer Network provider for speed/indoor use on older devices
+            provider = LocationManager.NETWORK_PROVIDER;
+        } else {
+            // Fallback to GPS
             provider = LocationManager.GPS_PROVIDER;
         }
         Location location = locationManager.getLastKnownLocation(provider);
