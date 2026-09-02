@@ -1,6 +1,6 @@
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:xliff="http://schemas.android.com/tools">
 
-    <!-- The application name [CHAR_LIMIT=25] -->
+<!-- The application name [CHAR_LIMIT=25] -->
     <string name="app_name">5 Calls</string>
 
     <!-- The prompt on the location page to have a user set their location [CHAR_LIMIT=NONE] -->
@@ -834,11 +834,13 @@
     <!-- Description of a setting to show an example call in the calls list [CHAR_LIMIT=NONE]-->
     <string name="settings_reshow_demo_description">Show an example issue in the list with hints about how to use 5 Calls.</string>
 
+    <!-- Heading for the check your registration section [CHAR_LIMIT=100] -->
     <string name="check_your_registration_prompt">Check your registration</string>
+    <!-- Description of checking your registration [CHAR_LIMIT=NONE] -->
     <string name="check_your_registration_description">Make a permanent impact. Check if you\'re registered to vote or register for the first time. Vote in your next election to ensure your voice continues to be represented.</string>
+    <!-- Button linking to the registration verification page [CHAR_LIMIT=30] -->
     <string name="check_your_registration_button">Check your registration</string>
-
-    <!-- URL for the 5 Calls Why Calling Works page [CHAR_LIMIT=NONE] -->
+    <!-- URL for the registration verification page [CHAR_LIMIT=NONE] -->
     <string name="check_your_registration_url" translatable="false">https://5calls.org/vote/verify/</string>
 
 </resources>
