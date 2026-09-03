@@ -1,4 +1,4 @@
-<resources xmlns:xliff="http://schemas.android.com/tools">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <!-- The application name [CHAR_LIMIT=25] -->
     <string name="app_name">5 Calls</string>
@@ -21,16 +21,16 @@
     <!-- Message telling a user they have no calls to make on a particular issue (because of their address) [CHAR_LIMIT=30] -->
     <string name="call_count_zero">0 llamadas por hacer</string>
 
-    <!-- Message telling a user they sill have one call to make on a particular issue [CHAR_LIMIT=30] -->
+    <!-- Message telling a user they still have one call to make on a particular issue [CHAR_LIMIT=30] -->
     <string name="call_count_one">1 llamada: <xliff:g id="area">%1$s</xliff:g></string>
 
     <!-- Message telling a user how many calls they still need to make on a particular issue today [CHAR_LIMIT=none] -->
     <string name="call_count_today"><xliff:g id="callCount">%1$d</xliff:g> llamadas por hacer hoy</string>
 
-    <!-- Message telling a user they sill have one call to make on a particular issue today [CHAR_LIMIT=none] -->
+    <!-- Message telling a user they still have one call to make on a particular issue today [CHAR_LIMIT=none] -->
     <string name="call_count_today_one">1 llamada por hacer</string>
 
-    <!-- Message telling a user they sill have no calls left on a particular issue today [CHAR_LIMIT=none] -->
+    <!-- Message telling a user they still have no calls left on a particular issue today [CHAR_LIMIT=none] -->
     <string name="call_count_today_done">¡Bien hecho, ha hecho todas las llamadas hoy!</string>
 
     <!-- Message telling a user they have made one previous call [CHAR_LIMIT=none] -->
@@ -161,7 +161,7 @@
     <!-- Button shown to the user on the splash / tutorial screen to get started and go to the app [CHAR_LIMIT=30] -->
     <string name="get_started_btn">Empieza</string>
 
-    <!-- Description of how the 5 Calls app is open-source, link to github page [CHAR_LIMIT=NONE] -->
+    <!-- Description of how the 5 Calls app is open-source, link to GitHub page [CHAR_LIMIT=NONE] -->
     <string name="open_source_info">La aplicación de 5 llamadas es de código abierto y hecha por voluntarios. Encuéntralo en <a href="https://github.com/5calls/android\">github</a>..</string>
 
     <!-- Version code shown to the user in the about page [CHAR_LIMIT=NONE] -->
@@ -605,7 +605,7 @@
     <!-- In the issue done section, paragraph text congratulating the user on what they've done  -->
     <string name="done_description">¡Llamaste a todos tus representantes acerca de este tema hoy! Llámalos de nuevo mañana.</string>
 
-    <!-- In the issue done section, the the description of how many calls have been made on a topic. -->
+    <!-- In the issue done section, the description of how many calls have been made on a topic. -->
     <string name="done_issue_stats">Llamadas totales acerca de este tema:</string>
 
     <!-- In the issue done section, a description of why calls help for further user motivation. -->
