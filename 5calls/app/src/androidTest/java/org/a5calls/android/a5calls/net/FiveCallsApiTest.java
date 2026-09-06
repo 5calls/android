@@ -6,22 +6,17 @@ import com.android.volley.Header;
 import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.HttpResponse;
 
+import org.a5calls.android.a5calls.BaseIntegrationTest;
 import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.model.Outcome;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.platform.app.InstrumentationRegistry;
 
 import static org.a5calls.android.a5calls.FakeJSONData.ISSUE_DATA;
 import static org.a5calls.android.a5calls.FakeJSONData.REPORT_DATA;
@@ -30,8 +25,7 @@ import static org.a5calls.android.a5calls.FakeJSONData.REPS_DATA_NOT_SPLIT_PREFI
 import static org.a5calls.android.a5calls.FakeJSONData.REPS_DATA_SPLIT_PREFIX;
 import static org.junit.Assert.*;
 
-@RunWith(AndroidJUnit4.class)
-public class FiveCallsApiTest {
+public class FiveCallsApiTest extends BaseIntegrationTest {
 
     static class TestCallListener implements FiveCallsApi.CallRequestListener {
         protected int mCallError = 0;
@@ -133,24 +127,6 @@ public class FiveCallsApiTest {
 
     }
 
-    private FiveCallsApi mApi;
-    private FakeRequestQueue mRequestQueue;
-    private MockHttpStack mHttpStack;
-
-
-    @Before
-    public void setUp() {
-        mHttpStack = new MockHttpStack();
-        BasicNetwork basicNetwork = new BasicNetwork(mHttpStack);
-        mRequestQueue = new FakeRequestQueue(basicNetwork);
-        mApi = new FiveCallsApi("itMe", mRequestQueue, 
-                InstrumentationRegistry.getInstrumentation().getTargetContext());
-    }
-
-    @After
-    public void tearDown() {
-        mRequestQueue.mRequest = null;
-    }
 
     @Test
     public void testGetCallCount() {
@@ -463,12 +439,4 @@ public class FiveCallsApiTest {
         mApi.unregisterCallRequestListener(testCallListener);
     }
 
-    private void waitForHttpRequestComplete() {
-        assertNotNull(mRequestQueue.mRequest);
-        mRequestQueue.start();
-
-        // Wait for the async stuff.
-        // TODO: I'm sure there's a better way to do this...
-        SystemClock.sleep(200);
-    }
 }

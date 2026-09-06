@@ -8,95 +8,65 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.BasicNetwork;
 
 import org.a5calls.android.a5calls.AppSingleton;
+import org.a5calls.android.a5calls.BaseIntegrationTest;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.net.FakeRequestQueue;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
 import org.a5calls.android.a5calls.net.MockHttpStack;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.runner.RunWith;
 
 /**
  * Base class for MainActivity integration tests that contains shared setup and utility methods.
  */
-@RunWith(AndroidJUnit4.class)
-public abstract class MainActivityBaseTest {
+public abstract class MainActivityBaseTest extends BaseIntegrationTest {
 
-    protected MockHttpStack mHttpStack;
     protected RequestQueue mOriginalRequestQueue;
     protected FiveCallsApi mOriginalApi;
     protected String mOriginalAddress;
     protected ActivityScenario<MainActivity> scenario;
 
     @Before
+    @Override
     public void setUp() {
+        super.setUp();
         // Save original state
-        mOriginalRequestQueue = AppSingleton.getInstance(
-                InstrumentationRegistry.getInstrumentation().getTargetContext()).getRequestQueue();
-        mOriginalApi = AppSingleton.getInstance(
-                InstrumentationRegistry.getInstrumentation().getTargetContext()).getJsonController();
+        mOriginalRequestQueue = AppSingleton.getInstance(mContext).getRequestQueue();
+        mOriginalApi = AppSingleton.getInstance(mContext).getJsonController();
 
         // Save original location
-        mOriginalAddress = AccountManager.Instance.getAddress(
-                InstrumentationRegistry.getInstrumentation().getTargetContext());
+        mOriginalAddress = AccountManager.Instance.getAddress(mContext);
 
         // Set a mock location to avoid location prompts
-        AccountManager.Instance.setAddress(
-                InstrumentationRegistry.getInstrumentation().getTargetContext(),
-                "90210");
+        AccountManager.Instance.setAddress(mContext, "90210");
 
         // Mark tutorial as seen to bypass onboarding screen
-        AccountManager.Instance.setTutorialSeen(
-                InstrumentationRegistry.getInstrumentation().getTargetContext(),
-                true);
-
-        // Create mock HTTP stack
-        mHttpStack = new MockHttpStack();
+        AccountManager.Instance.setTutorialSeen(mContext, true);
     }
 
     @After
+    @Override
     public void tearDown() {
         // Restore original state
-        AppSingleton.getInstance(
-                InstrumentationRegistry.getInstrumentation().getTargetContext())
-                .setRequestQueue(mOriginalRequestQueue);
-        AppSingleton.getInstance(
-                InstrumentationRegistry.getInstrumentation().getTargetContext())
-                .setFiveCallsApi(mOriginalApi);
+        AppSingleton.getInstance(mContext).setRequestQueue(mOriginalRequestQueue);
+        AppSingleton.getInstance(mContext).setFiveCallsApi(mOriginalApi);
 
         // Restore original location
-        AccountManager.Instance.setAddress(
-                InstrumentationRegistry.getInstrumentation().getTargetContext(),
-                mOriginalAddress);
+        AccountManager.Instance.setAddress(mContext, mOriginalAddress);
 
         // Close the activity scenario if it's open
         if (scenario != null) {
             scenario.close();
         }
+        super.tearDown();
     }
 
     /**
      * Sets up the mock request queue and API
+     * (Deprecated: functionality moved to BaseIntegrationTest.setUp)
      */
     protected void setupMockRequestQueue() {
-        // Create a custom RequestQueue with our mock HTTP stack
-        BasicNetwork basicNetwork = new BasicNetwork(mHttpStack);
-        FakeRequestQueue requestQueue = new FakeRequestQueue(basicNetwork);
-        requestQueue.start();
-
-        // Replace the app's RequestQueue with our mock
-        AppSingleton.getInstance(
-                InstrumentationRegistry.getInstrumentation().getTargetContext())
-                .setRequestQueue(requestQueue);
-
-        // Create a new FiveCallsApi with our mock RequestQueue
-        String callerId = AccountManager.Instance.getCallerID(
-                InstrumentationRegistry.getInstrumentation().getTargetContext());
-        FiveCallsApi api = new FiveCallsApi(callerId, requestQueue, 
-                InstrumentationRegistry.getInstrumentation().getTargetContext());
-        AppSingleton.getInstance(
-                InstrumentationRegistry.getInstrumentation().getTargetContext())
-                .setFiveCallsApi(api);
+        // This is now redundant but kept for backward compatibility with existing tests
     }
 
     /**

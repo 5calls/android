@@ -52,52 +52,6 @@ import static org.junit.Assert.assertTrue;
 @RunWith(AndroidJUnit4.class)
 public class MainActivityHappyPathTest extends MainActivityBaseTest {
 
-    // Custom matcher that matches only the first view matching the given matcher.
-    public static Matcher<View> first(final Matcher<View> matcher) {
-        return new TypeSafeMatcher<View>() {
-            boolean matched = false;
-
-            @Override
-            public boolean matchesSafely(View view) {
-                if (matched) {
-                    return false;
-                }
-                if (matcher.matches(view)) {
-                    matched = true;
-                    return true;
-                }
-                return false;
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("first view matching: ");
-                matcher.describeTo(description);
-            }
-        };
-    }
-
-    // Custom matcher to check if a CollapsingToolbarLayout's title contains specific text
-    public static Matcher<View> withCollapsingToolbarTitle(final Matcher<String> textMatcher) {
-        return new TypeSafeMatcher<View>() {
-            @Override
-            public boolean matchesSafely(View view) {
-                if (!(view instanceof CollapsingToolbarLayout)) {
-                    return false;
-                }
-                CollapsingToolbarLayout toolbarLayout = (CollapsingToolbarLayout) view;
-                CharSequence title = toolbarLayout.getTitle();
-                return title != null && textMatcher.matches(title.toString());
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("with toolbar title: ");
-                textMatcher.describeTo(description);
-            }
-        };
-    }
-
     /**
      * Sets up mock responses for API calls
      */

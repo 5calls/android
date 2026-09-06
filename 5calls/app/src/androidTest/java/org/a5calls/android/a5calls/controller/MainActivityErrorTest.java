@@ -28,29 +28,7 @@ import java.util.ArrayList;
 /**
  * Integration test for MainActivity that tests error handling.
  */
-@RunWith(AndroidJUnit4.class)
 public class MainActivityErrorTest extends MainActivityBaseTest {
-
-    /**
-     * Custom matcher to check if a RecyclerView has exactly one item
-     */
-    public static Matcher<View> hasExactlyOneItem() {
-        return new TypeSafeMatcher<View>() {
-            @Override
-            protected boolean matchesSafely(View view) {
-                if (!(view instanceof RecyclerView)) {
-                    return false;
-                }
-                RecyclerView recyclerView = (RecyclerView) view;
-                return recyclerView.getAdapter() != null && recyclerView.getAdapter().getItemCount() == 1;
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("RecyclerView with exactly one item");
-            }
-        };
-    }
 
     /**
      * Verifies that error UI is displayed correctly.

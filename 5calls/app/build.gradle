@@ -12,7 +12,7 @@ android {
         targetSdkVersion 36
         versionCode 85
         versionName '2.4.6'
-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        testInstrumentationRunner "org.a5calls.android.a5calls.LocaleAwareTestRunner"
         signingConfig signingConfigs.debug
     }
     buildTypes {
