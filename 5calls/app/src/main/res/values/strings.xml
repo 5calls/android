@@ -1,4 +1,4 @@
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="http://schemas.android.com/tools">
 
     <!-- The application name [CHAR_LIMIT=25] -->
     <string name="app_name">5 Calls</string>
@@ -21,16 +21,16 @@
     <!-- Message telling a user they have no calls to make on a particular issue (because of their address) [CHAR_LIMIT=30] -->
     <string name="call_count_zero">0 calls to make</string>
 
-    <!-- Message telling a user they still have one call to make on a particular issue [CHAR_LIMIT=30] -->
+    <!-- Message telling a user they sill have one call to make on a particular issue [CHAR_LIMIT=30] -->
     <string name="call_count_one">1 call: <xliff:g id="area">%1$s</xliff:g></string>
 
     <!-- Message telling a user how many calls they still need to make on a particular issue today [CHAR_LIMIT=none] -->
     <string name="call_count_today"><xliff:g id="callCount">%1$d</xliff:g> calls to make today</string>
 
-    <!-- Message telling a user they still have one call to make on a particular issue today [CHAR_LIMIT=none] -->
+    <!-- Message telling a user they sill have one call to make on a particular issue today [CHAR_LIMIT=none] -->
     <string name="call_count_today_one">1 call to make today</string>
 
-    <!-- Message telling a user they still have no calls left on a particular issue today [CHAR_LIMIT=none] -->
+    <!-- Message telling a user they sill have no calls left on a particular issue today [CHAR_LIMIT=none] -->
     <string name="call_count_today_done">Nice job, all calls made today!</string>
 
     <!-- Message telling a user they have made one previous call [CHAR_LIMIT=none] -->
@@ -189,7 +189,7 @@
     <!-- Button shown to the user on the splash / tutorial screen to get started and go to the app [CHAR_LIMIT=30] -->
     <string name="get_started_btn">Get started</string>
 
-    <!-- Description of how the 5 Calls app is open-source, link to GitHub page [CHAR_LIMIT=NONE] -->
+    <!-- Description of how the 5 Calls app is open-source, link to github page [CHAR_LIMIT=NONE] -->
     <string name="open_source_info">The 5 Calls app is open-source and volunteer made. Find it at
         <a href="https://github.com/5calls/android\">github</a>.</string>
 
@@ -628,7 +628,7 @@
     <!-- Action or button to dismiss a notification [CHAR_LIMIT=10] -->
     <string name="dismiss">Dismiss</string>
 
-    <!-- Menu option to search for text within issues [CHAR_LIMIT=25] -->
+    <!-- Menu otpion to search for text within issues [CHAR_LIMIT=25] -->
     <string name="menu_search">search</string>
 
     <!-- Title of a dialog to search issue titles [CHAR_LIMIT=25] -->
@@ -646,7 +646,7 @@
     <!-- Date format used for stats -->
     <string name="date_format">MM/dd/yy</string>
 
-    <!-- Office titles, used in the script. As the script is in English, these should not be translated. -->
+    <!-- Office titles, used in the script. As the script is in English, these should not be translated.. -->
     <string name="title_us_house" translatable="false">Representative</string>
     <string name="title_us_senate" translatable="false">Senator</string>
     <string name="title_state_rep" translatable="false">Legislator</string>
@@ -708,7 +708,7 @@
     <!-- In the issue done section, paragraph text congratulating the user on what they've done  -->
     <string name="done_description">You\'ve called all your representatives about this issue today. Call them again tomorrow!</string>
 
-    <!-- In the issue done section, the description of how many calls have been made on a topic. -->
+    <!-- In the issue done section, the the description of how many calls have been made on a topic. -->
     <string name="done_issue_stats">Total calls on this topic:</string>
 
     <!-- In the issue done section, a description of why calls help for further user motivation. -->
