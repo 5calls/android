@@ -6,6 +6,7 @@ import android.util.Log
 import com.android.volley.AuthFailureError
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
+import com.google.firebase.FirebaseApp
 import com.google.firebase.messaging.FirebaseMessaging
 import org.a5calls.android.a5calls.AppSingleton
 import org.a5calls.android.a5calls.model.AccountManager
@@ -43,6 +44,14 @@ object PushRegistration {
      * notifications on, since onNewToken only fires when the token changes.
      */
     fun refreshToken(context: Context) {
+        // FirebaseMessaging.getInstance() throws when Firebase never came up,
+        // which is the case in unit tests and would be the case in a build
+        // missing google-services.json. There's no token to refresh then.
+        if (FirebaseApp.getApps(context).isEmpty()) {
+            Log.w(TAG, "firebase isn't initialized, skipping token refresh")
+            return
+        }
+
         FirebaseMessaging.getInstance().token
             .addOnSuccessListener { token -> register(context, token) }
             .addOnFailureListener { error -> Log.w(TAG, "couldn't get an fcm token: $error") }

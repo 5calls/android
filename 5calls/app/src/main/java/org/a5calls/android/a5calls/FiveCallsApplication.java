@@ -19,12 +19,14 @@ package org.a5calls.android.a5calls;
 import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import androidx.core.app.NotificationManagerCompat;
 
 
 import org.a5calls.android.a5calls.controller.SettingsActivity;
 import org.a5calls.android.a5calls.model.AccountManager;
+import org.a5calls.android.a5calls.net.PushRegistration;
 import org.a5calls.android.a5calls.model.NotificationUtils;
 import org.a5calls.android.a5calls.util.AnalyticsManager;
 
@@ -102,6 +104,15 @@ public class FiveCallsApplication extends Application {
                     AccountManager.Instance,
                     AccountManager.DEFAULT_NOTIFICATION_SELECTION
             );
+        } else if (!TextUtils.equals("1",
+                AccountManager.Instance.getNotificationPreference(this))) {
+            // Re-send the token on launch, unless they've turned notifications
+            // off. onNewToken only fires when FCM rotates a token, so without
+            // this a registration that failed once, or a district that changed
+            // while we had no network, would stay wrong until the token
+            // happened to change. The api upserts on the token so repeating
+            // this is cheap.
+            PushRegistration.INSTANCE.refreshToken(this);
         }
     }
 
