@@ -61,7 +61,7 @@
     <string name="relevant_reps">Contactos relevantes: <xliff:g id="contacts_list">%1$s</xliff:g></string>
 
     <!-- Message to the user when no location is set, prompting them to set a location. [CHAR_LIMIT=NONE] -->
-    <string name="error_no_location_set">Establece tu ubicación para encontrar a tus representantes.</string>
+    <string name="error_no_location_set">Establezca su ubicación para encontrar a sus representantes.</string>
 
     <!-- Menu option to go to the About 5 Calls screen [CHAR_LIMIT=25] -->
     <string name="menu_about">Sobre 5 Calls</string>
@@ -70,7 +70,7 @@
     <string name="about_title">Sobre 5 Calls</string>
 
     <!-- Header on the About 5 Calls screen [CHAR_LIMIT=30] -->
-    <string name="about_header">HAZ QUE SE OIGA TU VOZ</string>
+    <string name="about_header">HAGA OÍR SU VOZ</string>
 
     <!-- First paragraph of About screen text [CHAR_LIMIT=NONE] -->
     <string name="about_p1">Convierta su participación pasiva en resistencia activa. 5 Calls es la forma más fácil y eficaz de que los electores estadounidenses tengan un impacto político.</string>
@@ -88,7 +88,7 @@
     <string name="about_app_prompt">Información sobre esta app</string>
 
     <!-- Prompt to click on the "Rate" button [CHAR_LIMIT=100] -->
-    <string name="rate_us_prompt">Si la aplicación 5 Calls te ha sido útil, te agradeceríamos que nos califíques en Play Store.</string>
+    <string name="rate_us_prompt">Si la aplicación 5 Calls le ha resultado útil, le agradeceríamos que nos calificara en la Play Store.</string>
 
     <!-- Button linking to the 5calls.org about page [CHAR_LIMIT=30] -->
     <string name="about_us_btn">sobre nosotros</string>
@@ -109,18 +109,18 @@
     <string name="calls_to_date"><xliff:g id="callCount">%1$s</xliff:g> llamadas a la fecha</string>
 
     <!-- Text shown to the user on the splash / tutorial screen describing the 5 Calls app.   n  n is used to create new paragraphs. [CHAR_LIMIT=NONE] -->
-    <string name="about_splash">Hay una forma sencilla y directa de influir al Gobierno que se supone te representa: Llámales por teléfono.</string>
+    <string name="about_splash">Hay una forma sencilla y directa de influir al Gobierno que se supone le representa: Llámales por teléfono.</string>
 
     <!-- Tutorial screen text that calling is effective [CHAR_LIMIT=100] -->
     <string name="about_p2_2">Llamar por teléfono es la forma más efectiva de influir a sus representantes.</string>
 
     <!-- Text shown to the user on the splash / tutorial screen describing more about the 5 Calls app.   n  n is used to create new paragraphs. [CHAR_LIMIT=NONE] -->
-    <string name="about_splash_2">Las llamadas telefónicas pueden ser estresantes. 5 Calls te da guiones y números de teléfono de tus representantes locales para que las llamadas sean rápidas y fáciles.</string>
+    <string name="about_splash_2">Las llamadas telefónicas pueden ser estresantes. 5 Calls proporciona guiones y números de teléfono de sus representantes locales para que las llamadas sean rápidas y fáciles.</string>
 
     <string name="getting_started_header">Cómo funciona</string>
 
     <!-- Title for step 1 of how to use 5 calls: pick an issue [CHAR_LIMIT=100] -->
-    <string name="about_p2_3">1. Elige un tema que te interese</string>
+    <string name="about_p2_3">1. Elija un tema que le importe</string>
 
     <!-- Description of step 1 of how to use 5 calls: pick an issue [CHAR_LIMIT=NONE] -->
     <string name="about_splash_3_1">Haz llamadas desde nuestra lista de temas oportunos y procesables.</string>
@@ -129,22 +129,22 @@
     <string name="about_p3_3">2. Elige un contacto</string>
 
     <!-- Description of step 2 of how to use 5 calls: pick a contact [CHAR_LIMIT=NONE] -->
-    <string name="about_splash_3_2">Te mostraremos a quién puedes llamar, desde representantes y senadores hasta funcionarios a nivel estatal.</string>
+    <string name="about_splash_3_2">Le mostraremos a quién puede llamar, desde representantes y senadores hasta funcionarios a nivel estatal.</string>
 
     <!-- Title for step 3 of how to use 5 calls: call the contact [CHAR_LIMIT=100] -->
     <string name="about_p4_3">3. Lee el guion o improvisa</string>
 
     <!-- Description of step 3 of how to use 5 calls: call the contact [CHAR_LIMIT=NONE] -->
-    <string name="about_splash_3_3">Toca el número de tu contacto para llamar desde tu aplicación de teléfono. Consejo: pon la llamada en altavoz y vuelve a 5 Calls para leer el guion.</string>
+    <string name="about_splash_3_3">Toca el número de su contacto para llamar desde su aplicación de teléfono. Consejo: pon la llamada en altavoz y vuelve a 5 Calls para leer el guion.</string>
 
     <!-- Heading shown on the last tutorial page [CHAR_LIMIT=100] -->
-    <string name="add_your_voice">Tu voz importa</string>
+    <string name="add_your_voice">Su voz importa</string>
 
     <!-- Prompt to let users know they will be in community if they call [CHAR_LIMIT=NONE] -->
     <string name="about_splash_4_1">Únete a nosotros: nuestras voces son más fuertes juntas</string>
 
     <!-- Text shown to the user on the splash / tutorial screen letting them know about notifications and reminders [CHAR_LIMIT=NONE] -->
-    <string name="about_splash_4_2">La aplicación 5 Calls puede ayudarte a mantener tu participación enviándote recordatorios para hacer llamadas varias veces a la semana.</string>
+    <string name="about_splash_4_2">La aplicación 5 Calls puede ayudarte a mantener su participación enviándote recordatorios para hacer llamadas varias veces a la semana.</string>
     
     <!-- Button shown to turn on reminders [CHAR_LIMIT=50] -->
     <string name="tutorial_reminders_btn">Activar recordatorios</string>
@@ -171,7 +171,7 @@
     <string name="menu_stats">Su impacto</string>
 
     <!-- Header to the script used for calling [CHAR_LIMIT=NONE] -->
-    <string name="call_script_prompt">Su guión:</string>
+    <string name="call_script_prompt">Su guion:</string>
 
     <!-- Header to a section that says why the contact is someone you might call [CHAR_LIMIT=NONE] -->
     <string name="contact_reason_prompt">Por qué llama a esta oficina:</string>
@@ -214,7 +214,7 @@
     <string name="btn_gps">Usar mi ubicación</string>
 
     <!-- Inform the user their location is private -->
-    <string name="location_private">Tu ubicación es privada. No la guardamos y nunca vendemos tus datos.</string>
+    <string name="location_private">Su ubicación es privada. No la guardamos y nunca vendemos sus datos.</string>
 
     <!-- Heading on location activity -->
     <string name="location_why">Nosortros identificaremos a quién tiene que llamar</string>
@@ -262,7 +262,7 @@
     <string name="unknown_issue">Tema desconocido</string>
 
     <!-- Unknown location set [CHAR_LIMIT=50] -->
-    <string name="unknown_location">Ubicacion desconocida</string>
+    <string name="unknown_location">Ubicación desconocida</string>
 
     <!-- Label for a list of most contacted representatives [CHAR_LIMIT=100] -->
     <string name="top_contacts">Sus representantes más contactados son:</string>
@@ -310,7 +310,7 @@
     <string name="settings_reminders_enable_summary">Permite recordatarios para hacer 5 llamadas.</string>
 
     <!-- Summary string for settings option to enable reminders, when the notification permission has been denied [CHAR_LIMIT=NONE] -->
-    <string name="reminders_disabled_summary">Las notificaciones están desactivadas. Activa las notificaciones en los ajustes de tu dispositivo para permitir los recordatorios.</string>
+    <string name="reminders_disabled_summary">Las notificaciones están desactivadas. Activa las notificaciones en los ajustes de su dispositivo para permitir los recordatorios.</string>
 
     <!-- Title for settings option to enable weekday reminders [CHAR_LIMIT=50]-->
     <string name="settings_reminder_days_title">Recuerdame en estos días</string>
@@ -340,7 +340,7 @@
     <string name="no_days_selected">No hay días seleccionados</string>
 
     <!-- Title for a notification reminder to make 5 calls [CHAR_LIMIT=30]-->
-    <string name="notification_title">Haz que se oiga tu voz</string>
+    <string name="notification_title">Haz que se oiga su voz</string>
 
     <!-- Text for a notification reminder to make 5 calls [CHAR_LIMIT=50]-->
     <string name="notification_text">Dedique 5 minutos para ponerse en contacto con sus representantes.</string>
@@ -367,7 +367,7 @@
     <string name="error_address_empty">Introduzca una dirección</string>
 
     <!-- Prompt to a user that they can skip setting their location and do it later [CHAR_LIMIT=NONE] -->
-    <string name="location_skip_prompt">También puedes establecer tu ubicación más tarde.</string>
+    <string name="location_skip_prompt">También puedes establecer su ubicación más tarde.</string>
 
     <!-- Button to skip setting location now but implies they could do it later [CHAR_LIMIT=NONE] -->
     <string name="skip_location_btn">Omitir por ahora</string>
@@ -603,7 +603,7 @@
     <string name="done_heading">¡Bien hecho!</string>
 
     <!-- In the issue done section, paragraph text congratulating the user on what they've done  -->
-    <string name="done_description">¡Llamaste a todos tus representantes acerca de este tema hoy! Llámalos de nuevo mañana.</string>
+    <string name="done_description">¡Llamaste a todos sus representantes acerca de este tema hoy! Llámalos de nuevo mañana.</string>
 
     <!-- In the issue done section, the the description of how many calls have been made on a topic. -->
     <string name="done_issue_stats">Llamadas totales acerca de este tema:</string>
@@ -657,13 +657,13 @@
     <string name="demo_rep_reason">Este es un contacto ficticio.</string>
 
     <!-- A name for a placeholder issue for placing a practice call [CHAR_LIMIT=100]-->
-    <string name="demo_issue_name">️🤔 ¿Te sientes inseguro? ¡Empieza aquí!</string>
+    <string name="demo_issue_name">️🤔 ¿Siente inseguro? ¡Empieza aquí!</string>
 
     <!-- A description for a placeholder issue for placing a practice call, explaining more about the process [CHAR_LIMIT=NONE]-->
     <string name="demo_issue_reason">
         ### **Cómo funciona: Modo de práctica**
         \n\n
-        Para muchos de nosotros, hacer llamadas telefónicas puede resultar intimidante. Esta llamada de ejemplo te ayuda a aprender
+        Para muchos de nosotros, hacer llamadas telefónicas puede resultar intimidante. Esta llamada de ejemplo le ayuda a aprender
         el proceso.
         \n\n
         \n\n
@@ -675,10 +675,10 @@
         \n\n
         #### **Paso 2: Lee el guion o improvisa**
         \n\n
-        Las llamadas serán contestadas por un miembro del personal o irán directamente al buzón de voz. De cualquier manera, tu opinión
-        se contabiliza para mostrarle a tu representante qué es lo que les importa a sus electores.
+        Las llamadas serán contestadas por un miembro del personal o irán directamente al buzón de voz. De cualquier manera, su opinión
+        se contabiliza para mostrarle a su representante qué es lo que les importa a sus electores.
         \n\n
-        #### **Paso 3: Cuéntanos cómo te fue**
+        #### **Paso 3: Cuéntanos cómo le fue**
         \n\n
         Esto nos ayuda a dar seguimiento a nuestro impacto colectivo.
         \n\n
@@ -689,8 +689,8 @@
         #### **Consejos para llamar:**
         \n\n- **Sé breve:** Las llamadas deben durar menos de un minuto
         \n\n- **Sé respetuoso:** Sin importar para qué partido trabajen, los miembros del personal que contestan el
-        teléfono simplemente registrarán tu opinión.
-        \n\n- **Practica con el buzón de voz:** Si te sientes nervioso o no quieres hablar con una persona, llama
+        teléfono simplemente registrarán su opinión.
+        \n\n- **Practica con el buzón de voz:** Si se siente nervioso o no desea hablar con una persona, llama
         fuera del horario de oficina y deja un mensaje.
         \n\n
         ### **¿Listo? Toca el contacto de prueba que aparece abajo para acceder al guion de práctica.**
@@ -714,7 +714,7 @@
     <string name="demo_phone_click_dialog_title">Llamada telefónica simulada</string>
 
     <!-- The description for a dialog that appears when pressing the pretend contact's phone number. -->
-    <string name="demo_phone_click_dialog_description">Para un contacto real, esto abriría su número en tu aplicación de teléfono.</string>
+    <string name="demo_phone_click_dialog_description">Para un contacto real, esto abriría su número en su aplicación de teléfono.</string>
 
     <!-- A message shown when the info (i) icon is clicked on the issue details page, about the demo issue [CHAR_LIMIT=NONE] -->
     <string name="demo_issue_details_message">Para una llamada real, puede ver aquí información como el número de llamadas, la fecha de creación y la categoría.</string>
