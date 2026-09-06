@@ -16,7 +16,6 @@ import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.onesignal.OneSignal;
 
 import org.a5calls.android.a5calls.BuildConfig;
 import org.a5calls.android.a5calls.model.AccountManager;
@@ -296,9 +295,10 @@ public class FiveCallsApi {
                                 AccountManager.Instance.setDistrict(mContext, district);
                                 
                                 districtId = state + "-" + district;
-                                if (OneSignal.isInitialized()) {
-                                    OneSignal.getUser().addTag("districtID", districtId);
-                                }
+                                // the api targets notifications by district, so
+                                // it needs to hear about a change the same way
+                                // the onesignal tag used to
+                                PushRegistration.INSTANCE.updateDistrict(mContext);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

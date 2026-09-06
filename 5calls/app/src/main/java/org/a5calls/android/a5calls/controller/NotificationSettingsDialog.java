@@ -1,15 +1,16 @@
 package org.a5calls.android.a5calls.controller;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
-import com.onesignal.Continue;
-import com.onesignal.OneSignal;
 
 import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
@@ -26,6 +27,17 @@ public class NotificationSettingsDialog extends DialogFragment {
     }
 
     private int mSelectedOption = 0;
+
+    // has to be registered before the fragment starts, so it can't wait until
+    // the save button is tapped. Null when the permission isn't needed.
+    private ActivityResultLauncher<String> mPermissionRequest;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mPermissionRequest = SettingsActivity.createNotificationPermissionRequest(
+                this, isGranted -> {});
+    }
 
     public NotificationSettingsDialog() {
 
@@ -49,9 +61,8 @@ public class NotificationSettingsDialog extends DialogFragment {
         builder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                if (mSelectedOption == 0) {
-                    OneSignal.getUser().getPushSubscription().optIn();
-                    OneSignal.getNotifications().requestPermission(true, Continue.none());
+                if (mSelectedOption == 0 && mPermissionRequest != null) {
+                    mPermissionRequest.launch(Manifest.permission.POST_NOTIFICATIONS);
                     // TODO(#139): Do not turn on notifications preference if they did not enable
                     // permissions.
                 }

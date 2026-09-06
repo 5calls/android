@@ -32,12 +32,11 @@ import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.view.MenuItem;
 
-import com.onesignal.Continue;
-import com.onesignal.OneSignal;
 
 import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
+import org.a5calls.android.a5calls.net.PushRegistration;
 import org.a5calls.android.a5calls.model.NotificationUtils;
 
 import java.text.SimpleDateFormat;
@@ -142,11 +141,10 @@ public class SettingsActivity extends AppCompatActivity {
                                                      String result) {
         accountManager.setNotificationPreference(application, result);
         if (TextUtils.equals("0", result)) {
-            OneSignal.getNotifications().requestPermission(true, Continue.none());
-            OneSignal.getUser().getPushSubscription().optIn();
             // TODO(#139): Wait for permission request result before opting in
+            PushRegistration.INSTANCE.refreshToken(application);
         } else if (TextUtils.equals("1", result)) {
-            OneSignal.getUser().getPushSubscription().optOut();
+            PushRegistration.INSTANCE.unregister(application);
         }
         // If the user changes the settings there's no need to show the dialog in the future.
         accountManager.setNotificationDialogShown(application, true);
