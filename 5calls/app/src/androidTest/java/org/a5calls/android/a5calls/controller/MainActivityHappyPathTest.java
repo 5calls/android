@@ -4,7 +4,6 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.isClickable;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
@@ -15,110 +14,28 @@ import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertTrue;
 
 import android.content.Context;
-import android.view.View;
 
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.test.espresso.UiController;
-import androidx.test.espresso.ViewAction;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.volley.toolbox.HttpResponse;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
 
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.FakeJSONData;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.DatabaseHelper;
-import org.a5calls.android.a5calls.test.RandomOrdering;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Test;
-import org.junit.runner.OrderWith;
-import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 
 /**
  * Integration test for MainActivity that tests the happy path.
  */
-@RunWith(AndroidJUnit4.class)
-@OrderWith(RandomOrdering.Factory.class)
 public class MainActivityHappyPathTest extends MainActivityBaseTest {
-
-    // Custom matcher that matches only the first view matching the given matcher.
-    public static Matcher<View> first(final Matcher<View> matcher) {
-        return new TypeSafeMatcher<>() {
-            boolean matched = false;
-
-            @Override
-            public boolean matchesSafely(View view) {
-                if (matched) {
-                    return false;
-                }
-                if (matcher.matches(view)) {
-                    matched = true;
-                    return true;
-                }
-                return false;
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("first view matching: ");
-                matcher.describeTo(description);
-            }
-        };
-    }
-
-    // Custom matcher to check if a CollapsingToolbarLayout's title contains specific text
-    public static Matcher<View> withCollapsingToolbarTitle(final Matcher<String> textMatcher) {
-        return new TypeSafeMatcher<>() {
-            @Override
-            public boolean matchesSafely(View view) {
-                if (!(view instanceof CollapsingToolbarLayout)) {
-                    return false;
-                }
-                CollapsingToolbarLayout toolbarLayout = (CollapsingToolbarLayout) view;
-                CharSequence title = toolbarLayout.getTitle();
-                return title != null && textMatcher.matches(title.toString());
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("with toolbar title: ");
-                textMatcher.describeTo(description);
-            }
-        };
-    }
-
-    /**
-     * A custom click action that only requires the view to be displayed,
-     * bypassing the 90% visibility constraint.
-     */
-    private static ViewAction clickVisible() {
-        return new ViewAction() {
-            @Override
-            public Matcher<View> getConstraints() {
-                return allOf(isDisplayed(), isClickable());
-            }
-
-            @Override
-            public String getDescription() {
-                return "click visible view";
-            }
-
-            @Override
-            public void perform(UiController uiController, View view) {
-                view.performClick();
-            }
-        };
-    }
 
     /**
      * Sets up mock responses for API calls
@@ -157,7 +74,11 @@ public class MainActivityHappyPathTest extends MainActivityBaseTest {
         launchMainActivity(1000);
 
         // Verify the location placeholder in the header is not shown.
-        onView(withContentDescription("5 Calls for BOWLING GREEN")).check(matches(isDisplayed()));
+        if (mLocale.getLanguage().equals("es")) {
+            onView(withContentDescription("5 Calls para BOWLING GREEN")).check(matches(isDisplayed()));
+        } else {
+            onView(withContentDescription("5 Calls for BOWLING GREEN")).check(matches(isDisplayed()));
+        }
 
         // Verify that the toolbar is displayed
         onView(withId(R.id.toolbar)).check(matches(isDisplayed()));
@@ -363,11 +284,11 @@ public class MainActivityHappyPathTest extends MainActivityBaseTest {
         onView(withId(R.id.navigation_view)).check(matches(isDisplayed()));
 
         // Verify that navigation menu items are displayed
-        onView(withText("About 5 Calls")).check(matches(isDisplayed()));
-        onView(withText("Your impact")).check(matches(isDisplayed()));
-        onView(withText("Settings")).check(matches(isDisplayed()));
-        onView(withText("FAQ")).check(matches(isDisplayed()));
-        onView(withText("Update location")).check(matches(isDisplayed()));
+        onView(withText(R.string.menu_about)).check(matches(isDisplayed()));
+        onView(withText(R.string.menu_stats)).check(matches(isDisplayed()));
+        onView(withText(R.string.settings)).check(matches(isDisplayed()));
+        onView(withText(R.string.menu_faq)).check(matches(isDisplayed()));
+        onView(withText(R.string.menu_location)).check(matches(isDisplayed()));
     }
 
     @Test

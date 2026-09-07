@@ -6,7 +6,7 @@ import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.NoCache;
 
 public class FakeRequestQueue extends RequestQueue {
-    protected Request mRequest = null;
+    public Request mRequest = null;
 
     public FakeRequestQueue(BasicNetwork network) {
             super(new NoCache(), network);

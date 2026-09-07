@@ -8,19 +8,10 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 
-import android.view.View;
-
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-
 import com.android.volley.toolbox.HttpResponse;
 
 import org.a5calls.android.a5calls.R;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,29 +19,7 @@ import java.util.ArrayList;
 /**
  * Integration test for MainActivity that tests error handling.
  */
-@RunWith(AndroidJUnit4.class)
 public class MainActivityErrorTest extends MainActivityBaseTest {
-
-    /**
-     * Custom matcher to check if a RecyclerView has exactly one item
-     */
-    public static Matcher<View> hasExactlyOneItem() {
-        return new TypeSafeMatcher<View>() {
-            @Override
-            protected boolean matchesSafely(View view) {
-                if (!(view instanceof RecyclerView)) {
-                    return false;
-                }
-                RecyclerView recyclerView = (RecyclerView) view;
-                return recyclerView.getAdapter() != null && recyclerView.getAdapter().getItemCount() == 1;
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("RecyclerView with exactly one item");
-            }
-        };
-    }
 
     /**
      * Verifies that error UI is displayed correctly.
