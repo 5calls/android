@@ -44,3 +44,6 @@ captures/
 
 # Mac hidden files
 .DS_Store
+
+# JEnv local Java version configuration file
+.java-version

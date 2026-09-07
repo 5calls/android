@@ -70,7 +70,7 @@ public class AboutActivity extends AppCompatActivity {
             Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars() |
                     WindowInsetsCompat.Type.displayCutout());
             binding.appbar.setPadding(insets.left, insets.top, insets.right, 0);
-            binding.scrollView.setPadding(insets.left, 0, insets.right, insets.bottom);;
+            binding.scrollView.setPadding(insets.left, 0, insets.right, insets.bottom);
             return WindowInsetsCompat.CONSUMED;
         });
 
@@ -87,6 +87,10 @@ public class AboutActivity extends AppCompatActivity {
         binding.dashboardButton.setOnClickListener(v -> CustomTabsUtil.launchUrl(
                 AboutActivity.this, Uri.parse(getString(R.string.dashboard_url) +
                         (TextUtils.isEmpty(districtId) ? "" : "?district=" + districtId))));
+
+        binding.checkRegistrationButton.setOnClickListener(v -> CustomTabsUtil.launchUrl(
+                AboutActivity.this, Uri.parse(getString(R.string.check_your_registration_url))));
+
 
         setOpenIntentWithChooserOnClick(
                 binding.contactUsButton, getSendEmailIntent(getResources()), getString(R.string.send_email)
@@ -129,12 +133,7 @@ public class AboutActivity extends AppCompatActivity {
             }
         });
 
-        binding.licenseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showOpenSourceLicenses();
-            }
-        });
+        binding.licenseButton.setOnClickListener(v -> showOpenSourceLicenses());
 
         binding.githubTextview.setMovementMethod(LinkMovementMethod.getInstance());
 
@@ -216,10 +215,9 @@ public class AboutActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -250,9 +248,7 @@ public class AboutActivity extends AppCompatActivity {
      */
     private void setOpenIntentOnClick(final View view,
                                       final Intent intent) {
-        view.setOnClickListener(view1 -> {
-            startActivity(intent);
-        });
+        view.setOnClickListener(view1 -> startActivity(intent));
     }
 
     /**
