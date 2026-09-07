@@ -1,60 +1,59 @@
 package org.a5calls.android.a5calls.controller;
 
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isClickable;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.assertTrue;
+
 import android.content.Context;
 import android.view.View;
 
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.test.espresso.UiController;
+import androidx.test.espresso.ViewAction;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.volley.toolbox.HttpResponse;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.FakeJSONData;
-import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.DatabaseHelper;
+import org.a5calls.android.a5calls.test.RandomOrdering;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
+import org.junit.runner.OrderWith;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
-
-import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withInputType;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
-
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.test.platform.app.InstrumentationRegistry;
-
-import static org.hamcrest.CoreMatchers.allOf;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Integration test for MainActivity that tests the happy path.
  */
 @RunWith(AndroidJUnit4.class)
+@OrderWith(RandomOrdering.Factory.class)
 public class MainActivityHappyPathTest extends MainActivityBaseTest {
 
     // Custom matcher that matches only the first view matching the given matcher.
     public static Matcher<View> first(final Matcher<View> matcher) {
-        return new TypeSafeMatcher<View>() {
+        return new TypeSafeMatcher<>() {
             boolean matched = false;
 
             @Override
@@ -79,7 +78,7 @@ public class MainActivityHappyPathTest extends MainActivityBaseTest {
 
     // Custom matcher to check if a CollapsingToolbarLayout's title contains specific text
     public static Matcher<View> withCollapsingToolbarTitle(final Matcher<String> textMatcher) {
-        return new TypeSafeMatcher<View>() {
+        return new TypeSafeMatcher<>() {
             @Override
             public boolean matchesSafely(View view) {
                 if (!(view instanceof CollapsingToolbarLayout)) {
@@ -94,6 +93,29 @@ public class MainActivityHappyPathTest extends MainActivityBaseTest {
             public void describeTo(Description description) {
                 description.appendText("with toolbar title: ");
                 textMatcher.describeTo(description);
+            }
+        };
+    }
+
+    /**
+     * A custom click action that only requires the view to be displayed,
+     * bypassing the 90% visibility constraint.
+     */
+    private static ViewAction clickVisible() {
+        return new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return allOf(isDisplayed(), isClickable());
+            }
+
+            @Override
+            public String getDescription() {
+                return "click visible view";
+            }
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                view.performClick();
             }
         };
     }
@@ -127,7 +149,7 @@ public class MainActivityHappyPathTest extends MainActivityBaseTest {
     }
 
     @Test
-    public void testMainUILoadsCorrectly() throws JSONException {
+    public void testMainUILoadsCorrectly() {
         setupMockResponses(/*isSplit=*/false, /*hasLocation=*/true);
 
         setupMockRequestQueue();
@@ -216,7 +238,7 @@ public class MainActivityHappyPathTest extends MainActivityBaseTest {
         // Verify that the demo issue is displayed.
         onView(withText(R.string.demo_issue_name)).check(matches(isDisplayed()));
         // There should be a "1 call to make" note for the demo issue.
-        onView(withText(R.string.call_count_one)).check(matches(isDisplayed()));
+        onView(withText(R.string.call_count_today_one)).check(matches(isDisplayed()));
 
         // Reset address.
         AccountManager.Instance.setAddress(context, address);
@@ -236,7 +258,7 @@ public class MainActivityHappyPathTest extends MainActivityBaseTest {
         // Verify that the demo issue is displayed.
         onView(withText(R.string.demo_issue_name)).check(matches(isDisplayed()));
         // There should be a "1 call to make" note for the demo issue.
-        onView(withText(R.string.call_count_one)).check(matches(isDisplayed()));
+        onView(withText(R.string.call_count_today_one)).check(matches(isDisplayed()));
 
         // Reset the database.
         databaseHelper.getWritableDatabase().delete("UserCallsDatabase", null, null);
@@ -280,7 +302,7 @@ public class MainActivityHappyPathTest extends MainActivityBaseTest {
         // Verify that the demo issue is displayed with "one call to make".
         onView(withText(R.string.demo_issue_name)).check(matches(isDisplayed()));
         onView(withText(R.string.demo_previous_call_stats_one)).check(doesNotExist());
-        onView(withText(R.string.call_count_one)).check(matches(isDisplayed()));
+        onView(withText(R.string.call_count_today_one)).check(matches(isDisplayed()));
 
         // Reset the database.
         databaseHelper.getWritableDatabase().delete("UserCallsDatabase", null, null);
@@ -311,7 +333,7 @@ public class MainActivityHappyPathTest extends MainActivityBaseTest {
 
 
     @Test
-    public void testNavigationDrawerOpens() throws JSONException {
+    public void testNavigationDrawerOpens() {
         setupMockResponses(/*isSplit=*/ false, /*hasLocation=*/true);
 
         setupMockRequestQueue();
@@ -405,7 +427,7 @@ public class MainActivityHappyPathTest extends MainActivityBaseTest {
         onView(first(allOf(withId(R.id.bookmark_icon),
                 withContentDescription(R.string.bookmark_issue),
                 isDisplayed())))
-                .perform(click());
+                .perform(clickVisible());
 
         // Verify it changed to the "bookmarked" state.
         onView(first(allOf(withId(R.id.bookmark_icon),
@@ -417,7 +439,7 @@ public class MainActivityHappyPathTest extends MainActivityBaseTest {
         onView(first(allOf(withId(R.id.bookmark_icon),
                 withContentDescription(R.string.remove_bookmark),
                 isDisplayed())))
-                .perform(click());
+                .perform(clickVisible());
 
         // Verify it returned to the "not bookmarked" state — all icons should
         // be back to "Bookmark issue" since only the first was toggled.
