@@ -1,8 +1,6 @@
 package org.a5calls.android.a5calls.controller;
 
 import androidx.test.core.app.ActivityScenario;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.BasicNetwork;
@@ -12,7 +10,6 @@ import org.a5calls.android.a5calls.BaseIntegrationTest;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.net.FakeRequestQueue;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
-import org.a5calls.android.a5calls.net.MockHttpStack;
 import org.junit.After;
 import org.junit.Before;
 
@@ -27,7 +24,6 @@ public abstract class MainActivityBaseTest extends BaseIntegrationTest {
     protected ActivityScenario<MainActivity> scenario;
 
     @Before
-    @Override
     public void setUp() {
         super.setUp();
         // Save original state
@@ -45,7 +41,6 @@ public abstract class MainActivityBaseTest extends BaseIntegrationTest {
     }
 
     @After
-    @Override
     public void tearDown() {
         // Restore original state
         AppSingleton.getInstance(mContext).setRequestQueue(mOriginalRequestQueue);
@@ -58,15 +53,24 @@ public abstract class MainActivityBaseTest extends BaseIntegrationTest {
         if (scenario != null) {
             scenario.close();
         }
-        super.tearDown();
     }
 
     /**
      * Sets up the mock request queue and API
-     * (Deprecated: functionality moved to BaseIntegrationTest.setUp)
      */
     protected void setupMockRequestQueue() {
-        // This is now redundant but kept for backward compatibility with existing tests
+        // Create a custom RequestQueue with our mock HTTP stack
+        BasicNetwork basicNetwork = new BasicNetwork(mHttpStack);
+        FakeRequestQueue requestQueue = new FakeRequestQueue(basicNetwork);
+        requestQueue.start();
+
+        // Replace the app's RequestQueue with our mock
+        AppSingleton.getInstance(mContext).setRequestQueue(requestQueue);
+
+        // Create a new FiveCallsApi with our mock RequestQueue
+        String callerId = AccountManager.Instance.getCallerID(mContext);
+        FiveCallsApi api = new FiveCallsApi(callerId, requestQueue, mContext);
+        AppSingleton.getInstance(mContext).setFiveCallsApi(api);
     }
 
     /**

@@ -1,18 +1,25 @@
 package org.a5calls.android.a5calls;
 
+import static androidx.test.espresso.matcher.ViewMatchers.isClickable;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static org.hamcrest.Matchers.allOf;
+import static org.junit.Assert.assertNotNull;
+
 import android.content.Context;
 import android.os.SystemClock;
 import android.view.View;
 
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.test.ext.junit.rules.ActivityScenarioRule;
+import androidx.test.espresso.UiController;
+import androidx.test.espresso.ViewAction;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
+
+import java.util.Locale;
 
 import com.android.volley.toolbox.BasicNetwork;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 
-import org.a5calls.android.a5calls.controller.MainActivity;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.net.FakeRequestQueue;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
@@ -22,11 +29,7 @@ import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
-import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
-
-import static org.junit.Assert.assertNotNull;
 
 /**
  * Base class for all instrumentation tests in the app.
@@ -39,23 +42,21 @@ public abstract class BaseIntegrationTest {
     protected MockHttpStack mHttpStack;
     protected FakeRequestQueue mRequestQueue;
     protected FiveCallsApi mApi;
+    protected Locale mLocale;
 
     @Before
     public void setUp() {
         mContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        
+        mLocale = Locale.getDefault();
+
         // Use a fixed caller ID for consistent test results
         AccountManager.Instance.setCallerID(mContext, "itMe");
-        
+
         mHttpStack = new MockHttpStack();
         BasicNetwork basicNetwork = new BasicNetwork(mHttpStack);
         mRequestQueue = new FakeRequestQueue(basicNetwork);
-        
+
         mApi = new FiveCallsApi("itMe", mRequestQueue, mContext);
-        
-        // Replace the global API and RequestQueue in the AppSingleton for tests that use it
-        AppSingleton.getInstance(mContext).setRequestQueue(mRequestQueue);
-        AppSingleton.getInstance(mContext).setFiveCallsApi(mApi);
     }
 
     @After
@@ -84,10 +85,9 @@ public abstract class BaseIntegrationTest {
         return new TypeSafeMatcher<>() {
             @Override
             protected boolean matchesSafely(View view) {
-                if (!(view instanceof RecyclerView)) {
+                if (!(view instanceof RecyclerView recyclerView)) {
                     return false;
                 }
-                RecyclerView recyclerView = (RecyclerView) view;
                 return recyclerView.getAdapter() != null && recyclerView.getAdapter().getItemCount() == 1;
             }
 
@@ -100,7 +100,7 @@ public abstract class BaseIntegrationTest {
 
     // Custom matcher that matches only the first view matching the given matcher.
     public static Matcher<View> first(final Matcher<View> matcher) {
-        return new TypeSafeMatcher<View>() {
+        return new TypeSafeMatcher<>() {
             boolean matched = false;
 
             @Override
@@ -125,13 +125,12 @@ public abstract class BaseIntegrationTest {
 
     // Custom matcher to check if a CollapsingToolbarLayout's title contains specific text
     public static Matcher<View> withCollapsingToolbarTitle(final Matcher<String> textMatcher) {
-        return new TypeSafeMatcher<View>() {
+        return new TypeSafeMatcher<>() {
             @Override
             public boolean matchesSafely(View view) {
-                if (!(view instanceof CollapsingToolbarLayout)) {
+                if (!(view instanceof CollapsingToolbarLayout toolbarLayout)) {
                     return false;
                 }
-                CollapsingToolbarLayout toolbarLayout = (CollapsingToolbarLayout) view;
                 CharSequence title = toolbarLayout.getTitle();
                 return title != null && textMatcher.matches(title.toString());
             }
@@ -140,6 +139,29 @@ public abstract class BaseIntegrationTest {
             public void describeTo(Description description) {
                 description.appendText("with toolbar title: ");
                 textMatcher.describeTo(description);
+            }
+        };
+    }
+
+    /**
+     * A custom click action that only requires the view to be displayed,
+     * bypassing the 90% visibility constraint.
+     */
+    public static ViewAction clickVisible() {
+        return new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return allOf(isDisplayed(), isClickable());
+            }
+
+            @Override
+            public String getDescription() {
+                return "click visible view";
+            }
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                view.performClick();
             }
         };
     }

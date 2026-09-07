@@ -8,19 +8,10 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 
-import android.view.View;
-
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-
 import com.android.volley.toolbox.HttpResponse;
 
 import org.a5calls.android.a5calls.R;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.ArrayList;
