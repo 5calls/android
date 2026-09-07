@@ -3,6 +3,7 @@ package org.a5calls.android.a5calls.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
@@ -160,7 +162,8 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public static ArrayList<Issue> filterIssuesBySearchText(String searchText, List<Issue> allIssues) {
         ArrayList<Issue> tempIssues = new ArrayList<>();
         // Should we .trim() the whitespace?
-        String lowerSearchText = searchText.toLowerCase();
+        // Issues appear to be all in English, so until Issues are multilingual, specifiy US locale
+        String lowerSearchText = searchText.toLowerCase(Locale.US);
 
         /*
          * When name and category fields are searched, String#contains is used.
@@ -224,7 +227,8 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     private static boolean containsIgnoreCase(String text, @NonNull String lowercaseSearchText) {
-        return !TextUtils.isEmpty(text) && text.toLowerCase().contains(lowercaseSearchText);
+        // Issues appear to be all in English, so until Issues are multilingual, specifiy US locale
+        return !TextUtils.isEmpty(text) && text.toLowerCase(Locale.US).contains(lowercaseSearchText);
     }
 
     private ArrayList<Issue> filterActiveIssues() {
@@ -620,8 +624,8 @@ private static class EmptyRequestViewHolder extends RecyclerView.ViewHolder {
         refreshButton = (Button) itemView.findViewById(R.id.refresh_btn);
         // Tinting the compound drawable only works API 23+, so do this manually.
         refreshButton.getCompoundDrawablesRelative()[0].mutate().setColorFilter(
-                ContextCompat.getColor(itemView.getContext(), R.color.colorAccent),
-                PorterDuff.Mode.MULTIPLY);
+                new PorterDuffColorFilter(ContextCompat.getColor(itemView.getContext(), R.color.colorAccent),
+                PorterDuff.Mode.MULTIPLY));
     }
 }
 
@@ -633,8 +637,8 @@ private static class EmptyAddressViewHolder extends RecyclerView.ViewHolder {
         locationButton = (Button) itemView.findViewById(R.id.location_btn);
         // Tinting the compound drawable only works API 23+, so do this manually.
         locationButton.getCompoundDrawablesRelative()[0].mutate().setColorFilter(
-                ContextCompat.getColor(itemView.getContext(), R.color.colorAccent),
-                PorterDuff.Mode.MULTIPLY);
+                new PorterDuffColorFilter(ContextCompat.getColor(itemView.getContext(), R.color.colorAccent),
+                PorterDuff.Mode.MULTIPLY));
     }
 }
 
@@ -646,8 +650,8 @@ private static class EmptySearchViewHolder extends RecyclerView.ViewHolder {
         searchButton = (Button) itemView.findViewById(R.id.search_btn);
         // Tinting the compound drawable only works API 23+, so do this manually.
         searchButton.getCompoundDrawablesRelative()[0].mutate().setColorFilter(
-                ContextCompat.getColor(itemView.getContext(), R.color.colorAccent),
-                PorterDuff.Mode.MULTIPLY);
+                new PorterDuffColorFilter(ContextCompat.getColor(itemView.getContext(), R.color.colorAccent),
+                PorterDuff.Mode.MULTIPLY));
     }
 }
 

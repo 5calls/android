@@ -8,7 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.Html;
+import androidx.core.text.HtmlCompat;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
@@ -37,6 +37,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.IntentCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
@@ -139,8 +140,8 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
                                 && data.hasExtra(RepCallActivity.EXTRA_PENDING_OUTCOME)) {
                             mPendingContactIndex = data.getIntExtra(
                                     RepCallActivity.EXTRA_PENDING_CONTACT_INDEX, -1);
-                            mPendingOutcome = data.getParcelableExtra(
-                                    RepCallActivity.EXTRA_PENDING_OUTCOME);
+                            mPendingOutcome = IntentCompat.getParcelableExtra(data,
+                                    RepCallActivity.EXTRA_PENDING_OUTCOME, Outcome.class);
                         }
                     }
                     if (result.getResultCode() == RESULT_SERVER_ERROR) {
@@ -224,7 +225,7 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
         };
         api.registerContactsRequestListener(mContactsRequestListener);
 
-        mIssue = getIntent().getParcelableExtra(KEY_ISSUE);
+        mIssue = IntentCompat.getParcelableExtra(getIntent(), KEY_ISSUE, Issue.class);
         if (mIssue == null) {
             // TODO handle this better? Is it even possible to get here?
             finish();
@@ -315,8 +316,9 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
             if ((TextUtils.isEmpty(mIssue.linkTitle))) {
                 binding.link.setText(mIssue.link);
             } else {
-                binding.link.setText(Html.fromHtml(
-                        String.format("<a href=\"%s\">%s</a>", mIssue.link, mIssue.linkTitle)));
+                binding.link.setText(HtmlCompat.fromHtml(
+                        String.format("<a href=\"%s\">%s</a>", mIssue.link, mIssue.linkTitle),
+                        HtmlCompat.FROM_HTML_MODE_LEGACY));
             }
         } else {
             binding.link.setVisibility(View.GONE);
@@ -588,11 +590,7 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
     private void returnToMain() {
         Intent intent = new Intent();
         intent.putExtra(KEY_ISSUE, mIssue);
-        if (getParent() == null) {
-            setResult(Activity.RESULT_OK, intent);
-        } else {
-            getParent().setResult(Activity.RESULT_OK, intent);
-        }
+        setResult(Activity.RESULT_OK, intent);
         finish();
     }
 
@@ -640,7 +638,7 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
 
         for (int i = 0; i < mIssue.contacts.size(); i++) {
             Contact contact = mIssue.contacts.get(i);
-            View repView = LayoutInflater.from(this).inflate(R.layout.rep_list_view, null);
+            View repView = getLayoutInflater().inflate(R.layout.rep_list_view, null);
             boolean hasCalledToday = dbHelper.hasCalledToday(mIssue.id, contact.id)
                     || isPendingForContact(i);
             populateRepView(repView, contact, i, hasCalledToday);
@@ -901,7 +899,7 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
                 findViewById(R.id.donate_section).setVisibility(View.VISIBLE);
                 findViewById(R.id.donate_btn).setOnClickListener(v -> launchDonate(callerId));
             } else if (TextUtils.equals(action.type, Action.TYPE_FREEFORM)) {
-                View freeformView = LayoutInflater.from(this).inflate(
+                View freeformView = getLayoutInflater().inflate(
                         R.layout.issue_done_freeform_section, actionsContainer, false);
                 TextView title = freeformView.findViewById(R.id.freeform_title);
                 TextView body = freeformView.findViewById(R.id.freeform_body);

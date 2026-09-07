@@ -24,6 +24,7 @@ import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NavUtils;
+import androidx.core.content.IntentCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
@@ -84,7 +85,7 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
         binding = ActivityRepCallBinding.inflate(getLayoutInflater());
 
         mActiveContactIndex = getIntent().getIntExtra(KEY_ACTIVE_CONTACT_INDEX, 0);
-        mIssue = getIntent().getParcelableExtra(KEY_ISSUE);
+        mIssue = IntentCompat.getParcelableExtra(getIntent(), KEY_ISSUE, Issue.class);
         if (mIssue == null) {
             finish();
             return;
@@ -385,8 +386,7 @@ public class RepCallActivity extends AppCompatActivity implements FiveCallsApi.S
     }
 
     private int getSpanCount(Activity activity) {
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        DisplayMetrics displayMetrics = activity.getResources().getDisplayMetrics();
 
         double minButtonWidth = activity.getResources().getDimension(R.dimen.min_button_width);
 

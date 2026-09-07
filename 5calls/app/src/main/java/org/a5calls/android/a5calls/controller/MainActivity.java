@@ -10,9 +10,12 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
+import androidx.core.os.BundleCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -68,7 +71,6 @@ import static android.view.View.VISIBLE;
  */
 public class MainActivity extends AppCompatActivity implements IssuesAdapter.Callback {
     private static final String TAG = "MainActivity";
-    private static final int ISSUE_DETAIL_REQUEST = 1;
     public static final int NOTIFICATION_REQUEST = 2;
     public static final String EXTRA_FROM_NOTIFICATION = "extraFromNotification";
     private static final String KEY_FILTER_ITEM_SELECTED = "filterItemSelected";
@@ -99,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     private boolean mShowLowAccuracyWarning = true;
     private FirebaseAuth mAuth = null;
     private int mCallCount = 0;
+    private ActivityResultLauncher<Intent> mIssueActivityResultLauncher;
 
     private ActivityMainBinding binding;
 
@@ -144,6 +147,19 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         }
 
         maybeHandleDeepLink(intent);
+
+        mIssueActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Issue issue = BundleCompat.getParcelable(result.getData().getExtras(),
+                                IssueActivity.KEY_ISSUE, Issue.class);
+                        mIssuesAdapter.updateIssue(issue);
+                        // Reload bookmarks in case bookmark state changed in IssueActivity.
+                        loadBookmarks();
+                        mIssuesAdapter.setFilterAndSearch(mFilterText, mSearchText);
+                    }
+                });
 
         setContentView(binding.getRoot());
 
@@ -319,8 +335,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         binding.drawerLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                DisplayMetrics displayMetrics = new DisplayMetrics();
-                getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+                DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
                 int supportActionBarHeight =
                         getSupportActionBar() != null ? getSupportActionBar().getHeight() : 0;
                 int searchHeight = binding.searchBar.getHeight();
@@ -409,7 +424,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         DatabaseHelper dbHelper = AppSingleton.getInstance(getApplicationContext())
                 .getDatabaseHelper();
         issueIntent.putExtra(IssueActivity.KEY_IS_BOOKMARKED, dbHelper.isBookmarked(issue.id));
-        startActivityForResult(issueIntent, ISSUE_DETAIL_REQUEST);
+        mIssueActivityResultLauncher.launch(issueIntent);
     }
 
     private void setupDrawerContent(NavigationView navigationView) {
@@ -786,18 +801,6 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
             return address;
         }
         return null;
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == ISSUE_DETAIL_REQUEST && resultCode == RESULT_OK) {
-            Issue issue = data.getExtras().getParcelable(IssueActivity.KEY_ISSUE);
-            mIssuesAdapter.updateIssue(issue);
-            // Reload bookmarks in case bookmark state changed in IssueActivity.
-            loadBookmarks();
-            mIssuesAdapter.setFilterAndSearch(mFilterText, mSearchText);
-        }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     public void onIssueSearchSet(String searchText) {

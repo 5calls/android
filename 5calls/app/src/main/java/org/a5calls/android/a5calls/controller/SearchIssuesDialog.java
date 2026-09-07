@@ -53,7 +53,7 @@ public class SearchIssuesDialog extends DialogFragment {
 
         builder.setTitle(R.string.search_dialog_title);
 
-        ViewGroup layout = (ViewGroup) LayoutInflater.from(getActivity()).inflate(
+        ViewGroup layout = (ViewGroup) getLayoutInflater().inflate(
                 R.layout.issue_search_box, null);
         mSearchBox = layout.findViewById(R.id.search_box);
         if (!TextUtils.isEmpty(previousSearch.trim())) {
