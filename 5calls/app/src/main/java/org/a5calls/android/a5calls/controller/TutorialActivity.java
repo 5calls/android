@@ -28,9 +28,11 @@ import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.databinding.ActivityTutorialBinding;
 import org.a5calls.android.a5calls.model.AccountManager;
+import org.a5calls.android.a5calls.model.HourlyCallCount;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
 
 import java.text.NumberFormat;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -243,7 +245,8 @@ public class TutorialActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onReportReceived(int count, boolean donateOn) {
+                public void onReportReceived(int count, boolean donateOn, long serverTime,
+                                             List<HourlyCallCount> hourlyCounts) {
                     if (!isAdded()) {
                         // No longer attached to the activity!
                         return;

@@ -49,13 +49,23 @@
                 />
 
             <TextView
-                style="@style/paragraphTextStyle"
-                android:text="@string/about_p3"
+                android:id="@+id/calls_to_date"
+                style="@style/aboutSubtStyle"
+                android:layout_marginBottom="@dimen/text_layout_marginBottom16"
+                android:text="@string/calls_to_date_placeholder"
                 />
 
             <TextView
-                android:id="@+id/calls_to_date"
+                style="@style/paragraphTextStyle"
+                android:text="@string/about_p3"
+                android:layout_marginBottom="@dimen/text_layout_marginBottom16"
+                />
+
+            <TextView
+                android:id="@+id/calls_today"
                 style="@style/aboutSubtStyle"
+                android:layout_marginBottom="@dimen/text_layout_marginBottom16"
+                android:visibility="gone"
                 />
 
             <Button

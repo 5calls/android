@@ -133,8 +133,14 @@
     <!-- Button linking to the privacy policy [CHAR_LIMIT=30] -->
     <string name="privacy_btn">Privacy Policy</string>
 
+    <!-- Text to show the user the number of calls made by everyone, with placeholder count [CHAR_LIMIT=50] -->
+    <string name="calls_to_date_placeholder">We\'ve made over 14,000,000 calls together</string>
+
     <!-- Text to show the user the number of calls made by everyone [CHAR_LIMIT=50] -->
-    <string name="calls_to_date">We\'ve made <xliff:g id="callCount">%1$s</xliff:g> calls, so far</string>
+    <string name="calls_to_date">We\'ve made <xliff:g id="callCount">%1$s</xliff:g> calls together</string>
+
+    <!-- Showing the number of calls made today only [CHAR_LIMIT=50] -->
+    <string name="calls_today">So far, <xliff:g id="callsToday">%1$s</xliff:g> calls made today</string>
 
     <!-- Text shown to the user on the splash / tutorial screen describing the 5 Calls app. \n\n is used to create new paragraphs. [CHAR_LIMIT=NONE] -->
     <string name="about_splash">There\'s one simple and straightforward way to influence the Government that is supposed to represent you: Call them on the phone.</string>

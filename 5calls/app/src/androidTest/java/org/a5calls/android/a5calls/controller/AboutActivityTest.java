@@ -8,6 +8,7 @@ import static androidx.test.espresso.intent.Intents.intending;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasData;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static org.a5calls.android.a5calls.FakeJSONData.REPORT_DATA;
 import static org.hamcrest.Matchers.allOf;
 
 import android.app.Activity;
@@ -57,7 +58,7 @@ public class AboutActivityTest extends MainActivityBaseTest {
     @Test
     public void testCheckRegistrationButton_launchesIntent() {
         // Mock the report response to avoid errors in AboutActivity
-        mHttpStack.setResponseToReturn(new HttpResponse(200, new ArrayList<>(), "{\"count\": 100}".getBytes()));
+        mHttpStack.setResponseToReturn(new HttpResponse(200, new ArrayList<>(), REPORT_DATA.getBytes()));
 
         aboutScenario = ActivityScenario.launch(AboutActivity.class);
 
