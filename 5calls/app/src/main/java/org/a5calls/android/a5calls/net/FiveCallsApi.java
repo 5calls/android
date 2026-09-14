@@ -22,6 +22,7 @@ import org.a5calls.android.a5calls.BuildConfig;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.CustomizedContactScript;
+import org.a5calls.android.a5calls.model.HourlyCallCount;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.model.Outcome;
 import org.json.JSONArray;
@@ -67,7 +68,8 @@ public class FiveCallsApi {
 
         void onJsonError();
 
-        void onReportReceived(int count, boolean donateOn);
+        void onReportReceived(int count, boolean donateOn, long serverTime,
+                              List<HourlyCallCount> hourlyCounts);
 
         void onCallReported();
     }
@@ -380,28 +382,30 @@ public class FiveCallsApi {
 
     public void getReport() {
         JsonObjectRequest reportRequest = new JsonObjectRequest(
-                Request.Method.GET, GET_REPORT, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    int count = response.getInt("count");
-                    boolean donateOn = response.getBoolean("donateOn");
-                    for (CallRequestListener listener : mCallRequestListeners) {
-                        listener.onReportReceived(count, donateOn);
+                Request.Method.GET, GET_REPORT, null, response -> {
+                    try {
+                        int count = response.getInt("count");
+                        boolean donateOn = response.getBoolean("donateOn");
+                        long serverTime = 0;
+                        if (response.has("serverTime")) {
+                            serverTime = response.getLong("serverTime");
+                        }
+                        JSONArray jsonArray = response.optJSONArray("hourlyCalls");
+                        List<HourlyCallCount> hourlyCounts = null;
+                        if (jsonArray != null) {
+                            Type listType = new TypeToken<ArrayList<HourlyCallCount>>(){}.getType();
+                            hourlyCounts = mGson.fromJson(jsonArray.toString(), listType);
+                        }
+                        for (CallRequestListener listener : mCallRequestListeners) {
+                            listener.onReportReceived(count, donateOn, serverTime, hourlyCounts);
+                        }
+                    } catch (JSONException e) {
+                        for (CallRequestListener listener : mCallRequestListeners) {
+                            listener.onJsonError();
+                        }
+                        e.printStackTrace();
                     }
-                } catch (JSONException e) {
-                    for (CallRequestListener listener : mCallRequestListeners) {
-                        listener.onJsonError();
-                    }
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                onRequestError(error);
-            }
-        });
+                }, this::onRequestError);
         reportRequest.setTag(TAG); // TODO: same tag OK?
         // Add the request to the RequestQueue.
         mRequestQueue.add(reportRequest);

@@ -31,11 +31,15 @@ import org.a5calls.android.a5calls.BuildConfig;
 import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.databinding.ActivityAboutBinding;
 import org.a5calls.android.a5calls.model.AccountManager;
+import org.a5calls.android.a5calls.model.HourlyCallCount;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.util.CustomTabsUtil;
 
 import java.text.NumberFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -47,6 +51,8 @@ import static android.view.View.VISIBLE;
 public class AboutActivity extends AppCompatActivity {
     private static final String TAG = "AboutActivity";
     public static final String KEY_DISTRICT_ID = "key_district_id";
+
+    private static final int MIN_CALLS_TO_SHOW = 200;
 
     private final AccountManager accountManager = AccountManager.Instance;
     private FiveCallsApi.CallRequestListener mStatusListener;
@@ -187,10 +193,34 @@ public class AboutActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onReportReceived(int count, boolean donateOn) {
+            public void onReportReceived(int count, boolean donateOn, long serverTime,
+                                         List<HourlyCallCount> hourlyCounts) {
                 binding.callsToDate.setText(String.format(
                         getResources().getString(R.string.calls_to_date),
-                        NumberFormat.getNumberInstance(Locale.US).format(count)));
+                        NumberFormat.getNumberInstance(Locale.getDefault()).format(count)));
+                if (hourlyCounts != null && !hourlyCounts.isEmpty()) {
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.set(Calendar.HOUR_OF_DAY, 0);
+                    calendar.set(Calendar.MINUTE, 0);
+                    calendar.set(Calendar.SECOND, 0);
+                    calendar.set(Calendar.MILLISECOND, 0);
+
+                    Date localMidnight = calendar.getTime();
+
+                    int todayCount = 0;
+                    for (HourlyCallCount hourlyCount : hourlyCounts) {
+                        if (!hourlyCount.getTime().before(localMidnight)) {
+                            todayCount += hourlyCount.count;
+                        }
+                    }
+
+                    if (todayCount >= MIN_CALLS_TO_SHOW) {
+                        binding.callsToday.setVisibility(VISIBLE);
+                        binding.callsToday.setText(String.format(
+                                getResources().getString(R.string.calls_today),
+                                NumberFormat.getNumberInstance(Locale.getDefault()).format(todayCount)));
+                    }
+                }
             }
 
             @Override

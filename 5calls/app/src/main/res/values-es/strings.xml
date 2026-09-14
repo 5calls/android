@@ -105,8 +105,14 @@
     <!-- Button linking to the 5calls.org Play Store page to request a rating [CHAR_LIMIT=30] -->
     <string name="rate_us_btn">Califíque a 5 Calls</string>
 
+    <!-- Text to show the user the number of calls made by everyone, with placeholder count [CHAR_LIMIT=50] -->
+    <string name="calls_to_date_placeholder">Más de 14,000,000 llamadas a la fecha</string>
+
     <!-- Text to show the user the number of calls made by everyone [CHAR_LIMIT=50] -->
     <string name="calls_to_date"><xliff:g id="callCount">%1$s</xliff:g> llamadas a la fecha</string>
+
+    <!-- Showing the number of calls made today only [CHAR_LIMIT=50] -->
+    <string name="calls_today">Hasta ahora, <xliff:g id="callsToday">%1$s</xliff:g> llamadas hoy</string>
 
     <!-- Text shown to the user on the splash / tutorial screen describing the 5 Calls app.   n  n is used to create new paragraphs. [CHAR_LIMIT=NONE] -->
     <string name="about_splash">Hay una forma sencilla y directa de influir al Gobierno que se supone te representa: Llámales por teléfono.</string>
