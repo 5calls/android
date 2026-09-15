@@ -18,6 +18,11 @@ For instrumentation testing, connect a device or start an emulator, then:
 cd 5calls
 ./gradlew connectedAndroidTest
 ```
+For instrumentation testing running the app in Spanish:
+```
+cd 5calls
+./gradlew connectedAndroidTest -Pandroid.testInstrumentationRunnerArguments.locale=es-US
+```
 
 ### Notifications
 To test snoozing notifications, change `FREQUENT_NOTIFICATION_DEBUG_MODE` to `true` in `NotificationUtils.java`. Note that notifications
