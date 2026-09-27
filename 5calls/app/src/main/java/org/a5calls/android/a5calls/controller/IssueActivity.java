@@ -65,6 +65,7 @@ import org.a5calls.android.a5calls.model.Action;
 import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.CustomizedContactScript;
 import org.a5calls.android.a5calls.model.DatabaseHelper;
+import org.a5calls.android.a5calls.model.HourlyCallCount;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.model.Outcome;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
@@ -164,7 +165,8 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
             }
 
             @Override
-            public void onReportReceived(int count, boolean donateOn) {
+            public void onReportReceived(int count, boolean donateOn, long serverTime,
+                                         List<HourlyCallCount> callCounts) {
                 // unused
             }
 
