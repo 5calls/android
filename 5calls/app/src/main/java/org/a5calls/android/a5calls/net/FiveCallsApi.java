@@ -296,8 +296,7 @@ public class FiveCallsApi {
                                 
                                 districtId = state + "-" + district;
                                 // the api targets notifications by district, so
-                                // it needs to hear about a change the same way
-                                // the onesignal tag used to
+                                // it needs to hear about a change
                                 PushRegistration.INSTANCE.updateDistrict(mContext);
                             }
                         } catch (JSONException e) {

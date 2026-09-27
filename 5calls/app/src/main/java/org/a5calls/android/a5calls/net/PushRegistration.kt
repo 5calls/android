@@ -14,7 +14,7 @@ import org.json.JSONObject
 
 /**
  * Tells the 5calls API about this device's FCM token so it can send us
- * notifications directly, which OneSignal used to do.
+ * notifications directly.
  *
  * The token is issued by our own Firebase project, so it keeps working no
  * matter who sends to it. Registration upserts on the token, so calling this

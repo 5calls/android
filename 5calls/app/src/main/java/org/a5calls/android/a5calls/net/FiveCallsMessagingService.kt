@@ -15,9 +15,8 @@ import org.a5calls.android.a5calls.R
 import org.a5calls.android.a5calls.controller.MainActivity
 
 /**
- * Receives push notifications from FCM and shows them. OneSignal's SDK used to
- * do both the token handling and the display; this does the same work against
- * our own Firebase project and our own API.
+ * Receives push notifications from FCM and shows them, handling token
+ * refreshes against our own Firebase project and our own API.
  */
 class FiveCallsMessagingService : FirebaseMessagingService() {
     companion object {
