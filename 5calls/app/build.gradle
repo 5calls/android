@@ -10,8 +10,8 @@ android {
         applicationId "org.a5calls.android.a5calls"
         minSdkVersion 23
         targetSdkVersion 36
-        versionCode 86
-        versionName '2.4.5'
+        versionCode 88
+        versionName '2.4.6'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         signingConfig signingConfigs.debug
     }
@@ -97,7 +97,6 @@ configurations.configureEach {
 
     // Charts
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
-    implementation 'com.jjoe64:graphview:4.2.2'
 
     // OneSignal
     implementation 'com.onesignal:OneSignal:5.1.28'

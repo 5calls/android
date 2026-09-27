@@ -308,7 +308,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Cursor c = getReadableDatabase().rawQuery(
                 "SELECT " + CallsColumns.TIMESTAMP + " FROM " + CALLS_TABLE_NAME + " WHERE " +
-                CallsColumns.RESULT + " = '" + statusName + "'", null);
+                CallsColumns.RESULT + " = '" + statusName + "' ORDER BY " + CallsColumns.TIMESTAMP +
+                " ASC", null);
         List<Long> result = new ArrayList<>();
         while (c.moveToNext()) {
             result.add(c.getLong(0));
