@@ -1,13 +1,10 @@
 package org.a5calls.android.a5calls.controller;
 
-import android.Manifest;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
-import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
@@ -22,22 +19,19 @@ import org.a5calls.android.a5calls.model.AccountManager;
 public class NotificationSettingsDialog extends DialogFragment {
     public static String TAG = "NotificationDialog";
 
+    /**
+     * Implemented by the activity showing this dialog. The dialog closes before the permission
+     * prompt is answered, so the activity has to be the one asking.
+     */
+    public interface Host {
+        void enablePushNotifications();
+    }
+
     public static NotificationSettingsDialog newInstance() {
         return new NotificationSettingsDialog();
     }
 
     private int mSelectedOption = 0;
-
-    // has to be registered before the fragment starts, so it can't wait until
-    // the save button is tapped. Null when the permission isn't needed.
-    private ActivityResultLauncher<String> mPermissionRequest;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mPermissionRequest = SettingsActivity.createNotificationPermissionRequest(
-                this, isGranted -> {});
-    }
 
     public NotificationSettingsDialog() {
 
@@ -61,14 +55,13 @@ public class NotificationSettingsDialog extends DialogFragment {
         builder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                if (mSelectedOption == 0 && mPermissionRequest != null) {
-                    mPermissionRequest.launch(Manifest.permission.POST_NOTIFICATIONS);
-                    // TODO(#139): Do not turn on notifications preference if they did not enable
-                    // permissions.
+                if (mSelectedOption == 0) {
+                    ((Host) requireActivity()).enablePushNotifications();
+                } else {
+                    SettingsActivity.updateNotificationsPreference(
+                            (FiveCallsApplication) getActivity().getApplication(),
+                            AccountManager.Instance, String.format("%s", mSelectedOption));
                 }
-                SettingsActivity.updateNotificationsPreference(
-                        (FiveCallsApplication) getActivity().getApplication(),
-                        AccountManager.Instance, String.format("%s", mSelectedOption));
             }
         });
 

@@ -104,6 +104,8 @@ public class FiveCallsApplication extends Application {
                     AccountManager.Instance,
                     AccountManager.DEFAULT_NOTIFICATION_SELECTION
             );
+            // Pushes to this device would be dropped, so stop the api sending them
+            PushRegistration.INSTANCE.unregister(this);
         } else if (!TextUtils.equals("1",
                 AccountManager.Instance.getNotificationPreference(this))) {
             // Re-send the token on launch, unless they've turned notifications

@@ -1,8 +1,6 @@
 package org.a5calls.android.a5calls.controller;
 
-import android.Manifest;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +12,6 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
@@ -190,18 +187,20 @@ public class TutorialActivity extends AppCompatActivity {
         @Override
         public void onCreate(@Nullable Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            mNotificationPermissionRequest =
-                    SettingsActivity.createNotificationPermissionRequest(this, (isGranted) -> {
-                        // If the user denied the notification permission, set the preference to false
-                        // Otherwise they granted and we will set the permission to true.
-                        if (isGranted) {
-                            turnOnReminders();
-                        } else {
-                            remindersBtn.setVisibility(View.GONE);
-                            remindersDoneText.setText(R.string.about_reminders_off);
-                            remindersDoneText.setVisibility(View.VISIBLE);
-                        }
-                    });
+            mNotificationPermissionRequest = SettingsActivity.createNotificationPermissionRequest(
+                    this, this::onPermissionResult);
+        }
+
+        private void onPermissionResult(boolean isGranted) {
+            // If the user denied the notification permission, set the preference to false
+            // Otherwise they granted and we will set the permission to true.
+            if (isGranted) {
+                turnOnReminders();
+            } else {
+                remindersBtn.setVisibility(View.GONE);
+                remindersDoneText.setText(R.string.about_reminders_off);
+                remindersDoneText.setVisibility(View.VISIBLE);
+            }
         }
 
         @Override
@@ -221,15 +220,10 @@ public class TutorialActivity extends AppCompatActivity {
             remindersDoneText = rootView.findViewById(R.id.reminders_done);
 
             remindersBtn.setOnClickListener(v -> {
-                if (!NotificationManagerCompat.from(requireContext()).areNotificationsEnabled()) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                        // Show notification permission then turn on reminders depending on the result.
-                        mNotificationPermissionRequest.launch(Manifest.permission.POST_NOTIFICATIONS);
-                    }
-                } else {
-                    // Don't need to ask for notification permission, can simply
-                    // directly enable reminders.
-                    turnOnReminders();
+                if (!SettingsActivity.requestNotificationPermission(requireActivity(),
+                        mNotificationPermissionRequest, this::onPermissionResult)) {
+                    // Sent to settings, they can turn reminders on in ours once they're back.
+                    onPermissionResult(false);
                 }
             });
 
