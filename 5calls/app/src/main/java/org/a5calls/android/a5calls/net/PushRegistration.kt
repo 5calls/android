@@ -3,18 +3,14 @@ package org.a5calls.android.a5calls.net
 import android.content.Context
 import android.text.TextUtils
 import android.util.Log
-import com.android.volley.AuthFailureError
-import com.android.volley.Request
-import com.android.volley.toolbox.JsonObjectRequest
 import com.google.firebase.FirebaseApp
 import com.google.firebase.messaging.FirebaseMessaging
 import org.a5calls.android.a5calls.AppSingleton
 import org.a5calls.android.a5calls.model.AccountManager
-import org.json.JSONObject
 
 /**
- * Tells the 5calls API about this device's FCM token so it can send us
- * notifications directly.
+ * Keeps track of this device's FCM token and hands it to FiveCallsApi so the
+ * 5calls API can send us notifications directly.
  *
  * The token is issued by our own Firebase project, so it keeps working no
  * matter who sends to it. Registration upserts on the token, so calling this
@@ -22,7 +18,6 @@ import org.json.JSONObject
  */
 object PushRegistration {
     private const val TAG = "PushRegistration"
-    private const val REGISTER_URL = "https://api.5calls.org/v1/push/register"
 
     private const val PREFS_NAME = "org.a5calls.android.a5calls.push"
     private const val KEY_TOKEN = "pushToken"
@@ -64,14 +59,7 @@ object PushRegistration {
         }
 
         setToken(context, token)
-
-        val body = JSONObject().apply {
-            put("token", token)
-            put("platform", "android")
-            put("district", district(context))
-        }
-
-        send(context, Request.Method.POST, body)
+        api(context).registerPushToken(token, district(context))
     }
 
     /**
@@ -87,11 +75,7 @@ object PushRegistration {
     fun unregister(context: Context) {
         val token = getToken(context) ?: return
 
-        val body = JSONObject().apply {
-            put("token", token)
-        }
-
-        send(context, Request.Method.DELETE, body)
+        api(context).unregisterPushToken(token)
         setToken(context, null)
     }
 
@@ -111,28 +95,6 @@ object PushRegistration {
         return "$state-$district"
     }
 
-    private fun send(context: Context, method: Int, body: JSONObject) {
-        val callerId = AccountManager.Instance.getCallerID(context)
-        if (TextUtils.isEmpty(callerId)) {
-            Log.w(TAG, "no caller id yet, skipping push registration")
-            return
-        }
-
-        val request = object : JsonObjectRequest(
-            method,
-            REGISTER_URL,
-            body,
-            { Log.d(TAG, "push registration updated") },
-            { error -> Log.w(TAG, "push registration failed: $error") }
-        ) {
-            @Throws(AuthFailureError::class)
-            override fun getHeaders(): Map<String, String> = mapOf(
-                "Content-Type" to "application/json",
-                "X-Caller-ID" to callerId
-            )
-        }
-
-        request.tag = TAG
-        AppSingleton.getInstance(context).requestQueue.add(request)
-    }
+    private fun api(context: Context): FiveCallsApi =
+        AppSingleton.getInstance(context).jsonController
 }
