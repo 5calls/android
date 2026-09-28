@@ -16,6 +16,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import android.graphics.Paint;
+
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.Legend;
@@ -29,6 +31,7 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.DefaultValueFormatter;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.renderer.LineChartRenderer;
 
 import org.a5calls.android.a5calls.AppSingleton;
 import org.a5calls.android.a5calls.FiveCallsApplication;
@@ -311,11 +314,19 @@ public class StatsActivity extends AppCompatActivity {
 
         // General settings
         binding.lineChart.getDescription().setEnabled(false);
+
+        // Configure smooth rounded joins & caps on the path renderer while keeping straight linear connections
+        if (binding.lineChart.getRenderer() instanceof LineChartRenderer) {
+            LineChartRenderer renderer = (LineChartRenderer) binding.lineChart.getRenderer();
+            renderer.getPaintRender().setStrokeJoin(Paint.Join.ROUND);
+            renderer.getPaintRender().setStrokeCap(Paint.Cap.ROUND);
+        }
+
         binding.lineChart.invalidate();
     }
 
     private LineDataSet makeDataSet(List<Long> timestamps, long firstTimestamp,
-                                     String title, int colorId) {
+                                    String title, int colorId) {
         List<Entry> entries = new ArrayList<>();
         // Add a first timestamp so the graphs all start at (0, 0)
         entries.add(new Entry(0f, 0f));
@@ -333,6 +344,7 @@ public class StatsActivity extends AppCompatActivity {
         int color = ContextCompat.getColor(this, colorId);
         dataSet.setColor(color);
         dataSet.setLineWidth(getResources().getDimensionPixelSize(R.dimen.graph_line_width));
+        dataSet.setMode(LineDataSet.Mode.LINEAR);
         dataSet.setDrawCircles(false);
         dataSet.setDrawValues(false);
         return dataSet;
