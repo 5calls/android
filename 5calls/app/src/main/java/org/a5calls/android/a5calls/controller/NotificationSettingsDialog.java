@@ -8,8 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
-import com.onesignal.Continue;
-import com.onesignal.OneSignal;
 
 import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
@@ -20,6 +18,14 @@ import org.a5calls.android.a5calls.model.AccountManager;
  */
 public class NotificationSettingsDialog extends DialogFragment {
     public static String TAG = "NotificationDialog";
+
+    /**
+     * Implemented by the activity showing this dialog. The dialog closes before the permission
+     * prompt is answered, so the activity has to be the one asking.
+     */
+    public interface Host {
+        void enablePushNotifications();
+    }
 
     public static NotificationSettingsDialog newInstance() {
         return new NotificationSettingsDialog();
@@ -50,14 +56,12 @@ public class NotificationSettingsDialog extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (mSelectedOption == 0) {
-                    OneSignal.getUser().getPushSubscription().optIn();
-                    OneSignal.getNotifications().requestPermission(true, Continue.none());
-                    // TODO(#139): Do not turn on notifications preference if they did not enable
-                    // permissions.
+                    ((Host) requireActivity()).enablePushNotifications();
+                } else {
+                    SettingsActivity.updateNotificationsPreference(
+                            (FiveCallsApplication) getActivity().getApplication(),
+                            AccountManager.Instance, String.format("%s", mSelectedOption));
                 }
-                SettingsActivity.updateNotificationsPreference(
-                        (FiveCallsApplication) getActivity().getApplication(),
-                        AccountManager.Instance, String.format("%s", mSelectedOption));
             }
         });
 

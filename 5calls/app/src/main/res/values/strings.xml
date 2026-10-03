@@ -839,6 +839,8 @@
 
     <!-- Description of a setting to show an example call in the calls list [CHAR_LIMIT=NONE]-->
     <string name="settings_reshow_demo_description">Show an example issue in the list with hints about how to use 5 Calls.</string>
+    <!-- Name of the notification channel for alerts about new issues to call about -->
+    <string name="push_notification_channel_name">Important issues</string>
 
     <!-- Heading for the check your registration section [CHAR_LIMIT=100] -->
     <string name="check_your_registration_prompt">Check your registration</string>
