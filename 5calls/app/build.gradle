@@ -98,8 +98,8 @@ configurations.configureEach {
     // Charts
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
 
-    // OneSignal
-    implementation 'com.onesignal:OneSignal:5.1.28'
+    // Push notifications, sent by our own api
+    implementation 'com.google.firebase:firebase-messaging'
 
     // Plausible
     implementation 'com.github.OneBusAway:plausible-android-sdk:3.3'
