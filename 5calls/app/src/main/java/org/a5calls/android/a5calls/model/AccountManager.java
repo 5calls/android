@@ -32,6 +32,8 @@ public enum AccountManager {
     private static final String KEY_REMINDERS_INFO_SHOWN = "prefsKeyRemindersInfoShown";
     public static final String KEY_NOTIFICATIONS = "prefsKeyNotifications";
     private static final String KEY_NOTIFICATION_DIALOG_SHOWN = "prefsKeyNotificationDialog2";
+    private static final String KEY_NOTIFICATION_PERMISSION_REQUESTED =
+            "prefsKeyNotificationPermissionRequested";
     // Used for the notification dialog through version 73 (2.3.15).
     private static final String KEY_DEPRECATED_NOTIFICATION_DIALOG_SHOWN = "prefsKeyNotificationDialog";
     private static final String KEY_CALLER_ID = "prefsKeyCallerID";
@@ -182,6 +184,15 @@ public enum AccountManager {
 
     public void setNotificationDialogShown(Context context, boolean shown) {
         getSharedPrefs(context).edit().putBoolean(KEY_NOTIFICATION_DIALOG_SHOWN, shown).apply();
+    }
+
+    public boolean isNotificationPermissionRequested(Context context) {
+        return getSharedPrefs(context).getBoolean(KEY_NOTIFICATION_PERMISSION_REQUESTED, false);
+    }
+
+    public void setNotificationPermissionRequested(Context context, boolean requested) {
+        getSharedPrefs(context).edit()
+                .putBoolean(KEY_NOTIFICATION_PERMISSION_REQUESTED, requested).apply();
     }
 
     public boolean isNewsletterPromptDone(Context context) {

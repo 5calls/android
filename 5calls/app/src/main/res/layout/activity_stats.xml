@@ -76,7 +76,7 @@
                     android:visibility="gone"
                     />
 
-                <com.jjoe64.graphview.GraphView
+                <com.github.mikephil.charting.charts.LineChart
                     android:id="@+id/line_chart"
                     style="@style/graphViewStyle"
                     android:visibility="gone"

@@ -16,12 +16,12 @@ import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.onesignal.OneSignal;
 
 import org.a5calls.android.a5calls.BuildConfig;
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.CustomizedContactScript;
+import org.a5calls.android.a5calls.model.HourlyCallCount;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.model.Outcome;
 import org.json.JSONArray;
@@ -62,12 +62,15 @@ public class FiveCallsApi {
     
     private static final String GET_CUSTOMIZED_SCRIPTS = "https://api.5calls.org/v1/issue/%s/script";
 
+    private static final String PUSH_REGISTER = "https://api.5calls.org/v1/push/register";
+
     public interface CallRequestListener {
         void onRequestError();
 
         void onJsonError();
 
-        void onReportReceived(int count, boolean donateOn);
+        void onReportReceived(int count, boolean donateOn, long serverTime,
+                              List<HourlyCallCount> hourlyCounts);
 
         void onCallReported();
     }
@@ -296,9 +299,9 @@ public class FiveCallsApi {
                                 AccountManager.Instance.setDistrict(mContext, district);
                                 
                                 districtId = state + "-" + district;
-                                if (OneSignal.isInitialized()) {
-                                    OneSignal.getUser().addTag("districtID", districtId);
-                                }
+                                // the api targets notifications by district, so
+                                // it needs to hear about a change
+                                PushRegistration.INSTANCE.updateDistrict(mContext);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -380,28 +383,30 @@ public class FiveCallsApi {
 
     public void getReport() {
         JsonObjectRequest reportRequest = new JsonObjectRequest(
-                Request.Method.GET, GET_REPORT, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    int count = response.getInt("count");
-                    boolean donateOn = response.getBoolean("donateOn");
-                    for (CallRequestListener listener : mCallRequestListeners) {
-                        listener.onReportReceived(count, donateOn);
+                Request.Method.GET, GET_REPORT, null, response -> {
+                    try {
+                        int count = response.getInt("count");
+                        boolean donateOn = response.getBoolean("donateOn");
+                        long serverTime = 0;
+                        if (response.has("serverTime")) {
+                            serverTime = response.getLong("serverTime");
+                        }
+                        JSONArray jsonArray = response.optJSONArray("hourlyCalls");
+                        List<HourlyCallCount> hourlyCounts = null;
+                        if (jsonArray != null) {
+                            Type listType = new TypeToken<ArrayList<HourlyCallCount>>(){}.getType();
+                            hourlyCounts = mGson.fromJson(jsonArray.toString(), listType);
+                        }
+                        for (CallRequestListener listener : mCallRequestListeners) {
+                            listener.onReportReceived(count, donateOn, serverTime, hourlyCounts);
+                        }
+                    } catch (JSONException e) {
+                        for (CallRequestListener listener : mCallRequestListeners) {
+                            listener.onJsonError();
+                        }
+                        e.printStackTrace();
                     }
-                } catch (JSONException e) {
-                    for (CallRequestListener listener : mCallRequestListeners) {
-                        listener.onJsonError();
-                    }
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                onRequestError(error);
-            }
-        });
+                }, this::onRequestError);
         reportRequest.setTag(TAG); // TODO: same tag OK?
         // Add the request to the RequestQueue.
         mRequestQueue.add(reportRequest);
@@ -491,6 +496,55 @@ public class FiveCallsApi {
         } catch (JSONException e) {
             Log.w(TAG, "Failed to create search tracking JSON: " + e.getMessage());
         }
+    }
+
+    /**
+     * Registers an FCM token with the API. Registration upserts on the token, so
+     * this is also how a token or its district stays fresh. An empty district
+     * means we don't know it yet.
+     */
+    public void registerPushToken(String token, String district) {
+        try {
+            JSONObject jsonBody = new JSONObject();
+            jsonBody.put("token", token);
+            jsonBody.put("platform", "android");
+            jsonBody.put("district", district);
+            sendPushRequest(Request.Method.POST, jsonBody);
+        } catch (JSONException e) {
+            Log.w(TAG, "Failed to create push registration JSON: " + e.getMessage());
+        }
+    }
+
+    public void unregisterPushToken(String token) {
+        try {
+            JSONObject jsonBody = new JSONObject();
+            jsonBody.put("token", token);
+            sendPushRequest(Request.Method.DELETE, jsonBody);
+        } catch (JSONException e) {
+            Log.w(TAG, "Failed to create push unregistration JSON: " + e.getMessage());
+        }
+    }
+
+    private void sendPushRequest(int method, JSONObject jsonBody) {
+        if (TextUtils.isEmpty(mCallerId)) {
+            Log.w(TAG, "No caller id yet, skipping push registration");
+            return;
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(method, PUSH_REGISTER, jsonBody,
+                response -> Log.d(TAG, "Push registration updated"),
+                error -> Log.w(TAG, "Push registration failed: " + error.getMessage())) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/json");
+                params.put("X-Caller-ID", mCallerId);
+                return params;
+            }
+        };
+        request.setTag(TAG);
+        // Add the request to the RequestQueue.
+        mRequestQueue.add(request);
     }
 
     private void onRequestError(VolleyError error) {

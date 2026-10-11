@@ -1,26 +1,28 @@
 package org.a5calls.android.a5calls.controller;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 
+import androidx.activity.result.ActivityResultCaller;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.app.TaskStackBuilder;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.fragment.app.Fragment;
 import androidx.preference.ListPreference;
 import androidx.preference.MultiSelectListPreference;
 import androidx.preference.Preference;
@@ -32,12 +34,11 @@ import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.view.MenuItem;
 
-import com.onesignal.Continue;
-import com.onesignal.OneSignal;
 
 import org.a5calls.android.a5calls.FiveCallsApplication;
 import org.a5calls.android.a5calls.R;
 import org.a5calls.android.a5calls.model.AccountManager;
+import org.a5calls.android.a5calls.net.PushRegistration;
 import org.a5calls.android.a5calls.model.NotificationUtils;
 
 import java.text.SimpleDateFormat;
@@ -122,19 +123,84 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Has to be called before the caller starts, so every screen that might ask for the
+     * notification permission registers one up front. Null when the permission doesn't exist.
+     */
     public static ActivityResultLauncher<String> createNotificationPermissionRequest(
-            Fragment fragment, Consumer<Boolean> isGranted) {
+            ActivityResultCaller caller, Consumer<Boolean> isGranted) {
         // Only needed on SDK 33 (Tiramisu) and newer
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             return null;
         }
-        if (ContextCompat.checkSelfPermission(fragment.getContext(),
-                Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-            return null;
-        }
-        return fragment.registerForActivityResult(
+        return caller.registerForActivityResult(
                 new ActivityResultContracts.RequestPermission(), isGranted::accept
         );
+    }
+
+    /**
+     * Makes sure notifications are allowed before turning on something that needs them.
+     * Android's prompt is only shown once: after someone has answered it we don't ask again,
+     * and send them to the app's notification settings instead, where they can change their
+     * mind. That's also the only way to turn notifications on before SDK 33.
+     *
+     * @return true if isGranted will hear the answer, either right away because notifications
+     * are already allowed or once the prompt is answered. False if we sent them to settings,
+     * where we won't hear what they chose.
+     */
+    public static boolean requestNotificationPermission(
+            Activity activity, @Nullable ActivityResultLauncher<String> permissionRequest,
+            Consumer<Boolean> isGranted) {
+        if (NotificationManagerCompat.from(activity).areNotificationsEnabled()) {
+            isGranted.accept(true);
+            return true;
+        }
+
+        // The rationale check catches people who denied before we started keeping track.
+        if (permissionRequest != null
+                && !AccountManager.Instance.isNotificationPermissionRequested(activity)
+                && !ActivityCompat.shouldShowRequestPermissionRationale(
+                        activity, Manifest.permission.POST_NOTIFICATIONS)) {
+            AccountManager.Instance.setNotificationPermissionRequested(activity, true);
+            permissionRequest.launch(Manifest.permission.POST_NOTIFICATIONS);
+            return true;
+        }
+
+        openNotificationSettings(activity);
+        return false;
+    }
+
+    private static void openNotificationSettings(Context context) {
+        Intent intent;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            intent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                    .putExtra(Settings.EXTRA_APP_PACKAGE, context.getPackageName());
+        } else {
+            intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                    Uri.fromParts("package", context.getPackageName(), null));
+        }
+        context.startActivity(intent);
+    }
+
+    /**
+     * Opts in to push notifications, once we know notifications are allowed. The launcher's
+     * callback should pass its result to onPushPermissionResult.
+     */
+    public static void enablePushNotifications(
+            Activity activity, @Nullable ActivityResultLauncher<String> permissionRequest) {
+        FiveCallsApplication application = (FiveCallsApplication) activity.getApplication();
+        if (!requestNotificationPermission(activity, permissionRequest,
+                isGranted -> onPushPermissionResult(application, isGranted))) {
+            // Keep their choice while they're in settings. If they allow notifications there,
+            // the next launch registers the token; if not, it resets the choice.
+            updateNotificationsPreference(application, AccountManager.Instance, "0");
+        }
+    }
+
+    public static void onPushPermissionResult(FiveCallsApplication application,
+                                              boolean isGranted) {
+        updateNotificationsPreference(application, AccountManager.Instance,
+                isGranted ? "0" : "1");
     }
 
     public static void updateNotificationsPreference(FiveCallsApplication application,
@@ -142,11 +208,13 @@ public class SettingsActivity extends AppCompatActivity {
                                                      String result) {
         accountManager.setNotificationPreference(application, result);
         if (TextUtils.equals("0", result)) {
-            OneSignal.getNotifications().requestPermission(true, Continue.none());
-            OneSignal.getUser().getPushSubscription().optIn();
-            // TODO(#139): Wait for permission request result before opting in
+            // Without the permission the token would be registered but nothing would show up.
+            // If it's granted later, the next launch registers it.
+            if (NotificationManagerCompat.from(application).areNotificationsEnabled()) {
+                PushRegistration.INSTANCE.refreshToken(application);
+            }
         } else if (TextUtils.equals("1", result)) {
-            OneSignal.getUser().getPushSubscription().optOut();
+            PushRegistration.INSTANCE.unregister(application);
         }
         // If the user changes the settings there's no need to show the dialog in the future.
         accountManager.setNotificationDialogShown(application, true);
@@ -167,24 +235,41 @@ public class SettingsActivity extends AppCompatActivity {
             SharedPreferences.OnSharedPreferenceChangeListener {
         private final AccountManager accountManager = AccountManager.Instance;
         private ActivityResultLauncher<String> mNotificationPermissionRequest;
+        private ActivityResultLauncher<String> mPushPermissionRequest;
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            mNotificationPermissionRequest = createNotificationPermissionRequest(this, (isGranted) -> {
-                // If the user denied the notification permission, set the preference to false
-                // Otherwise they granted and we will set the permission to true
-                accountManager.setAllowReminders(getActivity(), isGranted);
-                if (!isGranted) {
-                    SwitchPreference remindersPref =
-                            findPreference(AccountManager.KEY_ALLOW_REMINDERS);
-                    if (remindersPref == null) {
-                        return;
-                    }
-                    remindersPref.setChecked(false);
-                    remindersPref.setSummary(R.string.reminders_disabled_summary);
+            mNotificationPermissionRequest = createNotificationPermissionRequest(
+                    this, this::onRemindersPermissionResult);
+            mPushPermissionRequest = createNotificationPermissionRequest(
+                    this, this::onPushPermissionResult);
+        }
+
+        private void onRemindersPermissionResult(boolean isGranted) {
+            // If the user denied the notification permission, set the preference to false
+            // Otherwise they granted and we will set the permission to true
+            accountManager.setAllowReminders(getActivity(), isGranted);
+            if (!isGranted) {
+                SwitchPreference remindersPref =
+                        findPreference(AccountManager.KEY_ALLOW_REMINDERS);
+                if (remindersPref == null) {
+                    return;
                 }
-            });
+                remindersPref.setChecked(false);
+                remindersPref.setSummary(R.string.reminders_disabled_summary);
+            }
+        }
+
+        private void onPushPermissionResult(boolean isGranted) {
+            SettingsActivity.onPushPermissionResult(
+                    (FiveCallsApplication) requireActivity().getApplication(), isGranted);
+            if (!isGranted) {
+                ListPreference notificationsPref = findPreference(AccountManager.KEY_NOTIFICATIONS);
+                if (notificationsPref != null) {
+                    notificationsPref.setValue("1");
+                }
+            }
         }
 
         @Override
@@ -249,17 +334,15 @@ public class SettingsActivity extends AppCompatActivity {
                 accountManager.setAllowAnalytics(getActivity(), result);
             } else if (TextUtils.equals(key, AccountManager.KEY_ALLOW_REMINDERS)) {
                 boolean result = sharedPreferences.getBoolean(key, false);
-                if (result &&
-                        !NotificationManagerCompat.from(requireContext()).areNotificationsEnabled()) {
-                    // Trying to enable reminders and notification permission is not granted
-                    if (mNotificationPermissionRequest != null
-                            && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                        mNotificationPermissionRequest.launch(Manifest.permission.POST_NOTIFICATIONS);
+                if (result) {
+                    if (!requestNotificationPermission(requireActivity(),
+                            mNotificationPermissionRequest, this::onRemindersPermissionResult)) {
+                        // Sent to settings, so the switch stays off until they come back and
+                        // turn it on with notifications allowed.
+                        onRemindersPermissionResult(false);
                     }
                 } else {
-                    // Either disabling reminders or notification permission is already granted
-                    // so we don't need to prompt
-                    accountManager.setAllowReminders(getActivity(), result);
+                    accountManager.setAllowReminders(getActivity(), false);
                 }
             } else if (TextUtils.equals(key, AccountManager.KEY_REMINDER_DAYS)) {
                 Set<String> result = sharedPreferences.getStringSet(key,
@@ -270,8 +353,13 @@ public class SettingsActivity extends AppCompatActivity {
             } else if (TextUtils.equals(key, AccountManager.KEY_NOTIFICATIONS)) {
                 String result = sharedPreferences.getString(key,
                         AccountManager.DEFAULT_NOTIFICATION_SELECTION);
-                updateNotificationsPreference((FiveCallsApplication) getActivity().getApplication(),
-                        accountManager, result);
+                if (TextUtils.equals("0", result)) {
+                    enablePushNotifications(requireActivity(), mPushPermissionRequest);
+                } else {
+                    updateNotificationsPreference(
+                            (FiveCallsApplication) getActivity().getApplication(),
+                            accountManager, result);
+                }
             } else if (TextUtils.equals(key, AccountManager.KEY_USER_NAME)) {
                 String result = sharedPreferences.getString(key, null);
                 if (result != null) {

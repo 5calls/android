@@ -8,6 +8,7 @@ import com.android.volley.toolbox.HttpResponse;
 
 import org.a5calls.android.a5calls.BaseIntegrationTest;
 import org.a5calls.android.a5calls.model.Contact;
+import org.a5calls.android.a5calls.model.HourlyCallCount;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.model.Outcome;
 import org.json.JSONException;
@@ -20,6 +21,7 @@ import java.util.List;
 
 import static org.a5calls.android.a5calls.FakeJSONData.ISSUE_DATA;
 import static org.a5calls.android.a5calls.FakeJSONData.REPORT_DATA;
+import static org.a5calls.android.a5calls.FakeJSONData.REPORT_DATA_FULL;
 import static org.a5calls.android.a5calls.FakeJSONData.REPS_DATA_SUFFIX;
 import static org.a5calls.android.a5calls.FakeJSONData.REPS_DATA_NOT_SPLIT_PREFIX;
 import static org.a5calls.android.a5calls.FakeJSONData.REPS_DATA_SPLIT_PREFIX;
@@ -33,6 +35,8 @@ public class FiveCallsApiTest extends BaseIntegrationTest {
         protected int mCallReported = 0;
         protected int mCallCount = 0;
         protected boolean mDonateOn = false;
+        protected long mServerTime = 0;
+        protected List<HourlyCallCount> mHourlyCounts = null;
 
         @Override
         public void onRequestError() {
@@ -45,9 +49,12 @@ public class FiveCallsApiTest extends BaseIntegrationTest {
         }
 
         @Override
-        public void onReportReceived(int count, boolean donateOn) {
+        public void onReportReceived(int count, boolean donateOn, long serverTime,
+                                     List<HourlyCallCount> hourlyCounts) {
             mCallCount = count;
             mDonateOn = donateOn;
+            mServerTime = serverTime;
+            mHourlyCounts = hourlyCounts;
         }
 
         @Override
@@ -129,7 +136,7 @@ public class FiveCallsApiTest extends BaseIntegrationTest {
 
 
     @Test
-    public void testGetCallCount() {
+    public void testGetCallCount_noHourlyCounts() {
         byte[] bytes = REPORT_DATA.getBytes();
         ArrayList<Header> headers = new ArrayList<>();
         headers.add(new Header("Content-Type", "text/json"));
@@ -146,6 +153,31 @@ public class FiveCallsApiTest extends BaseIntegrationTest {
         assertEquals(0, testCallListener.mCallReported);
         assertEquals(4627301, testCallListener.mCallCount);
         assertTrue(testCallListener.mDonateOn);
+
+        mApi.unregisterCallRequestListener(testCallListener);
+    }
+
+    @Test
+    public void testGetCallCount_hourlyCounts() {
+        byte[] bytes = REPORT_DATA_FULL.getBytes();
+        ArrayList<Header> headers = new ArrayList<>();
+        headers.add(new Header("Content-Type", "text/json"));
+        HttpResponse response = new HttpResponse(200, headers, bytes);
+        mHttpStack.setResponseToReturn(response);
+
+        TestCallListener testCallListener = new TestCallListener();
+        mApi.registerCallRequestListener(testCallListener);
+        mApi.getReport();
+        waitForHttpRequestComplete();
+
+        assertEquals(0, testCallListener.mCallError);
+        assertEquals(0, testCallListener.mCallJsonError);
+        assertEquals(0, testCallListener.mCallReported);
+        assertEquals(14074073, testCallListener.mCallCount);
+        assertFalse(testCallListener.mDonateOn);
+
+        assertEquals(1789094984, testCallListener.mServerTime);
+        assertEquals(25, testCallListener.mHourlyCounts.size());
 
         mApi.unregisterCallRequestListener(testCallListener);
     }

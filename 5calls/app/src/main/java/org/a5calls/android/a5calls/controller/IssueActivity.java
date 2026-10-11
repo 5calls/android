@@ -65,6 +65,7 @@ import org.a5calls.android.a5calls.model.Action;
 import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.CustomizedContactScript;
 import org.a5calls.android.a5calls.model.DatabaseHelper;
+import org.a5calls.android.a5calls.model.HourlyCallCount;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.model.Outcome;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
@@ -83,7 +84,8 @@ import java.util.TimeZone;
  * More details about an issue, including links to the phone app to call and buttons to record
  * your calls.
  */
-public class IssueActivity extends AppCompatActivity implements FiveCallsApi.ScriptsRequestListener {
+public class IssueActivity extends AppCompatActivity implements FiveCallsApi.ScriptsRequestListener,
+        NotificationSettingsDialog.Host {
     private static final String TAG = "IssueActivity";
     public static final String KEY_ISSUE = "key_issue";
     public static final String KEY_IS_DISTRICT_SPLIT = "key_is_district_split";
@@ -119,6 +121,9 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
 
     private ActivityIssueBinding binding;
     private ActivityResultLauncher<Intent> mRepCallLauncher;
+    // Lives here rather than in NotificationSettingsDialog because the dialog is gone by the
+    // time the permission prompt is answered.
+    private ActivityResultLauncher<String> mPushPermissionRequest;
     private ActivityResultLauncher<Intent> mLocationLauncher;
 
     private FiveCallsApi.ContactsRequestListener mContactsRequestListener;
@@ -128,6 +133,10 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
         super.onCreate(savedInstanceState);
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         binding = ActivityIssueBinding.inflate(getLayoutInflater());
+
+        mPushPermissionRequest = SettingsActivity.createNotificationPermissionRequest(this,
+                isGranted -> SettingsActivity.onPushPermissionResult(
+                        (FiveCallsApplication) getApplication(), isGranted));
 
         // Register activity result launcher for RepCallActivity
         mRepCallLauncher = registerForActivityResult(
@@ -164,7 +173,8 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
             }
 
             @Override
-            public void onReportReceived(int count, boolean donateOn) {
+            public void onReportReceived(int count, boolean donateOn, long serverTime,
+                                         List<HourlyCallCount> callCounts) {
                 // unused
             }
 
@@ -1033,6 +1043,11 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
             // Apply the scripts to the current issue
             mIssue.customizedScripts = scripts;
         }
+    }
+
+    @Override
+    public void enablePushNotifications() {
+        SettingsActivity.enablePushNotifications(this, mPushPermissionRequest);
     }
 
     @Override

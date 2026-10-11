@@ -15,6 +15,7 @@ public class FakeJSONData {
 
     // A snapshot of real report data, used for testing.
     public static final String REPORT_DATA = "{\"count\":4627301,\"donateOn\":true}";
+    public static final String REPORT_DATA_FULL = "{\"count\":14074073,\"donateOn\":false,\"serverTime\":1789094984,\"hourlyCalls\":[{\"time\":1789005600,\"count\":106},{\"time\":1789009200,\"count\":109},{\"time\":1789012800,\"count\":125},{\"time\":1789016400,\"count\":63},{\"time\":1789020000,\"count\":25},{\"time\":1789023600,\"count\":5},{\"time\":1789027200,\"count\":61},{\"time\":1789030800,\"count\":50},{\"time\":1789034400,\"count\":97},{\"time\":1789038000,\"count\":291},{\"time\":1789041600,\"count\":290},{\"time\":1789045200,\"count\":211},{\"time\":1789048800,\"count\":211},{\"time\":1789052400,\"count\":315},{\"time\":1789056000,\"count\":163},{\"time\":1789059600,\"count\":175},{\"time\":1789063200,\"count\":241},{\"time\":1789066800,\"count\":150},{\"time\":1789070400,\"count\":251},{\"time\":1789074000,\"count\":270},{\"time\":1789077600,\"count\":293},{\"time\":1789081200,\"count\":211},{\"time\":1789084800,\"count\":221},{\"time\":1789088400,\"count\":136},{\"time\":1789092000,\"count\":62}]}";
 
     /**
      * Returns the full issue data as a JSONArray.

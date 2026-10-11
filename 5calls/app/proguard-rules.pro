@@ -15,3 +15,15 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+# Keep Gson annotations and reflection attributes
+-keepattributes *Annotation*,Signature,InnerClasses,EnclosingMethod
+
+# Keep all fields and methods in data model package
+-keep class org.a5calls.android.a5calls.model.** { *; }
+
+# Keep Enum values (used in Outcome.Status)
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
