@@ -8,7 +8,7 @@ android {
     useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
-        applicationId = "org.a5calls.android.a5calls"
+        applicationId "org.a5calls.android.a5calls"
         minSdkVersion 23
         targetSdkVersion 36
         versionCode 89
@@ -28,7 +28,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    namespace = 'org.a5calls.android.a5calls'
+    namespace 'org.a5calls.android.a5calls'
     lint {
     }
 

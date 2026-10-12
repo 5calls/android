@@ -181,9 +181,10 @@ public class LocationActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            returnToMain();
-            return true;
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                returnToMain();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }

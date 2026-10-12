@@ -24,7 +24,7 @@ allprojects {
         google()
         mavenCentral()
         // For accessing MPAndroidChart library.
-        maven { url = 'https://jitpack.io' }
+        maven { url 'https://jitpack.io' }
     }
 }
 
