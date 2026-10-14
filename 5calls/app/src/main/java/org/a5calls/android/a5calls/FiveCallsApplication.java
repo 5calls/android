@@ -18,11 +18,16 @@ package org.a5calls.android.a5calls;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.NotificationManagerCompat;
-
+import androidx.core.os.LocaleListCompat;
 
 import org.a5calls.android.a5calls.controller.SettingsActivity;
 import org.a5calls.android.a5calls.model.AccountManager;
@@ -30,6 +35,7 @@ import org.a5calls.android.a5calls.net.PushRegistration;
 import org.a5calls.android.a5calls.model.NotificationUtils;
 import org.a5calls.android.a5calls.util.AnalyticsManager;
 
+import java.util.Locale;
 import java.util.UUID;
 
 /**
@@ -43,6 +49,25 @@ public class FiveCallsApplication extends Application {
         return mAnalyticsManager;
     }
 
+    @Override
+    protected void attachBaseContext(Context base) {
+        SharedPreferences prefs = base.getSharedPreferences("test_prefs", MODE_PRIVATE);
+        String testLocale = prefs.getString("test_locale", null);
+        if (!TextUtils.isEmpty(testLocale)) {
+            Locale locale = Locale.forLanguageTag(testLocale);
+            Locale.setDefault(locale);
+            Configuration config = new Configuration(base.getResources().getConfiguration());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                config.setLocales(new android.os.LocaleList(locale));
+            } else {
+                config.locale = locale;
+            }
+            Context localizedContext = base.createConfigurationContext(config);
+            super.attachBaseContext(localizedContext);
+            return;
+        }
+        super.attachBaseContext(base);
+    }
 
     public FiveCallsApplication() {
         super();
@@ -60,7 +85,7 @@ public class FiveCallsApplication extends Application {
 
             @Override
             public void onActivityResumed(Activity activity) {
-                // Clear reminder notifications whenever the app is re-opened.
+                // Clear reminder notifications whenever the app process is re-opened.
                 NotificationUtils.clearNotifications(activity);
             }
 
