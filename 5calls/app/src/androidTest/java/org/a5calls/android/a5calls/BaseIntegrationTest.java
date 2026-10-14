@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.allOf;
 import static org.junit.Assert.assertNotNull;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.SystemClock;
 import android.view.View;
 
@@ -47,7 +48,16 @@ public abstract class BaseIntegrationTest {
     @Before
     public void setUp() {
         mContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        mLocale = Locale.getDefault();
+        String localeArg = InstrumentationRegistry.getArguments().getString("locale");
+        if (localeArg != null && !localeArg.isEmpty()) {
+            mLocale = Locale.forLanguageTag(localeArg);
+            Locale.setDefault(mLocale);
+            Configuration config = new Configuration(mContext.getResources().getConfiguration());
+            config.setLocale(mLocale);
+            mContext = mContext.createConfigurationContext(config);
+        } else {
+            mLocale = Locale.getDefault();
+        }
 
         // Use a fixed caller ID for consistent test results
         AccountManager.Instance.setCallerID(mContext, "itMe");
