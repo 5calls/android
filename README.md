@@ -10,6 +10,7 @@ FiveCallsApi is used to request a list of issues from the server in MainActivity
 ## Development
 To run the app locally, you'll need to generate your own `google-services.json` file from the [Google website](https://developers.google.com/mobile/add).  It doesn't matter what services you enable because you won't be talking to the prod Google account, but you should include Analytics.
 
+## Testing
 To test the app, set `TESTING=true` in `FiveCallsApi.java`. This makes sure that calls logged to the server are marked as test calls.
 
 For instrumentation testing, connect a device or start an emulator, then:
@@ -18,7 +19,12 @@ For instrumentation testing, connect a device or start an emulator, then:
 cd 5calls
 ./gradlew connectedAndroidTest
 ```
-For instrumentation testing running the app in Spanish:
+For instrumentation testing forcing the app to run in the US English locale no matter the settings on the phone/emulator:
+```
+cd 5calls
+./gradlew connectedAndroidTest -Pandroid.testInstrumentationRunnerArguments.locale=en-US
+```
+For instrumentation testing forcing the app to run in the US Spanish locale no matter the settings on the phone/emulator:
 ```
 cd 5calls
 ./gradlew connectedAndroidTest -Pandroid.testInstrumentationRunnerArguments.locale=es-US
