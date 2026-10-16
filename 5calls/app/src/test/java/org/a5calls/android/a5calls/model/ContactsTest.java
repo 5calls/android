@@ -20,6 +20,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.core.os.BundleCompat;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
@@ -36,7 +37,7 @@ public class ContactsTest {
         ArrayList<Contact> contacts = getTestContacts();
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList("key", contacts);
-        ArrayList<Contact> reconstructed = bundle.getParcelableArrayList("key");
+        ArrayList<Contact> reconstructed = BundleCompat.getParcelableArrayList(bundle, "key", Contact.class);
         assertEquals(contacts.size(), reconstructed.size());
         for (int i = 0; i < contacts.size(); i++) {
             Contact expected = contacts.get(i);

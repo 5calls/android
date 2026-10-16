@@ -3,7 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:maxLevel="0">
         <shape
-            xmlns:android="http://schemas.android.com/apk/res/android"
             android:shape="oval"
             >
             <stroke
@@ -21,10 +20,9 @@
         </shape>
     </item>
     <item android:maxLevel="1">
-        <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+        <layer-list >
             <item>
                 <shape
-                    xmlns:android="http://schemas.android.com/apk/res/android"
                     android:shape="oval"
                     >
                     <solid

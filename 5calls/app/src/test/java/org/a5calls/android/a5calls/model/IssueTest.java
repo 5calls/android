@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNull;
 
 import android.os.Bundle;
 
+import androidx.core.os.BundleCompat;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.google.gson.Gson;
@@ -55,7 +56,7 @@ public class IssueTest {
 
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList("key", issues);
-        ArrayList<Issue> reconstructedIssues = bundle.getParcelableArrayList("key");
+        ArrayList<Issue> reconstructedIssues = BundleCompat.getParcelableArrayList(bundle, "key", Issue.class);
         assertEquals(issues.size(), reconstructedIssues.size());
         for (int i = 0; i < issues.size(); i++) {
             Issue expected = issues.get(i);

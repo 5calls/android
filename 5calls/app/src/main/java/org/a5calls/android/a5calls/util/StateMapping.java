@@ -1,6 +1,7 @@
 package org.a5calls.android.a5calls.util;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -77,6 +78,6 @@ public class StateMapping {
         if (abbreviation == null || abbreviation.trim().isEmpty()) {
             return null;
         }
-        return STATE_MAP.get(abbreviation.trim().toUpperCase());
+        return STATE_MAP.get(abbreviation.trim().toUpperCase(Locale.US));
     }
 }

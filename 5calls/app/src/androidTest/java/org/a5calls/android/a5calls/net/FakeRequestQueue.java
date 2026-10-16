@@ -13,7 +13,7 @@ public class FakeRequestQueue extends RequestQueue {
         }
 
     @Override
-    public Request add(Request request) {
+    public <T> Request<T> add(Request<T> request) {
         mRequest = request;
         super.add(request);
         return request;

@@ -6,10 +6,10 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
 import org.a5calls.android.a5calls.FiveCallsApplication;
@@ -75,23 +75,21 @@ public class NotifyBroadcastReceiver extends BroadcastReceiver {
         resultIntent.putExtra(MainActivity.EXTRA_FROM_NOTIFICATION, true);
         PendingIntent pendingIntent = PendingIntent.getActivity(context,
                 MainActivity.NOTIFICATION_REQUEST, resultIntent,  PendingIntent.FLAG_IMMUTABLE);
-        Notification.Builder builder = new Notification.Builder(context)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setContentTitle(context.getResources().getString(R.string.notification_title))
                 .setContentText(context.getResources().getString(R.string.notification_text))
                 .setContentIntent(pendingIntent) // Launch main activity
                 .setAutoCancel(true) // Goes away when clicked
-                .setSmallIcon(R.drawable.app_icon_bw);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            builder.setChannelId(CHANNEL_ID); // O and above require Notification Channels.
-        }
-        builder.setColor(ContextCompat.getColor(context, R.color.colorPrimary));
+                .setSmallIcon(R.drawable.app_icon_bw)
+                .setColor(ContextCompat.getColor(context, R.color.colorPrimary));
+
         // Set up a snooze action, which when clicked notifies this same broadcast receiver
         Intent snoozeIntent = new Intent(context, NotifyBroadcastReceiver.class)
                 .setAction(ACTION_DO_SNOOZE);
         PendingIntent pendingSnooze = PendingIntent.getBroadcast(context,
                 SNOOZE_REQUEST_CODE, snoozeIntent,  PendingIntent.FLAG_IMMUTABLE);
-        Notification.Action snoozeAction = new Notification.Action.Builder(
-                android.graphics.drawable.Icon.createWithResource(context, R.drawable.ic_snooze_white_24dp),
+        NotificationCompat.Action snoozeAction = new NotificationCompat.Action.Builder(
+                R.drawable.ic_snooze_white_24dp,
                 context.getResources().getString(R.string.snooze),
                 pendingSnooze)
                 .build();
@@ -102,8 +100,8 @@ public class NotifyBroadcastReceiver extends BroadcastReceiver {
         settingsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent pendingSettings = PendingIntent.getActivity(context,
                 GO_TO_SETTINGS_REQUEST_CODE, settingsIntent,  PendingIntent.FLAG_IMMUTABLE);
-        Notification.Action settingsAction = new Notification.Action.Builder(
-                android.graphics.drawable.Icon.createWithResource(context, R.drawable.ic_settings_black_24dp),
+        NotificationCompat.Action settingsAction = new NotificationCompat.Action.Builder(
+                R.drawable.ic_settings_black_24dp,
                 context.getResources().getString(R.string.settings),
                 pendingSettings)
                 .build();
@@ -113,8 +111,8 @@ public class NotifyBroadcastReceiver extends BroadcastReceiver {
                 .setAction(ACTION_CANCEL_NOTIFY);
         PendingIntent pendingCancel = PendingIntent.getBroadcast(context,
                 CANCEL_REQUEST_CODE, cancelIntent, PendingIntent.FLAG_IMMUTABLE);
-        Notification.Action cancelAction = new Notification.Action.Builder(
-                android.graphics.drawable.Icon.createWithResource(context, R.drawable.ic_close_white_24dp),
+        NotificationCompat.Action cancelAction = new NotificationCompat.Action.Builder(
+                R.drawable.ic_close_white_24dp,
                 context.getResources().getString(R.string.dismiss),
                 pendingCancel)
                 .build();

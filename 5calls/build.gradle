@@ -31,3 +31,12 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+subprojects {
+    tasks.withType(Test).configureEach {
+        maxParallelForks = Runtime.getRuntime().availableProcessors()
+    }
+    tasks.withType(JavaCompile).configureEach {
+        options.compilerArgs.addAll(["-Xlint:deprecation", "-Xlint:unchecked"])
+    }
+}
