@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     signingConfigs {
@@ -108,4 +109,11 @@ configurations.configureEach {
     // with the appropriate license information.
 }
 
+
+// Configure Kotlin compilation options
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
+    kotlinOptions {
+        jvmTarget = '21'
+    }
+}
 apply plugin: 'com.google.gms.google-services'
