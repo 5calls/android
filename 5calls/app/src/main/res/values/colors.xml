@@ -20,4 +20,7 @@
     <color name="state_indicator_background">#D32F2F</color>
     <color name="state_indicator_border">#B71C1C</color>
     <color name="state_indicator_text">#FFFFFF</color>
+    <!-- matches the warning notice on the website -->
+    <color name="rep_notice_background">#FDF2D4</color>
+    <color name="rep_notice_accent">#C98A00</color>
 </resources>

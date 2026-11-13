@@ -68,6 +68,7 @@ import org.a5calls.android.a5calls.model.DatabaseHelper;
 import org.a5calls.android.a5calls.model.HourlyCallCount;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.model.Outcome;
+import org.a5calls.android.a5calls.model.RepNotice;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
 import org.a5calls.android.a5calls.util.MarkdownUtil;
 import org.a5calls.android.a5calls.util.StateMapping;
@@ -459,6 +460,8 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
     private void showContactsUi() {
         binding.noAddressSet.setVisibility(View.GONE);
         binding.noCallsLeft.setVisibility(View.GONE);
+        // Shown again by loadRepList when there are reps to put it above.
+        binding.repNotice.setVisibility(View.GONE);
         if (mIssue.contacts == null) {
             if (AccountManager.Instance.hasLocation(this)) {
                 // An address error.
@@ -640,6 +643,7 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
      */
     private boolean loadRepList() {
         binding.repList.removeAllViews();
+        loadRepNotice();
         binding.relevantRepText.setVisibility(mIssue.contacts.isEmpty() ? View.GONE : View.VISIBLE);
         binding.relevantRepText.setText(
                 getResources().getString(
@@ -660,6 +664,19 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
             }
         }
         return allCalled && !mIssue.contacts.isEmpty();
+    }
+
+    /**
+     * Shows the server's notice above the reps, if there is one and it hasn't expired.
+     */
+    private void loadRepNotice() {
+        RepNotice notice = AppSingleton.getInstance(this).getJsonController().getRepNotice();
+        if (notice == null || !notice.isActive(new Date())) {
+            binding.repNotice.setVisibility(View.GONE);
+            return;
+        }
+        binding.repNoticeText.setText(notice.text);
+        binding.repNotice.setVisibility(View.VISIBLE);
     }
 
     private boolean isPendingForContact(int index) {
