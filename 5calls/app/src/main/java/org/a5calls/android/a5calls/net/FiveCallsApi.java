@@ -120,7 +120,6 @@ public class FiveCallsApi {
     private final String mCallerId;
     private final Context mContext;
 
-    // From the most recent reps response; null when the server isn't showing one.
     @Nullable private RepNotice mRepNotice;
 
     public FiveCallsApi(String callerId, RequestQueue requestQueue, Context context) {
@@ -160,9 +159,6 @@ public class FiveCallsApi {
         mContactsRequestListeners.remove(contactsRequestListener);
     }
 
-    /**
-     * The notice to show above the caller's reps, from the last reps response, or null.
-     */
     @Nullable
     public RepNotice getRepNotice() {
         return mRepNotice;

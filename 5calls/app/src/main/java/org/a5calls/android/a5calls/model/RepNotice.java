@@ -14,10 +14,6 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * A server-controlled message shown above the caller's reps, e.g. explaining that new members
- * of Congress don't take office until January. The API only sends a notice while it's live.
- */
 public class RepNotice {
     // RFC 3339 as Go writes it: optional fractional seconds, then Z or an offset like -08:00.
     private static final Pattern TIMESTAMP = Pattern.compile(
@@ -33,10 +29,6 @@ public class RepNotice {
         this.expiresAt = expiresAt;
     }
 
-    /**
-     * Reads the optional "notice" object from a reps response. Returns null when there's no
-     * notice or it has no text.
-     */
     @Nullable
     public static RepNotice fromRepsResponse(@Nullable JSONObject response) {
         if (response == null) {

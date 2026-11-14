@@ -32,8 +32,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * Checks the server's notice shows above the reps on the issue screen. Also saves a screenshot
- * of each state to the app's external files dir (screenshots/) so the UI can be reviewed:
+ * Also saves a screenshot of each state for reviewing the UI. Gradle uninstalls the app after
+ * connectedAndroidTest, which deletes them, so install and run with adb instead, then:
  * adb pull /sdcard/Android/data/org.a5calls.android.a5calls/files/screenshots
  */
 @RunWith(AndroidJUnit4.class)

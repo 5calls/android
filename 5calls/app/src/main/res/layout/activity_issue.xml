@@ -129,7 +129,6 @@
 
             </RelativeLayout>
 
-            <!-- Server-controlled notice above the reps, hidden unless the API sends one -->
             <LinearLayout
                 android:id="@+id/rep_notice"
                 android:layout_width="match_parent"

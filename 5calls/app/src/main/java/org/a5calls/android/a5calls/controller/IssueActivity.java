@@ -666,9 +666,6 @@ public class IssueActivity extends AppCompatActivity implements FiveCallsApi.Scr
         return allCalled && !mIssue.contacts.isEmpty();
     }
 
-    /**
-     * Shows the server's notice above the reps, if there is one and it hasn't expired.
-     */
     private void loadRepNotice() {
         RepNotice notice = AppSingleton.getInstance(this).getJsonController().getRepNotice();
         if (notice == null || !notice.isActive(new Date())) {
