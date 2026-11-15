@@ -130,6 +130,40 @@
             </RelativeLayout>
 
             <LinearLayout
+                android:id="@+id/rep_notice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/rep_notice_background"
+                android:paddingStart="@dimen/rep_list_dimens_left_right"
+                android:paddingEnd="@dimen/rep_list_dimens_left_right"
+                android:paddingTop="@dimen/rep_list_dimens"
+                android:paddingBottom="@dimen/rep_list_dimens"
+                android:visibility="gone"
+                >
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="10dp"
+                    android:src="@drawable/warning_24dp"
+                    app:tint="@color/rep_notice_accent"
+                    android:contentDescription="@null"
+                    />
+
+                <TextView
+                    android:id="@+id/rep_notice_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/textColorDarkGrey"
+                    android:textSize="@dimen/min_resizable_text_size"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/rep_list"
                 style="@style/issueLinearLayout"
                 android:orientation="vertical"

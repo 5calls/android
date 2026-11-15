@@ -5,6 +5,8 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -24,6 +26,7 @@ import org.a5calls.android.a5calls.model.CustomizedContactScript;
 import org.a5calls.android.a5calls.model.HourlyCallCount;
 import org.a5calls.android.a5calls.model.Issue;
 import org.a5calls.android.a5calls.model.Outcome;
+import org.a5calls.android.a5calls.model.RepNotice;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -117,6 +120,8 @@ public class FiveCallsApi {
     private final String mCallerId;
     private final Context mContext;
 
+    @Nullable private RepNotice mRepNotice;
+
     public FiveCallsApi(String callerId, RequestQueue requestQueue, Context context) {
         // TODO: Using OkHttpClient and OkHttpStack cause failures on multiple types of Samsung
         // Galaxy devices.
@@ -152,6 +157,11 @@ public class FiveCallsApi {
 
     public void unregisterContactsRequestListener(ContactsRequestListener contactsRequestListener) {
         mContactsRequestListeners.remove(contactsRequestListener);
+    }
+
+    @Nullable
+    public RepNotice getRepNotice() {
+        return mRepNotice;
     }
 
     public void registerScriptsRequestListener(ScriptsRequestListener scriptsRequestListener) {
@@ -283,6 +293,7 @@ public class FiveCallsApi {
 
                         Type listType = new TypeToken<ArrayList<Contact>>(){}.getType();
                         List<Contact> contacts = mGson.fromJson(jsonArray.toString(), listType);
+                        mRepNotice = RepNotice.fromRepsResponse(response);
 
                         String districtId = "";
                         boolean stateChanged = false;
