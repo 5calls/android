@@ -468,6 +468,7 @@ public class FiveCallsApiTest {
         } catch (JSONException e) {
             fail(e.getMessage());
         }
+        assertEquals("itMe", mHttpStack.getLastHeaders().get("X-Caller-ID"));
     }
 
     private void testReportCallStatus(Outcome.Status status, String outcomeString) {
