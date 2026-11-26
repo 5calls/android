@@ -489,7 +489,16 @@ public class FiveCallsApi {
             JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, SEARCH_TRACKING,
                     jsonBody, response -> {
                 // Search report successful - no action needed
-            }, error -> Log.w(TAG, "Search tracking failed: " + error.getMessage()));
+            }, error -> Log.w(TAG, "Search tracking failed: " + error.getMessage())) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<>();
+                    if (!TextUtils.isEmpty(mCallerId)) {
+                        params.put("X-Caller-ID", mCallerId);
+                    }
+                    return params;
+                }
+            };
             request.setTag(TAG);
             // Add the request to the RequestQueue.
             mRequestQueue.add(request);
