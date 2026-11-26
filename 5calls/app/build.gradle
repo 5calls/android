@@ -102,6 +102,9 @@ configurations.configureEach {
     // Push notifications, sent by our own api
     implementation 'com.google.firebase:firebase-messaging'
 
+    // For Kotlin users also add the Kotlin extensions library for Play In-App Update:
+    implementation 'com.google.android.play:app-update-ktx:2.1.0'
+
     // Plausible
     implementation 'com.github.OneBusAway:plausible-android-sdk:3.3'
 

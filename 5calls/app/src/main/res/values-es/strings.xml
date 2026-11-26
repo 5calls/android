@@ -744,4 +744,13 @@
     <!-- Button linking to the registration verification page [CHAR_LIMIT=30] -->
     <string name="check_your_registration_button">Verifique su registro</string>
 
+    <!-- Snackbar text for an updated having been downloaded [CHAR_LIMIT=50 -->
+    <string name="an_update_has_just_been_downloaded">Se acaba de descargar una actualización.</string>
+    <!-- Snackbar button action text for an updated having been downloaded [CHAR_LIMIT=10 -->
+    <string name="app_update_download_restart_action">REANUDAR</string>
+    <!-- Snackbar text for an update failing to download [CHAR_LIMIT=50 -->
+    <string name="unable_to_download_update">No se puede descargar la actualización.</string>
+    <!-- Snackbar button action text for an update failing to download [CHAR_LIMIT=50 -->
+    <string name="app_update_download_failed_retry_action">REVER</string>
+
 </resources>
