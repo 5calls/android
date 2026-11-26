@@ -2,8 +2,13 @@ package org.a5calls.android.a5calls;
 
 import android.content.Context;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.google.android.play.core.appupdate.AppUpdateManager;
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
+import com.google.android.play.core.appupdate.testing.FakeAppUpdateManager;
 
 import org.a5calls.android.a5calls.model.AccountManager;
 import org.a5calls.android.a5calls.model.DatabaseHelper;
@@ -19,6 +24,7 @@ public class AppSingleton {
     private DatabaseHelper mDatabaseHelper;
     private FiveCallsApi mFiveCallsApi;
     private RequestQueue mRequestQueue;
+    private AppUpdateManager mAppUpdateManager;
 
     public static AppSingleton getInstance() {
         if (sSingleton == null) {
@@ -68,5 +74,20 @@ public class AppSingleton {
 
     public void setFiveCallsApi(FiveCallsApi api) {
         mFiveCallsApi = api;
+    }
+
+    public AppUpdateManager getAppUpdateManager(AppCompatActivity activity) {
+        if (null == mAppUpdateManager) {
+            if (BuildConfig.DEBUG) {
+                mAppUpdateManager = new FakeAppUpdateManager(activity);
+            } else {
+                mAppUpdateManager = AppUpdateManagerFactory.create(activity);
+            }
+        }
+        return mAppUpdateManager;
+    }
+
+    public void setAppUpdateManager(AppUpdateManager mAppUpdateManager) {
+        this.mAppUpdateManager = mAppUpdateManager;
     }
 }

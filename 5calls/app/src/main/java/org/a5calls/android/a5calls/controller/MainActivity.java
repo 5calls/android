@@ -51,6 +51,7 @@ import org.a5calls.android.a5calls.model.Contact;
 import org.a5calls.android.a5calls.model.DatabaseHelper;
 import org.a5calls.android.a5calls.net.FiveCallsApi;
 import org.a5calls.android.a5calls.model.Issue;
+import org.a5calls.android.a5calls.util.AppUpdateUtil;
 import org.a5calls.android.a5calls.util.CustomTabsUtil;
 
 import java.util.ArrayList;
@@ -103,6 +104,8 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
     private ActivityMainBinding binding;
 
     private Snackbar mSnackbar;
+
+    private AppUpdateUtil appUpdateUtil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -285,6 +288,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 refreshIssues();
             }
         });
+        appUpdateUtil = new AppUpdateUtil(this);
     }
 
     @Override
@@ -294,6 +298,13 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
         if (mAuth != null) {
             mAuth.signInAnonymously();
         }
+        appUpdateUtil.checkInAppUpdate();
+    }
+
+    @Override
+    protected void onStop() {
+        appUpdateUtil.onStop();
+        super.onStop();
     }
 
     @Override
@@ -353,6 +364,7 @@ public class MainActivity extends AppCompatActivity implements IssuesAdapter.Cal
                 refreshIssues();
             }
         });
+        appUpdateUtil.onResume();
     }
 
     @Override

@@ -851,4 +851,13 @@
     <!-- URL for the registration verification page [CHAR_LIMIT=NONE] -->
     <string name="check_your_registration_url" translatable="false">https://5calls.org/vote/verify/</string>
 
+    <!-- Snackbar text for an updated having been downloaded [CHAR_LIMIT=50 -->
+    <string name="an_update_has_just_been_downloaded">An update has just been downloaded.</string>
+    <!-- Snackbar button action text for an updated having been downloaded [CHAR_LIMIT=10 -->
+    <string name="app_update_download_restart_action">RESTART</string>
+    <!-- Snackbar text for an update failing to download [CHAR_LIMIT=50 -->
+    <string name="unable_to_download_update">Unable to download update.</string>
+    <!-- Snackbar button action text for an update failing to download [CHAR_LIMIT=50 -->
+    <string name="app_update_download_failed_retry_action">RETRY</string>
+
 </resources>
